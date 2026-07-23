@@ -2448,7 +2448,9 @@ from datetime import date
 class KulcsszoAdatKliens:
     """felkapott_rss ad egy trendet; kulcsszo ág egy 7-d DataFrame-et ad, más ág üres."""
     def __init__(self):
-        self.tr = object()
+        self.tr = _dummy_tr()  # a fájl meglévő segédje (a többi fake is ezt használja);
+        # object() itt AttributeError-t dobna, mert a branch-ek kliens.tr.<attr>-t
+        # argumentumként kiértékelik, mielőtt a fake hivas() dispatch-e egyáltalán futna
     def hivas(self, ag, fn, *a, **k):
         if ag == "felkapott_rss":
             return [SimpleNamespace(keyword="benzinár", news=[])]
