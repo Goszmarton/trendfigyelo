@@ -1,0 +1,17 @@
+# Trendfigyelő — az EGYETLEN konfigforrás. geo/időablak/nyelv/referenciaszó/kulcsszavak.
+geo: HU
+nyelv: hu
+idoablak_orak: 24            # felkapott trendek: hours=24
+idosor_idokeret: "now 1-d"   # interest_over_time timeframe (elmúlt 24 óra)
+referenciaszo: "időjárás"    # stabil, magas volumenű HU kifejezés a kötegek normalizálásához
+kerespont:                   # anti-block (IP-blokkolás elleni) paraméterek
+  alap_keses_mp: 3.0
+  szoras_mp: [3, 7]          # véletlen 3–7 mp két hívás közt
+  max_probak: 4              # 429 esetén max ennyi próba, utána az ág feladva
+  backoff_mp: [30, 120, 480] # exponenciális visszavárakozás (mp)
+trend_idosor_max: 15         # hány top trend kapjon idősort (sparkline)
+proxy: null                  # pl. "http://user:pass@host:port" — alap: nincs
+kulcsszavak:
+  megelhetes: [infláció, benzinár, rezsi, élelmiszerárak, albérlet, lakáshitel, minimálbér, nyugdíj]
+  gazdaság:   [forint árfolyam, euró árfolyam, MNB, kamat, munkanélküliség, adóváltozás]
+  közélet:    [választás, kormány, népszavazás, tüntetés, egészségügy, oktatás, pedagógus, kórház]
