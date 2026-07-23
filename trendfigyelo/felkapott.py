@@ -16,7 +16,7 @@ def volumen_szam(t) -> int:
 def api_trend_dict(t, sorszam: int) -> dict:
     return {
         "sorszam": sorszam,
-        "kifejezes": t.keyword,
+        "kifejezes": getattr(t, "keyword", ""),
         "volumen": seged.szovegge(getattr(t, "volume", None)),
         "novekedes_pct": seged.szovegge(getattr(t, "volume_growth_pct", None)),
         "trend_indult_utc": seged.idove(getattr(t, "started_timestamp", None)),
@@ -31,7 +31,7 @@ def api_trend_dict(t, sorszam: int) -> dict:
 def rss_trend_dict(t, sorszam: int) -> dict:
     return {
         "sorszam": sorszam,
-        "kifejezes": t.keyword,
+        "kifejezes": getattr(t, "keyword", ""),
         "volumen": seged.szovegge(getattr(t, "volume", None)),
         "kapcsolodo_kifejezesek": seged.szovegge(getattr(t, "trend_keywords", None)),
         "trend_indult_utc": seged.idove(getattr(t, "started", None)),
@@ -47,7 +47,7 @@ def hir_sorok(rss_trendek) -> list:
         for hir in getattr(t, "news", None) or []:
             sorok.append({
                 "sorszam": i,
-                "kifejezes": t.keyword,
+                "kifejezes": getattr(t, "keyword", ""),
                 "hir_cim": seged.szovegge(getattr(hir, "title", None)),
                 "hir_forras": seged.szovegge(getattr(hir, "source", None)),
                 "hir_url": seged.szovegge(getattr(hir, "url", None)),

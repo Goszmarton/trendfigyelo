@@ -50,3 +50,9 @@ def test_csv_ir_api_fejlec_es_geo_oszlop(tmp_path):
     assert fejlec.strip().endswith("geo")
     assert "HU" in tartalom.splitlines()[1]
     assert p.name == "top_keresesek_api_HU_2021-01-01_1200.csv"
+
+
+def test_api_trend_dict_hianyzo_keyword_nem_dobal():
+    t = SimpleNamespace(volume=100)  # nincs keyword attribútum
+    d = felkapott.api_trend_dict(t, 1)
+    assert d["kifejezes"] == ""
