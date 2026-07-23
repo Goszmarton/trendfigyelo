@@ -1,4 +1,5 @@
 import textwrap
+from pathlib import Path
 
 import pytest
 
@@ -78,3 +79,11 @@ def test_referencia_min_atlag_alapertelmezes(tmp_path):
     # ha a config.yaml nem adja meg, az alap 1.0
     c = config.betolt(_ir(tmp_path, JO + 'kulcsszo_idokeret: "now 7-d"\n'))
     assert c.referencia_min_atlag == 1.0
+
+
+def test_eles_config_lassitott_anti_block_utem():
+    # A valódi projekt-config.yaml anti-block üteme (2. füst-teszt: azonnali 429 → lassítás)
+    gyoker = Path(__file__).resolve().parent.parent
+    c = config.betolt(gyoker / "config.yaml")
+    assert c.alap_keses_mp == 6.0          # trendspy request_delay
+    assert c.szoras_mp == (6.0, 10.0)      # saját véletlen késleltetés

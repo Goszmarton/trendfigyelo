@@ -2530,3 +2530,98 @@ git commit -m "feat(futtato): kulcsszó-ág most-tal, tortenet a valós adat-nap
 **Típus-/névkonzisztencia:** `parse_koteg(df, koteg, mai_datum, min_atlag)` egységes (Task 13 ↔ tesztek); `gyujt(kliens, config, most)` (Task 13 ↔ 15); `aggregalt_nap` (Task 13 ↔ 15); `referencia_ervenyes` mező (Task 13 pont-alak ↔ Task 14 aggregátor); `kulcsszo_idokeret`/`referencia_min_atlag` (Task 12 ↔ 13). A top-trend ág és a `napi_ir` `nap_iso`-ja változatlan; csak a kulcsszó-tortenet vált adat-napra. ✔
 
 **Döntési napló (a füst-teszt utáni egyeztetésből):** utolsó nap = utolsó TELJES budapesti naptári nap (a mai részleges kizárva); napi statisztika = átlag(nem-0) + csúcs + `ervenyes_pontok`; referencia-jelölés = `referencia_atlag` numerikus CSV-oszlop; a `tortenet` szigorúan normalizált (a `_ertek` nyers-tartalék segéd megmarad, de a ref-érvénytelen kötegeket a `referencia_ervenyes` jelző zárja ki — explicit teszttel rögzítve).
+
+---
+
+## Phase 1.1 kiegészítés — Hívási ütem lassítása (második füst-teszt: azonnali 429)
+
+**Probléma (2026-07-23, második éles füst-teszt):** két KÜLÖNBÖZŐ IP-ről is azonnali 429 (Too Many Requests) érkezett — nem néhány hívás után, hanem gyakorlatilag rögtön. Ez azt jelzi, hogy a Google a hívási ÜTEMET tartja túl gyorsnak, nem a hívások abszolút számát. A `backoff` (429 utáni visszavárakozás) csak reaktív; a megelőzéshez a hívások közti ALAP ütemet kell tágítani.
+
+**Döntés:** két, egymást kiegészítő késleltetést emelünk, mindkettőt a `config.yaml`-ban (egyetlen konfigforrás elve — nincs hardkódolt érték a kliensben):
+
+1. **trendspy belső `request_delay` → 6.0 mp.** A `kliens.Kliens.__init__` már a `config.alap_keses_mp`-t adja át a `Trends(request_delay=...)`-nak (l. Task 3), tehát a `request_delay=6.0` a `kerespont.alap_keses_mp: 3.0 → 6.0` állítással valósul meg. NEM hardkódoljuk 6.0-t a kliensbe — a config marad az egyetlen forrás. (A trendspy `request_delay` alapértéke 1.0; eddig 3.0-t kapott, mostantól 6.0-t.)
+2. **Saját véletlen késleltetésünk (`_var()` → `szoras_mp`) → 6–10 mp.** A `kerespont.szoras_mp: [3, 7] → [6, 10]`. Ez a `_var()` `random.uniform(also, felso)` alvása minden hívás ELŐTT.
+
+**Nettó hatás:** két hívás közt ≈ trendspy `request_delay` (6 mp) + saját véletlen (6–10 mp) ≈ **12–16 mp**, szemben az eddigi ~6–10 mp-cel. A 429-backoff (`max_probak`, `backoff_mp`) és minden más anti-block viselkedés VÁLTOZATLAN.
+
+**Érintett fájlok:** kizárólag a `config.yaml` (adat). A `kliens.py` és `config.py` KÓDJA nem változik — a `request_delay` huzalozás és a `szoras_mp` beolvasás már megvan.
+
+**TDD-lefedettség (a config adat, de a huzalozást és a konkrét értékeket teszt rögzíti):**
+- **Task 16 — Kliens-huzalozás teszt:** bizonyítja, hogy `trends=None` esetén a `Trends` a `config.alap_keses_mp`-vel egyenlő `request_delay`-jel jön létre (spy-gyárral, hálózat nélkül). Ez rögzíti, hogy a `request_delay` a configból jön — így az `alap_keses_mp: 6.0` tényleg 6.0 `request_delay`-t ad. RED: a jelenlegi kliens `from trendspy import Trends`-et hív a fv. törzsében, nem injektálható → a teszt a huzalozás explicit tesztelhetőségét is kikényszeríti (opcionális `trends_gyar` factory paraméter, alap: `trendspy.Trends`).
+- **Task 17 — Éles `config.yaml` értékteszt:** betölti a valódi projekt-`config.yaml`-t és rögzíti az anti-block ütemet: `alap_keses_mp == 6.0`, `szoras_mp == (6.0, 10.0)`. RED a jelenlegi 3.0 / (3, 7) mellett, GREEN a config-állítás után.
+
+### Task 16: Kliens-huzalozás — `request_delay` a configból, injektálható gyárral (`kliens.py`)
+
+**Cél:** tesztelhetővé és bizonyítottá tenni, hogy a `Trends` a `config.alap_keses_mp`-vel jön létre `request_delay`-ként. Minimális, visszafelé kompatibilis változtatás: a `__init__` kap egy opcionális `trends_gyar` paramétert (alap: `trendspy.Trends`), amit a teszt spy-jal helyettesít.
+
+- [ ] **Step 1: Failing teszt — a Trends a configból kapja a request_delay-t**
+
+```python
+# tests/test_kliens.py — új teszt
+def test_trends_a_configbol_kapja_a_request_delayt():
+    rogzitett = {}
+
+    def spy_gyar(**kwargs):
+        rogzitett.update(kwargs)
+        return object()
+
+    cfg = _config()  # alap_keses_mp=3.0 a fixtúrában
+    kliens.Kliens(cfg, trends_gyar=spy_gyar)
+    assert rogzitett["request_delay"] == cfg.alap_keses_mp
+    assert rogzitett["language"] == cfg.nyelv
+    assert rogzitett["proxy"] == cfg.proxy
+```
+
+- [ ] **Step 2: Verify RED** — `TypeError: __init__() got an unexpected keyword argument 'trends_gyar'`.
+
+- [ ] **Step 3: GREEN — opcionális `trends_gyar` factory a `__init__`-ben**
+
+```python
+def __init__(self, config, trends=None, trends_gyar=None):
+    self.config = config
+    if trends is None:
+        if trends_gyar is None:
+            from trendspy import Trends
+            trends_gyar = Trends
+        trends = trends_gyar(
+            language=config.nyelv,
+            request_delay=config.alap_keses_mp,
+            proxy=config.proxy,
+        )
+    self.tr = trends
+    self._szamlalok = {}
+```
+
+- [ ] **Step 4: Verify GREEN** — új teszt + a meglévő kliens-tesztek zöldek.
+
+### Task 17: Éles `config.yaml` anti-block ütem-értékek (`config.yaml`)
+
+**Cél:** a valódi `config.yaml` ütem-értékeit teszt rögzítse, majd a `config.yaml`-t a lassabb ütemre állítjuk.
+
+- [ ] **Step 1: Failing teszt — az éles config anti-block üteme**
+
+```python
+# tests/test_config.py — új teszt (a valódi projekt-config.yaml-t tölti be)
+def test_eles_config_lassitott_anti_block_utem():
+    from pathlib import Path
+    gyoker = Path(__file__).resolve().parent.parent
+    c = config.betolt(gyoker / "config.yaml")
+    assert c.alap_keses_mp == 6.0          # trendspy request_delay
+    assert c.szoras_mp == (6.0, 10.0)      # saját véletlen késleltetés
+```
+
+- [ ] **Step 2: Verify RED** — `assert 3.0 == 6.0` (és `(3.0, 7.0) == (6.0, 10.0)`).
+
+- [ ] **Step 3: GREEN — `config.yaml` `kerespont` módosítása**
+
+```yaml
+kerespont:                   # anti-block (IP-blokkolás elleni) paraméterek
+  alap_keses_mp: 6.0         # trendspy request_delay (2. füst-teszt: azonnali 429 → lassítás 3→6)
+  szoras_mp: [6, 10]         # véletlen 6–10 mp két hívás közt (2. füst-teszt: lassítás [3,7]→[6,10])
+  max_probak: 4              # 429 esetén max ennyi próba, utána az ág feladva
+  backoff_mp: [30, 120, 480] # exponenciális visszavárakozás (mp)
+```
+
+- [ ] **Step 4: Verify GREEN** — új teszt zöld, a teljes suite zöld.
+
+git commit -m "fix(anti-block): request_delay 6.0 + véletlen késleltetés 6–10 mp (Phase 1.1 — 2. füst-teszt 429)"

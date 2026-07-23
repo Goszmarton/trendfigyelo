@@ -28,11 +28,13 @@ def rate_limit_hiba(exc: Exception) -> bool:
 class Kliens:
     """Minden Google-hívás ezen megy át: késleltetés, 429-backoff, hívásszámlálás."""
 
-    def __init__(self, config, trends=None):
+    def __init__(self, config, trends=None, trends_gyar=None):
         self.config = config
         if trends is None:
-            from trendspy import Trends
-            trends = Trends(
+            if trends_gyar is None:
+                from trendspy import Trends
+                trends_gyar = Trends
+            trends = trends_gyar(
                 language=config.nyelv,
                 request_delay=config.alap_keses_mp,
                 proxy=config.proxy,

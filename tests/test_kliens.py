@@ -51,6 +51,20 @@ def test_429_utan_feladja_az_agat_es_minden_probat_szamol():
     assert k.hivasszam("idosor") == 4  # max_probak próbálkozás
 
 
+def test_trends_a_configbol_kapja_a_request_delayt():
+    rogzitett = {}
+
+    def spy_gyar(**kwargs):
+        rogzitett.update(kwargs)
+        return object()
+
+    cfg = _config()  # alap_keses_mp=3.0 a fixtúrában
+    kliens.Kliens(cfg, trends_gyar=spy_gyar)
+    assert rogzitett["request_delay"] == cfg.alap_keses_mp
+    assert rogzitett["language"] == cfg.nyelv
+    assert rogzitett["proxy"] == cfg.proxy
+
+
 def test_nem_429_kivetel_tovabbdobva_retry_nelkul():
     k = kliens.Kliens(_config(), trends=object())
 
