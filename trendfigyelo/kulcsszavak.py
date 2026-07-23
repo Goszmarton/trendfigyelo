@@ -37,10 +37,10 @@ def skalazo(ref_ertekek):
 
 def _szam(x) -> bool:
     try:
-        float(x)
-        return True
+        f = float(x)
     except (ValueError, TypeError):
         return False
+    return f == f  # NaN esetén False (NaN != NaN)
 
 
 def parse_koteg(df, koteg) -> list:
@@ -55,8 +55,12 @@ def parse_koteg(df, koteg) -> list:
             continue
         for idx, sor in df.iterrows():
             nyers = sor[kulcsszo]
-            nyers_ert = int(nyers) if _szam(nyers) else seged.szovegge(nyers)
-            norm = round(float(nyers) * sk, 2) if (sk is not None and _szam(nyers)) else ""
+            if _szam(nyers):
+                nyers_ert = int(nyers)
+                norm = round(float(nyers) * sk, 2) if sk is not None else ""
+            else:
+                nyers_ert = ""
+                norm = ""
             pontok.append({
                 "kulcsszo": kulcsszo,
                 "csoport": csoport,

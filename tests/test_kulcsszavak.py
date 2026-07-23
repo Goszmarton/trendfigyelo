@@ -103,3 +103,12 @@ def test_gyujt_egyeb_hiba_csak_azt_a_koteget_hagyja_ki():
     pontok = kulcsszavak.gyujt(k, _config_2koteg())
     assert k.hivasszamlalo == 2                     # mindkét köteget meghívja
     assert {p["koteg_id"] for p in pontok} == {1}   # csak a 2. köteg pontjai jönnek át
+
+
+def test_parse_koteg_nan_nem_dobal():
+    idx = pd.to_datetime([datetime(2021, 1, 1, 10, tzinfo=timezone.utc)])
+    df = pd.DataFrame({"a": [float("nan")], "időjárás": [50]}, index=idx)
+    koteg = {"id": 0, "tagok": [("a", "megelhetes")], "referenciaszo": "időjárás"}
+    pontok = kulcsszavak.parse_koteg(df, koteg)
+    assert pontok[0]["nyers_ertek"] == ""
+    assert pontok[0]["normalizalt_ertek"] == ""
