@@ -2053,7 +2053,7 @@ A kulcsszó-ág `now 7-d`-t kér, a visszakapott sorozatból csak az **utolsó t
 - Produces:
   - `utolso_teljes_nap(df, mai_datum) -> datetime.date | None` — a df budapesti dátumai közül a legnagyobb, amely `< mai_datum`; `None`, ha nincs ilyen.
   - `parse_koteg(df, koteg, mai_datum, min_atlag) -> list[dict]` — az utolsó teljes napra szűrve; pont-kulcsok a régiek + `referencia_atlag`, `referencia_ervenyes`.
-  - `gyujt(kliens, config, most) -> list[dict]` — `config.kulcsszo_idokeret` időkeret, `most`-ból a mai budapesti dátum.
+  - `gyujt(kliens, config, most=None) -> list[dict]` — `config.kulcsszo_idokeret` időkeret; `most` opcionális (alap: `seged.most_utc()`), belőle a mai budapesti dátum. (Opcionális, hogy a `futtat` régi hívása Task 15-ig zöld maradjon.)
   - `aggregalt_nap(pontok) -> str | None` — a pontok közös budapesti napja `"%Y-%m-%d"` ISO-ban (a `tortenet` upsert kulcsa); üres → `None`.
   - `csv_ir(...)` fejléce bővül: `... referenciaszo;referencia_atlag;letoltve_utc;geo`.
 
@@ -2248,14 +2248,15 @@ def aggregalt_nap(pontok):
             return f"{datetime.fromisoformat(iso).astimezone(seged.BUDAPEST):%Y-%m-%d}"
     return None
 ```
-Rewrite `gyujt` to take `most` and use `config.kulcsszo_idokeret`:
+Rewrite `gyujt` to accept an optional `most` and use `config.kulcsszo_idokeret`. **`most` is optional (default now) so `futtat`'s meglévő `gyujt(kliens, config)` hívása Task 15-ig is zöld marad** — Task 15 majd explicit `most`-ot ad át:
 ```python
-def gyujt(kliens, config, most) -> list:
+def gyujt(kliens, config, most=None) -> list:
     """Minden köteget lekér (now 7-d), és az utolsó teljes napra parse-ol.
 
     AgFeladva (429) → az EGÉSZ ág feladva (továbbmegy a futtato-hoz). Egyéb hiba
     csak az adott köteget hagyja ki.
     """
+    most = most or seged.most_utc()
     mai_datum = most.astimezone(seged.BUDAPEST).date()
     pontok = []
     for koteg in kotegek(config):
@@ -2288,10 +2289,10 @@ Extend `csv_ir` header + rows with `referencia_atlag` (a `referencia_ervenyes` m
             ])
 ```
 
-- [ ] **Step 4: Futtatás — menjen át**
+- [ ] **Step 4: Futtatás — a TELJES svít menjen át**
 
-Run: `python -m pytest tests/test_kulcsszavak.py -v`
-Expected: PASS (a régi + új tesztek).
+Run: `python -m pytest -v`
+Expected: PASS. (A teljes svítet futtasd, ne csak a `test_kulcsszavak.py`-t: a `most` opcionális volta miatt a `futtat` régi `gyujt(kliens, config)` hívása is zöld marad, ezt itt ellenőrizzük.)
 
 - [ ] **Step 5: Commit**
 
