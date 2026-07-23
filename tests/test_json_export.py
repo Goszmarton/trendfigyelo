@@ -5,9 +5,12 @@ from trendfigyelo import json_export
 
 def _kpontok():
     return [
-        {"kulcsszo": "infláció", "csoport": "megelhetes", "normalizalt_ertek": 40.0},
-        {"kulcsszo": "infláció", "csoport": "megelhetes", "normalizalt_ertek": 80.0},
-        {"kulcsszo": "MNB", "csoport": "gazdaság", "normalizalt_ertek": ""},
+        {"kulcsszo": "infláció", "csoport": "megelhetes", "normalizalt_ertek": 40.0,
+         "referencia_ervenyes": True},
+        {"kulcsszo": "infláció", "csoport": "megelhetes", "normalizalt_ertek": 80.0,
+         "referencia_ervenyes": True},
+        {"kulcsszo": "MNB", "csoport": "gazdaság", "normalizalt_ertek": "",
+         "referencia_ervenyes": True},
     ]
 
 
@@ -18,6 +21,39 @@ def test_kulcsszo_napi_osszesites_atlag_es_csucs():
     assert inflacio["csucs"] == 80.0
     # MNB-nek nincs érvényes normalizált értéke → kihagyva
     assert all(x["kulcsszo"] != "MNB" for x in o)
+
+
+def test_kulcsszo_napi_osszesites_ervenyes_pontok():
+    o = json_export.kulcsszo_napi_osszesites(_kpontok())
+    inflacio = next(x for x in o if x["kulcsszo"] == "infláció")
+    assert inflacio["atlag"] == 60.0
+    assert inflacio["csucs"] == 80.0
+    assert inflacio["ervenyes_pontok"] == 2
+
+
+def test_nulla_ertekek_kihagyva_az_atlagbol():
+    pontok = [
+        {"kulcsszo": "x", "csoport": "g", "normalizalt_ertek": 0, "referencia_ervenyes": True},
+        {"kulcsszo": "x", "csoport": "g", "normalizalt_ertek": 60, "referencia_ervenyes": True},
+    ]
+    x = json_export.kulcsszo_napi_osszesites(pontok)[0]
+    assert x["atlag"] == 60.0        # a 0 nem húzza le 30-ra
+    assert x["ervenyes_pontok"] == 1
+
+
+def test_ref_ervenytelen_koteg_kimarad_es_ervenyes_pontok_csokken():
+    pontok = [
+        {"kulcsszo": "infláció", "csoport": "megelhetes", "normalizalt_ertek": 40.0,
+         "referencia_ervenyes": True},
+        {"kulcsszo": "infláció", "csoport": "megelhetes", "normalizalt_ertek": 80.0,
+         "referencia_ervenyes": True},
+        # ref-érvénytelen köteg: normalizált üres, nyers 30 — NEM számíthat be
+        {"kulcsszo": "infláció", "csoport": "megelhetes", "normalizalt_ertek": "",
+         "nyers_ertek": 30, "referencia_ervenyes": False},
+    ]
+    inflacio = json_export.kulcsszo_napi_osszesites(pontok)[0]
+    assert inflacio["ervenyes_pontok"] == 2      # 3 helyett — a ref-érvénytelen kimaradt
+    assert inflacio["atlag"] == 60.0             # a nyers 30 nem szivárgott be
 
 
 def test_legfrissebb_ir_geo_es_frissites(tmp_path):

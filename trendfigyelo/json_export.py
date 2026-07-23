@@ -21,11 +21,17 @@ def _ertek(pont):
 
 
 def kulcsszo_napi_osszesites(kulcsszo_pontok) -> list:
-    """Kulcsszavanként átlag + csúcs; érvényes érték nélküli kulcsszó kihagyva."""
+    """Kulcsszavanként átlag + csúcs + érvényes-pontszám a NEM-nulla normalizált értékből.
+
+    Kihagyva: a referencia-érvénytelen kötegek pontjai (referencia_ervenyes False),
+    és a 0/üres értékek (0 = a Google mérési küszöbe alatt = nem mérhető).
+    """
     csoportok = {}
     for p in kulcsszo_pontok:
+        if not p.get("referencia_ervenyes", True):
+            continue
         ert = _ertek(p)
-        if ert is None:
+        if ert is None or ert == 0:
             continue
         rek = csoportok.setdefault(p["kulcsszo"], {"csoport": p.get("csoport", ""), "ertekek": []})
         rek["ertekek"].append(ert)
@@ -37,6 +43,7 @@ def kulcsszo_napi_osszesites(kulcsszo_pontok) -> list:
             "csoport": rek["csoport"],
             "atlag": round(sum(ek) / len(ek), 2),
             "csucs": round(max(ek), 2),
+            "ervenyes_pontok": len(ek),
         })
     return eredmeny
 
