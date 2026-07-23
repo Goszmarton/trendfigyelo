@@ -26,12 +26,12 @@ Ezek MINDEN taskra vonatkoznak, akkor is, ha a task nem ismétli meg:
 
 **Verziófloorok (requirements.txt):**
 ```
-trendspy>=0.1.3
+trendspy==0.1.6
 PyYAML>=6.0
 pandas>=2.0
 pytest>=8.0
 ```
-(A pontos trendspy-verzió a záró éles füst-teszten véglegesítendő.)
+(A trendspy a záró éles füst-teszt sikeres verziójára rögzítve: `==0.1.6` — a Google Trends belső API-ja verzióérzékeny, ezért pontos pin, nem alsó korlát. A többi függőség marad alsó-korlátos.)
 
 ---
 
@@ -2625,3 +2625,19 @@ kerespont:                   # anti-block (IP-blokkolás elleni) paraméterek
 - [ ] **Step 4: Verify GREEN** — új teszt zöld, a teljes suite zöld.
 
 git commit -m "fix(anti-block): request_delay 6.0 + véletlen késleltetés 6–10 mp (Phase 1.1 — 2. füst-teszt 429)"
+
+---
+
+## Phase 1 lezárás (2026-07-23)
+
+**Záró éles füst-teszt (3. futás, a lassított anti-block ütemmel):** SIKERES.
+
+- Kilépési kód **0** (van adat minden ág után).
+- **23/23 Google-hívás 429 nélkül** — a `request_delay=6.0` + saját 6–10 mp véletlen késleltetés (nettó ~12–16 mp/hívás) megszüntette az azonnali blokkolást, amit a 2. füst-teszt két külön IP-ről mutatott.
+- A kulcsszó-`tortenet` a **2026-07-22** napra (utolsó teljes budapesti naptári nap) értelmes, nem-nulla átlagokat ad; referencia-átlag 27.46 / 27.67.
+
+**Verzió-rögzítés:** a `requirements.txt` a füst-teszten futott `trendspy==0.1.6`-ra pinelve (l. Verziófloorok fentebb).
+
+**Commitolt éles kimenet:** `adatok/` CSV-k (felkapott api/rss/hírek, top-trend idősorok, kulcsszó-idősorok) + `adatok/naplo.csv` + `docs/data/` JSON-ok (`legfrissebb.json`, `tortenet.json`, `napok/2026-07-23.json`, `napok/index.json`).
+
+**Állapot:** Task 1–17 kész, teljes teszt-suite zöld, éles füst-teszt átment. **Phase 1 (adatréteg) lezárva.** Következő: Phase 2 (közzététel / GitHub Pages + workflow).
