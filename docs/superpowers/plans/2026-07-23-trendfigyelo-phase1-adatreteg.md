@@ -2042,7 +2042,7 @@ git commit -m "feat(config): kulcsszo_idokeret + referencia_min_atlag mezők (Ph
 
 ### Task 13: Kulcsszó-ág — hetes időkeret, utolsó teljes nap, referencia-védelem (`kulcsszavak.py`)
 
-A kulcsszó-ág `now 7-d`-t kér, a visszakapott sorozatból csak az **utolsó teljes budapesti naptári napot** (a részleges mai nap kizárva) tartja meg, és kötegenként kiszámolja a referencia-átlagot: ha az a küszöb alatt van, a köteg normalizált értékei üresek. A pontok új `referencia_atlag` (CSV-be) és `referencia_ervenyes` (memóriabeli, az aggregátornak) mezőt kapnak.
+A kulcsszó-ág `now 7-d`-t kér, a visszakapott sorozatból csak az **utolsó teljes budapesti naptári napot** (a részleges mai nap kizárva) tartja meg, és kötegenként kiszámolja a referencia-átlagot: ha az a küszöb alatt van, a köteg normalizált értékei üresek. A pontok új `referencia_atlag` (CSV-be) és `referencia_ervenyes` (memóriabeli, az aggregátornak) mezőt kapnak. A `referencia_atlag` a **mért** átlagot írja ki, valahányszor volt mérhető (nem-nulla) referencia-pont — a küszöb alatt is (a szám önmagát dokumentálja); üres CSV-cella csak akkor, ha egyáltalán nincs mérhető referencia-pont.
 
 **Files:**
 - Modify: `trendfigyelo/kulcsszavak.py`
@@ -2143,6 +2143,18 @@ def test_parse_koteg_ervenyes_referencia_normalizal():
     assert p["normalizalt_ertek"] == 60.0  # 30 * (100/50)
 
 
+def test_parse_koteg_kuszob_alatti_de_mert_referencia_dokumentalt():
+    # referencia mérhető (nem-nulla), de a küszöb (2.0) alatt → normalizált üres,
+    # de a referencia_atlag a MÉRT számot mutatja (nem "") — a szám önmagát dokumentálja
+    idx = pd.to_datetime([datetime(2021, 1, 1, 10, tzinfo=timezone.utc)])
+    df = pd.DataFrame({"a": [30], "időjárás": [1]}, index=idx)  # ref átlag = 1.0
+    koteg = {"id": 0, "tagok": [("a", "megelhetes")], "referenciaszo": "időjárás"}
+    p = kulcsszavak.parse_koteg(df, koteg, date(2021, 1, 2), 2.0)[0]  # min_atlag=2.0 → érvénytelen
+    assert p["referencia_ervenyes"] is False
+    assert p["normalizalt_ertek"] == ""
+    assert p["referencia_atlag"] == 1.0   # a mért átlag látszik, nem ""
+
+
 def test_aggregalt_nap_a_pontok_budapesti_napja():
     idx = pd.to_datetime([datetime(2021, 1, 1, 10, tzinfo=timezone.utc)])
     df = pd.DataFrame({"a": [30], "időjárás": [50]}, index=idx)
@@ -2234,7 +2246,7 @@ def parse_koteg(df, koteg, mai_datum, min_atlag) -> list:
                 "normalizalt_ertek": norm,
                 "koteg_id": koteg["id"],
                 "referenciaszo": ref,
-                "referencia_atlag": round(ref_atlag, 2) if ervenyes else "",
+                "referencia_atlag": round(ref_atlag, 2) if ref_atlag is not None else "",
                 "referencia_ervenyes": ervenyes,
             })
     return pontok

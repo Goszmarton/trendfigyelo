@@ -102,7 +102,7 @@ def parse_koteg(df, koteg, mai_datum, min_atlag) -> list:
                 "normalizalt_ertek": norm,
                 "koteg_id": koteg["id"],
                 "referenciaszo": ref,
-                "referencia_atlag": round(ref_atlag, 2) if ervenyes else "",
+                "referencia_atlag": round(ref_atlag, 2) if ref_atlag is not None else "",
                 "referencia_ervenyes": ervenyes,
             })
     return pontok

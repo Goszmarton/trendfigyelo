@@ -191,6 +191,18 @@ def test_parse_koteg_ervenyes_referencia_normalizal():
     assert p["normalizalt_ertek"] == 60.0  # 30 * (100/50)
 
 
+def test_parse_koteg_kuszob_alatti_de_mert_referencia_dokumentalt():
+    # referencia mérhető (nem-nulla), de a küszöb (2.0) alatt → normalizált üres,
+    # de a referencia_atlag a MÉRT számot mutatja (nem üres)
+    idx = pd.to_datetime([datetime(2021, 1, 1, 10, tzinfo=timezone.utc)])
+    df = pd.DataFrame({"a": [30], "időjárás": [1]}, index=idx)  # ref átlag = 1.0
+    koteg = {"id": 0, "tagok": [("a", "megelhetes")], "referenciaszo": "időjárás"}
+    p = kulcsszavak.parse_koteg(df, koteg, date(2021, 1, 2), 2.0)[0]  # min_atlag=2.0 → érvénytelen
+    assert p["referencia_ervenyes"] is False
+    assert p["normalizalt_ertek"] == ""
+    assert p["referencia_atlag"] == 1.0   # a mért átlag látszik, nem ""
+
+
 def test_aggregalt_nap_a_pontok_budapesti_napja():
     idx = pd.to_datetime([datetime(2021, 1, 1, 10, tzinfo=timezone.utc)])
     df = pd.DataFrame({"a": [30], "időjárás": [50]}, index=idx)
