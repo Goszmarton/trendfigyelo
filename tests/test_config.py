@@ -59,3 +59,9 @@ def test_ures_kulcsszolista_konfighibat_dob(tmp_path):
     rossz = JO.split("kulcsszavak:")[0] + "kulcsszavak: {}\n"
     with pytest.raises(config.KonfigHiba):
         config.betolt(_ir(tmp_path, rossz))
+
+
+def test_reszben_ures_csoport_konfighibat_dob(tmp_path):
+    rossz = JO.split("kulcsszavak:")[0] + "kulcsszavak:\n  megelhetes: []\n  gazdaság: [forint árfolyam]\n"
+    with pytest.raises(config.KonfigHiba):
+        config.betolt(_ir(tmp_path, rossz))

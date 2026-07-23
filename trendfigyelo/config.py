@@ -52,8 +52,8 @@ def betolt(utvonal="config.yaml") -> Config:
 
     kp = nyers.get("kerespont") or {}
     kulcsszavak = nyers.get("kulcsszavak") or {}
-    if not any(kulcsszavak.values()):
-        raise KonfigHiba("A 'kulcsszavak' üres — legalább egy csoport, egy szóval.")
+    if not kulcsszavak or any(not szavak for szavak in kulcsszavak.values()):
+        raise KonfigHiba("A 'kulcsszavak' üres vagy van üres csoport — minden csoportba legalább egy szó kell.")
 
     szoras = _kell(kp, "szoras_mp", "kerespont.")
     return Config(
