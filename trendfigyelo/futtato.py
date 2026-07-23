@@ -115,7 +115,7 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
         trend_idosorok = _ag(bejegyzesek, kliens, "idosor",
                             lambda: idosorok.gyujt(kliens, config, top_kifejezesek)) or []
         kulcsszo_pontok = _ag(bejegyzesek, kliens, "kulcsszo",
-                            lambda: kulcsszavak.gyujt(kliens, config)) or []
+                            lambda: kulcsszavak.gyujt(kliens, config, most)) or []
     except AgFeladva:
         # a blokkolt ág után minden még nem naplózott ág kimarad
         logolt = {b["ag"] for b in bejegyzesek}
@@ -139,8 +139,10 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
     van_adat = bool(api_trendek or rss_trendek or trend_idosorok or kulcsszo_pontok)
     # független feltételek: üres kulcsszó-adat NE írja felül a nap meglévő
     # (jó) tortenet.json-bejegyzését; üres top-trend NE hozzon üres napi fájlt
-    if kulcsszo_pontok:
-        json_export.tortenet_frissit(docs_data_mappa, nap_iso, kulcsszo_pontok)
+    # tortenet: a valós adat-napra (utolsó teljes nap), NEM a futás napjára
+    kulcsszo_nap = kulcsszavak.aggregalt_nap(kulcsszo_pontok)
+    if kulcsszo_pontok and kulcsszo_nap:
+        json_export.tortenet_frissit(docs_data_mappa, kulcsszo_nap, kulcsszo_pontok)
     if top_trendek:
         json_export.napi_ir(docs_data_mappa, nap_iso, top_trendek)
 

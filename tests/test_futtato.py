@@ -1,7 +1,8 @@
 import csv
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from types import SimpleNamespace
 
+import pandas as pd
 import pytest
 
 from trendfigyelo import futtato, json_export, kliens
@@ -191,3 +192,35 @@ def test_tervezett_hivasszam_teljes_config():
     )
     # 22 kulcsszó → ceil(22/4)=6 köteg → 2 + 15 + 6 = 23
     assert futtato.tervezett_hivasszam(c) == 23
+
+
+class KulcsszoAdatKliens:
+    """felkapott_rss ad egy trendet; kulcsszo ág egy 7-d DataFrame-et ad, más ág üres."""
+    def __init__(self):
+        self.tr = _dummy_tr()
+    def hivas(self, ag, fn, *a, **k):
+        if ag == "felkapott_rss":
+            return [SimpleNamespace(keyword="benzinár", news=[])]
+        if ag == "kulcsszo":
+            idx = pd.to_datetime([
+                datetime(2021, 1, 1, 10, tzinfo=timezone.utc),   # utolsó teljes nap
+                datetime(2021, 1, 2, 10, tzinfo=timezone.utc),   # mai (részleges)
+            ])
+            return pd.DataFrame({"a": [30, 40], "időjárás": [50, 60]}, index=idx)
+        return []
+    def hivasszam(self, ag):
+        return 1
+    def osszes_hivas(self):
+        return 4
+
+
+def test_tortenet_a_valos_adatnapra_kerul(tmp_path):
+    import json
+    cfg = _config()
+    cfg.kulcsszavak = {"megelhetes": ["a"]}  # 1 köteg, tag "a"
+    most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)  # mai budapesti nap 2021-01-02
+    futtato.futtat(cfg, KulcsszoAdatKliens(),
+                   tmp_path / "adatok", tmp_path / "docs" / "data", most=most)
+    tortenet = json.loads((tmp_path / "docs" / "data" / "tortenet.json").read_text(encoding="utf-8"))
+    napok = [b["nap"] for b in tortenet["napok"]]
+    assert napok == ["2021-01-01"]  # az utolsó teljes nap, NEM a futás napja (2021-01-02)
