@@ -1872,3 +1872,646 @@ git commit -m "chore: első éles HU adatgyűjtés (Phase 1 füst-teszt)"
 **Típus-/névkonzisztencia:** `Config` mezőnevek egységesek (Task 2 ↔ minden teszt-fixtúra); `kliens.hivas(ag, fn, ...)` aláírás egységes (Task 3 ↔ 4/5/6/9); `AgFeladva.hibakodok` (Task 3 ↔ 9 `_ag`); CSV-fejlécek a spec 6. szakaszával egyeznek; JSON-kulcsok (Task 8 ↔ 9 `top_trend_struktura`) egyeznek. ✔
 
 **Megjegyzés a hívásszámról:** a trend-idősor ág egyenkénti hívása miatt egy futás ~9–23 hívás (a `trend_idosor_max`-tól függően) — a spec „néhány tucat" korlátja alatt. A showcase-timeline egyhívásos optimalizáció a Phase 1-ben szándékosan kimarad (bizonytalan trendspy-API, nem tesztelhető hálózat nélkül); későbbi fázisban hozzáadható a meglévő `idosorok.gyujt` mögé, a CSV-séma változása nélkül.
+
+---
+
+## Phase 1.1 — Kulcsszó adatminőség (első éles füst-teszt utáni javítások)
+
+Az első éles HU füst-teszt (2026-07-23) technikailag sikeres volt (23 hívás, 0 db 429, exit 0, minden kimenet ékezethelyesen létrejött), de két adatminőségi problémát tárt fel, plusz egy hibás hívásbecslést. Ez a szakasz az ezekre adott javításokat írja le Task 11–15-ként. Ugyanazok a Global Constraints kötnek, mint a fő tervben (geo=HU mindenhol; egyetlen konfigforrás; a meglévő 3 felkapott-CSV — api/rss/hirek — sémája VÁLTOZATLAN; a `kulcsszo_idosor` CSV NEM ez a 3, oszlop hozzáadható; TDD; mock/fixtúra, nincs élő Google a unit-tesztekben; magyar kommentek/kimenet).
+
+### Adatértelmezés — a Google mérési küszöbe (dokumentáció, 4d + 4c pont)
+
+**A `0` érték jelentése: „nem mérhető", NEM „nincs érdeklődés".** A Google Trends a `interest_over_time` értékeket 0–100 skálára normalizálja az adott lekérdezési ablakon belül, és a mérési küszöb alatti keresési volument 0-ra kerekíti. A 24 órás / 8 perces felbontásban a magyar kulcsszavak (pl. `infláció`) pontjainak zöme a küszöb alá esik és 0-t kap, holott a szó napközben él (a webes felület napi nézetében 40–60). A füst-tesztben a `időjárás` referenciaszó MINDEN kötegben végig 0 volt → a normalizálás azokban a kötegekben értelmetlen (a `tortenet.json` első napja csupa `0.0`). Ahol a referencia élt volna, a szorzó-mechanika helyes (pl. `albérlet` nyers 1 → normalizált 3.52).
+
+Ebből a következő szabályok fakadnak (a lenti taskok ezeket valósítják meg):
+- A **napi aggregátor** a 0/üres pontokat KIHAGYJA az átlagból (különben a küszöb-nullák lehazudnák a valós napi szintet).
+- A **normalizálás** érvénytelen, ha a köteg referencia-átlaga a küszöb alatt van → a normalizált érték üres (nem 0), a köteg a CSV-ben `referencia_atlag`-gal jelölve.
+- A **kulcsszó-ág** durvább (`now 7-d`) felbontásra vált, ami a magyar kulcsszavakat a küszöb fölé emeli (a webes hetes nézet jól méri őket); a top-trend idősor-ág marad `now 1-d` (nagy volumenű szavak, finom sparkline).
+
+> **Phase 3 jegyzet (a sparkline-megjelenítéshez):** a `0` pontokat a webes grafikonon **hézagként (gap)** kell kezelni, NEM vonalban nullára lehúzva — a `0` „nem mérhető"-t jelöl, nem valós nulla-érdeklődést. Ez a renderelési szabály a Phase 3 (web) tervbe tartozik; itt csak rögzítjük.
+
+---
+
+### Task 11: `main()` hívásbecslés javítása (`futtato.py`)
+
+A jelenlegi becslés hibás: `max_hivas = config.max_probak * len(AGAK)` = `4 * 4 = 16`, de a valós, hibamentes futás 23 hívás, mert az idosor-ág trendenként (≤ `trend_idosor_max`), a kulcsszo-ág kötegenként hív. A becslő tükrözze a valós ágstruktúrát (Phase 2-ben a cron-költségvetés ebből számol). Kiemelünk egy tiszta, tesztelhető segédfüggvényt.
+
+**Files:**
+- Modify: `trendfigyelo/futtato.py` (a `main()` becslő sora, ~148–149)
+- Modify: `tests/test_futtato.py`
+
+**Interfaces:**
+- Consumes: `config.Config` (`trend_idosor_max`, `osszes_kulcsszo()`), `kulcsszavak.KOTEG_MERET`.
+- Produces: `tervezett_hivasszam(config) -> int` — `2 + trend_idosor_max + ceil(len(osszes_kulcsszo)/KOTEG_MERET)`.
+
+- [ ] **Step 1: Failing teszt**
+
+Add to `tests/test_futtato.py`:
+```python
+def test_tervezett_hivasszam_agstrukturabol():
+    c = _config()  # trend_idosor_max=2, 1 kulcsszó → 1 köteg
+    assert futtato.tervezett_hivasszam(c) == 2 + 2 + 1  # api+rss + idosor + 1 köteg = 5
+
+
+def test_tervezett_hivasszam_teljes_config():
+    from trendfigyelo.config import Config
+    c = Config(
+        geo="HU", nyelv="hu", idoablak_orak=24, idosor_idokeret="now 1-d",
+        referenciaszo="időjárás", alap_keses_mp=3.0, szoras_mp=(3, 7),
+        max_probak=4, backoff_mp=[30, 120, 480], trend_idosor_max=15, proxy=None,
+        kulcsszavak={"a": ["1", "2", "3", "4", "5", "6", "7", "8"],
+                     "b": ["9", "10", "11", "12", "13", "14"],
+                     "c": ["15", "16", "17", "18", "19", "20", "21", "22"]},
+    )
+    # 22 kulcsszó → ceil(22/4)=6 köteg → 2 + 15 + 6 = 23
+    assert futtato.tervezett_hivasszam(c) == 23
+```
+
+- [ ] **Step 2: Futtatás — bukjon**
+
+Run: `python -m pytest tests/test_futtato.py::test_tervezett_hivasszam_agstrukturabol -v`
+Expected: FAIL — `AttributeError: module 'trendfigyelo.futtato' has no attribute 'tervezett_hivasszam'`.
+
+- [ ] **Step 3: Implementáció**
+
+In `trendfigyelo/futtato.py`, add near the top-level functions:
+```python
+def tervezett_hivasszam(config) -> int:
+    """A hibamentes (429 nélküli) futás várható Google-hívásszáma az ágstruktúrából.
+
+    felkapott_api (1) + felkapott_rss (1) + idosor (≤ trend_idosor_max, trendenként)
+    + kulcsszo (kötegenként = ceil(kulcsszavak / KOTEG_MERET)).
+    """
+    kotegek_szama = -(-len(config.osszes_kulcsszo()) // kulcsszavak.KOTEG_MERET)
+    return 2 + config.trend_idosor_max + kotegek_szama
+```
+
+Replace the `main()` estimate lines (currently `max_hivas = config.max_probak * len(AGAK)` / `print(f"Tervezett maximális ...")`) with:
+```python
+    print(f"Várható Google-hívásszám (429 nélkül): ~{tervezett_hivasszam(config)}")
+```
+
+- [ ] **Step 4: Futtatás — menjen át**
+
+Run: `python -m pytest tests/test_futtato.py -v`
+Expected: PASS (a két új teszt + a meglévők).
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add trendfigyelo/futtato.py tests/test_futtato.py
+git commit -m "fix(futtato): valós ágstruktúrát tükröző hívásbecslés (Phase 1.1 Task 11)"
+```
+
+---
+
+### Task 12: Konfig-bővítés — kulcsszó-időkeret + referencia-küszöb (`config.py` + `config.yaml`)
+
+Két új konfigmező az egyetlen konfigforrásban: a kulcsszó-ág külön (hetes) időkerete, és a referencia-érvényesség küszöbe. Alapértelmezéssel bővítjük a `Config` dataclasst, hogy a meglévő közvetlen `Config(...)` konstrukciók (más teszt-fájlokban) ne törjenek.
+
+**Files:**
+- Modify: `trendfigyelo/config.py` (dataclass + `betolt`)
+- Modify: `config.yaml`
+- Modify: `tests/test_config.py`
+
+**Interfaces:**
+- Produces (új `Config` mezők): `kulcsszo_idokeret: str` (alap `"now 7-d"`), `referencia_min_atlag: float` (alap `1.0`).
+
+- [ ] **Step 1: Failing teszt**
+
+Add to `tests/test_config.py` (a `JO` YAML-t bővítsd a két mezővel, majd ellenőrizd):
+```python
+def test_betolt_kulcsszo_idokeret_es_referencia_kuszob(tmp_path):
+    jo = JO + 'kulcsszo_idokeret: "now 7-d"\nreferencia_min_atlag: 1.0\n'
+    c = config.betolt(_ir(tmp_path, jo))
+    assert c.kulcsszo_idokeret == "now 7-d"
+    assert c.referencia_min_atlag == 1.0
+
+
+def test_referencia_min_atlag_alapertelmezes(tmp_path):
+    # ha a config.yaml nem adja meg, az alap 1.0
+    c = config.betolt(_ir(tmp_path, JO + 'kulcsszo_idokeret: "now 7-d"\n'))
+    assert c.referencia_min_atlag == 1.0
+```
+
+- [ ] **Step 2: Futtatás — bukjon**
+
+Run: `python -m pytest tests/test_config.py -v`
+Expected: FAIL — `AttributeError: 'Config' object has no attribute 'kulcsszo_idokeret'`.
+
+- [ ] **Step 3: Implementáció**
+
+In `trendfigyelo/config.py`, add two fields AFTER `kulcsszavak` (so all default-valued fields stay trailing):
+```python
+    kulcsszavak: dict = field(default_factory=dict)
+    kulcsszo_idokeret: str = "now 7-d"
+    referencia_min_atlag: float = 1.0
+```
+
+In `betolt(...)`, pass them from the YAML (defaulted):
+```python
+        kulcsszavak=kulcsszavak,
+        kulcsszo_idokeret=nyers.get("kulcsszo_idokeret", "now 7-d"),
+        referencia_min_atlag=float(nyers.get("referencia_min_atlag", 1.0)),
+    )
+```
+
+- [ ] **Step 4: `config.yaml` bővítése**
+
+Add to `config.yaml` (a `trend_idosor_max` sor után, a `proxy` elé):
+```yaml
+kulcsszo_idokeret: "now 7-d"   # kulcsszó-idősorok: durvább felbontás a mérési küszöb fölé (top-trend marad now 1-d)
+referencia_min_atlag: 1.0      # ez alatti köteg-referencia-átlag = nem mérhető → normalizálás kihagyva
+```
+
+- [ ] **Step 5: Futtatás — menjen át**
+
+Run: `python -m pytest tests/test_config.py -v`
+Expected: PASS. Majd éles ellenőrzés:
+`python -c "from trendfigyelo import config; c=config.betolt(); print(c.kulcsszo_idokeret, c.referencia_min_atlag)"`
+Expected: `now 7-d 1.0`
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add trendfigyelo/config.py config.yaml tests/test_config.py
+git commit -m "feat(config): kulcsszo_idokeret + referencia_min_atlag mezők (Phase 1.1 Task 12)"
+```
+
+---
+
+### Task 13: Kulcsszó-ág — hetes időkeret, utolsó teljes nap, referencia-védelem (`kulcsszavak.py`)
+
+A kulcsszó-ág `now 7-d`-t kér, a visszakapott sorozatból csak az **utolsó teljes budapesti naptári napot** (a részleges mai nap kizárva) tartja meg, és kötegenként kiszámolja a referencia-átlagot: ha az a küszöb alatt van, a köteg normalizált értékei üresek. A pontok új `referencia_atlag` (CSV-be) és `referencia_ervenyes` (memóriabeli, az aggregátornak) mezőt kapnak.
+
+**Files:**
+- Modify: `trendfigyelo/kulcsszavak.py`
+- Modify: `tests/test_kulcsszavak.py`
+
+**Interfaces:**
+- Consumes: `config.Config` (`kulcsszo_idokeret`, `referencia_min_atlag`, `geo`), `seged` (`BUDAPEST`, `idopont_iso`), `kliens.AgFeladva`.
+- Produces:
+  - `utolso_teljes_nap(df, mai_datum) -> datetime.date | None` — a df budapesti dátumai közül a legnagyobb, amely `< mai_datum`; `None`, ha nincs ilyen.
+  - `parse_koteg(df, koteg, mai_datum, min_atlag) -> list[dict]` — az utolsó teljes napra szűrve; pont-kulcsok a régiek + `referencia_atlag`, `referencia_ervenyes`.
+  - `gyujt(kliens, config, most) -> list[dict]` — `config.kulcsszo_idokeret` időkeret, `most`-ból a mai budapesti dátum.
+  - `aggregalt_nap(pontok) -> str | None` — a pontok közös budapesti napja `"%Y-%m-%d"` ISO-ban (a `tortenet` upsert kulcsa); üres → `None`.
+  - `csv_ir(...)` fejléce bővül: `... referenciaszo;referencia_atlag;letoltve_utc;geo`.
+
+- [ ] **Step 1: Failing tesztek**
+
+In `tests/test_kulcsszavak.py`, update imports and add:
+```python
+from datetime import date, datetime, timezone
+
+import pandas as pd
+
+
+def _tobbnapos_df():
+    idx = pd.to_datetime([
+        datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
+        datetime(2021, 1, 2, 10, tzinfo=timezone.utc),
+        datetime(2021, 1, 2, 12, tzinfo=timezone.utc),  # 2021-01-02 a mai (részleges) nap
+    ])
+    return pd.DataFrame({"a": [30, 40, 50], "időjárás": [0, 0, 0]}, index=idx)
+
+
+def test_utolso_teljes_nap_kizarja_a_mait():
+    df = _tobbnapos_df()
+    # mai budapesti nap = 2021-01-02 → utolsó teljes = 2021-01-01
+    assert kulcsszavak.utolso_teljes_nap(df, date(2021, 1, 2)) == date(2021, 1, 1)
+
+
+def test_utolso_teljes_nap_nincs_korabbi():
+    df = _tobbnapos_df()
+    assert kulcsszavak.utolso_teljes_nap(df, date(2021, 1, 1)) is None
+
+
+def test_parse_koteg_csak_az_utolso_teljes_napot():
+    df = _tobbnapos_df()
+    koteg = {"id": 0, "tagok": [("a", "megelhetes")], "referenciaszo": "időjárás"}
+    pontok = kulcsszavak.parse_koteg(df, koteg, date(2021, 1, 2), 1.0)
+    # csak 2021-01-01 marad (1 pont), a 2021-01-02-i kettő kizárva
+    assert len(pontok) == 1
+    assert pontok[0]["nyers_ertek"] == 30
+
+
+def test_utolso_teljes_nap_tobb_teljes_nap_kozul_a_legutolso():
+    # 3 teljes nap (01-01, 01-02, 01-03) + csonka mai (01-04) → 01-03
+    idx = pd.to_datetime([
+        datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
+        datetime(2021, 1, 2, 10, tzinfo=timezone.utc),
+        datetime(2021, 1, 3, 10, tzinfo=timezone.utc),
+        datetime(2021, 1, 4, 9, tzinfo=timezone.utc),
+    ])
+    df = pd.DataFrame({"a": [10, 20, 30, 40], "időjárás": [50, 50, 50, 50]}, index=idx)
+    assert kulcsszavak.utolso_teljes_nap(df, date(2021, 1, 4)) == date(2021, 1, 3)
+
+
+def test_parse_koteg_tobb_teljes_nap_csak_a_legutolso():
+    # élesben a 7-d ablakban több teljes nap van; a szűrésnek a LEGUTOLSÓT kell választania
+    idx = pd.to_datetime([
+        datetime(2021, 1, 1, 10, tzinfo=timezone.utc),  # teljes nap — KIZÁRVA
+        datetime(2021, 1, 2, 10, tzinfo=timezone.utc),  # teljes nap — KIZÁRVA
+        datetime(2021, 1, 3, 8, tzinfo=timezone.utc),   # legutolsó teljes nap — BENN
+        datetime(2021, 1, 3, 12, tzinfo=timezone.utc),  # legutolsó teljes nap — BENN
+        datetime(2021, 1, 4, 9, tzinfo=timezone.utc),   # mai (csonka) — KIZÁRVA
+    ])
+    df = pd.DataFrame({"a": [10, 20, 30, 35, 40], "időjárás": [50, 50, 50, 50, 50]}, index=idx)
+    koteg = {"id": 0, "tagok": [("a", "megelhetes")], "referenciaszo": "időjárás"}
+    pontok = kulcsszavak.parse_koteg(df, koteg, date(2021, 1, 4), 1.0)
+    assert [p["nyers_ertek"] for p in pontok] == [30, 35]  # csak a 01-03 két pontja
+    assert kulcsszavak.aggregalt_nap(pontok) == "2021-01-03"
+
+
+def test_parse_koteg_ervenytelen_referencia_ures_normalizalt():
+    df = _tobbnapos_df()  # időjárás végig 0 → referencia-átlag nincs → érvénytelen
+    koteg = {"id": 0, "tagok": [("a", "megelhetes")], "referenciaszo": "időjárás"}
+    p = kulcsszavak.parse_koteg(df, koteg, date(2021, 1, 2), 1.0)[0]
+    assert p["referencia_ervenyes"] is False
+    assert p["normalizalt_ertek"] == ""
+    assert p["referencia_atlag"] == ""
+
+
+def test_parse_koteg_ervenyes_referencia_normalizal():
+    idx = pd.to_datetime([datetime(2021, 1, 1, 10, tzinfo=timezone.utc)])
+    df = pd.DataFrame({"a": [30], "időjárás": [50]}, index=idx)
+    koteg = {"id": 0, "tagok": [("a", "megelhetes")], "referenciaszo": "időjárás"}
+    p = kulcsszavak.parse_koteg(df, koteg, date(2021, 1, 2), 1.0)[0]
+    assert p["referencia_ervenyes"] is True
+    assert p["referencia_atlag"] == 50.0
+    assert p["nyers_ertek"] == 30
+    assert p["normalizalt_ertek"] == 60.0  # 30 * (100/50)
+
+
+def test_aggregalt_nap_a_pontok_budapesti_napja():
+    idx = pd.to_datetime([datetime(2021, 1, 1, 10, tzinfo=timezone.utc)])
+    df = pd.DataFrame({"a": [30], "időjárás": [50]}, index=idx)
+    koteg = {"id": 0, "tagok": [("a", "megelhetes")], "referenciaszo": "időjárás"}
+    pontok = kulcsszavak.parse_koteg(df, koteg, date(2021, 1, 2), 1.0)
+    assert kulcsszavak.aggregalt_nap(pontok) == "2021-01-01"
+    assert kulcsszavak.aggregalt_nap([]) is None
+
+
+def test_csv_ir_referencia_atlag_oszlop(tmp_path):
+    idx = pd.to_datetime([datetime(2021, 1, 1, 10, tzinfo=timezone.utc)])
+    df = pd.DataFrame({"a": [30], "időjárás": [50]}, index=idx)
+    koteg = {"id": 0, "tagok": [("a", "megelhetes")], "referenciaszo": "időjárás"}
+    pontok = kulcsszavak.parse_koteg(df, koteg, date(2021, 1, 2), 1.0)
+    p = kulcsszavak.csv_ir(tmp_path, "2021-01-01_1200", "2021-01-01T12:00:00+00:00", "HU", pontok)
+    fejlec = p.read_text(encoding="utf-8-sig").splitlines()[0]
+    assert fejlec == ("kulcsszo;csoport;idopont_utc;nyers_ertek;normalizalt_ertek;"
+                      "koteg_id;referenciaszo;referencia_atlag;letoltve_utc;geo")
+```
+Also UPDATE the existing `test_parse_koteg_nyers_es_normalizalt` and `test_csv_ir_fejlec` tests to call `parse_koteg(df, koteg, date(2021, 1, 2), 1.0)` and to use a `2021-01-01` timestamp (so it is the last complete day before `2021-01-02`).
+
+- [ ] **Step 2: Futtatás — bukjon**
+
+Run: `python -m pytest tests/test_kulcsszavak.py -v`
+Expected: FAIL — `parse_koteg()` takes 2 args / `utolso_teljes_nap` missing.
+
+- [ ] **Step 3: Implementáció**
+
+In `trendfigyelo/kulcsszavak.py`, add imports and helpers, and rewrite `parse_koteg`/`gyujt`, add `aggregalt_nap`, extend `csv_ir`:
+```python
+from datetime import datetime, timezone
+```
+```python
+def _bp_datum(idx):
+    """Egy (pandas) index-időbélyeg budapesti naptári dátuma."""
+    dt = idx.to_pydatetime() if hasattr(idx, "to_pydatetime") else idx
+    if getattr(dt, "tzinfo", None) is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(seged.BUDAPEST).date()
+
+
+def utolso_teljes_nap(df, mai_datum):
+    """A df budapesti dátumai közül a legnagyobb, amely < mai_datum; egyébként None."""
+    if df is None or len(df) == 0:
+        return None
+    korabbi = {_bp_datum(idx) for idx in df.index if _bp_datum(idx) < mai_datum}
+    return max(korabbi) if korabbi else None
+
+
+def _ref_atlag(df, ref):
+    """A referenciaszó nem-nulla pontjainak átlaga; ha nincs mérhető pont, None."""
+    if ref not in df.columns:
+        return None
+    ertekek = [float(x) for x in df[ref] if _szam(x) and float(x) != 0.0]
+    if not ertekek:
+        return None
+    return sum(ertekek) / len(ertekek)
+
+
+def parse_koteg(df, koteg, mai_datum, min_atlag) -> list:
+    """Köteg DataFrame → pontok az UTOLSÓ TELJES napra szűrve, nyers + (érvényes referenciánál) normalizált értékkel."""
+    pontok = []
+    if df is None or len(df) == 0:
+        return pontok
+    nap = utolso_teljes_nap(df, mai_datum)
+    if nap is None:
+        return pontok
+    napi = df[[_bp_datum(idx) == nap for idx in df.index]]
+    ref = koteg["referenciaszo"]
+    ref_atlag = _ref_atlag(napi, ref)
+    ervenyes = ref_atlag is not None and ref_atlag >= min_atlag
+    sk = skalazo([ref_atlag]) if ervenyes else None  # 100 / ref_atlag
+    for kulcsszo, csoport in koteg["tagok"]:
+        if kulcsszo not in napi.columns:
+            continue
+        for idx, sor in napi.iterrows():
+            nyers = sor[kulcsszo]
+            if _szam(nyers):
+                nyers_ert = int(nyers)
+                norm = round(float(nyers) * sk, 2) if sk is not None else ""
+            else:
+                nyers_ert = ""
+                norm = ""
+            pontok.append({
+                "kulcsszo": kulcsszo,
+                "csoport": csoport,
+                "idopont_utc": seged.idopont_iso(idx),
+                "nyers_ertek": nyers_ert,
+                "normalizalt_ertek": norm,
+                "koteg_id": koteg["id"],
+                "referenciaszo": ref,
+                "referencia_atlag": round(ref_atlag, 2) if ervenyes else "",
+                "referencia_ervenyes": ervenyes,
+            })
+    return pontok
+
+
+def aggregalt_nap(pontok):
+    """A pontok közös budapesti napja ISO-ban ('%Y-%m-%d'); üres lista → None."""
+    for p in pontok:
+        iso = p.get("idopont_utc")
+        if iso:
+            return f"{datetime.fromisoformat(iso).astimezone(seged.BUDAPEST):%Y-%m-%d}"
+    return None
+```
+Rewrite `gyujt` to take `most` and use `config.kulcsszo_idokeret`:
+```python
+def gyujt(kliens, config, most) -> list:
+    """Minden köteget lekér (now 7-d), és az utolsó teljes napra parse-ol.
+
+    AgFeladva (429) → az EGÉSZ ág feladva (továbbmegy a futtato-hoz). Egyéb hiba
+    csak az adott köteget hagyja ki.
+    """
+    mai_datum = most.astimezone(seged.BUDAPEST).date()
+    pontok = []
+    for koteg in kotegek(config):
+        szavak = koteg_lekerdezes_szavai(koteg)
+        try:
+            df = kliens.hivas(
+                "kulcsszo", kliens.tr.interest_over_time,
+                szavak, geo=config.geo, timeframe=config.kulcsszo_idokeret,
+            )
+        except AgFeladva:
+            print(f"FIGYELEM: a kulcsszó-ág feladva (429) a(z) {koteg['id']}. kötegnél.")
+            raise
+        except Exception as e:
+            print(f"FIGYELEM: a(z) {koteg['id']}. köteg kimaradt ({e}).")
+            continue
+        pontok.extend(parse_koteg(df, koteg, mai_datum, config.referencia_min_atlag))
+    return pontok
+```
+Extend `csv_ir` header + rows with `referencia_atlag` (a `referencia_ervenyes` mező NEM kerül a CSV-be):
+```python
+        iro.writerow([
+            "kulcsszo", "csoport", "idopont_utc", "nyers_ertek", "normalizalt_ertek",
+            "koteg_id", "referenciaszo", "referencia_atlag", "letoltve_utc", "geo",
+        ])
+        for p in pontok:
+            iro.writerow([
+                p["kulcsszo"], p["csoport"], p["idopont_utc"], p["nyers_ertek"],
+                p["normalizalt_ertek"], p["koteg_id"], p["referenciaszo"],
+                p["referencia_atlag"], letoltve, geo,
+            ])
+```
+
+- [ ] **Step 4: Futtatás — menjen át**
+
+Run: `python -m pytest tests/test_kulcsszavak.py -v`
+Expected: PASS (a régi + új tesztek).
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add trendfigyelo/kulcsszavak.py tests/test_kulcsszavak.py
+git commit -m "feat(kulcsszavak): now 7-d + utolsó teljes nap + referencia-küszöb védelem (Phase 1.1 Task 13)"
+```
+
+---
+
+### Task 14: Napi aggregátor — küszöb-szűrés + érvényes-pontszám (`json_export.py`)
+
+A `tortenet.json` napi bejegyzése **szigorúan normalizált**: a 0/üres értékeket ÉS a referencia-érvénytelen kötegek pontjait kihagyja, kulcsszavanként átlag + csúcs + `ervenyes_pontok`. A `_ertek` normalizált-előnyös/nyers-tartalék segédfüggvényt MEGTARTJUK (nem töröljük) — a ref-érvénytelen kizárást a `referencia_ervenyes` jelző adja, explicit teszttel rögzítve.
+
+**Files:**
+- Modify: `trendfigyelo/json_export.py`
+- Modify: `tests/test_json_export.py`
+
+**Interfaces:**
+- Consumes: kulcsszó-pontok (`kulcsszavak.parse_koteg` alakja: `normalizalt_ertek`, `nyers_ertek`, `referencia_ervenyes`).
+- Produces: `kulcsszo_napi_osszesites(kulcsszo_pontok) -> list[dict]` — kulcsonként `{kulcsszo, csoport, atlag, csucs, ervenyes_pontok}`.
+
+- [ ] **Step 1: Failing tesztek**
+
+Update `_kpontok()` in `tests/test_json_export.py` to include the new field, and add the ref-invalid case:
+```python
+def _kpontok():
+    return [
+        {"kulcsszo": "infláció", "csoport": "megelhetes", "normalizalt_ertek": 40.0,
+         "referencia_ervenyes": True},
+        {"kulcsszo": "infláció", "csoport": "megelhetes", "normalizalt_ertek": 80.0,
+         "referencia_ervenyes": True},
+        {"kulcsszo": "MNB", "csoport": "gazdaság", "normalizalt_ertek": "",
+         "referencia_ervenyes": True},
+    ]
+
+
+def test_kulcsszo_napi_osszesites_ervenyes_pontok():
+    o = json_export.kulcsszo_napi_osszesites(_kpontok())
+    inflacio = next(x for x in o if x["kulcsszo"] == "infláció")
+    assert inflacio["atlag"] == 60.0
+    assert inflacio["csucs"] == 80.0
+    assert inflacio["ervenyes_pontok"] == 2
+
+
+def test_nulla_ertekek_kihagyva_az_atlagbol():
+    pontok = [
+        {"kulcsszo": "x", "csoport": "g", "normalizalt_ertek": 0, "referencia_ervenyes": True},
+        {"kulcsszo": "x", "csoport": "g", "normalizalt_ertek": 60, "referencia_ervenyes": True},
+    ]
+    x = json_export.kulcsszo_napi_osszesites(pontok)[0]
+    assert x["atlag"] == 60.0        # a 0 nem húzza le 30-ra
+    assert x["ervenyes_pontok"] == 1
+
+
+def test_ref_ervenytelen_koteg_kimarad_es_ervenyes_pontok_csokken():
+    pontok = [
+        {"kulcsszo": "infláció", "csoport": "megelhetes", "normalizalt_ertek": 40.0,
+         "referencia_ervenyes": True},
+        {"kulcsszo": "infláció", "csoport": "megelhetes", "normalizalt_ertek": 80.0,
+         "referencia_ervenyes": True},
+        # ref-érvénytelen köteg: normalizált üres, nyers 30 — NEM számíthat be
+        {"kulcsszo": "infláció", "csoport": "megelhetes", "normalizalt_ertek": "",
+         "nyers_ertek": 30, "referencia_ervenyes": False},
+    ]
+    inflacio = json_export.kulcsszo_napi_osszesites(pontok)[0]
+    assert inflacio["ervenyes_pontok"] == 2      # 3 helyett — a ref-érvénytelen kimaradt
+    assert inflacio["atlag"] == 60.0             # a nyers 30 nem szivárgott be
+```
+
+- [ ] **Step 2: Futtatás — bukjon**
+
+Run: `python -m pytest tests/test_json_export.py -v`
+Expected: FAIL — `KeyError: 'ervenyes_pontok'` / a ref-érvénytelen nyers beszámít.
+
+- [ ] **Step 3: Implementáció**
+
+In `trendfigyelo/json_export.py`, rewrite `kulcsszo_napi_osszesites` (keep `_ertek`/`_szam_e` unchanged):
+```python
+def kulcsszo_napi_osszesites(kulcsszo_pontok) -> list:
+    """Kulcsszavanként átlag + csúcs + érvényes-pontszám a NEM-nulla normalizált értékből.
+
+    Kihagyva: a referencia-érvénytelen kötegek pontjai (referencia_ervenyes False),
+    és a 0/üres értékek (0 = a Google mérési küszöbe alatt = nem mérhető).
+    """
+    csoportok = {}
+    for p in kulcsszo_pontok:
+        if not p.get("referencia_ervenyes", True):
+            continue
+        ert = _ertek(p)
+        if ert is None or ert == 0:
+            continue
+        rek = csoportok.setdefault(p["kulcsszo"], {"csoport": p.get("csoport", ""), "ertekek": []})
+        rek["ertekek"].append(ert)
+    eredmeny = []
+    for kulcsszo, rek in csoportok.items():
+        ek = rek["ertekek"]
+        eredmeny.append({
+            "kulcsszo": kulcsszo,
+            "csoport": rek["csoport"],
+            "atlag": round(sum(ek) / len(ek), 2),
+            "csucs": round(max(ek), 2),
+            "ervenyes_pontok": len(ek),
+        })
+    return eredmeny
+```
+
+- [ ] **Step 4: Futtatás — menjen át**
+
+Run: `python -m pytest tests/test_json_export.py -v`
+Expected: PASS (a régi + új tesztek).
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add trendfigyelo/json_export.py tests/test_json_export.py
+git commit -m "feat(json): napi aggregátor küszöb-szűrés + ervenyes_pontok, ref-érvénytelen kizárás (Phase 1.1 Task 14)"
+```
+
+---
+
+### Task 15: Orchestráció-huzalozás — kulcsszó `most`, tortenet a valós adatnapra (`futtato.py`)
+
+A `futtat` átadja a `most`-ot a kulcsszó-ágnak, és a `tortenet` upsert kulcsa az aggregált adat-nap (utolsó teljes nap), NEM a futás `nap_iso`-ja. A top-trend `napi_ir` marad a futás `nap_iso`-ján (24h élő snapshot).
+
+**Files:**
+- Modify: `trendfigyelo/futtato.py`
+- Modify: `tests/test_futtato.py`
+
+**Interfaces:**
+- Consumes: `kulcsszavak.gyujt(kliens, config, most)`, `kulcsszavak.aggregalt_nap(pontok)`.
+
+- [ ] **Step 1: Failing teszt**
+
+Add to `tests/test_futtato.py` a test that the tortenet is keyed on the data day, not the run day. Use a fake whose `kulcsszo` hívás returns a one-day DataFrame:
+```python
+import pandas as pd
+from datetime import date
+
+
+class KulcsszoAdatKliens:
+    """felkapott_rss ad egy trendet; kulcsszo ág egy 7-d DataFrame-et ad, más ág üres."""
+    def __init__(self):
+        self.tr = object()
+    def hivas(self, ag, fn, *a, **k):
+        if ag == "felkapott_rss":
+            return [SimpleNamespace(keyword="benzinár", news=[])]
+        if ag == "kulcsszo":
+            idx = pd.to_datetime([
+                datetime(2021, 1, 1, 10, tzinfo=timezone.utc),   # utolsó teljes nap
+                datetime(2021, 1, 2, 10, tzinfo=timezone.utc),   # mai (részleges)
+            ])
+            return pd.DataFrame({"a": [30, 40], "időjárás": [50, 60]}, index=idx)
+        return []
+    def hivasszam(self, ag):
+        return 1
+    def osszes_hivas(self):
+        return 4
+
+
+def test_tortenet_a_valos_adatnapra_kerul(tmp_path):
+    import json
+    cfg = _config()
+    cfg.kulcsszavak = {"megelhetes": ["a"]}  # 1 köteg, tag "a"
+    most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)  # mai budapesti nap 2021-01-02
+    futtato.futtat(cfg, KulcsszoAdatKliens(),
+                   tmp_path / "adatok", tmp_path / "docs" / "data", most=most)
+    tortenet = json.loads((tmp_path / "docs" / "data" / "tortenet.json").read_text(encoding="utf-8"))
+    napok = [b["nap"] for b in tortenet["napok"]]
+    assert napok == ["2021-01-01"]  # az utolsó teljes nap, NEM a futás napja (2021-01-02)
+```
+(Note: `_config()`'s Config now has `kulcsszo_idokeret="now 7-d"` and `referencia_min_atlag=1.0` by default; the fake ignores the timeframe.)
+
+- [ ] **Step 2: Futtatás — bukjon**
+
+Run: `python -m pytest tests/test_futtato.py::test_tortenet_a_valos_adatnapra_kerul -v`
+Expected: FAIL — `gyujt()` missing `most`, or tortenet keyed on `2021-01-02`.
+
+- [ ] **Step 3: Implementáció**
+
+In `trendfigyelo/futtat`, change the kulcsszo branch call and the tortenet upsert:
+```python
+    kulcsszo_pontok = _ag(bejegyzesek, kliens, "kulcsszo",
+                          lambda: kulcsszavak.gyujt(kliens, config, most)) or []
+```
+```python
+    # tortenet: a valós adat-napra (utolsó teljes nap), NEM a futás napjára
+    kulcsszo_nap = kulcsszavak.aggregalt_nap(kulcsszo_pontok)
+    if kulcsszo_pontok and kulcsszo_nap:
+        json_export.tortenet_frissit(docs_data_mappa, kulcsszo_nap, kulcsszo_pontok)
+    if top_trendek:
+        json_export.napi_ir(docs_data_mappa, nap_iso, top_trendek)
+```
+
+- [ ] **Step 4: Futtatás — menjen át (teljes svít)**
+
+Run: `python -m pytest -v`
+Expected: PASS (minden task tesztje zöld, a Phase 1 + 1.1 együtt).
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add trendfigyelo/futtato.py tests/test_futtato.py
+git commit -m "feat(futtato): kulcsszó-ág most-tal, tortenet a valós adat-napra (Phase 1.1 Task 15)"
+```
+
+---
+
+## Phase 1.1 Self-Review (a supplement ellenőrzése)
+
+**Spec-lefedettség:**
+- 1. pont (hibás hívásbecslés) → Task 11 (`tervezett_hivasszam` = ágstruktúra) ✔
+- 3. pont (csúszóablak: kulcsszó `now 7-d`, utolsó teljes nap upsert) → Task 12 (config) + Task 13 (`utolso_teljes_nap`, `gyujt(most)`) + Task 15 (tortenet a valós napra) ✔
+- 4a (nulla/küszöb-alatti referencia → normalizált üres, köteg jelölve) → Task 13 (`_ref_atlag` + `referencia_min_atlag`, `referencia_atlag` CSV-oszlop) ✔
+- 4b (aggregátor kihagyja a nulla/üres értékeket; szigorúan normalizált) → Task 14 (`kulcsszo_napi_osszesites` 0- és ref-érvénytelen-kizárás, `ervenyes_pontok`) ✔
+- 4c (Phase 3 sparkline-gap jegyzet) → Adatértelmezés szakasz ✔
+- 4d (Google-küszöb dokumentálás) → Adatértelmezés szakasz ✔
+
+**Placeholder-ellenőrzés:** nincs TBD; minden lépés tartalmazza a tényleges kódot. ✔
+
+**Típus-/névkonzisztencia:** `parse_koteg(df, koteg, mai_datum, min_atlag)` egységes (Task 13 ↔ tesztek); `gyujt(kliens, config, most)` (Task 13 ↔ 15); `aggregalt_nap` (Task 13 ↔ 15); `referencia_ervenyes` mező (Task 13 pont-alak ↔ Task 14 aggregátor); `kulcsszo_idokeret`/`referencia_min_atlag` (Task 12 ↔ 13). A top-trend ág és a `napi_ir` `nap_iso`-ja változatlan; csak a kulcsszó-tortenet vált adat-napra. ✔
+
+**Döntési napló (a füst-teszt utáni egyeztetésből):** utolsó nap = utolsó TELJES budapesti naptári nap (a mai részleges kizárva); napi statisztika = átlag(nem-0) + csúcs + `ervenyes_pontok`; referencia-jelölés = `referencia_atlag` numerikus CSV-oszlop; a `tortenet` szigorúan normalizált (a `_ertek` nyers-tartalék segéd megmarad, de a ref-érvénytelen kötegeket a `referencia_ervenyes` jelző zárja ki — explicit teszttel rögzítve).
