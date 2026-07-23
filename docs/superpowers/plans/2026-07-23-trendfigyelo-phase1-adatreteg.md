@@ -19,6 +19,7 @@ Ezek MINDEN taskra vonatkoznak, akkor is, ha a task nem ismétli meg:
 - **Idő:** nyers adat UTC-ben (ISO, `timespec="seconds"`); fájlnevek és megjelenítendő időbélyegek budapesti idő (Europe/Budapest).
 - **CSV formátum:** `;` elválasztó, `utf-8-sig` kódolás. A meglévő 3 CSV (api/rss/hirek) oszlopszerkezete és névsémája VÁLTOZATLAN.
 - **Anti-block:** hívások közt véletlen 3–7 mp; 429 → exponenciális+jitteres backoff (max 4 próba), utána ág feladása + naplózás; nincs rövid ciklusú tömeges retry.
+- **AgFeladva a looping ágakban:** a trend/köteg ciklust futtató ágak (`idosorok.gyujt`, `kulcsszavak.gyujt`) az `AgFeladva` (429-kimerülés) kivételt NEM nyelhetik el `continue`-val — az egész ágat fel kell adni (a kivétel továbbmegy a `futtato`-hoz block-detektálásra), különben blokkolás alatt elemenként újra lefutna a teljes backoff. Egyéb (nem-429) hiba csak az adott elemet hagyja ki.
 - **Részleges siker = siker:** egy ág bukása nem dönti a többit; teljes bukás (semmi adat) → nem-nulla kilépési kód.
 - **Nincs élő Google-teszt** a unit tesztekben — mock/fixtúra. Egyetlen kézi éles füst-teszt a végén, helyi gépről.
 - **requirements.txt:** rögzített vagy alsó-korlátos verziók.
@@ -924,6 +925,7 @@ Create `trendfigyelo/idosorok.py`:
 from pathlib import Path
 
 from . import seged
+from .kliens import AgFeladva
 
 
 def df_idosor(df, kifejezes: str, forras: str) -> list:
@@ -960,7 +962,12 @@ def _szam(x) -> bool:
 
 
 def gyujt(kliens, config, top_kifejezesek) -> list:
-    """Top-N kifejezés egyenkénti idősora; a bukott kifejezés kihagyva."""
+    """Top-N kifejezés egyenkénti idősora.
+
+    AgFeladva (429-kimerülés) esetén az EGÉSZ ágat feladjuk (a kivétel
+    továbbmegy a futtato-hoz block-detektálásra) — nem hammereljük tovább a
+    Google-t trendenként. Egyéb hiba csak az adott trendet hagyja ki.
+    """
     pontok = []
     for kif in top_kifejezesek[: config.trend_idosor_max]:
         try:
@@ -968,7 +975,10 @@ def gyujt(kliens, config, top_kifejezesek) -> list:
                 "idosor", kliens.tr.interest_over_time,
                 [kif], geo=config.geo, timeframe=config.idosor_idokeret,
             )
-        except Exception as e:  # egy trend bukása nem dönti a többit
+        except AgFeladva:  # 429-kimerülés → az egész ág feladva
+            print(f"FIGYELEM: az idősor-ág feladva (429) a(z) '{kif}' kifejezésnél.")
+            raise
+        except Exception as e:  # egyetlen trend egyéb hibája nem dönti a többit
             print(f"FIGYELEM: '{kif}' idősora kimaradt ({e}).")
             continue
         pontok.extend(df_idosor(df, kif, "interest_over_time"))
@@ -1095,6 +1105,7 @@ Create `trendfigyelo/kulcsszavak.py`:
 from pathlib import Path
 
 from . import seged
+from .kliens import AgFeladva
 
 KOTEG_MERET = 4  # 4 kulcsszó + 1 referenciaszó = 5 (a Trends max 5-öt hasonlít össze)
 
@@ -1161,7 +1172,12 @@ def parse_koteg(df, koteg) -> list:
 
 
 def gyujt(kliens, config) -> list:
-    """Minden köteget lekér és parse-ol; a bukott köteg kihagyva."""
+    """Minden köteget lekér és parse-ol.
+
+    AgFeladva (429-kimerülés) esetén az EGÉSZ ágat feladjuk (a kivétel
+    továbbmegy a futtato-hoz block-detektálásra) — nem hammereljük tovább a
+    Google-t kötegenként. Egyéb hiba csak az adott köteget hagyja ki.
+    """
     pontok = []
     for koteg in kotegek(config):
         szavak = koteg_lekerdezes_szavai(koteg)
@@ -1170,7 +1186,10 @@ def gyujt(kliens, config) -> list:
                 "kulcsszo", kliens.tr.interest_over_time,
                 szavak, geo=config.geo, timeframe=config.idosor_idokeret,
             )
-        except Exception as e:  # egy köteg bukása nem dönti a többit
+        except AgFeladva:  # 429-kimerülés → az egész ág feladva
+            print(f"FIGYELEM: a kulcsszó-ág feladva (429) a(z) {koteg['id']}. kötegnél.")
+            raise
+        except Exception as e:  # egyetlen köteg egyéb hibája nem dönti a többit
             print(f"FIGYELEM: a(z) {koteg['id']}. köteg kimaradt ({e}).")
             continue
         pontok.extend(parse_koteg(df, koteg))
