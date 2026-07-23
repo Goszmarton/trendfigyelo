@@ -24,6 +24,8 @@ class Config:
     trend_idosor_max: int
     proxy: object  # str | None
     kulcsszavak: dict = field(default_factory=dict)
+    kulcsszo_idokeret: str = "now 7-d"
+    referencia_min_atlag: float = 1.0
 
     def osszes_kulcsszo(self):
         """[(kulcsszo, csoport), ...] a beolvasás sorrendjében."""
@@ -69,4 +71,6 @@ def betolt(utvonal="config.yaml") -> Config:
         trend_idosor_max=int(_kell(nyers, "trend_idosor_max", "")),
         proxy=nyers.get("proxy"),
         kulcsszavak=kulcsszavak,
+        kulcsszo_idokeret=nyers.get("kulcsszo_idokeret", "now 7-d"),
+        referencia_min_atlag=float(nyers.get("referencia_min_atlag", 1.0)),
     )

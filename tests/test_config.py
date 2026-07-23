@@ -65,3 +65,16 @@ def test_reszben_ures_csoport_konfighibat_dob(tmp_path):
     rossz = JO.split("kulcsszavak:")[0] + "kulcsszavak:\n  megelhetes: []\n  gazdaság: [forint árfolyam]\n"
     with pytest.raises(config.KonfigHiba):
         config.betolt(_ir(tmp_path, rossz))
+
+
+def test_betolt_kulcsszo_idokeret_es_referencia_kuszob(tmp_path):
+    jo = JO + 'kulcsszo_idokeret: "now 7-d"\nreferencia_min_atlag: 1.0\n'
+    c = config.betolt(_ir(tmp_path, jo))
+    assert c.kulcsszo_idokeret == "now 7-d"
+    assert c.referencia_min_atlag == 1.0
+
+
+def test_referencia_min_atlag_alapertelmezes(tmp_path):
+    # ha a config.yaml nem adja meg, az alap 1.0
+    c = config.betolt(_ir(tmp_path, JO + 'kulcsszo_idokeret: "now 7-d"\n'))
+    assert c.referencia_min_atlag == 1.0
