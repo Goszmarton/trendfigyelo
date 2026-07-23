@@ -1,5 +1,6 @@
 """Kulcsszó-idősorok ág: 4+1 kötegelt interest_over_time, nyers + normalizált érték."""
 
+from datetime import datetime, timezone
 from pathlib import Path
 
 from . import seged
@@ -43,17 +44,49 @@ def _szam(x) -> bool:
     return f == f  # NaN esetén False (NaN != NaN)
 
 
-def parse_koteg(df, koteg) -> list:
-    """Köteg DataFrame → pontok nyers és normalizált értékkel."""
+def _bp_datum(idx):
+    """Egy (pandas) index-időbélyeg budapesti naptári dátuma."""
+    dt = idx.to_pydatetime() if hasattr(idx, "to_pydatetime") else idx
+    if getattr(dt, "tzinfo", None) is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(seged.BUDAPEST).date()
+
+
+def utolso_teljes_nap(df, mai_datum):
+    """A df budapesti dátumai közül a legnagyobb, amely < mai_datum; egyébként None."""
+    if df is None or len(df) == 0:
+        return None
+    korabbi = {_bp_datum(idx) for idx in df.index if _bp_datum(idx) < mai_datum}
+    return max(korabbi) if korabbi else None
+
+
+def _ref_atlag(df, ref):
+    """A referenciaszó nem-nulla pontjainak átlaga; ha nincs mérhető pont, None."""
+    if ref not in df.columns:
+        return None
+    ertekek = [float(x) for x in df[ref] if _szam(x) and float(x) != 0.0]
+    if not ertekek:
+        return None
+    return sum(ertekek) / len(ertekek)
+
+
+def parse_koteg(df, koteg, mai_datum, min_atlag) -> list:
+    """Köteg DataFrame → pontok az UTOLSÓ TELJES napra szűrve, nyers + (érvényes referenciánál) normalizált értékkel."""
     pontok = []
     if df is None or len(df) == 0:
         return pontok
+    nap = utolso_teljes_nap(df, mai_datum)
+    if nap is None:
+        return pontok
+    napi = df[[_bp_datum(idx) == nap for idx in df.index]]
     ref = koteg["referenciaszo"]
-    sk = skalazo(list(df[ref])) if ref in df.columns else None
+    ref_atlag = _ref_atlag(napi, ref)
+    ervenyes = ref_atlag is not None and ref_atlag >= min_atlag
+    sk = skalazo([ref_atlag]) if ervenyes else None  # 100 / ref_atlag
     for kulcsszo, csoport in koteg["tagok"]:
-        if kulcsszo not in df.columns:
+        if kulcsszo not in napi.columns:
             continue
-        for idx, sor in df.iterrows():
+        for idx, sor in napi.iterrows():
             nyers = sor[kulcsszo]
             if _szam(nyers):
                 nyers_ert = int(nyers)
@@ -69,32 +102,44 @@ def parse_koteg(df, koteg) -> list:
                 "normalizalt_ertek": norm,
                 "koteg_id": koteg["id"],
                 "referenciaszo": ref,
+                "referencia_atlag": round(ref_atlag, 2) if ervenyes else "",
+                "referencia_ervenyes": ervenyes,
             })
     return pontok
 
 
-def gyujt(kliens, config) -> list:
-    """Minden köteget lekér és parse-ol.
+def aggregalt_nap(pontok):
+    """A pontok közös budapesti napja ISO-ban ('%Y-%m-%d'); üres lista → None."""
+    for p in pontok:
+        iso = p.get("idopont_utc")
+        if iso:
+            return f"{datetime.fromisoformat(iso).astimezone(seged.BUDAPEST):%Y-%m-%d}"
+    return None
 
-    AgFeladva (429-kimerülés) esetén az EGÉSZ ágat feladjuk (a kivétel
-    továbbmegy a futtato-hoz block-detektálásra) — nem hammereljük tovább a
-    Google-t kötegenként. Egyéb hiba csak az adott köteget hagyja ki.
+
+def gyujt(kliens, config, most=None) -> list:
+    """Minden köteget lekér (now 7-d), és az utolsó teljes napra parse-ol.
+
+    AgFeladva (429) → az EGÉSZ ág feladva (továbbmegy a futtato-hoz). Egyéb hiba
+    csak az adott köteget hagyja ki.
     """
+    most = most or seged.most_utc()
+    mai_datum = most.astimezone(seged.BUDAPEST).date()
     pontok = []
     for koteg in kotegek(config):
         szavak = koteg_lekerdezes_szavai(koteg)
         try:
             df = kliens.hivas(
                 "kulcsszo", kliens.tr.interest_over_time,
-                szavak, geo=config.geo, timeframe=config.idosor_idokeret,
+                szavak, geo=config.geo, timeframe=config.kulcsszo_idokeret,
             )
-        except AgFeladva:  # 429-kimerülés → az egész ág feladva
+        except AgFeladva:
             print(f"FIGYELEM: a kulcsszó-ág feladva (429) a(z) {koteg['id']}. kötegnél.")
             raise
-        except Exception as e:  # egyetlen köteg egyéb hibája nem dönti a többit
+        except Exception as e:
             print(f"FIGYELEM: a(z) {koteg['id']}. köteg kimaradt ({e}).")
             continue
-        pontok.extend(parse_koteg(df, koteg))
+        pontok.extend(parse_koteg(df, koteg, mai_datum, config.referencia_min_atlag))
     return pontok
 
 
@@ -106,11 +151,12 @@ def csv_ir(mappa, idobelyeg, letoltve, geo, pontok):
     with f:
         iro.writerow([
             "kulcsszo", "csoport", "idopont_utc", "nyers_ertek", "normalizalt_ertek",
-            "koteg_id", "referenciaszo", "letoltve_utc", "geo",
+            "koteg_id", "referenciaszo", "referencia_atlag", "letoltve_utc", "geo",
         ])
         for p in pontok:
             iro.writerow([
                 p["kulcsszo"], p["csoport"], p["idopont_utc"], p["nyers_ertek"],
-                p["normalizalt_ertek"], p["koteg_id"], p["referenciaszo"], letoltve, geo,
+                p["normalizalt_ertek"], p["koteg_id"], p["referenciaszo"],
+                p["referencia_atlag"], letoltve, geo,
             ])
     return fajl
