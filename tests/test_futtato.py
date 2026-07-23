@@ -173,3 +173,21 @@ def test_reszleges_siker_nulla_kilepesi_kod(tmp_path):
     assert eredmenyek["felkapott_rss"] == "siker"
     assert eredmenyek["idosor"] == "siker"
     assert eredmenyek["kulcsszo"] == "siker"
+
+
+def test_tervezett_hivasszam_agstrukturabol():
+    c = _config()  # trend_idosor_max=2, 1 kulcsszó → 1 köteg
+    assert futtato.tervezett_hivasszam(c) == 2 + 2 + 1  # api+rss + idosor + 1 köteg = 5
+
+
+def test_tervezett_hivasszam_teljes_config():
+    c = Config(
+        geo="HU", nyelv="hu", idoablak_orak=24, idosor_idokeret="now 1-d",
+        referenciaszo="időjárás", alap_keses_mp=3.0, szoras_mp=(3, 7),
+        max_probak=4, backoff_mp=[30, 120, 480], trend_idosor_max=15, proxy=None,
+        kulcsszavak={"a": ["1", "2", "3", "4", "5", "6", "7", "8"],
+                     "b": ["9", "10", "11", "12", "13", "14"],
+                     "c": ["15", "16", "17", "18", "19", "20", "21", "22"]},
+    )
+    # 22 kulcsszó → ceil(22/4)=6 köteg → 2 + 15 + 6 = 23
+    assert futtato.tervezett_hivasszam(c) == 23

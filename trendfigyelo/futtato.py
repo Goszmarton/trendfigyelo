@@ -17,6 +17,16 @@ from .kliens import AgFeladva, Kliens
 AGAK = ["felkapott_api", "felkapott_rss", "idosor", "kulcsszo"]
 
 
+def tervezett_hivasszam(config) -> int:
+    """A hibamentes (429 nélküli) futás várható Google-hívásszáma az ágstruktúrából.
+
+    felkapott_api (1) + felkapott_rss (1) + idosor (≤ trend_idosor_max, trendenként)
+    + kulcsszo (kötegenként = ceil(kulcsszavak / KOTEG_MERET)).
+    """
+    kotegek_szama = -(-len(config.osszes_kulcsszo()) // kulcsszavak.KOTEG_MERET)
+    return 2 + config.trend_idosor_max + kotegek_szama
+
+
 def top_trend_struktura(api_trendek, trend_idosorok, rss_trendek, config) -> list:
     """A legnagyobb volumenű trendek strukturált listája: idősor + hírek párosítva.
 
@@ -145,8 +155,7 @@ def main() -> int:
     """Belépő: config betöltése, Kliens felépítése, teljes futás."""
     config = betolt()
     kliens = Kliens(config)
-    max_hivas = config.max_probak * len(AGAK)
-    print(f"Tervezett maximális Google-hívásszám: {max_hivas}")
+    print(f"Várható Google-hívásszám (429 nélkül): ~{tervezett_hivasszam(config)}")
     return futtat(config, kliens, Path("adatok"), Path("docs") / "data")
 
 
