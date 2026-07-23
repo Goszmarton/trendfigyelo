@@ -3,6 +3,7 @@
 from pathlib import Path
 
 from . import seged
+from .kliens import AgFeladva
 
 
 def df_idosor(df, kifejezes: str, forras: str) -> list:
@@ -39,7 +40,12 @@ def _szam(x) -> bool:
 
 
 def gyujt(kliens, config, top_kifejezesek) -> list:
-    """Top-N kifejezés egyenkénti idősora; a bukott kifejezés kihagyva."""
+    """Top-N kifejezés egyenkénti idősora.
+
+    AgFeladva (429-kimerülés) esetén az EGÉSZ ágat feladjuk (a kivétel
+    továbbmegy a futtato-hoz block-detektálásra) — nem hammereljük tovább a
+    Google-t trendenként. Egyéb hiba csak az adott trendet hagyja ki.
+    """
     pontok = []
     for kif in top_kifejezesek[: config.trend_idosor_max]:
         try:
@@ -47,7 +53,10 @@ def gyujt(kliens, config, top_kifejezesek) -> list:
                 "idosor", kliens.tr.interest_over_time,
                 [kif], geo=config.geo, timeframe=config.idosor_idokeret,
             )
-        except Exception as e:  # egy trend bukása nem dönti a többit
+        except AgFeladva:  # 429-kimerülés → az egész ág feladva
+            print(f"FIGYELEM: az idősor-ág feladva (429) a(z) '{kif}' kifejezésnél.")
+            raise
+        except Exception as e:  # egyetlen trend egyéb hibája nem dönti a többit
             print(f"FIGYELEM: '{kif}' idősora kimaradt ({e}).")
             continue
         pontok.extend(df_idosor(df, kif, "interest_over_time"))
