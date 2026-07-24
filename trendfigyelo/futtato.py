@@ -147,7 +147,7 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
         json_export.napi_ir(docs_data_mappa, nap_iso, top_trendek)
 
     # ---------- napló ----------
-    naplo.naplo_ir(adatok_mappa, letoltve, bejegyzesek)
+    naplo.naplo_ir(adatok_mappa, letoltve, bejegyzesek, config.naplo_max_sor)
 
     print(f"Összes Google-hívás: {kliens.osszes_hivas()}")
     return 0 if van_adat else 1

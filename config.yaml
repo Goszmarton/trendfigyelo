@@ -12,6 +12,7 @@ kerespont:                   # anti-block (IP-blokkolás elleni) paraméterek
 trend_idosor_max: 15         # hány top trend kapjon idősort (sparkline)
 kulcsszo_idokeret: "now 7-d"   # kulcsszó-idősorok: durvább felbontás a mérési küszöb fölé (top-trend marad now 1-d)
 referencia_min_atlag: 1.0      # ez alatti köteg-referencia-átlag = nem mérhető → normalizálás kihagyva
+naplo_max_sor: 2000            # a naplo.csv görgő sor-cap-je (~500 nap napi ~4 sornál)
 proxy: null                  # pl. "http://user:pass@host:port" — alap: nincs
 kulcsszavak:
   megelhetes: [infláció, benzinár, rezsi, élelmiszerárak, albérlet, lakáshitel, minimálbér, nyugdíj]

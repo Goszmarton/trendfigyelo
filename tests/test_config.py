@@ -117,3 +117,8 @@ def test_max_probak_nulla_konfighibat_dob(tmp_path):
     rossz = JO.replace("max_probak: 4", "max_probak: 0")
     with pytest.raises(config.KonfigHiba):
         config.betolt(_ir(tmp_path, rossz))
+
+
+def test_naplo_max_sor_alapertelmezes(tmp_path):
+    c = config.betolt(_ir(tmp_path, JO))
+    assert c.naplo_max_sor == 2000
