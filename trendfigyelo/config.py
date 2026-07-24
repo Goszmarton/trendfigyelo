@@ -42,6 +42,21 @@ def _kell(d: dict, kulcs: str, hol: str):
     return d[kulcs]
 
 
+def _ellenoriz_szamlista(ertek, hol: str, hossz=None):
+    """KonfigHiba, ha ertek nem szám-lista (adott hosszal / nem-üresen)."""
+    if not isinstance(ertek, (list, tuple)):
+        raise KonfigHiba(f"{hol}: listát vártam, nem {type(ertek).__name__}-t")
+    if hossz is not None and len(ertek) != hossz:
+        raise KonfigHiba(f"{hol}: pontosan {hossz} elem kell, kaptam {len(ertek)}-t")
+    if hossz is None and not ertek:
+        raise KonfigHiba(f"{hol}: nem lehet üres lista")
+    for x in ertek:
+        try:
+            float(x)
+        except (ValueError, TypeError):
+            raise KonfigHiba(f"{hol}: nem-szám elem: {x!r}")
+
+
 def betolt(utvonal="config.yaml") -> Config:
     """A config.yaml beolvasása Config objektummá; hibás konfig → KonfigHiba."""
     p = Path(utvonal)
@@ -58,6 +73,20 @@ def betolt(utvonal="config.yaml") -> Config:
         raise KonfigHiba("A 'kulcsszavak' üres vagy van üres csoport — minden csoportba legalább egy szó kell.")
 
     szoras = _kell(kp, "szoras_mp", "kerespont.")
+    _ellenoriz_szamlista(szoras, "kerespont.szoras_mp", 2)
+    if float(szoras[0]) < 0:
+        raise KonfigHiba("kerespont.szoras_mp: nem lehet negatív")
+    if float(szoras[0]) > float(szoras[1]):
+        raise KonfigHiba("kerespont.szoras_mp: az alsó határ nem lehet nagyobb a felsőnél")
+
+    backoff = _kell(kp, "backoff_mp", "kerespont.")
+    _ellenoriz_szamlista(backoff, "kerespont.backoff_mp")
+
+    if float(_kell(kp, "alap_keses_mp", "kerespont.")) < 0:
+        raise KonfigHiba("kerespont.alap_keses_mp: nem lehet negatív")
+    if int(_kell(kp, "max_probak", "kerespont.")) < 1:
+        raise KonfigHiba("kerespont.max_probak: legalább 1 kell legyen")
+
     return Config(
         geo=_kell(nyers, "geo", ""),
         nyelv=_kell(nyers, "nyelv", ""),
