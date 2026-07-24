@@ -87,3 +87,43 @@ def test_eles_config_lassitott_anti_block_utem():
     c = config.betolt(gyoker / "config.yaml")
     assert c.alap_keses_mp == 6.0          # trendspy request_delay
     assert c.szoras_mp == (6.0, 10.0)      # saját véletlen késleltetés
+
+
+def test_szoras_mp_skalar_konfighibat_dob(tmp_path):
+    rossz = JO.replace("szoras_mp: [3, 7]", "szoras_mp: 5")
+    with pytest.raises(config.KonfigHiba):
+        config.betolt(_ir(tmp_path, rossz))
+
+
+def test_szoras_mp_egy_elem_konfighibat_dob(tmp_path):
+    rossz = JO.replace("szoras_mp: [3, 7]", "szoras_mp: [5]")
+    with pytest.raises(config.KonfigHiba):
+        config.betolt(_ir(tmp_path, rossz))
+
+
+def test_szoras_mp_forditott_hatarok_konfighibat_dob(tmp_path):
+    rossz = JO.replace("szoras_mp: [3, 7]", "szoras_mp: [7, 3]")
+    with pytest.raises(config.KonfigHiba):
+        config.betolt(_ir(tmp_path, rossz))
+
+
+def test_backoff_ures_lista_konfighibat_dob(tmp_path):
+    rossz = JO.replace("backoff_mp: [30, 120, 480]", "backoff_mp: []")
+    with pytest.raises(config.KonfigHiba):
+        config.betolt(_ir(tmp_path, rossz))
+
+
+def test_max_probak_nulla_konfighibat_dob(tmp_path):
+    rossz = JO.replace("max_probak: 4", "max_probak: 0")
+    with pytest.raises(config.KonfigHiba):
+        config.betolt(_ir(tmp_path, rossz))
+
+
+def test_naplo_max_sor_alapertelmezes(tmp_path):
+    c = config.betolt(_ir(tmp_path, JO))
+    assert c.naplo_max_sor == 2000
+
+
+def test_tortenet_visszapotlas_nap_alapertelmezes(tmp_path):
+    c = config.betolt(_ir(tmp_path, JO))
+    assert c.tortenet_visszapotlas_nap == 3

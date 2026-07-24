@@ -16,6 +16,17 @@ def _df():
     return pd.DataFrame({"infláció": [40, 80], "isPartial": [False, True]}, index=idx)
 
 
+def test_df_idosor_nan_ures_string_nem_nan():
+    idx = pd.to_datetime([
+        datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
+        datetime(2021, 1, 1, 11, tzinfo=timezone.utc),
+    ])
+    df = pd.DataFrame({"infláció": [float("nan"), 80], "isPartial": [False, False]}, index=idx)
+    pontok = idosorok.df_idosor(df, "infláció", "interest_over_time")
+    assert pontok[0]["ertek"] == ""     # NEM a literál "nan"
+    assert pontok[1]["ertek"] == 80
+
+
 def test_df_idosor_pontok_es_ispartial_kihagyva():
     pontok = idosorok.df_idosor(_df(), "infláció", "interest_over_time")
     assert len(pontok) == 2

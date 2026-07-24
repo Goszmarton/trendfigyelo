@@ -70,15 +70,30 @@ def _ref_atlag(df, ref):
     return sum(ertekek) / len(ertekek)
 
 
-def parse_koteg(df, koteg, mai_datum, min_atlag) -> list:
-    """Köteg DataFrame → pontok az UTOLSÓ TELJES napra szűrve, nyers + (érvényes referenciánál) normalizált értékkel."""
-    pontok = []
+def utolso_N_teljes_nap(df, mai_datum, n: int) -> list:
+    """A df budapesti dátumai közül az utolsó n, amely < mai_datum; növekvő sorrendben."""
     if df is None or len(df) == 0:
-        return pontok
-    nap = utolso_teljes_nap(df, mai_datum)
-    if nap is None:
-        return pontok
-    napi = df[[_bp_datum(idx) == nap for idx in df.index]]
+        return []
+    korabbi = sorted({_bp_datum(idx) for idx in df.index if _bp_datum(idx) < mai_datum})
+    return korabbi[-n:]
+
+
+def parse_koteg_napok(df, koteg, mai_datum, min_atlag, n: int) -> dict:
+    """Köteg DataFrame → {nap_iso: [pontok]} az utolsó n teljes napra (üres napok nélkül)."""
+    if df is None or len(df) == 0:
+        return {}
+    ki = {}
+    for nap in utolso_N_teljes_nap(df, mai_datum, n):
+        napi = df[[_bp_datum(idx) == nap for idx in df.index]]
+        pontok = _parse_egy_nap(napi, koteg, min_atlag)
+        if pontok:
+            ki[nap.isoformat()] = pontok
+    return ki
+
+
+def _parse_egy_nap(napi, koteg, min_atlag) -> list:
+    """Egy nap (már leszűrt) DataFrame-je → pontok, nyers + (érvényes ref-nél) normalizált."""
+    pontok = []
     ref = koteg["referenciaszo"]
     ref_atlag = _ref_atlag(napi, ref)
     ervenyes = ref_atlag is not None and ref_atlag >= min_atlag
@@ -108,6 +123,17 @@ def parse_koteg(df, koteg, mai_datum, min_atlag) -> list:
     return pontok
 
 
+def parse_koteg(df, koteg, mai_datum, min_atlag) -> list:
+    """Köteg DataFrame → pontok az UTOLSÓ TELJES napra szűrve."""
+    if df is None or len(df) == 0:
+        return []
+    nap = utolso_teljes_nap(df, mai_datum)
+    if nap is None:
+        return []
+    napi = df[[_bp_datum(idx) == nap for idx in df.index]]
+    return _parse_egy_nap(napi, koteg, min_atlag)
+
+
 def aggregalt_nap(pontok):
     """A pontok közös budapesti napja ISO-ban ('%Y-%m-%d'); üres lista → None."""
     for p in pontok:
@@ -117,15 +143,18 @@ def aggregalt_nap(pontok):
     return None
 
 
-def gyujt(kliens, config, most=None) -> list:
-    """Minden köteget lekér (now 7-d), és az utolsó teljes napra parse-ol.
+def gyujt(kliens, config, most=None):
+    """Minden köteget lekér (now 7-d). Visszaad: (egynapos_pontok, {nap_iso: [pontok]}).
 
-    AgFeladva (429) → az EGÉSZ ág feladva (továbbmegy a futtato-hoz). Egyéb hiba
-    csak az adott köteget hagyja ki.
+    Az egynapos_pontok a CSV-hez és legfrissebb.json-hoz (utolsó teljes nap); a napi
+    dict a tortenet többnapos upsertjéhez (utolsó N teljes nap, 0 extra hívásból).
+    AgFeladva (429) → az EGÉSZ ág feladva; egyéb hiba csak az adott köteget hagyja ki.
     """
     most = most or seged.most_utc()
     mai_datum = most.astimezone(seged.BUDAPEST).date()
+    n = config.tortenet_visszapotlas_nap
     pontok = []
+    napi_pontok = {}
     for koteg in kotegek(config):
         szavak = koteg_lekerdezes_szavai(koteg)
         try:
@@ -140,7 +169,10 @@ def gyujt(kliens, config, most=None) -> list:
             print(f"FIGYELEM: a(z) {koteg['id']}. köteg kimaradt ({e}).")
             continue
         pontok.extend(parse_koteg(df, koteg, mai_datum, config.referencia_min_atlag))
-    return pontok
+        for nap_iso, nap_pontok in parse_koteg_napok(
+                df, koteg, mai_datum, config.referencia_min_atlag, n).items():
+            napi_pontok.setdefault(nap_iso, []).extend(nap_pontok)
+    return pontok, napi_pontok
 
 
 def csv_ir(mappa, idobelyeg, letoltve, geo, pontok):

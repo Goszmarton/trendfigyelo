@@ -214,6 +214,29 @@ class KulcsszoAdatKliens:
         return 4
 
 
+class KulcsszoHianyzoNapokKliens:
+    """3 teljes nap (01-01,01-02,01-03) + csonka mai (01-04) egy 7-d ablakban;
+    a kulcsszó-ág egy DataFrame-et ad, más ág üres. A 429-önjavítás teszteléséhez."""
+    def __init__(self):
+        self.tr = _dummy_tr()
+    def hivas(self, ag, fn, *a, **k):
+        if ag == "felkapott_rss":
+            return [SimpleNamespace(keyword="benzinár", news=[])]
+        if ag == "kulcsszo":
+            idx = pd.to_datetime([
+                datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
+                datetime(2021, 1, 2, 10, tzinfo=timezone.utc),
+                datetime(2021, 1, 3, 10, tzinfo=timezone.utc),
+                datetime(2021, 1, 4, 9, tzinfo=timezone.utc),   # mai (részleges)
+            ])
+            return pd.DataFrame({"a": [30, 40, 50, 60], "időjárás": [50, 50, 50, 50]}, index=idx)
+        return []
+    def hivasszam(self, ag):
+        return 1
+    def osszes_hivas(self):
+        return 4
+
+
 def test_tortenet_a_valos_adatnapra_kerul(tmp_path):
     import json
     cfg = _config()
@@ -224,3 +247,24 @@ def test_tortenet_a_valos_adatnapra_kerul(tmp_path):
     tortenet = json.loads((tmp_path / "docs" / "data" / "tortenet.json").read_text(encoding="utf-8"))
     napok = [b["nap"] for b in tortenet["napok"]]
     assert napok == ["2021-01-01"]  # az utolsó teljes nap, NEM a futás napja (2021-01-02)
+
+
+def test_futtato_visszapotolja_a_kihagyott_kulcsszo_napot(tmp_path):
+    """Két egymást követő kihagyott nap (01-01, 01-02) visszapótlása a 7-d ablakból;
+    a tortenet-ben csak az utolsó teljes nap (01-03) volt meg. A RÉGI egynapos út
+    (parse_koteg → aggregalt_nap → egy-napos tortenet_frissit) ezt NEM tudná
+    visszapótolni, csak az új parse_koteg_napok + tortenet_frissit_napok."""
+    import json
+    cfg = _config()
+    cfg.kulcsszavak = {"megelhetes": ["a"]}
+    docs_data = tmp_path / "docs" / "data"
+    # magvetés: csak az utolsó teljes nap (01-03) van meg; 01-01 és 01-02 kimaradt
+    json_export.tortenet_frissit(docs_data, "2021-01-03", [
+        {"kulcsszo": "a", "csoport": "megelhetes", "normalizalt_ertek": 30.0,
+         "referencia_ervenyes": True}])
+    most = datetime(2021, 1, 4, 12, 0, tzinfo=timezone.utc)  # mai=01-04 → utolsó teljes 01-03
+    futtato.futtat(cfg, KulcsszoHianyzoNapokKliens(),
+                   tmp_path / "adatok", docs_data, most=most)
+    tortenet = json.loads((docs_data / "tortenet.json").read_text(encoding="utf-8"))
+    napok = sorted(b["nap"] for b in tortenet["napok"])
+    assert napok == ["2021-01-01", "2021-01-02", "2021-01-03"]
