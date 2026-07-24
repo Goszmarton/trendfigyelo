@@ -81,6 +81,7 @@ def legfrissebb_ir(docs_data, top_trendek, trend_idosorok, kulcsszo_pontok,
 
 
 def tortenet_frissit(docs_data, nap_iso, kulcsszo_pontok) -> Path:
+    """Egy nap upsertje a tortenet.json-ba — production-ban a tortenet_frissit_napok váltotta le (Task 5), szándékosan megtartva teszt-seed/fixture helperként."""
     fajl = Path(docs_data) / "tortenet.json"
     if fajl.exists():
         adat = json.loads(fajl.read_text(encoding="utf-8"))

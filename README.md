@@ -94,3 +94,7 @@ szelídebb megoldások mind kevésnek bizonyulnak:
 3. Csak ha 1–2 sem elég: adj meg egy HTTP(S)-proxyt a `config.yaml`
    `proxy:` mezőjében (`"http://user:pass@host:port"`). A `kliens.py` már átadja
    a trendspy-nak; új kód nem kell.
+
+> **Figyelem:** a `config.yaml` a nyilvános repóban verziózott — valódi
+> proxy-hitelesítőt (jelszót) NE commitolj bele; használj környezeti változót
+> vagy hitelesítő nélküli proxyt.
