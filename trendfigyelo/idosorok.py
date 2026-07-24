@@ -18,7 +18,7 @@ def df_idosor(df, kifejezes: str, forras: str) -> list:
         pontok.append({
             "kifejezes": kifejezes,
             "idopont_utc": seged.idopont_iso(idx),
-            "ertek": int(sor[oszlop]) if _szam(sor[oszlop]) else seged.szovegge(sor[oszlop]),
+            "ertek": int(sor[oszlop]) if _szam(sor[oszlop]) else "",
             "forras": forras,
         })
     return pontok
