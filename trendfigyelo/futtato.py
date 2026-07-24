@@ -139,9 +139,10 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
                                kulcsszo_pontok, letoltve, config.geo)
 
     van_adat = bool(api_trendek or rss_trendek or trend_idosorok or kulcsszo_pontok)
-    # független feltételek: üres kulcsszó-adat NE írja felül a nap meglévő
-    # (jó) tortenet.json-bejegyzését; üres top-trend NE hozzon üres napi fájlt
-    # tortenet: a valós adat-napra (utolsó teljes nap), NEM a futás napjára
+    # független feltételek: üres kulcsszó-napi adat NE írja felül a meglévő
+    # (jó) tortenet.json-bejegyzéseket; üres top-trend NE hozzon üres napi fájlt
+    # tortenet: a valós adat-napokra (utolsó N teljes nap), NEM a futás napjára —
+    # a legfrissebb nap felülír, a régebbiek insert-if-absent (visszapótlás)
     if kulcsszo_napi_pontok:
         json_export.tortenet_frissit_napok(docs_data_mappa, kulcsszo_napi_pontok)
     if top_trendek:
