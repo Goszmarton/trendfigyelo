@@ -122,3 +122,8 @@ def test_max_probak_nulla_konfighibat_dob(tmp_path):
 def test_naplo_max_sor_alapertelmezes(tmp_path):
     c = config.betolt(_ir(tmp_path, JO))
     assert c.naplo_max_sor == 2000
+
+
+def test_tortenet_visszapotlas_nap_alapertelmezes(tmp_path):
+    c = config.betolt(_ir(tmp_path, JO))
+    assert c.tortenet_visszapotlas_nap == 3

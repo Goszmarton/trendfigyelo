@@ -221,3 +221,39 @@ def test_csv_ir_referencia_atlag_oszlop(tmp_path):
     fejlec = p.read_text(encoding="utf-8-sig").splitlines()[0]
     assert fejlec == ("kulcsszo;csoport;idopont_utc;nyers_ertek;normalizalt_ertek;"
                       "koteg_id;referenciaszo;referencia_atlag;letoltve_utc;geo")
+
+
+def test_utolso_N_teljes_nap_utolso_harmat_adja():
+    idx = pd.to_datetime(
+        [datetime(2021, 1, d, 10, tzinfo=timezone.utc) for d in (1, 2, 3, 4)]
+        + [datetime(2021, 1, 5, 9, tzinfo=timezone.utc)]  # mai (csonka)
+    )
+    df = pd.DataFrame({"a": [10, 20, 30, 40, 50], "időjárás": [50] * 5}, index=idx)
+    # mai=01-05 → teljes: 01-01..01-04 → utolsó 3 = [01-02, 01-03, 01-04]
+    assert kulcsszavak.utolso_N_teljes_nap(df, date(2021, 1, 5), 3) == [
+        date(2021, 1, 2), date(2021, 1, 3), date(2021, 1, 4),
+    ]
+
+
+def test_utolso_N_teljes_nap_kevesebb_mint_n():
+    idx = pd.to_datetime([
+        datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
+        datetime(2021, 1, 2, 9, tzinfo=timezone.utc),   # mai (csonka)
+    ])
+    df = pd.DataFrame({"a": [10, 20], "időjárás": [50, 50]}, index=idx)
+    assert kulcsszavak.utolso_N_teljes_nap(df, date(2021, 1, 2), 3) == [date(2021, 1, 1)]
+
+
+def test_parse_koteg_napok_tobb_napot_ad_naponkenti_normalizalassal():
+    idx = pd.to_datetime([
+        datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
+        datetime(2021, 1, 2, 10, tzinfo=timezone.utc),
+        datetime(2021, 1, 3, 9, tzinfo=timezone.utc),   # mai (csonka)
+    ])
+    df = pd.DataFrame({"a": [30, 40, 99], "időjárás": [50, 50, 50]}, index=idx)
+    koteg = {"id": 0, "tagok": [("a", "megelhetes")], "referenciaszo": "időjárás"}
+    napi = kulcsszavak.parse_koteg_napok(df, koteg, date(2021, 1, 3), 1.0, 3)
+    assert set(napi.keys()) == {"2021-01-01", "2021-01-02"}   # a mai (01-03) kizárva
+    assert napi["2021-01-01"][0]["nyers_ertek"] == 30
+    assert napi["2021-01-01"][0]["normalizalt_ertek"] == 60.0  # 30 * (100/50)
+    assert napi["2021-01-02"][0]["nyers_ertek"] == 40

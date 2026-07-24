@@ -27,6 +27,7 @@ class Config:
     kulcsszo_idokeret: str = "now 7-d"
     referencia_min_atlag: float = 1.0
     naplo_max_sor: int = 2000
+    tortenet_visszapotlas_nap: int = 3
 
     def osszes_kulcsszo(self):
         """[(kulcsszo, csoport), ...] a beolvasás sorrendjében."""
@@ -104,4 +105,5 @@ def betolt(utvonal="config.yaml") -> Config:
         kulcsszo_idokeret=nyers.get("kulcsszo_idokeret", "now 7-d"),
         referencia_min_atlag=float(nyers.get("referencia_min_atlag", 1.0)),
         naplo_max_sor=int(nyers.get("naplo_max_sor", 2000)),
+        tortenet_visszapotlas_nap=int(nyers.get("tortenet_visszapotlas_nap", 3)),
     )
