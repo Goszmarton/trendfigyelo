@@ -224,3 +224,18 @@ def test_tortenet_a_valos_adatnapra_kerul(tmp_path):
     tortenet = json.loads((tmp_path / "docs" / "data" / "tortenet.json").read_text(encoding="utf-8"))
     napok = [b["nap"] for b in tortenet["napok"]]
     assert napok == ["2021-01-01"]  # az utolsó teljes nap, NEM a futás napja (2021-01-02)
+
+
+def test_futtato_visszapotolja_a_kihagyott_kulcsszo_napot(tmp_path):
+    import json
+    cfg = _config()
+    cfg.kulcsszavak = {"megelhetes": ["a"]}
+    docs_data = tmp_path / "docs" / "data"
+    # magvetés: csak 01-02 létezik a tortenet-ben (01-01 "kihagyott" nap)
+    json_export.tortenet_frissit(docs_data, "2021-01-02", [
+        {"kulcsszo": "a", "csoport": "megelhetes", "normalizalt_ertek": 20.0, "referencia_ervenyes": True}])
+    most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)  # mai=01-02 → utolsó teljes 01-01
+    futtato.futtat(cfg, KulcsszoAdatKliens(), tmp_path / "adatok", docs_data, most=most)
+    tortenet = json.loads((docs_data / "tortenet.json").read_text(encoding="utf-8"))
+    napok = sorted(b["nap"] for b in tortenet["napok"])
+    assert napok == ["2021-01-01", "2021-01-02"]   # a 01-01 visszapótolva a 7-d ablakból

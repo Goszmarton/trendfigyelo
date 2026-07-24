@@ -143,15 +143,18 @@ def aggregalt_nap(pontok):
     return None
 
 
-def gyujt(kliens, config, most=None) -> list:
-    """Minden köteget lekér (now 7-d), és az utolsó teljes napra parse-ol.
+def gyujt(kliens, config, most=None):
+    """Minden köteget lekér (now 7-d). Visszaad: (egynapos_pontok, {nap_iso: [pontok]}).
 
-    AgFeladva (429) → az EGÉSZ ág feladva (továbbmegy a futtato-hoz). Egyéb hiba
-    csak az adott köteget hagyja ki.
+    Az egynapos_pontok a CSV-hez és legfrissebb.json-hoz (utolsó teljes nap); a napi
+    dict a tortenet többnapos upsertjéhez (utolsó N teljes nap, 0 extra hívásból).
+    AgFeladva (429) → az EGÉSZ ág feladva; egyéb hiba csak az adott köteget hagyja ki.
     """
     most = most or seged.most_utc()
     mai_datum = most.astimezone(seged.BUDAPEST).date()
+    n = config.tortenet_visszapotlas_nap
     pontok = []
+    napi_pontok = {}
     for koteg in kotegek(config):
         szavak = koteg_lekerdezes_szavai(koteg)
         try:
@@ -166,7 +169,10 @@ def gyujt(kliens, config, most=None) -> list:
             print(f"FIGYELEM: a(z) {koteg['id']}. köteg kimaradt ({e}).")
             continue
         pontok.extend(parse_koteg(df, koteg, mai_datum, config.referencia_min_atlag))
-    return pontok
+        for nap_iso, nap_pontok in parse_koteg_napok(
+                df, koteg, mai_datum, config.referencia_min_atlag, n).items():
+            napi_pontok.setdefault(nap_iso, []).extend(nap_pontok)
+    return pontok, napi_pontok
 
 
 def csv_ir(mappa, idobelyeg, letoltve, geo, pontok):

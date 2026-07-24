@@ -100,9 +100,25 @@ def test_gyujt_agfeladva_feladja_az_egesz_agat():
 def test_gyujt_egyeb_hiba_csak_azt_a_koteget_hagyja_ki():
     df2 = _koteg_df(["e", "f", "g2", "h"], "időjárás")
     k = _FakeKliens([RuntimeError("hálózat"), df2])
-    pontok = kulcsszavak.gyujt(k, _config_2koteg())
+    pontok, _ = kulcsszavak.gyujt(k, _config_2koteg())
     assert k.hivasszamlalo == 2                     # mindkét köteget meghívja
     assert {p["koteg_id"] for p in pontok} == {1}   # csak a 2. köteg pontjai jönnek át
+
+
+def test_gyujt_tuple_egynapos_es_napi_pontok():
+    idx = pd.to_datetime([
+        datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
+        datetime(2021, 1, 2, 10, tzinfo=timezone.utc),
+        datetime(2021, 1, 3, 9, tzinfo=timezone.utc),   # mai (csonka)
+    ])
+    df = pd.DataFrame({"a": [30, 40, 99], "b": [30, 40, 99], "c": [30, 40, 99],
+                       "d": [30, 40, 99], "időjárás": [50, 50, 50]}, index=idx)
+    k = _FakeKliens([df])
+    cfg = _config()  # 1 köteg (a..d) + referencia; tortenet_visszapotlas_nap alap 3
+    most = datetime(2021, 1, 3, 12, tzinfo=timezone.utc)  # mai budapesti nap = 01-03
+    pontok, napi = kulcsszavak.gyujt(k, cfg, most)
+    assert {p["idopont_utc"][:10] for p in pontok} == {"2021-01-02"}   # egynapos: utolsó teljes
+    assert set(napi.keys()) == {"2021-01-01", "2021-01-02"}            # napi: utolsó 2 teljes
 
 
 def test_parse_koteg_nan_nem_dobal():

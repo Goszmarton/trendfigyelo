@@ -93,6 +93,28 @@ def tortenet_frissit(docs_data, nap_iso, kulcsszo_pontok) -> Path:
     return _ir_json(fajl, adat)
 
 
+def tortenet_frissit_napok(docs_data, napi_pontok) -> Path:
+    """Több nap upsertje: a legfrissebb nap felülír, a régebbiek insert-if-absent."""
+    fajl = Path(docs_data) / "tortenet.json"
+    if fajl.exists():
+        adat = json.loads(fajl.read_text(encoding="utf-8"))
+    else:
+        adat = {"napok": []}
+    if napi_pontok:
+        friss = max(napi_pontok)          # a legfrissebb nap ISO-ja
+        meglevo = {b.get("nap") for b in adat["napok"]}
+        for nap_iso in sorted(napi_pontok):
+            if nap_iso != friss and nap_iso in meglevo:
+                continue                  # insert-if-absent: régi napot nem írunk felül
+            osszesites = kulcsszo_napi_osszesites(napi_pontok[nap_iso])
+            if not osszesites:
+                continue
+            adat["napok"] = [b for b in adat["napok"] if b.get("nap") != nap_iso]
+            adat["napok"].append({"nap": nap_iso, "kulcsszavak": osszesites})
+        adat["napok"].sort(key=lambda b: b["nap"])
+    return _ir_json(fajl, adat)
+
+
 def napi_ir(docs_data, nap_iso, top_trendek) -> Path:
     napok_mappa = Path(docs_data) / "napok"
     fajl = napok_mappa / f"{nap_iso}.json"
