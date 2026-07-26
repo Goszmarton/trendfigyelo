@@ -2,10 +2,10 @@ name: Napi trendgyűjtés
 
 on:
   workflow_dispatch:
-  # A napi ütemezés KÜLÖN, későbbi committal élesedik (Task 9), miután a kézi
-  # futások megerősítették, hogy a runner-IP nem kap azonnali 429-et:
-  # schedule:
-  #   - cron: "7 19 * * *"   # 19:07 UTC — 21:07 nyár / 20:07 tél budapesti idő
+  # Napi ütemezett futás. A kézi (workflow_dispatch) futások igazolták, hogy a
+  # felhő-runner IP-je nem kap azonnali 429-et a cél-idősávban (Task 9 élesítve):
+  schedule:
+    - cron: "7 19 * * *"   # 19:07 UTC — 21:07 nyár / 20:07 tél budapesti idő
 
 permissions:
   contents: write
