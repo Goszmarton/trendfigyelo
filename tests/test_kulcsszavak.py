@@ -4,272 +4,227 @@ import pandas as pd
 import pytest
 
 from trendfigyelo import kulcsszavak
-from trendfigyelo.config import Config
+from trendfigyelo.config import Config, KulcsszoTetel
 from trendfigyelo.kliens import AgFeladva
+from trendfigyelo.nyers_kimenet import ervenyes_nyers_rekord
+
+FIX_MOST = datetime(2021, 1, 3, 12, tzinfo=timezone.utc)  # mai budapesti nap = 2021-01-03
 
 
 def _config():
+    """3 szó: állás, hitel, tüntetés (a hívási sorrend ellenőrzéséhez)."""
     return Config(
         geo="HU", nyelv="hu", idoablak_orak=24, idosor_idokeret="now 1-d",
-        referenciaszo="időjárás", alap_keses_mp=3.0, szoras_mp=(3, 7),
-        max_probak=4, backoff_mp=[30, 120, 480], trend_idosor_max=15, proxy=None,
-        kulcsszavak={"megelhetes": ["a", "b", "c", "d", "e"], "gazdaság": ["f"]},
+        alap_keses_mp=3.0, szoras_mp=(3, 7), max_probak=4, backoff_mp=[30, 120, 480],
+        trend_idosor_max=15, proxy=None,
+        kulcsszavak=[
+            KulcsszoTetel("állás", "munkaeropiac", "szintmero"),
+            KulcsszoTetel("hitel", "haztartasi_penzugy", "szintmero"),
+            KulcsszoTetel("tüntetés", "kozelet", "esemenyjelzo"),
+        ],
     )
 
 
-def test_kotegek_4es_bontas_referenciaszoval():
-    kot = kulcsszavak.kotegek(_config())
-    # 6 kulcsszó → 2 köteg (4 + 2)
-    assert len(kot) == 2
-    assert len(kot[0]["tagok"]) == 4
-    assert kot[0]["referenciaszo"] == "időjárás"
-    assert kulcsszavak.koteg_lekerdezes_szavai(kot[0])[-1] == "időjárás"
-    assert len(kulcsszavak.koteg_lekerdezes_szavai(kot[0])) == 5
+def egy_szo_df(kif):
+    """Egy-oszlopos órás DataFrame egy kulcsszóra + isPartial oszlop (a farok részleges)."""
+    idx = pd.to_datetime([
+        datetime(2021, 1, 1, 10, tzinfo=timezone.utc),  # teljes nap
+        datetime(2021, 1, 2, 10, tzinfo=timezone.utc),  # teljes nap
+        datetime(2021, 1, 3, 9, tzinfo=timezone.utc),   # mai (részleges)
+    ])
+    return pd.DataFrame({kif: [30, 40, 99], "isPartial": [False, False, True]}, index=idx)
 
 
-def test_skalazo_atlagra_szamol():
-    assert kulcsszavak.skalazo([50, 50]) == 2.0   # 100 / 50
-    assert kulcsszavak.skalazo([0, 0]) is None
-
-
-def test_parse_koteg_nyers_es_normalizalt():
-    idx = pd.to_datetime([datetime(2021, 1, 1, 10, tzinfo=timezone.utc)])
-    df = pd.DataFrame({"a": [30], "b": [60], "időjárás": [50]}, index=idx)
-    koteg = {"id": 0, "tagok": [("a", "megelhetes"), ("b", "megelhetes")],
-             "referenciaszo": "időjárás"}
-    pontok = kulcsszavak.parse_koteg(df, koteg, date(2021, 1, 2), 1.0)
-    a_pont = next(p for p in pontok if p["kulcsszo"] == "a")
-    assert a_pont["nyers_ertek"] == 30
-    # skálázó = 100/50 = 2.0 → normalizált = 30*2 = 60.0
-    assert a_pont["normalizalt_ertek"] == 60.0
-    assert a_pont["csoport"] == "megelhetes"
-    assert a_pont["koteg_id"] == 0
-
-
-def test_csv_ir_fejlec(tmp_path):
-    idx = pd.to_datetime([datetime(2021, 1, 1, 10, tzinfo=timezone.utc)])
-    df = pd.DataFrame({"a": [30], "időjárás": [50]}, index=idx)
-    koteg = {"id": 0, "tagok": [("a", "megelhetes")], "referenciaszo": "időjárás"}
-    pontok = kulcsszavak.parse_koteg(df, koteg, date(2021, 1, 2), 1.0)
-    p = kulcsszavak.csv_ir(tmp_path, "2021-01-01_1200", "2021-01-01T12:00:00+00:00", "HU", pontok)
-    fejlec = p.read_text(encoding="utf-8-sig").splitlines()[0]
-    assert fejlec == ("kulcsszo;csoport;idopont_utc;nyers_ertek;normalizalt_ertek;"
-                      "koteg_id;referenciaszo;referencia_atlag;letoltve_utc;geo")
-    assert p.name == "kulcsszo_idosor_HU_2021-01-01_1200.csv"
-
-
-def _config_2koteg():
-    return Config(geo="HU", nyelv="hu", idoablak_orak=24, idosor_idokeret="now 1-d",
-                  referenciaszo="időjárás", alap_keses_mp=3.0, szoras_mp=(3, 7),
-                  max_probak=4, backoff_mp=[30, 120, 480], trend_idosor_max=15,
-                  proxy=None, kulcsszavak={"g": ["a", "b", "c", "d", "e", "f", "g2", "h"]})
-
-
-def _koteg_df(szavak, ref):
-    idx = pd.to_datetime([datetime(2021, 1, 1, 10, tzinfo=timezone.utc)])
-    adat = {sz: [50] for sz in szavak}
-    adat[ref] = [50]
-    return pd.DataFrame(adat, index=idx)
-
-
-class _FakeKliens:
-    """A hivas a viselkodes lista (hívási sorrend) szerint ad df-et vagy dob kivételt."""
-    def __init__(self, viselkedes):
-        self.viselkedes = viselkedes
-        self.hivasszamlalo = 0
-        self.tr = type('obj', (object,), {'interest_over_time': None})()
+class KemKliens:
+    """Rögzíti a hívásonként átadott 'szavak' listát; szavankénti df-et ad."""
+    def __init__(self, df_gyar):
+        self.df_gyar = df_gyar
+        self.hivott_szavak = []
+        self.tr = type("T", (), {"interest_over_time": None})()
 
     def hivas(self, ag, fn, szavak, **kw):
-        i = self.hivasszamlalo
+        self.hivott_szavak.append(list(szavak))
+        return self.df_gyar(szavak[0])
+
+    def hivasszam(self, ag):
+        return len(self.hivott_szavak)
+
+    def osszes_hivas(self):
+        return len(self.hivott_szavak)
+
+
+def test_szolo_lekerdezes_szavankent_egy_hivas():
+    # A LÉNYEGI RED: szavankénti EGY hívás, egy-elemű listával, horgony NÉLKÜL.
+    kem = KemKliens(df_gyar=egy_szo_df)
+    kulcsszavak.gyujt(kem, _config(), most=FIX_MOST)
+    assert kem.hivott_szavak == [["állás"], ["hitel"], ["tüntetés"]]  # 3 hívás, 1-1 szó
+    assert all("időjárás" not in sz for sz in kem.hivott_szavak)      # nincs horgony
+
+
+def test_nincs_normalizalt_mezo_a_pontokban():
+    pontok, _, _ = kulcsszavak.gyujt(KemKliens(df_gyar=egy_szo_df), _config(), most=FIX_MOST)
+    assert pontok and all("normalizalt_ertek" not in p and "referenciaszo" not in p for p in pontok)
+    assert all(p["domen"] and p["tipus"] for p in pontok)
+
+
+def test_nyers_sorozatok_atmegy_a_szerzodesen():
+    _, _, nyers = kulcsszavak.gyujt(KemKliens(df_gyar=egy_szo_df), _config(), most=FIX_MOST)
+    assert set(nyers.keys()) == {"állás", "hitel", "tüntetés"}
+    # a Task 3-as validátor: minden nyers rekord érvényes (ablakhatárok + reszleges)
+    assert all(ervenyes_nyers_rekord(r) == [] for r in nyers.values())
+    assert nyers["állás"]["pontok"][-1]["reszleges"] is True   # a farok részleges
+
+
+def _config_egy():
+    return Config(
+        geo="HU", nyelv="hu", idoablak_orak=24, idosor_idokeret="now 1-d",
+        alap_keses_mp=3.0, szoras_mp=(3, 7), max_probak=4, backoff_mp=[30, 120, 480],
+        trend_idosor_max=15, proxy=None,
+        kulcsszavak=[KulcsszoTetel("állás", "munkaeropiac", "szintmero")],
+    )
+
+
+def test_gyujt_nan_ures_ertek_nem_dobal():
+    # A Task 3 szerződés megengedi az ertek: "" alakot; a NaN/hiányzó érték várt eset.
+    def nan_df(kif):
+        idx = pd.to_datetime([
+            datetime(2021, 1, 2, 10, tzinfo=timezone.utc),   # utolsó teljes nap, NaN érték
+            datetime(2021, 1, 3, 9, tzinfo=timezone.utc),    # mai (részleges)
+        ])
+        return pd.DataFrame({kif: [float("nan"), 40], "isPartial": [False, True]}, index=idx)
+    pontok, _, nyers = kulcsszavak.gyujt(KemKliens(df_gyar=nan_df), _config_egy(), most=FIX_MOST)
+    p = next(p for p in pontok if p["idopont_utc"][:10] == "2021-01-02")
+    assert p["nyers_ertek"] == ""                       # NaN → "" (nem int()-eli el)
+    assert nyers["állás"]["pontok"][0]["ertek"] == ""   # a nyers sorozatban is ""
+
+
+def test_gyujt_3_tuple_egynapos_es_napi_pontok():
+    pontok, napi, nyers = kulcsszavak.gyujt(KemKliens(df_gyar=egy_szo_df), _config(), most=FIX_MOST)
+    assert {p["idopont_utc"][:10] for p in pontok} == {"2021-01-02"}   # egynapos: utolsó teljes
+    assert set(napi.keys()) == {"2021-01-01", "2021-01-02"}            # napi: utolsó 2 teljes
+    assert set(nyers.keys()) == {"állás", "hitel", "tüntetés"}
+
+
+class _FeladoKliens:
+    def __init__(self):
+        self.hivasszamlalo = 0
+        self.tr = type("T", (), {"interest_over_time": None})()
+
+    def hivas(self, ag, fn, szavak, **kw):
         self.hivasszamlalo += 1
-        v = self.viselkedes[i]
-        if isinstance(v, Exception):
-            raise v
-        return v
+        raise AgFeladva("kulcsszo", ["429", "429", "429", "429"])
+
+    def hivasszam(self, ag):
+        return self.hivasszamlalo
+
+    def osszes_hivas(self):
+        return self.hivasszamlalo
 
 
 def test_gyujt_agfeladva_feladja_az_egesz_agat():
-    # 8 kulcsszó → 2 köteg; az 1. köteg 429-kimerülést dob → egész ág feladva
-    k = _FakeKliens([AgFeladva("kulcsszo", ["429", "429", "429", "429"]),
-                     _koteg_df(["e", "f", "g2", "h"], "időjárás")])
+    k = _FeladoKliens()
     with pytest.raises(AgFeladva):
-        kulcsszavak.gyujt(k, _config_2koteg())
-    assert k.hivasszamlalo == 1  # a 2. köteget meg sem hívja
+        kulcsszavak.gyujt(k, _config(), most=FIX_MOST)
+    assert k.hivasszamlalo == 1   # az első szó után feladja, a többit meg sem hívja
 
 
-def test_gyujt_egyeb_hiba_csak_azt_a_koteget_hagyja_ki():
-    df2 = _koteg_df(["e", "f", "g2", "h"], "időjárás")
-    k = _FakeKliens([RuntimeError("hálózat"), df2])
-    pontok, _ = kulcsszavak.gyujt(k, _config_2koteg())
-    assert k.hivasszamlalo == 2                     # mindkét köteget meghívja
-    assert {p["koteg_id"] for p in pontok} == {1}   # csak a 2. köteg pontjai jönnek át
+class _EgySzoBukoKliens:
+    """Az 'állás' RuntimeError-t dob (kihagyva), a többi df-et ad."""
+    def __init__(self):
+        self.hivott = []
+        self.tr = type("T", (), {"interest_over_time": None})()
+
+    def hivas(self, ag, fn, szavak, **kw):
+        self.hivott.append(szavak[0])
+        if szavak[0] == "állás":
+            raise RuntimeError("hálózat")
+        return egy_szo_df(szavak[0])
+
+    def hivasszam(self, ag):
+        return len(self.hivott)
+
+    def osszes_hivas(self):
+        return len(self.hivott)
 
 
-def test_gyujt_tuple_egynapos_es_napi_pontok():
-    idx = pd.to_datetime([
-        datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
-        datetime(2021, 1, 2, 10, tzinfo=timezone.utc),
-        datetime(2021, 1, 3, 9, tzinfo=timezone.utc),   # mai (csonka)
-    ])
-    df = pd.DataFrame({"a": [30, 40, 99], "b": [30, 40, 99], "c": [30, 40, 99],
-                       "d": [30, 40, 99], "időjárás": [50, 50, 50]}, index=idx)
-    k = _FakeKliens([df])
-    cfg = _config()  # 1 köteg (a..d) + referencia; tortenet_visszapotlas_nap alap 3
-    most = datetime(2021, 1, 3, 12, tzinfo=timezone.utc)  # mai budapesti nap = 01-03
-    pontok, napi = kulcsszavak.gyujt(k, cfg, most)
-    assert {p["idopont_utc"][:10] for p in pontok} == {"2021-01-02"}   # egynapos: utolsó teljes
-    assert set(napi.keys()) == {"2021-01-01", "2021-01-02"}            # napi: utolsó 2 teljes
+def test_gyujt_egyeb_hiba_csak_azt_a_szot_hagyja_ki():
+    k = _EgySzoBukoKliens()
+    pontok, _, nyers = kulcsszavak.gyujt(k, _config(), most=FIX_MOST)
+    assert k.hivott == ["állás", "hitel", "tüntetés"]        # mindet meghívja
+    assert "állás" not in {p["kulcsszo"] for p in pontok}    # a bukott szó kimaradt
+    assert "állás" not in nyers
 
 
-def test_parse_koteg_nan_nem_dobal():
-    idx = pd.to_datetime([datetime(2021, 1, 1, 10, tzinfo=timezone.utc)])
-    df = pd.DataFrame({"a": [float("nan")], "időjárás": [50]}, index=idx)
-    koteg = {"id": 0, "tagok": [("a", "megelhetes")], "referenciaszo": "időjárás"}
-    pontok = kulcsszavak.parse_koteg(df, koteg, date(2021, 1, 2), 1.0)
-    assert pontok[0]["nyers_ertek"] == ""
-    assert pontok[0]["normalizalt_ertek"] == ""
+def test_csv_ir_fejlec(tmp_path):
+    pontok = [{"kulcsszo": "állás", "domen": "munkaeropiac", "tipus": "szintmero",
+               "idopont_utc": "2021-01-01T10:00:00+00:00", "nyers_ertek": 30}]
+    p = kulcsszavak.csv_ir(tmp_path, "2021-01-01_1200", "2021-01-01T12:00:00+00:00", "HU", pontok)
+    fejlec = p.read_text(encoding="utf-8-sig").splitlines()[0]
+    assert fejlec == "kulcsszo;domen;tipus;idopont_utc;nyers_ertek;letoltve_utc;geo"
+    assert p.name == "kulcsszo_idosor_HU_2021-01-01_1200.csv"
 
 
-def _tobbnapos_df():
-    idx = pd.to_datetime([
-        datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
-        datetime(2021, 1, 2, 10, tzinfo=timezone.utc),
-        datetime(2021, 1, 2, 12, tzinfo=timezone.utc),  # 2021-01-02 a mai (részleges) nap
-    ])
-    return pd.DataFrame({"a": [30, 40, 50], "időjárás": [0, 0, 0]}, index=idx)
+# --- nap-szűrő segédfüggvények (horgony-független, megtartva) ---
+
+def _napok_df(datetimes, ertekek):
+    return pd.DataFrame({"a": ertekek}, index=pd.to_datetime(datetimes))
 
 
 def test_utolso_teljes_nap_kizarja_a_mait():
-    df = _tobbnapos_df()
-    # mai budapesti nap = 2021-01-02 → utolsó teljes = 2021-01-01
+    df = _napok_df([
+        datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
+        datetime(2021, 1, 2, 10, tzinfo=timezone.utc),
+        datetime(2021, 1, 2, 12, tzinfo=timezone.utc),
+    ], [30, 40, 50])
     assert kulcsszavak.utolso_teljes_nap(df, date(2021, 1, 2)) == date(2021, 1, 1)
 
 
 def test_utolso_teljes_nap_nincs_korabbi():
-    df = _tobbnapos_df()
+    df = _napok_df([
+        datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
+        datetime(2021, 1, 1, 12, tzinfo=timezone.utc),
+    ], [30, 40])
     assert kulcsszavak.utolso_teljes_nap(df, date(2021, 1, 1)) is None
 
 
-def test_parse_koteg_csak_az_utolso_teljes_napot():
-    df = _tobbnapos_df()
-    koteg = {"id": 0, "tagok": [("a", "megelhetes")], "referenciaszo": "időjárás"}
-    pontok = kulcsszavak.parse_koteg(df, koteg, date(2021, 1, 2), 1.0)
-    # csak 2021-01-01 marad (1 pont), a 2021-01-02-i kettő kizárva
-    assert len(pontok) == 1
-    assert pontok[0]["nyers_ertek"] == 30
-
-
-def test_utolso_teljes_nap_tobb_teljes_nap_kozul_a_legutolso():
-    # 3 teljes nap (01-01, 01-02, 01-03) + csonka mai (01-04) → 01-03
-    idx = pd.to_datetime([
-        datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
-        datetime(2021, 1, 2, 10, tzinfo=timezone.utc),
-        datetime(2021, 1, 3, 10, tzinfo=timezone.utc),
-        datetime(2021, 1, 4, 9, tzinfo=timezone.utc),
-    ])
-    df = pd.DataFrame({"a": [10, 20, 30, 40], "időjárás": [50, 50, 50, 50]}, index=idx)
-    assert kulcsszavak.utolso_teljes_nap(df, date(2021, 1, 4)) == date(2021, 1, 3)
-
-
-def test_parse_koteg_tobb_teljes_nap_csak_a_legutolso():
-    # élesben a 7-d ablakban több teljes nap van; a szűrésnek a LEGUTOLSÓT kell választania
-    idx = pd.to_datetime([
-        datetime(2021, 1, 1, 10, tzinfo=timezone.utc),  # teljes nap — KIZÁRVA
-        datetime(2021, 1, 2, 10, tzinfo=timezone.utc),  # teljes nap — KIZÁRVA
-        datetime(2021, 1, 3, 8, tzinfo=timezone.utc),   # legutolsó teljes nap — BENN
-        datetime(2021, 1, 3, 12, tzinfo=timezone.utc),  # legutolsó teljes nap — BENN
-        datetime(2021, 1, 4, 9, tzinfo=timezone.utc),   # mai (csonka) — KIZÁRVA
-    ])
-    df = pd.DataFrame({"a": [10, 20, 30, 35, 40], "időjárás": [50, 50, 50, 50, 50]}, index=idx)
-    koteg = {"id": 0, "tagok": [("a", "megelhetes")], "referenciaszo": "időjárás"}
-    pontok = kulcsszavak.parse_koteg(df, koteg, date(2021, 1, 4), 1.0)
-    assert [p["nyers_ertek"] for p in pontok] == [30, 35]  # csak a 01-03 két pontja
-    assert kulcsszavak.aggregalt_nap(pontok) == "2021-01-03"
-
-
-def test_parse_koteg_ervenytelen_referencia_ures_normalizalt():
-    df = _tobbnapos_df()  # időjárás végig 0 → referencia-átlag nincs → érvénytelen
-    koteg = {"id": 0, "tagok": [("a", "megelhetes")], "referenciaszo": "időjárás"}
-    p = kulcsszavak.parse_koteg(df, koteg, date(2021, 1, 2), 1.0)[0]
-    assert p["referencia_ervenyes"] is False
-    assert p["normalizalt_ertek"] == ""
-    assert p["referencia_atlag"] == ""
-
-
-def test_parse_koteg_ervenyes_referencia_normalizal():
-    idx = pd.to_datetime([datetime(2021, 1, 1, 10, tzinfo=timezone.utc)])
-    df = pd.DataFrame({"a": [30], "időjárás": [50]}, index=idx)
-    koteg = {"id": 0, "tagok": [("a", "megelhetes")], "referenciaszo": "időjárás"}
-    p = kulcsszavak.parse_koteg(df, koteg, date(2021, 1, 2), 1.0)[0]
-    assert p["referencia_ervenyes"] is True
-    assert p["referencia_atlag"] == 50.0
-    assert p["nyers_ertek"] == 30
-    assert p["normalizalt_ertek"] == 60.0  # 30 * (100/50)
-
-
-def test_parse_koteg_kuszob_alatti_de_mert_referencia_dokumentalt():
-    # referencia mérhető (nem-nulla), de a küszöb (2.0) alatt → normalizált üres,
-    # de a referencia_atlag a MÉRT számot mutatja (nem üres)
-    idx = pd.to_datetime([datetime(2021, 1, 1, 10, tzinfo=timezone.utc)])
-    df = pd.DataFrame({"a": [30], "időjárás": [1]}, index=idx)  # ref átlag = 1.0
-    koteg = {"id": 0, "tagok": [("a", "megelhetes")], "referenciaszo": "időjárás"}
-    p = kulcsszavak.parse_koteg(df, koteg, date(2021, 1, 2), 2.0)[0]  # min_atlag=2.0 → érvénytelen
-    assert p["referencia_ervenyes"] is False
-    assert p["normalizalt_ertek"] == ""
-    assert p["referencia_atlag"] == 1.0   # a mért átlag látszik, nem ""
-
-
-def test_aggregalt_nap_a_pontok_budapesti_napja():
-    idx = pd.to_datetime([datetime(2021, 1, 1, 10, tzinfo=timezone.utc)])
-    df = pd.DataFrame({"a": [30], "időjárás": [50]}, index=idx)
-    koteg = {"id": 0, "tagok": [("a", "megelhetes")], "referenciaszo": "időjárás"}
-    pontok = kulcsszavak.parse_koteg(df, koteg, date(2021, 1, 2), 1.0)
-    assert kulcsszavak.aggregalt_nap(pontok) == "2021-01-01"
-    assert kulcsszavak.aggregalt_nap([]) is None
-
-
-def test_csv_ir_referencia_atlag_oszlop(tmp_path):
-    idx = pd.to_datetime([datetime(2021, 1, 1, 10, tzinfo=timezone.utc)])
-    df = pd.DataFrame({"a": [30], "időjárás": [50]}, index=idx)
-    koteg = {"id": 0, "tagok": [("a", "megelhetes")], "referenciaszo": "időjárás"}
-    pontok = kulcsszavak.parse_koteg(df, koteg, date(2021, 1, 2), 1.0)
-    p = kulcsszavak.csv_ir(tmp_path, "2021-01-01_1200", "2021-01-01T12:00:00+00:00", "HU", pontok)
-    fejlec = p.read_text(encoding="utf-8-sig").splitlines()[0]
-    assert fejlec == ("kulcsszo;csoport;idopont_utc;nyers_ertek;normalizalt_ertek;"
-                      "koteg_id;referenciaszo;referencia_atlag;letoltve_utc;geo")
-
-
 def test_utolso_N_teljes_nap_utolso_harmat_adja():
-    idx = pd.to_datetime(
-        [datetime(2021, 1, d, 10, tzinfo=timezone.utc) for d in (1, 2, 3, 4)]
-        + [datetime(2021, 1, 5, 9, tzinfo=timezone.utc)]  # mai (csonka)
-    )
-    df = pd.DataFrame({"a": [10, 20, 30, 40, 50], "időjárás": [50] * 5}, index=idx)
-    # mai=01-05 → teljes: 01-01..01-04 → utolsó 3 = [01-02, 01-03, 01-04]
+    idx = [datetime(2021, 1, d, 10, tzinfo=timezone.utc) for d in (1, 2, 3, 4)]
+    idx.append(datetime(2021, 1, 5, 9, tzinfo=timezone.utc))  # mai (csonka)
+    df = _napok_df(idx, [10, 20, 30, 40, 50])
     assert kulcsszavak.utolso_N_teljes_nap(df, date(2021, 1, 5), 3) == [
         date(2021, 1, 2), date(2021, 1, 3), date(2021, 1, 4),
     ]
 
 
 def test_utolso_N_teljes_nap_kevesebb_mint_n():
-    idx = pd.to_datetime([
+    df = _napok_df([
         datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
         datetime(2021, 1, 2, 9, tzinfo=timezone.utc),   # mai (csonka)
-    ])
-    df = pd.DataFrame({"a": [10, 20], "időjárás": [50, 50]}, index=idx)
+    ], [10, 20])
     assert kulcsszavak.utolso_N_teljes_nap(df, date(2021, 1, 2), 3) == [date(2021, 1, 1)]
 
 
-def test_parse_koteg_napok_tobb_napot_ad_naponkenti_normalizalassal():
-    idx = pd.to_datetime([
-        datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
-        datetime(2021, 1, 2, 10, tzinfo=timezone.utc),
-        datetime(2021, 1, 3, 9, tzinfo=timezone.utc),   # mai (csonka)
-    ])
-    df = pd.DataFrame({"a": [30, 40, 99], "időjárás": [50, 50, 50]}, index=idx)
-    koteg = {"id": 0, "tagok": [("a", "megelhetes")], "referenciaszo": "időjárás"}
-    napi = kulcsszavak.parse_koteg_napok(df, koteg, date(2021, 1, 3), 1.0, 3)
-    assert set(napi.keys()) == {"2021-01-01", "2021-01-02"}   # a mai (01-03) kizárva
-    assert napi["2021-01-01"][0]["nyers_ertek"] == 30
-    assert napi["2021-01-01"][0]["normalizalt_ertek"] == 60.0  # 30 * (100/50)
-    assert napi["2021-01-02"][0]["nyers_ertek"] == 40
+# --- review-fixek: M1 (rendezetlen index), M2 (NaN isPartial) ---
+
+def test_nyers_sorozat_rendezetlen_index_helyes_ablakhatar():
+    # M1: az ablakhatár df.index.min()/max()-ból, nem pozicionális [0]/[-1]-ből;
+    # rendezetlen indexnél a pozicionális kezdet > veg lenne → validátor-bukás.
+    def fordit_df(kif):
+        idx = pd.to_datetime([
+            datetime(2021, 1, 3, 9, tzinfo=timezone.utc),   # később (index eleje)
+            datetime(2021, 1, 1, 10, tzinfo=timezone.utc),  # korábbi (index vége)
+        ])
+        return pd.DataFrame({kif: [40, 30], "isPartial": [True, False]}, index=idx)
+    _, _, nyers = kulcsszavak.gyujt(KemKliens(df_gyar=fordit_df), _config_egy(), most=FIX_MOST)
+    r = nyers["állás"]
+    assert r["ablak_kezdet_utc"] < r["ablak_veg_utc"]
+    assert ervenyes_nyers_rekord(r) == []
+
+
+def test_nyers_sorozat_nan_ispartial_nem_reszleges():
+    # M2: NaN isPartial cellát ne olvasson részlegesnek (bool(NaN) True lenne).
+    def nan_ip_df(kif):
+        idx = pd.to_datetime([datetime(2021, 1, 1, 10, tzinfo=timezone.utc)])
+        return pd.DataFrame({kif: [30], "isPartial": [float("nan")]}, index=idx)
+    _, _, nyers = kulcsszavak.gyujt(KemKliens(df_gyar=nan_ip_df), _config_egy(), most=FIX_MOST)
+    assert nyers["állás"]["pontok"][0]["reszleges"] is False

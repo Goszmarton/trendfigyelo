@@ -47,9 +47,9 @@ def test_csv_ir_fejlec_es_geo(tmp_path):
 
 def _config(maxn=5):
     return Config(geo="HU", nyelv="hu", idoablak_orak=24, idosor_idokeret="now 1-d",
-                  referenciaszo="időjárás", alap_keses_mp=3.0, szoras_mp=(3, 7),
+                  alap_keses_mp=3.0, szoras_mp=(3, 7),
                   max_probak=4, backoff_mp=[30, 120, 480], trend_idosor_max=maxn,
-                  proxy=None, kulcsszavak={"g": ["x"]})
+                  proxy=None, kulcsszavak=[])
 
 
 def _df_named(name):

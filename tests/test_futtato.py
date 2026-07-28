@@ -1,20 +1,19 @@
 import csv
-from datetime import date, datetime, timezone
+from datetime import datetime, timezone
 from types import SimpleNamespace
 
 import pandas as pd
-import pytest
 
 from trendfigyelo import futtato, json_export, kliens
-from trendfigyelo.config import Config
+from trendfigyelo.config import Config, KulcsszoTetel
 
 
-def _config():
+def _config(kulcsszavak=None):
     return Config(
         geo="HU", nyelv="hu", idoablak_orak=24, idosor_idokeret="now 1-d",
-        referenciaszo="időjárás", alap_keses_mp=3.0, szoras_mp=(3, 7),
+        alap_keses_mp=3.0, szoras_mp=(3, 7),
         max_probak=4, backoff_mp=[30, 120, 480], trend_idosor_max=2, proxy=None,
-        kulcsszavak={"g": ["a"]},
+        kulcsszavak=kulcsszavak or [KulcsszoTetel("a", "g", "szintmero")],
     )
 
 
@@ -96,9 +95,9 @@ def test_teljes_blokkolas_egyetlen_hivas_utan_leall(tmp_path):
 
 
 class UresKulcsszoKliens:
-    """felkapott_rss ad adatot; a kulcsszo-ág sima (nem 429) hibát dob köteget.
+    """felkapott_rss ad adatot; a kulcsszo-ág sima (nem 429) hibát dob szavanként.
 
-    A kulcsszavak.gyujt ezt kötegenként lenyeli → [] a kulcsszó-eredmény.
+    A kulcsszavak.gyujt ezt szavanként lenyeli → [] a kulcsszó-eredmény.
     """
     def __init__(self):
         self.tr = _dummy_tr()
@@ -126,9 +125,9 @@ def test_ures_kulcsszo_nem_irja_felul_a_tortenetet(tmp_path):
     most = datetime(2021, 1, 1, 12, 0, tzinfo=timezone.utc)
     docs_data = tmp_path / "docs" / "data"
     nap_iso = "2021-01-01"
-    # jó bejegyzés magvetése
-    jo_pontok = [{"kulcsszo": "a", "csoport": "g", "idopont_utc": "2021-01-01T10:00:00+00:00",
-                  "nyers_ertek": 50, "normalizalt_ertek": 50}]
+    # jó bejegyzés magvetése (új pont-alak: domen/nyers_ertek)
+    jo_pontok = [{"kulcsszo": "a", "domen": "g", "tipus": "szintmero",
+                  "idopont_utc": "2021-01-01T10:00:00+00:00", "nyers_ertek": 50}]
     json_export.tortenet_frissit(docs_data, nap_iso, jo_pontok)
 
     kod = futtato.futtat(_config(), UresKulcsszoKliens(),
@@ -176,37 +175,40 @@ def test_reszleges_siker_nulla_kilepesi_kod(tmp_path):
     assert eredmenyek["kulcsszo"] == "siker"
 
 
-def test_tervezett_hivasszam_agstrukturabol():
-    c = _config()  # trend_idosor_max=2, 1 kulcsszó → 1 köteg
-    assert futtato.tervezett_hivasszam(c) == 2 + 2 + 1  # api+rss + idosor + 1 köteg = 5
+def test_tervezett_hivasszam_szolo():
+    c = _config()  # trend_idosor_max=2, 1 kulcsszó → SZÓLÓ: 1 hívás
+    assert futtato.tervezett_hivasszam(c) == 2 + 2 + 1  # api+rss + idosor + 1 szó = 5
 
 
 def test_tervezett_hivasszam_teljes_config():
     c = Config(
         geo="HU", nyelv="hu", idoablak_orak=24, idosor_idokeret="now 1-d",
-        referenciaszo="időjárás", alap_keses_mp=3.0, szoras_mp=(3, 7),
+        alap_keses_mp=3.0, szoras_mp=(3, 7),
         max_probak=4, backoff_mp=[30, 120, 480], trend_idosor_max=15, proxy=None,
-        kulcsszavak={"a": ["1", "2", "3", "4", "5", "6", "7", "8"],
-                     "b": ["9", "10", "11", "12", "13", "14"],
-                     "c": ["15", "16", "17", "18", "19", "20", "21", "22"]},
+        kulcsszavak=[KulcsszoTetel(f"szo{i}", "d", "szintmero") for i in range(13)],
     )
-    # 22 kulcsszó → ceil(22/4)=6 köteg → 2 + 15 + 6 = 23
-    assert futtato.tervezett_hivasszam(c) == 23
+    # szóló: szavankénti egy hívás → CONFIGBÓL származó elvárás (a lista változásakor nem törik)
+    assert futtato.tervezett_hivasszam(c) == 2 + c.trend_idosor_max + len(c.osszes_kulcsszo())
+    assert futtato.tervezett_hivasszam(c) == 2 + 15 + 13  # konkrét pin: 30
+
+
+def _egy_szo_df(oszlop, ertekek, idopontok, reszleges):
+    idx = pd.to_datetime(idopontok)
+    return pd.DataFrame({oszlop: ertekek, "isPartial": reszleges}, index=idx)
 
 
 class KulcsszoAdatKliens:
-    """felkapott_rss ad egy trendet; kulcsszo ág egy 7-d DataFrame-et ad, más ág üres."""
+    """felkapott_rss ad egy trendet; a kulcsszo-ág egy-oszlopos 7-d DataFrame-et ad (horgony nélkül)."""
     def __init__(self):
         self.tr = _dummy_tr()
     def hivas(self, ag, fn, *a, **k):
         if ag == "felkapott_rss":
             return [SimpleNamespace(keyword="benzinár", news=[])]
         if ag == "kulcsszo":
-            idx = pd.to_datetime([
+            return _egy_szo_df("a", [30, 40], [
                 datetime(2021, 1, 1, 10, tzinfo=timezone.utc),   # utolsó teljes nap
                 datetime(2021, 1, 2, 10, tzinfo=timezone.utc),   # mai (részleges)
-            ])
-            return pd.DataFrame({"a": [30, 40], "időjárás": [50, 60]}, index=idx)
+            ], [False, True])
         return []
     def hivasszam(self, ag):
         return 1
@@ -216,20 +218,19 @@ class KulcsszoAdatKliens:
 
 class KulcsszoHianyzoNapokKliens:
     """3 teljes nap (01-01,01-02,01-03) + csonka mai (01-04) egy 7-d ablakban;
-    a kulcsszó-ág egy DataFrame-et ad, más ág üres. A 429-önjavítás teszteléséhez."""
+    egy-oszlopos DataFrame (horgony nélkül). A 429-önjavítás teszteléséhez."""
     def __init__(self):
         self.tr = _dummy_tr()
     def hivas(self, ag, fn, *a, **k):
         if ag == "felkapott_rss":
             return [SimpleNamespace(keyword="benzinár", news=[])]
         if ag == "kulcsszo":
-            idx = pd.to_datetime([
+            return _egy_szo_df("a", [30, 40, 50, 60], [
                 datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
                 datetime(2021, 1, 2, 10, tzinfo=timezone.utc),
                 datetime(2021, 1, 3, 10, tzinfo=timezone.utc),
                 datetime(2021, 1, 4, 9, tzinfo=timezone.utc),   # mai (részleges)
-            ])
-            return pd.DataFrame({"a": [30, 40, 50, 60], "időjárás": [50, 50, 50, 50]}, index=idx)
+            ], [False, False, False, True])
         return []
     def hivasszam(self, ag):
         return 1
@@ -239,8 +240,7 @@ class KulcsszoHianyzoNapokKliens:
 
 def test_tortenet_a_valos_adatnapra_kerul(tmp_path):
     import json
-    cfg = _config()
-    cfg.kulcsszavak = {"megelhetes": ["a"]}  # 1 köteg, tag "a"
+    cfg = _config([KulcsszoTetel("a", "megelhetes", "szintmero")])
     most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)  # mai budapesti nap 2021-01-02
     futtato.futtat(cfg, KulcsszoAdatKliens(),
                    tmp_path / "adatok", tmp_path / "docs" / "data", most=most)
@@ -251,17 +251,14 @@ def test_tortenet_a_valos_adatnapra_kerul(tmp_path):
 
 def test_futtato_visszapotolja_a_kihagyott_kulcsszo_napot(tmp_path):
     """Két egymást követő kihagyott nap (01-01, 01-02) visszapótlása a 7-d ablakból;
-    a tortenet-ben csak az utolsó teljes nap (01-03) volt meg. A RÉGI egynapos út
-    (parse_koteg → aggregalt_nap → egy-napos tortenet_frissit) ezt NEM tudná
-    visszapótolni, csak az új parse_koteg_napok + tortenet_frissit_napok."""
+    a tortenet-ben csak az utolsó teljes nap (01-03) volt meg. A visszapótlást a
+    gyujt napi_pontok + tortenet_frissit_napok (insert-if-absent) végzi."""
     import json
-    cfg = _config()
-    cfg.kulcsszavak = {"megelhetes": ["a"]}
+    cfg = _config([KulcsszoTetel("a", "megelhetes", "szintmero")])
     docs_data = tmp_path / "docs" / "data"
     # magvetés: csak az utolsó teljes nap (01-03) van meg; 01-01 és 01-02 kimaradt
     json_export.tortenet_frissit(docs_data, "2021-01-03", [
-        {"kulcsszo": "a", "csoport": "megelhetes", "normalizalt_ertek": 30.0,
-         "referencia_ervenyes": True}])
+        {"kulcsszo": "a", "domen": "megelhetes", "tipus": "szintmero", "nyers_ertek": 30}])
     most = datetime(2021, 1, 4, 12, 0, tzinfo=timezone.utc)  # mai=01-04 → utolsó teljes 01-03
     futtato.futtat(cfg, KulcsszoHianyzoNapokKliens(),
                    tmp_path / "adatok", docs_data, most=most)

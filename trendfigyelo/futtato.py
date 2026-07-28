@@ -21,10 +21,9 @@ def tervezett_hivasszam(config) -> int:
     """A hibamentes (429 nélküli) futás várható Google-hívásszáma az ágstruktúrából.
 
     felkapott_api (1) + felkapott_rss (1) + idosor (≤ trend_idosor_max, trendenként)
-    + kulcsszo (kötegenként = ceil(kulcsszavak / KOTEG_MERET)).
+    + kulcsszo (SZÓLÓ: szavankénti egy hívás = len(kulcsszavak)).
     """
-    kotegek_szama = -(-len(config.osszes_kulcsszo()) // kulcsszavak.KOTEG_MERET)
-    return 2 + config.trend_idosor_max + kotegek_szama
+    return 2 + config.trend_idosor_max + len(config.osszes_kulcsszo())
 
 
 def top_trend_struktura(api_trendek, trend_idosorok, rss_trendek, config) -> list:
@@ -117,7 +116,7 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
                             lambda: idosorok.gyujt(kliens, config, top_kifejezesek)) or []
         kulcsszo_eredmeny = _ag(bejegyzesek, kliens, "kulcsszo",
                             lambda: kulcsszavak.gyujt(kliens, config, most))
-        kulcsszo_pontok, kulcsszo_napi_pontok = kulcsszo_eredmeny or ([], {})
+        kulcsszo_pontok, kulcsszo_napi_pontok, _kulcsszo_nyers = kulcsszo_eredmeny or ([], {}, {})
     except AgFeladva:
         # a blokkolt ág után minden még nem naplózott ág kimarad
         logolt = {b["ag"] for b in bejegyzesek}
