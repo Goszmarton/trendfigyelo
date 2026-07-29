@@ -249,6 +249,84 @@ def test_tortenet_a_valos_adatnapra_kerul(tmp_path):
     assert napok == ["2021-01-01"]  # az utolsó teljes nap, NEM a futás napja (2021-01-02)
 
 
+# --- Task 5: ágsorrend (kulcsszo az idosor ELŐTT) ---
+
+class SorrendKemKliens:
+    """Rögzíti az ágak hívási sorrendjét; áganként érvényes alakú adatot ad."""
+    def __init__(self):
+        self.tr = _dummy_tr()
+        self.sorrend = []
+    def hivas(self, ag, fn, *a, **k):
+        self.sorrend.append(ag)
+        if ag == "felkapott_api":
+            return [SimpleNamespace(keyword="infláció", volume=50000, volume_growth_pct=10)]
+        if ag == "felkapott_rss":
+            return [SimpleNamespace(keyword="infláció", news=[])]
+        if ag == "kulcsszo":
+            return _egy_szo_df("a", [30, 40], [
+                datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
+                datetime(2021, 1, 2, 10, tzinfo=timezone.utc),
+            ], [False, True])
+        if ag == "idosor":
+            return _egy_szo_df("infláció", [40], [
+                datetime(2021, 1, 1, 10, tzinfo=timezone.utc)], [False])
+        return []
+    def hivasszam(self, ag):
+        return self.sorrend.count(ag)
+    def osszes_hivas(self):
+        return len(self.sorrend)
+    def elso_index(self, ag):
+        return self.sorrend.index(ag)
+
+
+def test_kulcsszo_az_idosor_elott_fut(tmp_path):
+    """A kulcsszo-ág első hívása megelőzi az idosor-ág első hívását."""
+    kem = SorrendKemKliens()
+    most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)
+    futtato.futtat(_config(), kem, tmp_path / "adatok", tmp_path / "docs" / "data", most=most)
+    assert kem.elso_index("kulcsszo") < kem.elso_index("idosor")
+
+
+def test_agak_konstans_a_vegrehajtasi_sorrenddel_egyezik():
+    """Az AGAK block-stop kihagyás-jelölő sorrendje = a valós végrehajtási sorrend."""
+    assert futtato.AGAK == ["felkapott_api", "felkapott_rss", "kulcsszo", "idosor"]
+
+
+class IdosorBlokkolKliens:
+    """Az 'idosor' ág 429-cel kimerül; a többi ág (a kulcsszo is) ad adatot."""
+    def __init__(self):
+        self.tr = _dummy_tr()
+        self.szamlalok = {}
+    def hivas(self, ag, fn, *a, **k):
+        self.szamlalok[ag] = self.szamlalok.get(ag, 0) + 1
+        if ag == "idosor":
+            raise kliens.AgFeladva("idosor", ["429", "429", "429", "429"])
+        if ag == "felkapott_api":
+            return [SimpleNamespace(keyword="infláció", volume=50000, volume_growth_pct=10)]
+        if ag == "felkapott_rss":
+            return [SimpleNamespace(keyword="infláció", news=[])]
+        if ag == "kulcsszo":
+            return _egy_szo_df("a", [30, 40], [
+                datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
+                datetime(2021, 1, 2, 10, tzinfo=timezone.utc),
+            ], [False, True])
+        return []
+    def hivasszam(self, ag):
+        return self.szamlalok.get(ag, 0)
+    def osszes_hivas(self):
+        return sum(self.szamlalok.values())
+
+
+def test_idosor_blokk_utan_a_kulcsszo_mar_megvan(tmp_path):
+    """Block-napon az idosor blokkol, de a kulcsszo már lefutott (nem 'kihagyva')."""
+    most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)
+    futtato.futtat(_config(), IdosorBlokkolKliens(),
+                   tmp_path / "adatok", tmp_path / "docs" / "data", most=most)
+    eredmeny = {s["ag"]: s["eredmeny"] for s in _naplo_soronkent(tmp_path / "adatok")}
+    assert eredmeny["kulcsszo"] == "siker"       # már lefutott az idosor előtt
+    assert eredmeny["idosor"] == "blokkolva"     # a régi sorrenden a kulcsszo lenne "kihagyva"
+
+
 def test_futtato_visszapotolja_a_kihagyott_kulcsszo_napot(tmp_path):
     """Két egymást követő kihagyott nap (01-01, 01-02) visszapótlása a 7-d ablakból;
     a tortenet-ben csak az utolsó teljes nap (01-03) volt meg. A visszapótlást a
