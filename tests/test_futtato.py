@@ -343,3 +343,30 @@ def test_futtato_visszapotolja_a_kihagyott_kulcsszo_napot(tmp_path):
     tortenet = json.loads((docs_data / "tortenet.json").read_text(encoding="utf-8"))
     napok = sorted(b["nap"] for b in tortenet["napok"])
     assert napok == ["2021-01-01", "2021-01-02", "2021-01-03"]
+
+
+# --- Task 6: nyers gördülő kimenet bekötése ---
+
+def test_futtato_kiirja_a_nyers_gordulo_fajlt(tmp_path):
+    """A kulcsszo-ág nyers_sorozatait az ir_gordulo a kulcsszo_nyers.json-ba írja,
+    minden rekord átmegy a Task 3 szerződésen."""
+    import json
+    from trendfigyelo.nyers_kimenet import ervenyes_nyers_rekord
+    cfg = _config([KulcsszoTetel("a", "megelhetes", "szintmero")])
+    docs_data = tmp_path / "docs" / "data"
+    most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)
+    futtato.futtat(cfg, KulcsszoAdatKliens(), tmp_path / "adatok", docs_data, most=most)
+    fajl = docs_data / "kulcsszo_nyers.json"
+    assert fajl.exists()
+    adat = json.loads(fajl.read_text(encoding="utf-8"))
+    assert "a" in adat["kulcsszavak"]
+    for rek in adat["kulcsszavak"]["a"]:
+        assert ervenyes_nyers_rekord(rek) == []
+
+
+def test_futtato_ures_kulcsszo_nem_ir_nyers_fajlt(tmp_path):
+    """Üres kulcsszó-eredmény (minden szó hibázott) NE hozzon létre üres nyers fájlt."""
+    docs_data = tmp_path / "docs" / "data"
+    most = datetime(2021, 1, 1, 12, 0, tzinfo=timezone.utc)
+    futtato.futtat(_config(), UresKulcsszoKliens(), tmp_path / "adatok", docs_data, most=most)
+    assert not (docs_data / "kulcsszo_nyers.json").exists()

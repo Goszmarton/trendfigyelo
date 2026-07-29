@@ -9,7 +9,7 @@ gyűlt, különben 1.
 import sys
 from pathlib import Path
 
-from . import felkapott, idosorok, json_export, kulcsszavak, naplo, seged
+from . import felkapott, idosorok, json_export, kulcsszavak, naplo, nyers_kimenet, seged
 from .config import betolt
 from .kliens import AgFeladva, Kliens
 
@@ -101,6 +101,7 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
     trend_idosorok = []
     kulcsszo_pontok = []
     kulcsszo_napi_pontok = {}
+    kulcsszo_nyers = {}
 
     try:
         api_trendek = _ag(bejegyzesek, kliens, "felkapott_api",
@@ -111,7 +112,7 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
         # (a kulcsszó-adat a 24-órás horgony-nélküli mérés, az idosor a top-trend sparkline)
         kulcsszo_eredmeny = _ag(bejegyzesek, kliens, "kulcsszo",
                             lambda: kulcsszavak.gyujt(kliens, config, most))
-        kulcsszo_pontok, kulcsszo_napi_pontok, _kulcsszo_nyers = kulcsszo_eredmeny or ([], {}, {})
+        kulcsszo_pontok, kulcsszo_napi_pontok, kulcsszo_nyers = kulcsszo_eredmeny or ([], {}, {})
         # volumen szerint rendezett kifejezéslista — az idősor-ág belül vág top-N-re
         top_kifejezesek = [
             getattr(t, "keyword", "")
@@ -148,6 +149,9 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
         json_export.tortenet_frissit_napok(docs_data_mappa, kulcsszo_napi_pontok)
     if top_trendek:
         json_export.napi_ir(docs_data_mappa, nap_iso, top_trendek)
+    # nyers órás sorozat verziókövetett gördülő kimenete (üres sorozat NE írjon fájlt)
+    if kulcsszo_nyers:
+        nyers_kimenet.ir_gordulo(docs_data_mappa, kulcsszo_nyers)
 
     # ---------- napló ----------
     naplo.naplo_ir(adatok_mappa, letoltve, bejegyzesek, config.naplo_max_sor)
