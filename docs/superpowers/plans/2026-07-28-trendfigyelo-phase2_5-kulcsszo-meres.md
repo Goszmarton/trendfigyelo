@@ -336,6 +336,24 @@ def test_gordulo_ablak_eldobja_a_regit():
 
 **A `valtas_datum` az ELSŐ ÉLES (merge utáni) produkciós futás napja — nem a Task 4 commit-napja.** Indok: a Task 4 nem mergelt ágon él; a merge-ig az esti cron a régi, horgonyos kóddal gyűjt tovább, így egy commit-napi töréspont után is jönnének még régi-módszertanú napok a `tortenet.json`-ba, és a Phase 3 pont ott kötné össze a sorozatot, ahol nem szabad. Ha az érték a Task 7 futásakor még nem ismert, **a merge után kerül be** (a `valtas_datum` forrás — config/konstans — egysoros frissítése). A Task 7 **tesztje ettől független és zöld**, mert `valtas_datum` **paraméterezett, nem hardkódolt dátum**.
 
+**Szerződés-döntés (user, 2026-07-29) — a jelölő-írás aszimmetriája (SZÁNDÉKOS, nem bug):**
+- A `tortenet.json` **halmozódó** (több futás upsertje), ezért a `modszertan_valtas`-t **`setdefault`**-tal írjuk:
+  az **első beállított** (legkorábbi éles) érték marad, későbbi futás (más dátum vagy None) **nem írja felül / nem törli**.
+- A `legfrissebb.json` **minden futásban teljesen újraíródik**, ott nincs megőrzendő korábbi állapot → a kulcs egyszerűen
+  a friss `valtas_datum`-ot kapja.
+- Mindkét helyen **`if valtas_datum is not None:`** — a None sosem ír `null`-t és nem nyúl a kulcshoz (a kulcs HIÁNYZIK, nem null).
+- **Scope:** a `modszertan_valtas` **CSAK jelöl** — nulla szűrő/vágó/régi-adat-eldobó logika (az Phase 3 döntése).
+- **YAML-típus + normalizálás:** a merge-utáni egysoros editet ember írja, jó eséllyel idézőjel nélkül
+  (`modszertan_valtas: 2026-08-01`) → a PyYAML `datetime.date`-té alakítja. A `betolt` elfogad **str-t és
+  `datetime.date`-et**, a validált dátum **`.isoformat()`**-ját (kanonikus `YYYY-MM-DD`) teszi a `Config`-ra;
+  minden más bemenet → `KonfigHiba`.
+- **Verzió-jegyzet:** a str-ág elutasító viselkedése (idézőjeles idő-tartalmú string, pl. `"2026-08-01T12:00:00"` /
+  `"2026-08-01 12:00:00"` → `date.fromisoformat` ValueError → `KonfigHiba`) **Python 3.14.4-en igazolva** (fejlesztői
+  venv). A CI és az átadó környezet **Python 3.12** (`.github/workflows/napi.yml`); a `date.fromisoformat` az idő-tartalmú
+  stringet **3.11+ óta elutasítja** (a 3.11-es relaxáció csak dátum-formátumokat bővített — basic/hét/ordinális —, nem a
+  záró időt), így a viselkedés verzió-konzisztens. A `datetime`-**objektum** útját amúgy is az explicit
+  `isinstance(ertek, datetime)` fogja el a `fromisoformat` elérése ELŐTT.
+
 **RED-diszkriminátor:** a `tortenet.json`-nak a váltás után **tartalmaznia kell** a `modszertan_valtas` ISO-dátumot; a régi `json_export` (ami nem írja) ezen megbukik. Külön: a töréspont **nem lehet** üres/ismeretlen, ha van szóló-adat.
 
 ```python
