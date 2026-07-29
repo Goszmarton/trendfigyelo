@@ -78,7 +78,7 @@ def _kulcsszo_idosorok(kulcsszo_pontok) -> dict:
 
 
 def legfrissebb_ir(docs_data, top_trendek, trend_idosorok, kulcsszo_pontok,
-                   frissitve_iso, geo) -> Path:
+                   frissitve_iso, geo, valtas_datum=None) -> Path:
     adat = {
         "geo": geo,
         "frissitve": frissitve_iso,
@@ -87,6 +87,9 @@ def legfrissebb_ir(docs_data, top_trendek, trend_idosorok, kulcsszo_pontok,
         "kulcsszavak": _kulcsszo_idosorok(kulcsszo_pontok),
         "kulcsszo_osszesites": kulcsszo_napi_osszesites(kulcsszo_pontok),
     }
+    # töréspont-jelölő: teljes újraírt fájl → a friss értéket kapja (None-nál a kulcs hiányzik)
+    if valtas_datum is not None:
+        adat["modszertan_valtas"] = valtas_datum
     return _ir_json(Path(docs_data) / "legfrissebb.json", adat)
 
 
@@ -104,13 +107,16 @@ def tortenet_frissit(docs_data, nap_iso, kulcsszo_pontok) -> Path:
     return _ir_json(fajl, adat)
 
 
-def tortenet_frissit_napok(docs_data, napi_pontok) -> Path:
+def tortenet_frissit_napok(docs_data, napi_pontok, valtas_datum=None) -> Path:
     """Több nap upsertje: a legfrissebb nap felülír, a régebbiek insert-if-absent."""
     fajl = Path(docs_data) / "tortenet.json"
     if fajl.exists():
         adat = json.loads(fajl.read_text(encoding="utf-8"))
     else:
         adat = {"napok": []}
+    # töréspont-jelölő: halmozódó fájl → setdefault (first-wins), a None/más dátum nem írja felül/nem törli
+    if valtas_datum is not None:
+        adat.setdefault("modszertan_valtas", valtas_datum)
     if napi_pontok:
         friss = max(napi_pontok)          # a legfrissebb nap ISO-ja
         meglevo = {b.get("nap") for b in adat["napok"]}

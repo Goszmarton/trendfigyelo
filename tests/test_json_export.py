@@ -132,6 +132,48 @@ def test_teljesen_nulla_kulcsszo_is_kap_sort():
     assert sor["ossz_pontok"] == 2
 
 
+# --- Task 7: módszertani töréspont (modszertan_valtas) — CSAK jelölő ---
+
+def test_tortenet_tartalmazza_a_torespontot(tmp_path):
+    json_export.tortenet_frissit_napok(tmp_path, {"2026-07-28": _kp(40)}, valtas_datum="2026-07-28")
+    adat = json.loads((tmp_path / "tortenet.json").read_text(encoding="utf-8"))
+    assert adat["modszertan_valtas"] == "2026-07-28"
+
+
+def test_legfrissebb_tartalmazza_a_torespontot(tmp_path):
+    p = json_export.legfrissebb_ir(tmp_path, [], [], _kpontok(),
+                                   "2021-01-01T12:00:00+00:00", "HU", valtas_datum="2026-07-28")
+    adat = json.loads(p.read_text(encoding="utf-8"))
+    assert adat["modszertan_valtas"] == "2026-07-28"
+
+
+def test_none_valtas_datum_nem_ir_kulcsot(tmp_path):
+    # None → a kulcs HIÁNYZIK (nem null értékkel szerepel).
+    json_export.tortenet_frissit_napok(tmp_path, {"2026-07-28": _kp(40)}, valtas_datum=None)
+    t = json.loads((tmp_path / "tortenet.json").read_text(encoding="utf-8"))
+    assert "modszertan_valtas" not in t
+    p = json_export.legfrissebb_ir(tmp_path, [], [], _kpontok(),
+                                   "2021-01-01T12:00:00+00:00", "HU", valtas_datum=None)
+    l = json.loads(p.read_text(encoding="utf-8"))
+    assert "modszertan_valtas" not in l
+
+
+def test_torespont_idempotens_nem_ir_felul(tmp_path):
+    # setdefault (first-wins): a MÁSODIK futás MÁS dátummal NEM írja felül a meglévőt.
+    json_export.tortenet_frissit_napok(tmp_path, {"2026-07-28": _kp(40)}, valtas_datum="2026-07-28")
+    json_export.tortenet_frissit_napok(tmp_path, {"2026-07-29": _kp(50)}, valtas_datum="2026-08-01")
+    adat = json.loads((tmp_path / "tortenet.json").read_text(encoding="utf-8"))
+    assert adat["modszertan_valtas"] == "2026-07-28"   # az ELSŐ marad
+
+
+def test_none_nem_torli_a_meglevo_torespontot(tmp_path):
+    # a merge előtti None-futás nem törölheti a már beállított jelölőt.
+    json_export.tortenet_frissit_napok(tmp_path, {"2026-07-28": _kp(40)}, valtas_datum="2026-07-28")
+    json_export.tortenet_frissit_napok(tmp_path, {"2026-07-29": _kp(50)}, valtas_datum=None)
+    adat = json.loads((tmp_path / "tortenet.json").read_text(encoding="utf-8"))
+    assert adat["modszertan_valtas"] == "2026-07-28"
+
+
 def test_napi_ir_es_index(tmp_path):
     json_export.napi_ir(tmp_path, "2021-01-02", [{"kifejezes": "infláció", "volumen": "50000"}])
     json_export.napi_ir(tmp_path, "2021-01-01", [{"kifejezes": "benzinár", "volumen": "20000"}])

@@ -161,3 +161,51 @@ def test_naplo_max_sor_alapertelmezes(tmp_path):
 def test_tortenet_visszapotlas_nap_alapertelmezes(tmp_path):
     c = config.betolt(_ir(tmp_path, JO))
     assert c.tortenet_visszapotlas_nap == 3
+
+
+# --- Task 7: modszertan_valtas (töréspont-jelölő) forrás + normalizálás ---
+
+def test_modszertan_valtas_alapertelmezes_none(tmp_path):
+    c = config.betolt(_ir(tmp_path, JO))
+    assert c.modszertan_valtas is None          # merge előtt nincs töréspont
+
+
+def test_modszertan_valtas_beolvasva_string(tmp_path):
+    jo = JO + 'modszertan_valtas: "2026-08-01"\n'
+    c = config.betolt(_ir(tmp_path, jo))
+    assert c.modszertan_valtas == "2026-08-01"
+
+
+def test_modszertan_valtas_idezojel_nelkul_datum_objektum(tmp_path):
+    # a PyYAML az idézőjel nélküli dátumot datetime.date-té alakítja → stringgé normalizálva
+    jo = JO + "modszertan_valtas: 2026-08-01\n"
+    c = config.betolt(_ir(tmp_path, jo))
+    assert c.modszertan_valtas == "2026-08-01"   # str, nem datetime.date
+
+
+def test_modszertan_valtas_kanonikusra_normalizal(tmp_path):
+    # alap-formátumú ISO ("20260801") → kanonikus "2026-08-01"
+    jo = JO + 'modszertan_valtas: "20260801"\n'
+    c = config.betolt(_ir(tmp_path, jo))
+    assert c.modszertan_valtas == "2026-08-01"
+
+
+def test_modszertan_valtas_nem_iso_konfighibat_dob(tmp_path):
+    rossz = JO + 'modszertan_valtas: "not-a-date"\n'
+    with pytest.raises(config.KonfigHiba):
+        config.betolt(_ir(tmp_path, rossz))
+
+
+def test_modszertan_valtas_nem_datum_tipus_konfighibat_dob(tmp_path):
+    # minden más bemenet (pl. int) → KonfigHiba
+    rossz = JO + "modszertan_valtas: 12345\n"
+    with pytest.raises(config.KonfigHiba):
+        config.betolt(_ir(tmp_path, rossz))
+
+
+def test_modszertan_valtas_datetime_konfighibat_dob(tmp_path):
+    # datetime.datetime a date ALOSZTÁLYA — az idő-komponensű alakot (elgépelt
+    # dátum) elutasítjuk, nem csonkoljuk .date()-re.
+    rossz = JO + "modszertan_valtas: 2026-08-01 12:00:00\n"
+    with pytest.raises(config.KonfigHiba):
+        config.betolt(_ir(tmp_path, rossz))

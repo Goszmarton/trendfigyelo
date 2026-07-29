@@ -6,6 +6,7 @@ a horgony (referenciaszo, referencia_min_atlag) elhagyva.
 
 from collections import namedtuple
 from dataclasses import dataclass, field
+from datetime import date, datetime
 from pathlib import Path
 
 import yaml
@@ -35,6 +36,7 @@ class Config:
     kulcsszo_idokeret: str = "now 7-d"
     naplo_max_sor: int = 2000
     tortenet_visszapotlas_nap: int = 3
+    modszertan_valtas: object = None  # kanonikus ISO 'YYYY-MM-DD' | None — töréspont-jelölő (CSAK jelöl)
 
     def osszes_kulcsszo(self):
         """[KulcsszoTetel(kifejezes, domen, tipus), ...] a beolvasás sorrendjében."""
@@ -91,6 +93,30 @@ def _kulcsszavak_beolvas(nyers) -> list:
     return ki
 
 
+def _modszertan_valtas_beolvas(nyers):
+    """A töréspont-jelölő normalizálása kanonikus ISO 'YYYY-MM-DD' stringgé (vagy None).
+
+    Elfogadott: str (ISO dátum) és datetime.date. A datetime.datetime a date
+    ALOSZTÁLYA, de idő-komponenssel — az elgépelt időbélyeg-alakot elutasítjuk
+    (nem csonkoljuk csendben). Minden más bemenet → KonfigHiba.
+    """
+    ertek = nyers.get("modszertan_valtas")
+    if ertek is None:
+        return None
+    if isinstance(ertek, datetime):
+        raise KonfigHiba(
+            f"modszertan_valtas: dátum kell (YYYY-MM-DD), nem időbélyeg: {ertek!r}")
+    if isinstance(ertek, date):
+        return ertek.isoformat()
+    if isinstance(ertek, str):
+        try:
+            return date.fromisoformat(ertek.strip()).isoformat()
+        except ValueError:
+            raise KonfigHiba(f"modszertan_valtas: nem ISO dátum: {ertek!r}")
+    raise KonfigHiba(
+        f"modszertan_valtas: str vagy dátum kell, nem {type(ertek).__name__}")
+
+
 def betolt(utvonal="config.yaml") -> Config:
     """A config.yaml beolvasása Config objektummá; hibás konfig → KonfigHiba."""
     p = Path(utvonal)
@@ -134,4 +160,5 @@ def betolt(utvonal="config.yaml") -> Config:
         kulcsszo_idokeret=nyers.get("kulcsszo_idokeret", "now 7-d"),
         naplo_max_sor=int(nyers.get("naplo_max_sor", 2000)),
         tortenet_visszapotlas_nap=int(nyers.get("tortenet_visszapotlas_nap", 3)),
+        modszertan_valtas=_modszertan_valtas_beolvas(nyers),
     )

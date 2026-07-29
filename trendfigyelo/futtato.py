@@ -138,7 +138,8 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
     # ---------- JSON-export ----------
     top_trendek = top_trend_struktura(api_trendek, trend_idosorok, rss_trendek, config)
     json_export.legfrissebb_ir(docs_data_mappa, top_trendek, trend_idosorok,
-                               kulcsszo_pontok, letoltve, config.geo)
+                               kulcsszo_pontok, letoltve, config.geo,
+                               valtas_datum=config.modszertan_valtas)
 
     van_adat = bool(api_trendek or rss_trendek or trend_idosorok or kulcsszo_pontok)
     # független feltételek: üres kulcsszó-napi adat NE írja felül a meglévő
@@ -146,7 +147,8 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
     # tortenet: a valós adat-napokra (utolsó N teljes nap), NEM a futás napjára —
     # a legfrissebb nap felülír, a régebbiek insert-if-absent (visszapótlás)
     if kulcsszo_napi_pontok:
-        json_export.tortenet_frissit_napok(docs_data_mappa, kulcsszo_napi_pontok)
+        json_export.tortenet_frissit_napok(docs_data_mappa, kulcsszo_napi_pontok,
+                                           valtas_datum=config.modszertan_valtas)
     if top_trendek:
         json_export.napi_ir(docs_data_mappa, nap_iso, top_trendek)
     # nyers órás sorozat verziókövetett gördülő kimenete (üres sorozat NE írjon fájlt)
