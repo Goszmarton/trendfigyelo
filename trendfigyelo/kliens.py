@@ -28,7 +28,7 @@ def rate_limit_hiba(exc: Exception) -> bool:
 class Kliens:
     """Minden Google-hívás ezen megy át: késleltetés, 429-backoff, hívásszámlálás."""
 
-    def __init__(self, config, trends=None, trends_gyar=None):
+    def __init__(self, config, trends=None, trends_gyar=None, plafon=None):
         self.config = config
         if trends is None:
             if trends_gyar is None:
@@ -41,6 +41,10 @@ class Kliens:
             )
         self.tr = trends
         self._szamlalok = {}
+        # felső korlát az ÖSSZES próbaszámra (call-multiplying bug elleni védőkorlát);
+        # None = nincs plafon (a meglévő tesztek/hívók változatlanul mennek). A produkcióban
+        # a futtato.main adja: tervezett_hivasszam(config) * config.max_probak.
+        self.plafon = plafon
 
     def _var(self):
         also, felso = self.config.szoras_mp
@@ -52,10 +56,27 @@ class Kliens:
         time.sleep(alap + random.uniform(0, alap * 0.25))
 
     def hivas(self, ag: str, fn, *args, **kwargs):
-        """fn meghívása anti-block védelemmel; 429 kimerülésnél AgFeladva."""
+        """fn meghívása anti-block védelemmel; 429 kimerülésnél AgFeladva.
+
+        Ha be van állítva `plafon`, és az ÖSSZES eddigi próba elérte, RuntimeError
+        (call-multiplying bug elleni védőkorlát) — a hálózat elérése előtt.
+        """
         self._szamlalok.setdefault(ag, 0)
         hibakodok = []
         for proba in range(self.config.max_probak):
+            # A plafon-check SZÁNDÉKOSAN a ciklus legelején van, a _var() és az
+            # inkrementálás ELŐTT — így a túllépő próba nem növeli a számlálót (a
+            # mérésben a hívásszám a fő output, tilos felfelé hamisítani) és nem
+            # alszik feleslegesen a bug-stop úton. Ezért `>=` (nem `>`): az
+            # inkrementálás előtti egyenlőségnél állunk meg, ami EKVIVALENS az
+            # inkrementálás utáni `>`-tel (a plafon-adik próba átmegy, a rákövetkező
+            # dob), de infláció nélkül. NE mozgasd az inkrementálás utánra.
+            if self.plafon is not None:
+                osszes = self.osszes_hivas()
+                if osszes >= self.plafon:
+                    raise RuntimeError(
+                        f"hívás-plafon túllépve a(z) '{ag}' ágon: "
+                        f"osszes_hivas={osszes} >= plafon={self.plafon}")
             self._var()
             self._szamlalok[ag] += 1
             try:

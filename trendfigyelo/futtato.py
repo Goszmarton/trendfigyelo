@@ -165,7 +165,9 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
 def main() -> int:
     """Belépő: config betöltése, Kliens felépítése, teljes futás."""
     config = betolt()
-    kliens = Kliens(config)
+    # hívás-plafon = a strukturális maximum (minden logikai hívás mind a max_probak
+    # próbát kimeríti); efölött már csak call-multiplying bug lehet → azonnali leállás
+    kliens = Kliens(config, plafon=tervezett_hivasszam(config) * config.max_probak)
     print(f"Várható Google-hívásszám (429 nélkül): ~{tervezett_hivasszam(config)}")
     return futtat(config, kliens, Path("adatok"), Path("docs") / "data")
 

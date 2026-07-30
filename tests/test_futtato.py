@@ -370,3 +370,27 @@ def test_futtato_ures_kulcsszo_nem_ir_nyers_fajlt(tmp_path):
     most = datetime(2021, 1, 1, 12, 0, tzinfo=timezone.utc)
     futtato.futtat(_config(), UresKulcsszoKliens(), tmp_path / "adatok", docs_data, most=most)
     assert not (docs_data / "kulcsszo_nyers.json").exists()
+
+
+# --- hívás-plafon drótozás (E): a main a Kliensnek tervezett_hivasszam*max_probak-ot ad ---
+
+def test_main_beallitja_a_hivas_plafont(monkeypatch):
+    """A main a kliens hívás-plafonját a config-jóslatra állítja: tervezett*max_probak (=120).
+    A Kliens-t és a futtat-ot elfogjuk, hogy ne induljon éles futás/FS-írás."""
+    from trendfigyelo.config import betolt
+    rogzitett = {}
+
+    def recorder(config, *a, **k):
+        rogzitett["plafon"] = k.get("plafon")
+        return object()
+
+    monkeypatch.setattr(futtato, "Kliens", recorder)
+    monkeypatch.setattr(futtato, "futtat", lambda *a, **k: 0)
+    futtato.main()
+    cfg = betolt()
+    vart = futtato.tervezett_hivasszam(cfg) * cfg.max_probak
+    # Csak a DRÓTOZÁST asszertáljuk (tervezett * max_probak), config-agnosztikusan: a
+    # kulcsszólista a 6.2 szerint változhat, ezért NEM pinneljük a 120-at az élő confighoz.
+    # (Az aritmetikai pin — 2+15+13=30 — a test_tervezett_hivasszam_teljes_config-ban él,
+    # szintetikus configgal; a * max_probak szorzót ez a == vart fogja.)
+    assert rogzitett["plafon"] == vart
