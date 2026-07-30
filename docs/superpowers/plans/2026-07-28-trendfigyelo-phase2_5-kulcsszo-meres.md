@@ -377,26 +377,33 @@ def test_tortenet_tartalmazza_a_torespontot(tmp_path):
 
 ---
 
-## Task 8: Kérésszám-mérés élesben (MÉRÉS — NEM FEJLESZTÉS) — dep 4, 5
+## Task 8: Első éles integráció + hívásszám-igazolás (MÉRÉS — NEM FEJLESZTÉS) — dep 4, 5
 
 **Files:**
 - Create: `docs/superpowers/phase2_5/task8-kerésszam.md` (jegyzőkönyv)
 
-**Cél:** A Task 4 **és Task 5** utáni (az **új ágsorrenddel** futó) **valós** futásból megmérni, hány hívás megy ki futásonként **ágakra bontva**, hány 429 jön, és mennyi a futásidő. Ez dönti el, kell-e a spec 5. fejezet valamelyik tartaléka (kötegelés / ritkább kulcsszó-gyűjtés / `trend_idosor_max` csökkentés).
+**Újrafogalmazva (2026-07-30, trigger-stratifikáció után).** Az eredeti „429-ráta + futásidő mérése dispatch-csel" cél **nem teljesíthető merge előtt**, mert a dispatch-populáció szisztematikusan torzított: az Actions-history szerint **3/3 `workflow_dispatch` tiszta, 0/3 `schedule` problémás** (2 kapu-blokk + 1 lágy), és a trigger a naptári nappal konfundál (a 3 dispatch = 07-24/25/26, a 3 schedule = 07-27/28/29). Egy dispatch tehát a **jó rezsimet** mintázza. Ráadásul a `schedule` **csak a default (main) ágon fut** → az új ágsorrend schedule-rezsimben **csak merge UTÁN** figyelhető meg.
 
-**Miért dep 5 is:** a hívások *száma* sorrend-független, de a **429-ek ágankénti eloszlása nem** — a régi ágsorrenden (`idosor` a `kulcsszo` előtt) épp azt a képet rögzítené a mérés, amit a Task 5 megszüntet. Ezért a mérésnek a Task 5 utáni kódon kell futnia.
+**Cél — MERGE ELŐTT (ez a Task 8 valódi tartalma):**
+1. **Első éles integráció.** A Task 4–7 kódja eddig **kizárólag fake/mock ellen** futott (108 zöld teszt). Egy dispatch az **első valódi trendspy-0.1.6 + Google Trends** integráció az **új kódon és az új `…→kulcsszo→idosor` ágsorrenden** — ezt a suite nem tudja igazolni (lásd alább).
+2. **Ágankénti hívásszám igazolása a config-jóslat ellen:** `felkapott_api=1, felkapott_rss=1, kulcsszo=13, idosor=min(15,#trend)`, összesen ~30. Determinisztikus, **egyetlen tiszta futás elég**.
 
-**Nincs RED/GREEN.** A mérés a meglévő naplóból és a `kliens` hívásszámlálóiból (`hivasszam`/`osszes_hivas`) + `workflow_dispatch` futásból olvasandó; **repóba kerülő kód és commit nem** (a jegyzőkönyvön kívül).
+**MERGE UTÁNRA ÁTTOLVA (NEM Task 8 döntése):** a 429-ráta / futásidő / rezsim-jellemzés a mainre akkumulálódó `naplo.csv`-ből, ~2 hét megfigyeléssel (az a mechanizmus, ami a 07-27/28/29 adatot adta). A produkciós üzemeltetési döntések — cron perc/óra, kézi vs schedule, futás-szintű retry — **külön, merge utáni kör**, nem ez a task dönti el.
 
-- [ ] **1.** Éles `workflow_dispatch` (vagy helyi éles) futás a **Task 4 + Task 5 utáni** kóddal (az új `…→kulcsszo→idosor` ágsorrenddel); a naplóból ágankénti `hivasok_szama` + `eredmeny` (429-ek) kiolvasása.
-- [ ] **2.** A futásidő és a 429-szám rögzítése ágakra bontva (felkapott_api / felkapott_rss / kulcsszo / idosor). Várható nagyságrend: `2 + 15 + 13 = 30` hívás (a szóló kulcsszó 6→13).
-- [ ] **3.** Döntés: kell-e tartalék (spec 5). Ha vágni kell, a 6.2 sorrendje (`betegség` → `nyaralás` → `albérlet`; a `tüntetés` **nem** vágható). A `trend_idosor_max` csökkentés ára: a Phase 3 napi trendlistája (7.1) is rövidül.
-- [ ] **4.** Jegyzőkönyv mentése.
+**Nincs RED/GREEN.** A jel a `kliens` hívásszámlálóiból (`hivasszam`/`osszes_hivas`) + a naplóból olvasandó; **repóba kerülő script-kód és commit nem** (a jegyzőkönyvön kívül). **Előfeltételek** (külön, engedélyhez kötött lépések, lásd ledger): ág push origin-ra; **ág-alapú feltételes commit-step** a `napi.yml`-ben — `if: always() && github.ref == 'refs/heads/main'` (dispatch a phase-2.5-ről → `false` → nem commitol az ágra; merge után a mainen → `true` → commitol, ahogy eddig; **nincs input** → megszűnik a dispatch input-schema- és boolean-coercion-kérdés, a main `napi.yml`-je bitre változatlan); **kliens-szintű hívás-plafon** (call-multiplying bug elleni védőkorlát, TDD-vel) — küszöb **`tervezett_hivasszam * max_probak`** (=120, a strukturális maximum, ráhagyás nélkül), az ellenőrzés **`> plafon`** (nem `>=`: a 120. legitim legrosszabb eset — minden logikai hívás mind a 4 próbát kimeríti — még átmegy, a 121. már csak bug), túllépéskor `RuntimeError`; a napló + a `docs/data` JSON-ok + a teljes stdout **kötelező** felszínre hozása commit nélkül (`actions/upload-artifact@v4`, `if: always()`; a stdout `set -o pipefail` + `tee run.log`-gal, hogy a kilépési kód ne vesszen).
+
+**Jegyzőkönyv-jegyzet (2026-07-30) — NE olvassuk félre a mérőfutás kimenetét:** az ág `docs/data`-ja a `b12722e` pillanatkép, ~3 napja elavult (a 07-27/28/29 napi JSON-ok CSAK a mainen vannak, az ág egyetlen commitja sem nyúlt `docs/data`-hoz). A mérőfutás tehát **hiányos történetre upsertál** → az artefakt `tortenet.json`-ja hiányos történetet mutat — **ez NEM integrációs hiba**. A `kulcsszo_nyers.json` viszont az ágon **egyáltalán nem létezik** → az `ir_gordulo` nulláról hozza létre — **ez épp a jó eset a validátor-átmenet (tz-aware ISO, szerződés) valós adaton való igazolására**.
+
+- [ ] **1.** Előfeltételek teljesítése (push + **ág-alapú feltételes commit-step** + hívás-plafon + kötelező napló/JSON/stdout-artefakt) — mind külön jóváhagyással.
+- [ ] **2.** Egy `workflow_dispatch` futás a **Task 4 + Task 5 utáni** kóddal a phase-2.5 ágról (`github.ref` = `refs/heads/phase-2.5` ≠ `main` → az ág-alapú feltétel miatt **nem commitol az ágra**); a naplóból (artefaktból) ágankénti `hivasok_szama` + `eredmeny` kiolvasása.
+- [ ] **3.** Az **ágankénti hívásszám** összevetése a config-jóslattal (api=1/rss=1/kulcsszo=13/idosor≤15). Eltérés (pl. 26 vagy 13+1) = integrációs hiba, kivizsgálandó. A hibaminta *helye* (kapu vs közepi, melyik ág) best-effort rögzítendő — de nem garantált, hogy egy dispatch egyáltalán reprodukál blokkot.
+- [ ] **4.** Jegyzőkönyv mentése; a 429-ráta/rezsim explicit a **merge utáni** megfigyelésre utalva (nem itt).
 
 **DoD:**
-- A jegyzőkönyv ágankénti hívásszámot, 429-számot és futásidőt tartalmaz **valós** futásból.
-- Világos döntés: kell-e tartalék, és ha igen, melyik.
-- Nincs repóba került script, nincs commit ebből a taskból.
+- A jegyzőkönyv tartalmazza az **ágankénti hívásszámot** egy valós futásból, és **igazolja a config-jóslatot** (vagy dokumentálja az eltérést + okát).
+- Rögzíti, hogy az **első éles integráció** az új sorrenden lefutott (mit igazolt, amit a fake nem).
+- A 429-ráta / rezsim / tartalék-döntés **explicit áttolva merge utánra** — ez a task NEM dönt tartalékról.
+- Nincs repóba került script, nincs commit ebből a taskból; a mérési adat nem került az ágra.
 
 ---
 
