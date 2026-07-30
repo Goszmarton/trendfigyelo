@@ -8,8 +8,9 @@ kimenet **kizárólag Magyarországra** vonatkozik.
 
 - **Felkapott keresések** (trending_now API + RSS-tartalék + kapcsolódó magyar hírek).
 - **Trend-idősorok:** a legnagyobb trendek 24 órás keresleti görbéje (sparkline).
-- **Saját kulcsszavak:** a `config.yaml`-ban megadott, csoportokba rendezett magyar
-  kulcsszavak napi 24 órás idősora, nyers és referenciaszóra normalizált értékkel.
+- **Saját kulcsszavak:** a `config.yaml`-ban felsorolt magyar kulcsszavak (per-kulcsszó
+  `kifejezes`/`domen`/`tipus` rekordok) **szóló** `now 7-d` órás idősora, **nyers** értékkel.
+  Minden szó a saját 0–100 tartományát kapja — nincs referenciaszó/normalizálás (lásd lent).
 
 Kimenetek: CSV-k az `adatok/` mappában (`;` elválasztó, `utf-8-sig` — a magyar Excel
 dupla kattintásra megnyitja), futásnapló az `adatok/naplo.csv`-ben, és a webes
@@ -22,23 +23,63 @@ pip install -r requirements.txt
 python top_keresesek.py
 ```
 
-Egy futás összes Google-hívása **néhány tucat alatt** marad
-(kb. `2 + trend_idosor_max + a kulcsszó-kötegek száma` ≈ 9–23), a hívások közt
-véletlenített 3–7 mp késleltetéssel — ez az IP-blokkolás elleni védelem része.
+Egy futás logikai Google-hívásainak száma `2 + trend_idosor_max + len(kulcsszavak)`
+= felkapott_api (1) + felkapott_rss (1) + idosor (`min(15,#trend)`) + kulcsszo (szavanként 1)
+≈ **30** (a jelenlegi configgal 2+15+13). A hívások közt véletlenített **6–10 mp**
+késleltetés (`szoras_mp`), a trendspy `request_delay` **6.0** (`alap_keses_mp`) — IP-blokkolás
+elleni védelem. Egy kliens-szintű **hívás-plafon** (`tervezett × max_probak`) leállítja a
+futást, ha egy hiba miatt a hívásszám elszaladna.
 
 ## Kulcsszó hozzáadása
 
 Csak a `config.yaml` `kulcsszavak:` szakaszát kell szerkeszteni — kód nem változik.
-Vegyél fel egy szót egy meglévő csoporthoz, vagy hozz létre új csoportot:
+A lista **per-kulcsszó rekordokból** áll (`kifejezes`/`domen`/`tipus`):
 
 ```yaml
 kulcsszavak:
-  megelhetes: [infláció, benzinár, ..., ÚJ_KULCSSZÓ]
-  új_csoport: [példa1, példa2]
+  - {kifejezes: "állás",       domen: munkaeropiac, tipus: szintmero}
+  - {kifejezes: "ÚJ_KULCSSZÓ", domen: valamely_domen, tipus: szintmero}
 ```
 
-A referenciaszó (`referenciaszo:`), a geo, az időablak és a nyelv szintén itt,
-egy helyen állítható.
+A `tipus` ∈ {`szintmero`, `esemenyjelzo`, `hibrid`}; a domének **ékezet nélküliek**
+(a magyar megjelenítendő címke a frontendé). A geo, az időablak, a nyelv és a
+kulcsszó-ablak (`kulcsszo_idokeret`) szintén itt, egy helyen állítható. A korábbi
+horgony-mezők (`referenciaszo`, `referencia_min_atlag`) **elavultak, eltávolítva**.
+
+## Kulcsszó-mérés: szóló, nyers, láncolás-előkészítés
+
+A kulcsszavakat **szólóban** kérdezzük le (`interest_over_time([kif], geo="HU",
+timeframe="now 7-d")`), kulcsszavanként külön — minden szó a **saját 0–100 tartományát**
+kapja. (Korábban egy `időjárás` horgonyra normalizáltunk; elvetve, mert egy eseményvezérelt
+horgony a saját ritmusát minden mért szóba beleírja.)
+
+**Kétféle idősor, más célra:** a felkapott trendek `trend_idosorok`-ja **napi, önálló**
+`now 1-d` sparkline (8 perces rács) — csak megjelenítés, **nem láncolódik**; a
+`kulcsszo_nyers.json` a kulcsszavak **láncoláshoz** eltett **`now 7-d` órás** nyers sorozata.
+
+### `kulcsszo_nyers.json` — gördülő, verziókövetett nyers kimenet
+
+Kulcsszavanként a nyers órás értékeket őrzi a lekérdezés **pontos ablakhatáraival**
+(`ablak_kezdet_utc`/`ablak_veg_utc`) és a **részleges-farok jelöléssel** (`reszleges` — a
+Trends `isPartial` oszlopából; a legfrissebb, még nem végleges óra `true`). Gördülő retenció
+(alap 14 nap) tartja karban. Ez a napok közti **láncolás** (későbbi fázis) bemenete: az
+egymást követő napok 7 napos ablakai átfednek, az átfedésből visszaszámolható a napi skálázó
+— de csak a **lezárt** (nem részleges) szakaszból.
+
+### Módszertani töréspont — `modszertan_valtas`
+
+A horgonyos → szóló váltás előtti és utáni napok **nem hasonlíthatók össze**. A váltás dátuma
+az **adatba** kerül (`modszertan_valtas` kulcs a `tortenet.json` és `legfrissebb.json` tetején,
+az első éles produkciós futás napja), hogy a későbbi felület tudja, hol **nem szabad**
+összekötni a sorozatot.
+
+### A pontszámok kulcsszavak közt NEM összemérhetők
+
+**Minden kulcsszó a SAJÁT maximumára normalizált (0–100), ezért a kulcsszavak pontszámai
+egymással nem összemérhetők; közös horgony nélkül rangsort (pl. „legnépszerűbb kulcsszó")
+nem képezünk.** A Trends „Átlagos érdeklődés"-e mindig a lekérdezésen belüli maximumhoz
+viszonyít; két különböző szó szóló sorozata más skálán él. A `kulcsszo_osszesites`
+`atlag`/`csucs` értékei **szón belül** értelmesek, szavak közt nem.
 
 ## B terv — mi van, ha a Google blokkol?
 
@@ -56,11 +97,11 @@ kapnak:
 
 ## Automatikus napi futás (GitHub Actions)
 
-A `.github/workflows/napi.yml` a napi gyűjtést végzi — **kezdetben csak kézi
-indítással** (`workflow_dispatch`: `Actions → Napi trendgyűjtés → Run workflow`);
-a `schedule:` (ütemezés) egyelőre ki van kommentelve. Ez méri fel, kap-e
-429-et a felhő-runner IP-je. Ha a kézi futások tiszták, a `schedule:` sort
-(`cron: "7 19 * * *"`, azaz 19:07 UTC ≈ késő este Budapesten) élesítjük.
+A `.github/workflows/napi.yml` a napi gyűjtést végzi. Az **ütemezés él**: `schedule:`
+`cron: "7 19 * * *"` = **19:07 UTC** (≈ késő este Budapesten), plusz kézi indítás
+(`workflow_dispatch`: `Actions → Napi trendgyűjtés → Run workflow`). A 19:07 UTC a
+**legkorábbi** időpont, nem garancia: a GitHub-oldali ütemezett indítás rendszeresen
+késik — a megfigyelt futások 68–92 perccel a cron után indultak.
 
 A futás **csak** a `docs/data/*.json` fájlokat és az `adatok/naplo.csv`-t
 commitolja (a web ezekből dolgozik); a per-futás nyers CSV-ket felhőben nem

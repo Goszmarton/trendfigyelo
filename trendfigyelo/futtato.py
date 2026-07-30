@@ -1,6 +1,6 @@
 """Orchestráció: a négy ág futtatása részleges siker + block-stop szemantikával.
 
-Ági sorrend: felkapott_api → felkapott_rss → idosor → kulcsszo. Ha egy ág 429
+Ági sorrend: felkapott_api → felkapott_rss → kulcsszo → idosor. Ha egy ág 429
 (AgFeladva) miatt blokkol, a hátralévő ágak kimaradnak, de az addig összegyűjtött
 adat kiíródik (CSV-k, JSON-export, napló). A kilépési kód: 0, ha bármilyen adat
 gyűlt, különben 1.
@@ -9,22 +9,21 @@ gyűlt, különben 1.
 import sys
 from pathlib import Path
 
-from . import felkapott, idosorok, json_export, kulcsszavak, naplo, seged
+from . import felkapott, idosorok, json_export, kulcsszavak, naplo, nyers_kimenet, seged
 from .config import betolt
 from .kliens import AgFeladva, Kliens
 
-# az ágak logolási sorrendje (block-stop kihagyás jelöléséhez)
-AGAK = ["felkapott_api", "felkapott_rss", "idosor", "kulcsszo"]
+# az ágak logolási sorrendje (block-stop kihagyás jelöléséhez) = a valós végrehajtási sorrend
+AGAK = ["felkapott_api", "felkapott_rss", "kulcsszo", "idosor"]
 
 
 def tervezett_hivasszam(config) -> int:
     """A hibamentes (429 nélküli) futás várható Google-hívásszáma az ágstruktúrából.
 
     felkapott_api (1) + felkapott_rss (1) + idosor (≤ trend_idosor_max, trendenként)
-    + kulcsszo (kötegenként = ceil(kulcsszavak / KOTEG_MERET)).
+    + kulcsszo (SZÓLÓ: szavankénti egy hívás = len(kulcsszavak)).
     """
-    kotegek_szama = -(-len(config.osszes_kulcsszo()) // kulcsszavak.KOTEG_MERET)
-    return 2 + config.trend_idosor_max + kotegek_szama
+    return 2 + config.trend_idosor_max + len(config.osszes_kulcsszo())
 
 
 def top_trend_struktura(api_trendek, trend_idosorok, rss_trendek, config) -> list:
@@ -102,12 +101,18 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
     trend_idosorok = []
     kulcsszo_pontok = []
     kulcsszo_napi_pontok = {}
+    kulcsszo_nyers = {}
 
     try:
         api_trendek = _ag(bejegyzesek, kliens, "felkapott_api",
                           lambda: felkapott.gyujt_api(kliens, config)) or []
         rss_trendek = _ag(bejegyzesek, kliens, "felkapott_rss",
                           lambda: felkapott.gyujt_rss(kliens, config)) or []
+        # a kulcsszo-ág az idosor ELŐTT fut: block-napon az idosor az olcsóbb veszteség
+        # (a kulcsszó-adat a 24-órás horgony-nélküli mérés, az idosor a top-trend sparkline)
+        kulcsszo_eredmeny = _ag(bejegyzesek, kliens, "kulcsszo",
+                            lambda: kulcsszavak.gyujt(kliens, config, most))
+        kulcsszo_pontok, kulcsszo_napi_pontok, kulcsszo_nyers = kulcsszo_eredmeny or ([], {}, {})
         # volumen szerint rendezett kifejezéslista — az idősor-ág belül vág top-N-re
         top_kifejezesek = [
             getattr(t, "keyword", "")
@@ -115,9 +120,6 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
         ]
         trend_idosorok = _ag(bejegyzesek, kliens, "idosor",
                             lambda: idosorok.gyujt(kliens, config, top_kifejezesek)) or []
-        kulcsszo_eredmeny = _ag(bejegyzesek, kliens, "kulcsszo",
-                            lambda: kulcsszavak.gyujt(kliens, config, most))
-        kulcsszo_pontok, kulcsszo_napi_pontok = kulcsszo_eredmeny or ([], {})
     except AgFeladva:
         # a blokkolt ág után minden még nem naplózott ág kimarad
         logolt = {b["ag"] for b in bejegyzesek}
@@ -136,7 +138,8 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
     # ---------- JSON-export ----------
     top_trendek = top_trend_struktura(api_trendek, trend_idosorok, rss_trendek, config)
     json_export.legfrissebb_ir(docs_data_mappa, top_trendek, trend_idosorok,
-                               kulcsszo_pontok, letoltve, config.geo)
+                               kulcsszo_pontok, letoltve, config.geo,
+                               valtas_datum=config.modszertan_valtas)
 
     van_adat = bool(api_trendek or rss_trendek or trend_idosorok or kulcsszo_pontok)
     # független feltételek: üres kulcsszó-napi adat NE írja felül a meglévő
@@ -144,9 +147,13 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
     # tortenet: a valós adat-napokra (utolsó N teljes nap), NEM a futás napjára —
     # a legfrissebb nap felülír, a régebbiek insert-if-absent (visszapótlás)
     if kulcsszo_napi_pontok:
-        json_export.tortenet_frissit_napok(docs_data_mappa, kulcsszo_napi_pontok)
+        json_export.tortenet_frissit_napok(docs_data_mappa, kulcsszo_napi_pontok,
+                                           valtas_datum=config.modszertan_valtas)
     if top_trendek:
         json_export.napi_ir(docs_data_mappa, nap_iso, top_trendek)
+    # nyers órás sorozat verziókövetett gördülő kimenete (üres sorozat NE írjon fájlt)
+    if kulcsszo_nyers:
+        nyers_kimenet.ir_gordulo(docs_data_mappa, kulcsszo_nyers)
 
     # ---------- napló ----------
     naplo.naplo_ir(adatok_mappa, letoltve, bejegyzesek, config.naplo_max_sor)
@@ -158,7 +165,9 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
 def main() -> int:
     """Belépő: config betöltése, Kliens felépítése, teljes futás."""
     config = betolt()
-    kliens = Kliens(config)
+    # hívás-plafon = a strukturális maximum (minden logikai hívás mind a max_probak
+    # próbát kimeríti); efölött már csak call-multiplying bug lehet → azonnali leállás
+    kliens = Kliens(config, plafon=tervezett_hivasszam(config) * config.max_probak)
     print(f"Várható Google-hívásszám (429 nélkül): ~{tervezett_hivasszam(config)}")
     return futtat(config, kliens, Path("adatok"), Path("docs") / "data")
 

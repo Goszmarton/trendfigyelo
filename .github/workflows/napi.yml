@@ -30,10 +30,11 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Trendfigyelő futtatása
-        run: python top_keresesek.py
+        shell: bash
+        run: python top_keresesek.py 2>&1 | tee run.log
 
       - name: Változások commitolása (csak JSON + napló)
-        if: always()
+        if: always() && github.ref == 'refs/heads/main'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -44,3 +45,14 @@ jobs:
             git commit -m "adat: napi HU trendgyűjtés ($(date -u +%Y-%m-%dT%H:%MZ))"
             git push
           fi
+
+      - name: Artefakt feltöltése (napló + JSON + stdout)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trendfutas-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 14
+          path: |
+            adatok/naplo.csv
+            docs/data/**
+            run.log

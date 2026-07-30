@@ -1,9 +1,19 @@
-"""A config.yaml betöltése és validálása — az egyetlen konfigforrás."""
+"""A config.yaml betöltése és validálása — az egyetlen konfigforrás.
 
+Phase 2.5: a kulcsszavak per-kulcsszó rekordok listája (kifejezes/domen/tipus);
+a horgony (referenciaszo, referencia_min_atlag) elhagyva.
+"""
+
+from collections import namedtuple
 from dataclasses import dataclass, field
+from datetime import date, datetime
 from pathlib import Path
 
 import yaml
+
+KulcsszoTetel = namedtuple("KulcsszoTetel", ["kifejezes", "domen", "tipus"])
+
+TIPUSOK = {"szintmero", "esemenyjelzo", "hibrid"}
 
 
 class KonfigHiba(Exception):
@@ -16,26 +26,21 @@ class Config:
     nyelv: str
     idoablak_orak: int
     idosor_idokeret: str
-    referenciaszo: str
     alap_keses_mp: float
     szoras_mp: tuple
     max_probak: int
     backoff_mp: list
     trend_idosor_max: int
     proxy: object  # str | None
-    kulcsszavak: dict = field(default_factory=dict)
+    kulcsszavak: list = field(default_factory=list)  # [KulcsszoTetel, ...]
     kulcsszo_idokeret: str = "now 7-d"
-    referencia_min_atlag: float = 1.0
     naplo_max_sor: int = 2000
     tortenet_visszapotlas_nap: int = 3
+    modszertan_valtas: object = None  # kanonikus ISO 'YYYY-MM-DD' | None — töréspont-jelölő (CSAK jelöl)
 
     def osszes_kulcsszo(self):
-        """[(kulcsszo, csoport), ...] a beolvasás sorrendjében."""
-        parok = []
-        for csoport, szavak in self.kulcsszavak.items():
-            for szo in szavak:
-                parok.append((szo, csoport))
-        return parok
+        """[KulcsszoTetel(kifejezes, domen, tipus), ...] a beolvasás sorrendjében."""
+        return list(self.kulcsszavak)
 
 
 def _kell(d: dict, kulcs: str, hol: str):
@@ -59,6 +64,59 @@ def _ellenoriz_szamlista(ertek, hol: str, hossz=None):
             raise KonfigHiba(f"{hol}: nem-szám elem: {x!r}")
 
 
+def _kulcsszavak_beolvas(nyers) -> list:
+    """A 'kulcsszavak' listát KulcsszoTetel-ekké alakítja és validálja."""
+    tetelek = nyers.get("kulcsszavak")
+    if not isinstance(tetelek, list) or not tetelek:
+        raise KonfigHiba("A 'kulcsszavak' nem lehet üres — per-kulcsszó rekordok listája kell.")
+    ki = []
+    for i, t in enumerate(tetelek):
+        if not isinstance(t, dict):
+            raise KonfigHiba(f"kulcsszavak[{i}]: dict kell (kifejezes/domen/tipus)")
+        kifejezes = t.get("kifejezes")
+        domen = t.get("domen")
+        tipus = t.get("tipus")
+        if not isinstance(kifejezes, str) or not kifejezes.strip():
+            raise KonfigHiba(f"kulcsszavak[{i}].kifejezes: nem üres string kell")
+        if not isinstance(domen, str) or not domen.strip():
+            raise KonfigHiba(f"kulcsszavak[{i}].domen: nem üres string kell ({kifejezes!r})")
+        if tipus not in TIPUSOK:
+            raise KonfigHiba(
+                f"kulcsszavak[{i}].tipus: {tipus!r} — a megengedett: {sorted(TIPUSOK)} ({kifejezes!r})")
+        ki.append(KulcsszoTetel(kifejezes, domen, tipus))
+    latott = set()
+    for t in ki:
+        if t.kifejezes in latott:
+            raise KonfigHiba(f"kulcsszavak: duplikált kifejezes: {t.kifejezes!r} "
+                             "(fölösleges dupla hívás + kétszeres számolás)")
+        latott.add(t.kifejezes)
+    return ki
+
+
+def _modszertan_valtas_beolvas(nyers):
+    """A töréspont-jelölő normalizálása kanonikus ISO 'YYYY-MM-DD' stringgé (vagy None).
+
+    Elfogadott: str (ISO dátum) és datetime.date. A datetime.datetime a date
+    ALOSZTÁLYA, de idő-komponenssel — az elgépelt időbélyeg-alakot elutasítjuk
+    (nem csonkoljuk csendben). Minden más bemenet → KonfigHiba.
+    """
+    ertek = nyers.get("modszertan_valtas")
+    if ertek is None:
+        return None
+    if isinstance(ertek, datetime):
+        raise KonfigHiba(
+            f"modszertan_valtas: dátum kell (YYYY-MM-DD), nem időbélyeg: {ertek!r}")
+    if isinstance(ertek, date):
+        return ertek.isoformat()
+    if isinstance(ertek, str):
+        try:
+            return date.fromisoformat(ertek.strip()).isoformat()
+        except ValueError:
+            raise KonfigHiba(f"modszertan_valtas: nem ISO dátum: {ertek!r}")
+    raise KonfigHiba(
+        f"modszertan_valtas: str vagy dátum kell, nem {type(ertek).__name__}")
+
+
 def betolt(utvonal="config.yaml") -> Config:
     """A config.yaml beolvasása Config objektummá; hibás konfig → KonfigHiba."""
     p = Path(utvonal)
@@ -70,9 +128,7 @@ def betolt(utvonal="config.yaml") -> Config:
         raise KonfigHiba(f"Hibás YAML: {e}") from e
 
     kp = nyers.get("kerespont") or {}
-    kulcsszavak = nyers.get("kulcsszavak") or {}
-    if not kulcsszavak or any(not szavak for szavak in kulcsszavak.values()):
-        raise KonfigHiba("A 'kulcsszavak' üres vagy van üres csoport — minden csoportba legalább egy szó kell.")
+    kulcsszavak = _kulcsszavak_beolvas(nyers)
 
     szoras = _kell(kp, "szoras_mp", "kerespont.")
     _ellenoriz_szamlista(szoras, "kerespont.szoras_mp", 2)
@@ -94,7 +150,6 @@ def betolt(utvonal="config.yaml") -> Config:
         nyelv=_kell(nyers, "nyelv", ""),
         idoablak_orak=int(_kell(nyers, "idoablak_orak", "")),
         idosor_idokeret=_kell(nyers, "idosor_idokeret", ""),
-        referenciaszo=_kell(nyers, "referenciaszo", ""),
         alap_keses_mp=float(_kell(kp, "alap_keses_mp", "kerespont.")),
         szoras_mp=(float(szoras[0]), float(szoras[1])),
         max_probak=int(_kell(kp, "max_probak", "kerespont.")),
@@ -103,7 +158,7 @@ def betolt(utvonal="config.yaml") -> Config:
         proxy=nyers.get("proxy"),
         kulcsszavak=kulcsszavak,
         kulcsszo_idokeret=nyers.get("kulcsszo_idokeret", "now 7-d"),
-        referencia_min_atlag=float(nyers.get("referencia_min_atlag", 1.0)),
         naplo_max_sor=int(nyers.get("naplo_max_sor", 2000)),
         tortenet_visszapotlas_nap=int(nyers.get("tortenet_visszapotlas_nap", 3)),
+        modszertan_valtas=_modszertan_valtas_beolvas(nyers),
     )

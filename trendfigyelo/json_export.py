@@ -12,38 +12,48 @@ def _szam_e(x):
         return False
 
 
-def _ertek(pont):
-    """A normalizált érték, ha érvényes; különben a nyers; különben None."""
-    for kulcs in ("normalizalt_ertek", "nyers_ertek"):
-        if kulcs in pont and _szam_e(pont[kulcs]):
-            return float(pont[kulcs])
-    return None
+def _nyers(pont):
+    """A nyers érték számként, ha értelmezhető; különben None."""
+    v = pont.get("nyers_ertek")
+    return float(v) if _szam_e(v) else None
 
 
 def kulcsszo_napi_osszesites(kulcsszo_pontok) -> list:
-    """Kulcsszavanként átlag + csúcs + érvényes-pontszám a NEM-nulla normalizált értékből.
+    """Kulcsszavanként átlag + csúcs a NEM-nulla NYERS értékből, + gyakoriság-jel.
 
-    Kihagyva: a referencia-érvénytelen kötegek pontjai (referencia_ervenyes False),
-    és a 0/üres értékek (0 = a Google mérési küszöbe alatt = nem mérhető).
+    Phase 2.5: szóló lekérdezés, nincs normalizálás/horgony. A 0/üres értékek az
+    átlagból kimaradnak (0 = a Google mérési küszöbe alatt), de a `nulla_pontok`/
+    `ossz_pontok`-ban megjelennek; egy végig-nulla (mért-de-csendes) kulcsszó is
+    kap sort (atlag=None). Csak a végig üres/NaN (nincs mérés) kulcsszó marad ki.
     """
-    csoportok = {}
+    domenek = {}
     for p in kulcsszo_pontok:
-        if not p.get("referencia_ervenyes", True):
-            continue
-        ert = _ertek(p)
-        if ert is None or ert == 0:
-            continue
-        rek = csoportok.setdefault(p["kulcsszo"], {"csoport": p.get("csoport", ""), "ertekek": []})
-        rek["ertekek"].append(ert)
+        rek = domenek.setdefault(p["kulcsszo"], {
+            "domen": p.get("domen", ""), "tipus": p.get("tipus", ""),
+            "ertekek": [], "nulla": 0, "ossz": 0,
+        })
+        rek["ossz"] += 1                 # minden pont (nullákkal, üresekkel együtt)
+        ert = _nyers(p)
+        if ert is None:
+            continue                     # üres/NaN: nem mérés, csak ossz-ba számít
+        if ert == 0:
+            rek["nulla"] += 1            # a 0 külön (gyakoriság-jel), az átlagból kimarad
+        else:
+            rek["ertekek"].append(ert)
     eredmeny = []
-    for kulcsszo, rek in csoportok.items():
+    for kulcsszo, rek in domenek.items():
         ek = rek["ertekek"]
+        if not ek and rek["nulla"] == 0:
+            continue                     # csak üres/NaN pont = nincs mérés → kihagyva (a végig-0 marad)
         eredmeny.append({
             "kulcsszo": kulcsszo,
-            "csoport": rek["csoport"],
-            "atlag": round(sum(ek) / len(ek), 2),
-            "csucs": round(max(ek), 2),
-            "ervenyes_pontok": len(ek),
+            "domen": rek["domen"],
+            "tipus": rek["tipus"],
+            "atlag": round(sum(ek) / len(ek), 2) if ek else None,   # a 0-k nélkül; None, ha nincs nem-nulla mérés
+            "csucs": round(max(ek), 2) if ek else None,
+            "ervenyes_pontok": len(ek),                # nem-nulla pontok (az átlagban)
+            "nulla_pontok": rek["nulla"],              # 0 értékű pontok (gyakoriság)
+            "ossz_pontok": rek["ossz"],                # összes pont
         })
     return eredmeny
 
@@ -55,20 +65,20 @@ def _ir_json(fajl: Path, adat):
 
 
 def _kulcsszo_idosorok(kulcsszo_pontok) -> dict:
-    """Kulcsszavanként [{idopont_utc, nyers_ertek, normalizalt_ertek}] a mai grafikonhoz."""
+    """Kulcsszavanként [{idopont_utc, nyers_ertek}] a mai grafikonhoz (domen-nel)."""
     ki = {}
     for p in kulcsszo_pontok:
-        ki.setdefault(p["kulcsszo"], {"csoport": p.get("csoport", ""), "pontok": []})
+        ki.setdefault(p["kulcsszo"], {"domen": p.get("domen", ""),
+                                      "tipus": p.get("tipus", ""), "pontok": []})
         ki[p["kulcsszo"]]["pontok"].append({
             "idopont_utc": p.get("idopont_utc", ""),
             "nyers_ertek": p.get("nyers_ertek", ""),
-            "normalizalt_ertek": p.get("normalizalt_ertek", ""),
         })
     return ki
 
 
 def legfrissebb_ir(docs_data, top_trendek, trend_idosorok, kulcsszo_pontok,
-                   frissitve_iso, geo) -> Path:
+                   frissitve_iso, geo, valtas_datum=None) -> Path:
     adat = {
         "geo": geo,
         "frissitve": frissitve_iso,
@@ -77,6 +87,9 @@ def legfrissebb_ir(docs_data, top_trendek, trend_idosorok, kulcsszo_pontok,
         "kulcsszavak": _kulcsszo_idosorok(kulcsszo_pontok),
         "kulcsszo_osszesites": kulcsszo_napi_osszesites(kulcsszo_pontok),
     }
+    # töréspont-jelölő: teljes újraírt fájl → a friss értéket kapja (None-nál a kulcs hiányzik)
+    if valtas_datum is not None:
+        adat["modszertan_valtas"] = valtas_datum
     return _ir_json(Path(docs_data) / "legfrissebb.json", adat)
 
 
@@ -94,13 +107,16 @@ def tortenet_frissit(docs_data, nap_iso, kulcsszo_pontok) -> Path:
     return _ir_json(fajl, adat)
 
 
-def tortenet_frissit_napok(docs_data, napi_pontok) -> Path:
+def tortenet_frissit_napok(docs_data, napi_pontok, valtas_datum=None) -> Path:
     """Több nap upsertje: a legfrissebb nap felülír, a régebbiek insert-if-absent."""
     fajl = Path(docs_data) / "tortenet.json"
     if fajl.exists():
         adat = json.loads(fajl.read_text(encoding="utf-8"))
     else:
         adat = {"napok": []}
+    # töréspont-jelölő: halmozódó fájl → setdefault (first-wins), a None/más dátum nem írja felül/nem törli
+    if valtas_datum is not None:
+        adat.setdefault("modszertan_valtas", valtas_datum)
     if napi_pontok:
         friss = max(napi_pontok)          # a legfrissebb nap ISO-ja
         meglevo = {b.get("nap") for b in adat["napok"]}
