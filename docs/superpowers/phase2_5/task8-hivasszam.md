@@ -78,7 +78,7 @@ Az artefakt `tortenet.json`-ja **hiányos** történetet mutat, mert az ág `doc
 - **(a)** Az **isPartial-aszimmetriát** a review **tudatos döntésként** rögzítse, ne nyissa újra: a spec 4.3 a láncoláshoz írja elő, a trend-idősor út nem láncolódik.
 - **(b)** A `kulcsszo_osszesites` és a frontend közöl-e **szavak közti rangsort/összevetést**. A szóló-normalizálás (minden szó max=100) miatt a szavak pontszámai egymással **NEM összemérhetők**, tehát egy ilyen rangsor érvénytelen következtetés lenne. **Elemzési kérdés, nem integrációs hiba; a merge-öt nem blokkolja.**
 - **(c)** **Action-verzió-bump:** `checkout@v4` / `setup-python@v5` / `upload-artifact@v4` Node 20-at céloz, a runner Node 24-re kényszeríti. A main `napi.yml`-jét is érinti; **kozmetikai, nem blokkoló.**
-- **(d)** A nyitott kérdések **4. tételét (Task 6 integrációs teszt)** jelöljük **[LEZÁRVA]**-ra. Az indok a **T6 saját döntése** (in-window bekerült a szerződésbe, a sorrendet az író garantálja) — **NEM a mai mérőfutás**. *A pontos tétel azonosítása a review feladata.*
+- **(d)** A „Task 6 integrációs teszt / in-window + sorrend" nyitott kérdés **MÁR [LEZÁRVA]** — `.superpowers/sdd/progress.md:141` (`[LEZÁRVA — Task 6, 2026-07-29]`: a sorrendet az író `_rendezett` garantálja, az ablakon-belüliség a szerződésbe került). **Nincs mit jelölni**; a lezárás a **T6 saját döntése**, nem a mérőfutás. *(A whole-branch review derítette ki; a korábbi „4. tétel" sorszám pontatlan volt — a szó szerinti 4. bullet a `:144` „tz-szigor", szintén lezárt.)*
 
 ## 9. Nettó
 
