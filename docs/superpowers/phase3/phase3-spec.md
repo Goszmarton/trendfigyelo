@@ -204,6 +204,10 @@ Playwright smoke).
 - `modszertan_valtas`: ha jelen van, kanonikus `YYYY-MM-DD` **string**
   (a betöltő `.isoformat()`-tal normalizál; idő-komponens `KonfigHiba`).
 - A `reszleges: true` **pontosan a záró órás ponton** áll, sehol máshol.
+- **A `tortenet.json` napjainak száma sosem csökken** két egymást követő futás
+  között (halmozódó fájl, sosem nyesett). Ez a `meres_kezdete` visszafejthető-
+  ségének szerződéses alapja (8.3) — egy néma „takarítsuk a régi napokat"
+  változás ezt bukná meg.
 
 Új Playwright-tétel: az intervallum-váltás után a megjelenített mérőszámok a
 **kiválasztott intervallushoz tartozó** rekordból jönnek, és az `ervenyes:
@@ -265,6 +269,35 @@ fejléc), különben a látogató azt hiszi, egy globális szűrőt állít.
 - **A kulcsszólista mozgó célpont.** Kivett szó árva sorozatot hagy (soha nem
   törlünk); új szó a felvétele napján kezd. A frontend a **ténylegesen
   előforduló** kulcsszavakból dolgozzon, ne beégetett listából.
+- **A kulcsszólista változása — felvétel és eltávolítás.** A lista nem
+  állandó; a felvétel és az eltávolítás külön megjelenítési szabályt kíván,
+  és egyik sem keverendő a 7.5 néma skipjével.
+  - **Új szó felvétele:** a szónak a felvétele napjától van sorozata, ezért a
+    hosszabb intervallumokon a görbéje **rövidebb**, mint a régi szavaké — nem
+    azért, mert nulláról indult, hanem mert korábban nem mértük. A felület ezt
+    **írja ki** (pl. „mérés kezdete: 2026-08-14"), különben az olvasó ott lát
+    hiányt vagy nullpontot, ahol valójában nincs adat. Ugyanez a vizuális
+    minta már látszik a `tortenet.json`-ban: a horgonyos korszak 07-21…07-28
+    napjain 5–9/13 a fedettség, a szóló korszakban 07-30-tól 13/13 — a régebbi
+    napok rövidebb szó-lefedettsége nem hiány, hanem eltérő mérési kezdet.
+  - **Szó eltávolítása a `config.yaml`-ból:** a korábbi sorozat **nem törlődik**
+    (soha nem törlünk adatot), tehát a nyers/tortenet fájlokban árva sorozatként
+    megmarad. **Döntés (a mezőket lásd 8.3): a felület a történeti adatot
+    megjeleníti, „már nem mérjük (utolsó mérés: YYYY-MM-DD)" jelöléssel** — nem
+    rejti el és nem törli, de vizuálisan halványíthatja/összecsukhatja, hogy ne
+    zsúfolja az aktív listát. A puszta elrejtés és a config-lista mint
+    kizárólagos szűrő elvetve: az előbbi a „soha nem törlünk" ígéretet mossa el
+    a felületen, az utóbbi olyan forrásra (repo-beli config) támaszkodna, amely
+    ma nem frontend-adat. Opcionális „csak aktív szavak" kapcsoló megengedett,
+    de nem az alapértelmezés.
+  - **Visszatett szó:** ha egy eltávolított szó később visszakerül a configba,
+    az `aktiv` újra igaz, de a sorozatban **lyuk marad**. Ezt a felület a 7.5
+    szakadó vonalával jeleníti meg (nincs interpoláció); a `meres_kezdete`
+    továbbra is az **első** szóló mérés napja marad, nem a visszatétel napja.
+  - **Három élettartam-állapot, nem azonos a 7.5 skipjével:** „sosem volt mérve"
+    (a szó a felvétele előtt) ≠ „mértük, de aznap kiesett" (7.5 néma skip) ≠
+    „már nem mérjük" (eltávolított szó). A felület a hármat **ne mossa össze**;
+    az eldöntésükhöz szükséges mezőket a 8.3 exportja adja.
 - **Alapértelmezett nézet: a leghosszabb érvényes időszak.** Betöltéskor a
   kulcsszó-chartok az elérhető legtágabb intervallumot mutassák — a legelső
   mért ponttól a legutolsó mért pontig. Ez **nem beégetett érték**: az előre
@@ -433,8 +466,10 @@ Amit már most rögzíteni kell, mert a Phase 3 adatszerkezetét érinti:
 ### 8.3 Regressziós kimenet (`kulcsszo_regresszio.json`)
 
 A regresszió **az exportban, Pythonban** számolódik, a napi futás részeként, a
-`kulcsszo_nyers.json` (és később a láncolt sorozat) alapján. A frontend ezt a
-fájlt betölti és **kirajzolja** — nem számol.
+`kulcsszo_nyers.json` (és később a láncolt sorozat) alapján; a kulcsszó-szintű
+élettartam-mezőkhöz (lentebb) az exporter emellett a **halmozódó
+`tortenet.json`-t és a mai `config.yaml` listáját** is beolvassa. A frontend ezt
+a fájlt betölti és **kirajzolja** — nem számol.
 
 Az indoklás négy pontja, rögzítve, hogy a döntés ne nyíljon újra:
 
@@ -456,6 +491,9 @@ Vázlatos alak (a pontos séma a Task 9a szerződés-tesztjében dől el):
   "szamitva_utc": "2026-07-31T20:00:00+00:00",
   "kulcsszavak": {
     "állás": {
+      "meres_kezdete": "2026-07-30",
+      "meres_vege": null,
+      "aktiv": true,
       "1_het": {
         "ervenyes": true,
         "ablak_kezdet_utc": "2026-07-24T21:00:00+00:00",
@@ -472,6 +510,11 @@ Vázlatos alak (a pontos séma a Task 9a szerződés-tesztjében dől el):
 }
 ```
 
+> Task 9a döntése, hogy az intervallumokat egy `intervallumok` kulcs alá
+> fészkeli-e, hogy a metaadat (`meres_kezdete`/`meres_vege`/`aktiv`) és az
+> intervallum-kulcsok ne keveredjenek egy objektumban — a vázlat fent a régi
+> (közvetlen) alakot mutatja.
+
 Szerződés-tételek:
 
 - A **meredekség egysége relatív pont / nap**, és a felületnek ezt ki kell
@@ -480,6 +523,25 @@ Szerződés-tételek:
   a felület ezekből tudja megmondani, hány napból hány mért (7.5).
 - Az `ervenyes: false` ághoz **kötelező `ok`** (pl. `nincs_lancolas`,
   `keves_pont`, `nincs_adat`), hogy a letiltott gomb magyarázatot adhasson.
+- **Kulcsszó-szintű élettartam-mezők** (a 7.2 lista-változásához), szavanként
+  egyszer:
+  - `meres_kezdete`: az első nap, amelyen a szót a **szóló** módszertannal
+    mértük. A `tortenet.json` halmozódó (sosem nyesett) fájl, ezért ez az
+    export idején a legkorábbi előfordulásból visszafejthető — **de a
+    `modszertan_valtas`-ra vágva** (a horgonyos korszak korábbi előfordulása
+    nem láncolható, 7.4). A `kulcsszo_nyers.json` erre önmagában nem elég, mert
+    14 napra nyesett (8.2). **A `meres_kezdete` visszafejthetősége azon áll,
+    hogy a `tortenet.json` HALMOZÓDÓ (sosem nyesett) — ez szerződés (6.), nem
+    véletlen. Ha a történet valaha retenciót kapna, a `meres_kezdete`-t attól
+    kezdve perzisztálni kell, különben a mező némán elromlik.**
+  - `aktiv`: igaz, ha a szó a mai `config.yaml` listáján van; hamis, ha csak a
+    történetben él (eltávolított szó).
+  - `meres_vege`: `null`, ha `aktiv`; egyébként a szó utolsó mért napja.
+
+  Mindhárom **az exporterben, a történet + a config alapján** dől el, **nulla
+  extra Google-hívással**, a `test_regresszio.py`-ban tesztelve. A felület
+  ezekből írja ki a „mérés kezdete" és „már nem mérjük" jelölést, és tartja
+  szét a 7.2 három élettartam-állapotát.
 - **Nulla extra Google-hívás:** a számítás a már letöltött adatból dolgozik.
   A `tervezett_hivasszam` és a hívás-plafon (Phase 2.5) **nem változik**.
 
