@@ -265,6 +265,14 @@ fejléc), különben a látogató azt hiszi, egy globális szűrőt állít.
 - **A kulcsszólista mozgó célpont.** Kivett szó árva sorozatot hagy (soha nem
   törlünk); új szó a felvétele napján kezd. A frontend a **ténylegesen
   előforduló** kulcsszavakból dolgozzon, ne beégetett listából.
+- **Alapértelmezett nézet: a leghosszabb érvényes időszak.** Betöltéskor a
+  kulcsszó-chartok az elérhető legtágabb intervallumot mutassák — a legelső
+  mért ponttól a legutolsó mért pontig. Ez **nem beégetett érték**: az előre
+  kiválasztott intervallum-gomb a `kulcsszo_regresszio.json` `ervenyes: true`
+  intervallumai közül a leghosszabb (8.3). Ma ez az „1 hét" (a többi letiltva,
+  7.4); ahogy gyűlik a láncolt adat és újabb gombok nyílnak, az alapértelmezés
+  **magától tolódik kifelé, kódmódosítás nélkül**. Ha egyetlen intervallum sem
+  érvényes, a 7.5 üres állapota jön.
 
 ### 7.3 Trend-blokk
 
@@ -297,6 +305,11 @@ fejléc), különben a látogató azt hiszi, egy globális szűrőt állít.
   eset.
 - **Ne feltételezz fix 15 elemet** — a `trend_idosor_max` konfigurálható, és
   egy feladott ág rövid listát hagy.
+- **Alapértelmezett nap: a legfrissebb elérhető.** A dátumválasztó belépéskor a
+  `napok/index.json` **legutolsó** napján álljon, ahonnan a látogató korábbi
+  napokra léphet vissza. Ez nem feltétlenül a mai naptári nap, hanem az utolsó
+  **sikeres** gyűjtésé; kiesett napon a legutolsó meglévő (7.5). A vezérlő
+  részletei a 7.4-ben.
 
 ### 7.4 Vezérlők és adat-elérhetőség
 
@@ -316,6 +329,11 @@ fejléc), különben a látogató azt hiszi, egy globális szűrőt állít.
 dátumaritmetika, csak renderelés. Így a „mikor nyílik ki egy gomb" kérdés
 egyetlen, pytesttel őrzött helyen dől el.
 
+**Előre kiválasztott gomb.** Belépéskor a leghosszabb `ervenyes: true`
+intervallum az aktív (7.2), nem az „1 hét" beégetve — így a nézet magától tágul,
+ahogy a gombok nyílnak. A kiválasztás is a fenti egyetlen forrásból dől el, a
+frontend itt sem számol.
+
 A letiltott gomb **magyarázatot adjon** (pl. „ehhez még nincs elég mért nap"),
 ne csak szürkén álljon; a szöveg az `ok` mezőből származhat. A kulcsszó-történet
 gyakorlatilag **2026-07-30-nál kezdődik**: a `modszertan_valtas` előtti napok
@@ -323,12 +341,18 @@ horgonyos módszertanúak, és **nem köthetők össze** a későbbiekkel.
 
 **Alsó (trend) — dátumválasztó.** A v1 7.3 változatlanul: forrás
 `napok/index.json`, majd `napok/YYYY-MM-DD.json`; csak az `index.json`-ban
-ténylegesen szereplő napok választhatók; dátumformátum végig `2026. 07. 26.`;
-nem létező nap kérése esetén érthető hibaüzenet.
+ténylegesen szereplő napok választhatók; dátumformátum végig `2026. 07. 26.`.
+Belépéskor a **legfrissebb** szereplő napon áll — nem feltétlenül a mai naptári
+nap, hanem az utolsó sikeres gyűjtésé (7.3) —, innen léphet a látogató korábbi
+napokra. Nem létező nap kérése esetén érthető hibaüzenet.
 
 **Felirat kötelező** a két blokk eltérő frissességéről: a kulcsszóadat a
 legutóbbi *teljes* napot mutatja, tehát egy napot késik a trendekhez képest
 (1.3). E nélkül a látogató tegnapi számokat néz mai címke alatt.
+
+**Közös elv.** Mindkét blokk a legtöbb elérhető kontextussal indul — a
+kulcsszavaknál ez a leghosszabb érvényes időszak, a trendeknél a legfrissebb
+nap —, a szűkítés a felhasználó döntése.
 
 ### 7.5 Üres és hiányos állapotok
 
