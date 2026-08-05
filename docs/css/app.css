@@ -15,3 +15,10 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 
 /* hibaállapot: a loader ezt írja a blokk konténerébe (nem néma, §7.5) */
 .hiba { color: #a00; }
+
+/* Task 6 vezérlők */
+#intervallum-vezerlo button { margin-right: .4rem; padding: .3rem .7rem; cursor: pointer; }
+#intervallum-vezerlo button[aria-pressed="true"] { font-weight: bold; background: #e8e8e8; }
+#intervallum-vezerlo button[disabled] { cursor: not-allowed; color: #999; }
+#intervallum-vezerlo .ok { color: #666; font-size: .85rem; margin-right: .8rem; }
+.ures { color: #666; font-style: italic; }
