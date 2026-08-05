@@ -1,0 +1,28 @@
+{
+  "name": "trendfigyelo",
+  "version": "1.0.0",
+  "description": "Napi rendszerességgel gyűjti a **magyarországi (geo=HU)** Google Trends adatokat az elmúlt 24 órából, és CSV + JSON formában menti őket. Minden lekérdezés, adat és kimenet **kizárólag Magyarországra** vonatkozik.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Goszmarton/trendfigyelo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Goszmarton/trendfigyelo/issues"
+  },
+  "homepage": "https://github.com/Goszmarton/trendfigyelo#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.62.1"
+  }
+}
