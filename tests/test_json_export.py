@@ -116,6 +116,16 @@ def test_tortenet_frissit_napok_friss_nap_felulir(tmp_path):
     assert b["kulcsszavak"][0]["atlag"] == 30.0   # a legfrissebb nap FELÜLÍR
 
 
+def test_tortenet_ket_egymast_koveto_hivas_nem_veszit_napot(tmp_path):
+    # EXPORTER-SZINTŰ halmozódás (a test_szerzodes.tortenet_nem_fogy tiszta függvény
+    # ezt nem látja, mert nem hívja az exportert). Nem duplikálja a fenti
+    # egy-híváson-belüli upsert-őrt: itt KÉT egymást követő frissítés uniója marad meg.
+    json_export.tortenet_frissit_napok(tmp_path, {"2021-01-01": _kp(10), "2021-01-02": _kp(20)})
+    p = json_export.tortenet_frissit_napok(tmp_path, {"2021-01-03": _kp(30)})
+    napok = [b["nap"] for b in json.loads(p.read_text(encoding="utf-8"))["napok"]]
+    assert napok == ["2021-01-01", "2021-01-02", "2021-01-03"]  # egyik korábbi nap sem tűnt el
+
+
 def test_teljesen_nulla_kulcsszo_is_kap_sort():
     # M3(b): egy végig-nulla (esemény nélküli) kulcsszó is kapjon sort — atlag=None,
     # de a nulla_pontok/ossz_pontok gyakoriság-jel megmarad (ne tűnjön el a listából).
