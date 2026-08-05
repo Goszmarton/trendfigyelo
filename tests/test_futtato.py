@@ -394,3 +394,67 @@ def test_main_beallitja_a_hivas_plafont(monkeypatch):
     # (Az aritmetikai pin — 2+15+13=30 — a test_tervezett_hivasszam_teljes_config-ban él,
     # szintetikus configgal; a * max_probak szorzót ez a == vart fogja.)
     assert rogzitett["plafon"] == vart
+
+
+# --- Task 9a wiring: a regresszió védett bekötése (nem blokkol, nem néma) ---
+
+def _naplo_agonkent(adatok_mappa):
+    return {s["ag"]: s for s in _naplo_soronkent(adatok_mappa)}
+
+
+def test_futtato_kiirja_a_regressziot(tmp_path):
+    """Normál futás: kulcsszo_regresszio.json kiírva, napló 'regresszio;siker;0;',
+    és a szamitva_utc == a naplósor futas_ido_utc (ugyanaz a letoltve)."""
+    import json
+    cfg = _config([KulcsszoTetel("a", "megelhetes", "szintmero")])
+    docs_data = tmp_path / "docs" / "data"
+    most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)
+    futtato.futtat(cfg, KulcsszoAdatKliens(), tmp_path / "adatok", docs_data, most=most)
+    fajl = docs_data / "kulcsszo_regresszio.json"
+    assert fajl.exists()
+    adat = json.loads(fajl.read_text(encoding="utf-8"))
+    assert "a" in adat["kulcsszavak"] and "intervallumok" in adat["kulcsszavak"]["a"]
+    sorok = _naplo_agonkent(tmp_path / "adatok")
+    assert "regresszio" in sorok
+    assert sorok["regresszio"]["eredmeny"] == "siker" and sorok["regresszio"]["hivasok_szama"] == "0"
+    assert adat["szamitva_utc"] == sorok["regresszio"]["futas_ido_utc"]
+
+
+def test_regresszio_hiba_nem_blokkol(tmp_path, monkeypatch, capsys):
+    """A regresszió-hiba NEM viszi el az exit-kódot/adatmentést; 'regresszio;hiba;0;KeyError'
+    a naplóba, FIGYELEM a run.log-ba."""
+    def _dob(*a, **k):
+        raise KeyError("bumm")
+    monkeypatch.setattr("trendfigyelo.regresszio.regresszio_szamit", _dob)
+    cfg = _config([KulcsszoTetel("a", "megelhetes", "szintmero")])
+    docs_data = tmp_path / "docs" / "data"
+    most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)
+    kod = futtato.futtat(cfg, KulcsszoAdatKliens(), tmp_path / "adatok", docs_data, most=most)
+    assert kod == 0                                              # van adat → 0, a hiba nem viszi el
+    assert (docs_data / "kulcsszo_nyers.json").exists()          # az adatmentés megtörtént
+    assert not (docs_data / "kulcsszo_regresszio.json").exists()  # a regresszió nem írt
+    sorok = _naplo_agonkent(tmp_path / "adatok")
+    assert "regresszio" in sorok
+    assert sorok["regresszio"]["eredmeny"] == "hiba"
+    assert sorok["regresszio"]["hibakodok"] == "KeyError"
+    assert "FIGYELEM" in capsys.readouterr().out
+
+
+def test_regresszio_siker_naplo_sor(tmp_path):
+    """Sikeres futásnál is van naplósor — a HIÁNYZÓ sor önmagában diagnosztikai jel."""
+    cfg = _config([KulcsszoTetel("a", "megelhetes", "szintmero")])
+    docs_data = tmp_path / "docs" / "data"
+    most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)
+    futtato.futtat(cfg, KulcsszoAdatKliens(), tmp_path / "adatok", docs_data, most=most)
+    sorok = _naplo_agonkent(tmp_path / "adatok")
+    assert "regresszio" in sorok and sorok["regresszio"]["eredmeny"] == "siker"
+
+
+def test_regresszio_kihagyva_ha_nincs_nyers(tmp_path):
+    """Nincs kulcsszo_nyers.json (nincs bemenet) → 'kihagyva', NEM 'hiba'; nincs crash."""
+    docs_data = tmp_path / "docs" / "data"
+    most = datetime(2021, 1, 1, 12, 0, tzinfo=timezone.utc)
+    kod = futtato.futtat(_config(), UresKulcsszoKliens(), tmp_path / "adatok", docs_data, most=most)
+    assert not (docs_data / "kulcsszo_regresszio.json").exists()
+    sorok = _naplo_agonkent(tmp_path / "adatok")
+    assert "regresszio" in sorok and sorok["regresszio"]["eredmeny"] == "kihagyva"

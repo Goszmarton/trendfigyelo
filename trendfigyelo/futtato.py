@@ -6,10 +6,12 @@ adat kiíródik (CSV-k, JSON-export, napló). A kilépési kód: 0, ha bármilye
 gyűlt, különben 1.
 """
 
+import json
 import sys
 from pathlib import Path
 
-from . import felkapott, idosorok, json_export, kulcsszavak, naplo, nyers_kimenet, seged
+from . import (felkapott, idosorok, json_export, kulcsszavak, naplo, nyers_kimenet,
+               regresszio, seged)
 from .config import betolt
 from .kliens import AgFeladva, Kliens
 
@@ -154,6 +156,35 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
     # nyers órás sorozat verziókövetett gördülő kimenete (üres sorozat NE írjon fájlt)
     if kulcsszo_nyers:
         nyers_kimenet.ir_gordulo(docs_data_mappa, kulcsszo_nyers)
+
+    # ---------- regresszió (származtatott nézet, VÉDETTEN) ----------
+    # Nulla Google-hívás; egy hibája SOHA nem viheti el az adatmentést vagy az exit-kódot,
+    # de NEM néma (finding 6): hiba → FIGYELEM a run.log-ba + naplósor. A kulcsszo_nyers a
+    # regresszió bemenete (hiánya → kihagyva); a tortenet csak élettartam-kontextus, a
+    # hiánya NEM hiba (kecses degradáció: meres_kezdete=null, ezt a 9b kezeli).
+    nyers_fajl = docs_data_mappa / "kulcsszo_nyers.json"
+    if not nyers_fajl.exists():
+        bejegyzesek.append({"ag": "regresszio", "eredmeny": "kihagyva",
+                            "hivasok_szama": 0, "hibakodok": ""})
+        print("FIGYELEM: regresszió kihagyva — nincs kulcsszo_nyers.json.")
+    else:
+        try:
+            # várt kivételek: FileNotFoundError, json.JSONDecodeError, KeyError, ValueError,
+            # TypeError, OSError — az Exception-backstop mindet elnyeli; a
+            # KeyboardInterrupt/SystemExit (BaseException) továbbmegy.
+            nyers = json.loads(nyers_fajl.read_text(encoding="utf-8"))
+            tortenet_fajl = docs_data_mappa / "tortenet.json"
+            tortenet = (json.loads(tortenet_fajl.read_text(encoding="utf-8"))
+                        if tortenet_fajl.exists() else {})
+            regresszio.regresszio_ir(
+                docs_data_mappa,
+                regresszio.regresszio_szamit(nyers, tortenet, config, letoltve))
+            bejegyzesek.append({"ag": "regresszio", "eredmeny": "siker",
+                                "hivasok_szama": 0, "hibakodok": ""})
+        except Exception as e:
+            bejegyzesek.append({"ag": "regresszio", "eredmeny": "hiba",
+                                "hivasok_szama": 0, "hibakodok": type(e).__name__})
+            print(f"FIGYELEM: a regresszió kimaradt — nem blokkolja az adatmentést ({e}).")
 
     # ---------- napló ----------
     naplo.naplo_ir(adatok_mappa, letoltve, bejegyzesek, config.naplo_max_sor)
