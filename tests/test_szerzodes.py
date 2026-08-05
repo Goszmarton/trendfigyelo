@@ -145,6 +145,17 @@ def sema_legfrissebb(obj) -> list[str]:
             for m in _HIR_MEZOK:
                 if m not in hr:
                     hibak.append(f"top_trendek[{i}].hirek[{j}]: hiányzó '{m}'")
+        # Task 3a — kategória JELEN-ESETÉN-típusos (a mai legfrissebb.json még nem hordozza;
+        # ledger nyitott elem a szigorításról). Ha jelen: topics list[int], temak list[str],
+        # és len(topics) == len(temak) (a temak a topics-ból derivált, trendspy garantálja).
+        if "topics" in tr or "temak" in tr:
+            topics, temak = tr.get("topics"), tr.get("temak")
+            if not (isinstance(topics, list) and all(isinstance(x, int) and not isinstance(x, bool) for x in topics)):
+                hibak.append(f"top_trendek[{i}].topics: list[int] kell")
+            if not (isinstance(temak, list) and all(isinstance(x, str) for x in temak)):
+                hibak.append(f"top_trendek[{i}].temak: list[str] kell")
+            if isinstance(topics, list) and isinstance(temak, list) and len(topics) != len(temak):
+                hibak.append(f"top_trendek[{i}].topics/temak: eltérő hossz")
     for i, pt in enumerate(obj.get("trend_idosorok", []) if isinstance(obj.get("trend_idosorok"), list) else []):
         if not (isinstance(pt, dict) and {"kifejezes", "idopont_utc", "ertek", "forras"} <= set(pt)):
             hibak.append(f"trend_idosorok[{i}]: {{kifejezes, idopont_utc, ertek, forras}} kell")
@@ -338,6 +349,8 @@ def _valid_legfrissebb(n=3):
     return {
         "geo": "HU", "frissitve": "2026-08-04T20:00:00+00:00",
         "top_trendek": [{"kifejezes": "t", "volumen": "1", "novekedes_pct": "1",
+                         # temak a topics-ból derivált (trendspy trend_keyword.py:46) → len egyezik
+                         "topics": [1], "temak": ["Autos and Vehicles"],
                          "idosor": [{"idopont_utc": "2026-08-04T20:00:00+00:00", "ertek": 1}],
                          "hirek": [{"hir_cim": "Cím", "hir_forras": "Index",
                                     "hir_url": "https://index.hu/x",
@@ -382,6 +395,21 @@ def test_sema_legfrissebb_hir_hianyzo_mezo():
     rossz = _valid_legfrissebb()
     rossz["top_trendek"][0]["hirek"][0].pop("hir_url")   # Task 7 a linkhez ezt rajzolja
     assert any("hir_url" in h for h in sema_legfrissebb(rossz))
+
+
+def test_sema_legfrissebb_topics_es_temak():
+    # Task 3a: topics list[int] + temak list[str], JELEN-ESETÉN-típusos, párosított hossz.
+    assert sema_legfrissebb(_valid_legfrissebb()) == []                     # topics=[1], temak=["..."] paired
+    rossz_t = _valid_legfrissebb(); rossz_t["top_trendek"][0]["topics"] = ["x"]    # int helyett str
+    assert any("topics" in h for h in sema_legfrissebb(rossz_t))
+    rossz_te = _valid_legfrissebb(); rossz_te["top_trendek"][0]["temak"] = [1]      # str helyett int
+    assert any("temak" in h for h in sema_legfrissebb(rossz_te))
+    rossz_len = _valid_legfrissebb(); rossz_len["top_trendek"][0]["topics"] = [1, 2]  # len eltér a temak-tól
+    assert any("hossz" in h for h in sema_legfrissebb(rossz_len))
+    # hiányzó mezők MEGENGEDETTEK (mai legfrissebb.json még nem hordozza) — ledger nyitott elem
+    hiany = _valid_legfrissebb()
+    hiany["top_trendek"][0].pop("topics"); hiany["top_trendek"][0].pop("temak")
+    assert sema_legfrissebb(hiany) == []
 
 
 def test_sema_tortenet_valid_es_hibas():

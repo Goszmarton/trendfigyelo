@@ -458,3 +458,44 @@ def test_regresszio_kihagyva_ha_nincs_nyers(tmp_path):
     assert not (docs_data / "kulcsszo_regresszio.json").exists()
     sorok = _naplo_agonkent(tmp_path / "adatok")
     assert "regresszio" in sorok and sorok["regresszio"]["eredmeny"] == "kihagyva"
+
+
+# --- Task 3a: kategória (topics + temak) átvezetése a top_trend_struktura-ban ---
+
+def test_top_trend_struktura_atadja_topics_temak():
+    # API TrendKeyword: .topics (list[int]) + .topic_names (list[str], a topics-ból derivált)
+    api = [SimpleNamespace(keyword="infláció", volume=50000, volume_growth_pct=120,
+                           topics=[1, 2], topic_names=["Autos", "Sport"])]
+    s = futtato.top_trend_struktura(api, [], [], _config())
+    assert s[0].get("topics") == [1, 2] and s[0].get("temak") == ["Autos", "Sport"]
+
+
+def test_top_trend_struktura_ures_topics_ures_lista():
+    # üres kategória → [] (nem null, nem hiányzó kulcs); nincs negyedik állapot (spec 7.3)
+    api = [SimpleNamespace(keyword="x", volume=100, volume_growth_pct=1, topics=[], topic_names=[])]
+    s = futtato.top_trend_struktura(api, [], [], _config())
+    assert s[0].get("topics") == [] and s[0].get("temak") == []
+
+
+def test_ures_topics_figyelem(capsys):
+    # üres topics naplózása (spec 3a): aggregált FIGYELEM a run.log-ba, a kifejezéssel
+    api = [SimpleNamespace(keyword="csendes", volume=100, volume_growth_pct=1, topics=[], topic_names=[])]
+    futtato.top_trend_struktura(api, [], [], _config())
+    out = capsys.readouterr().out
+    assert "FIGYELEM" in out and "csendes" in out
+
+
+def test_topics_kulcs_mindig_jelen():
+    # "mindig jelen, soha hiányzó kulcs": üres kategóriánál is JELEN a kulcs (nem csak None-érték)
+    api = [SimpleNamespace(keyword="x", volume=100, volume_growth_pct=1, topics=[], topic_names=[])]
+    s = futtato.top_trend_struktura(api, [], [], _config())
+    assert "topics" in s[0] and "temak" in s[0]
+
+
+def test_topics_attributum_nelkul():
+    # RSS-ág TrendKeywordLite: NINCS topics/topic_names attribútum → getattr(...,[]) fallback,
+    # nem AttributeError; a kulcs jelen, értéke [].
+    lite = SimpleNamespace(keyword="rss", volume=50, volume_growth_pct=1)
+    s = futtato.top_trend_struktura([lite], [], [], _config())
+    assert "topics" in s[0] and s[0]["topics"] == []
+    assert "temak" in s[0] and s[0]["temak"] == []

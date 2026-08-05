@@ -50,15 +50,27 @@ def top_trend_struktura(api_trendek, trend_idosorok, rss_trendek, config) -> lis
     legnagyobbak = legnagyobbak[: config.trend_idosor_max]
 
     struktura = []
+    ures_topics = []
     for t in legnagyobbak:
         kifejezes = getattr(t, "keyword", "")
+        # kategória CSAK az API-ág TrendKeyword-jén van; az RSS-ág TrendKeywordLite-ján NINCS
+        # topics/topic_names attribútum → a getattr-fallback [] (nem AttributeError). Mindkét mező
+        # MINDIG jelen, üres esetben []. A temak a topics-ból derivált (len egyezik, trend_keyword.py:46).
+        topics = list(getattr(t, "topics", []) or [])
+        temak = list(getattr(t, "topic_names", []) or [])
+        if not topics:
+            ures_topics.append(kifejezes)
         struktura.append({
             "kifejezes": kifejezes,
             "volumen": seged.szovegge(getattr(t, "volume", None)),
             "novekedes_pct": seged.szovegge(getattr(t, "volume_growth_pct", None)),
+            "topics": topics,
+            "temak": temak,
             "idosor": idosor_map.get(kifejezes, []),
             "hirek": hir_map.get(kifejezes, []),
         })
+    if ures_topics:   # csak ha VAN üres-topics-ú trend; üres trendlistánál semmi
+        print(f"FIGYELEM: {len(ures_topics)} trend üres topics-szal: {', '.join(ures_topics)}")
     return struktura
 
 
