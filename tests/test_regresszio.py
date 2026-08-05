@@ -1,0 +1,174 @@
+from datetime import datetime, timedelta, timezone
+from types import SimpleNamespace
+
+from trendfigyelo import regresszio
+
+KEZD = datetime(2026, 7, 24, 21, tzinfo=timezone.utc)
+
+
+def _pont(t, ertek, reszleges=False):
+    return {"idopont_utc": t.isoformat(), "ertek": ertek, "reszleges": reszleges}
+
+
+def _oras(n_lezart, meredekseg=0.1, kezd=KEZD, partial=False):
+    """n_lezart lezárt órás pont T+0..T+(n-1); partial=True esetén +1 részleges a végén."""
+    pts = [_pont(kezd + timedelta(hours=i), 50 + meredekseg * i) for i in range(n_lezart)]
+    if partial:
+        pts.append(_pont(kezd + timedelta(hours=n_lezart), 50 + meredekseg * n_lezart, reszleges=True))
+    return pts
+
+
+# ── _illesztes ──────────────────────────────────────────────────────────────
+def test_illesztes_pontos_egyenes():
+    b, r2, se = regresszio._illesztes([0, 1, 2, 3], [0, 2, 4, 6])
+    assert round(b, 6) == 2.0 and round(r2, 6) == 1.0 and se == 0.0
+
+
+def test_illesztes_lapos():
+    b, r2, _ = regresszio._illesztes([0, 1, 2], [5, 5, 5])
+    assert b == 0.0 and r2 == 0.0
+
+
+def test_illesztes_degeneralt_none():
+    # nincs x-variancia (minden x azonos) → degeneráltság-jelzés
+    assert regresszio._illesztes([3, 3, 3], [1, 2, 3]) == (None, None, None)
+
+
+# ── _irany (fix 1.0 küszöb, ASCII enum) ──────────────────────────────────────
+def test_irany_kuszob():
+    assert regresszio._irany(0.5) == "stagnal"
+    assert regresszio._irany(-0.99) == "stagnal"
+    assert regresszio._irany(2.0) == "novekszik"
+    assert regresszio._irany(-2.0) == "csokken"
+
+
+# ── regresszio_egy_ablak ─────────────────────────────────────────────────────
+def test_reszleges_zaropont_kihagyva():
+    pts = _oras(168, partial=True)
+    veg = KEZD + timedelta(hours=168)
+    r = regresszio.regresszio_egy_ablak(pts, KEZD.isoformat(), veg.isoformat(), 7)
+    assert r["ervenyes"] is True
+    assert r["pontok_kihagyva_reszleges"] == 1 and r["pontok_hasznalt"] == 168
+
+
+def test_keves_pont():
+    pts = _oras(10)
+    r = regresszio.regresszio_egy_ablak(pts, KEZD.isoformat(), (KEZD + timedelta(hours=10)).isoformat(), 7)
+    assert r["ervenyes"] is False and r["ok"] == "keves_pont"
+    assert r["pontok_hasznalt"] == 10
+
+
+def test_rovid_span():
+    pts = _oras(30)   # 30 pont, ~29h span < 3.5 nap
+    r = regresszio.regresszio_egy_ablak(pts, KEZD.isoformat(), (KEZD + timedelta(hours=29)).isoformat(), 7)
+    assert r["ervenyes"] is False and r["ok"] == "rovid_span"
+    assert r["pontok_hasznalt"] == 30
+
+
+def test_degeneralt():
+    pts = [_pont(KEZD, 50 + i) for i in range(24)]   # 24 pont AZONOS időbélyeggel
+    r = regresszio.regresszio_egy_ablak(pts, KEZD.isoformat(), (KEZD + timedelta(hours=168)).isoformat(), 7)
+    assert r["ervenyes"] is False and r["ok"] == "degeneralt"
+
+
+def test_ervenyes_teljes_ablak():
+    pts = _oras(168, meredekseg=-0.2, partial=True)
+    veg = KEZD + timedelta(hours=168)
+    r = regresszio.regresszio_egy_ablak(pts, KEZD.isoformat(), veg.isoformat(), 7)
+    assert r["ervenyes"] and r["pontok_hianyzo"] == 0
+    assert "se_meredekseg" in r and r["r2_masodlagos_autokorrelacio"] is True
+    assert r["irany"] == "csokken"
+
+
+def test_vegi_lyuk_latszik():
+    # 144 lezárt pont, majd a végén 24h HIÁNYZIK — az ablakhoz mérve látszik
+    pts = _oras(144)
+    veg = KEZD + timedelta(hours=168)   # az EREDETI ablakvég, nem a csonkolt utolsó pont
+    r = regresszio.regresszio_egy_ablak(pts, KEZD.isoformat(), veg.isoformat(), 7)
+    assert r["ervenyes"] is True
+    assert r["pontok_hianyzo"] == 24
+
+
+def test_nincs_adat():
+    r = regresszio.regresszio_egy_ablak([], KEZD.isoformat(), (KEZD + timedelta(hours=168)).isoformat(), 7)
+    assert r["ervenyes"] is False and r["ok"] == "nincs_adat"
+
+
+# ── élettartam + összeállítás ────────────────────────────────────────────────
+def _config(kifejezesek):
+    tetel = [SimpleNamespace(kifejezes=k, domen="g", tipus="szintmero") for k in kifejezesek]
+    return SimpleNamespace(modszertan_valtas="2026-07-30", osszes_kulcsszo=lambda: list(tetel))
+
+
+def _uj_rek(kulcsszo, atlag=1.0):
+    return {"kulcsszo": kulcsszo, "domen": "d", "tipus": "t", "atlag": atlag, "csucs": atlag,
+            "ervenyes_pontok": 1, "nulla_pontok": 0, "ossz_pontok": 1}
+
+
+def _tortenet(napok):
+    return {"napok": [{"nap": d, "kulcsszavak": r} for d, r in sorted(napok.items())],
+            "modszertan_valtas": "2026-07-30"}
+
+
+def test_meres_kezdete_markerre_vagva():
+    # 07-29 (pre-marker, új-alak) ÉS 07-30 → meres_kezdete = 07-30, NEM 07-29
+    tort = _tortenet({"2026-07-29": [_uj_rek("állás")], "2026-07-30": [_uj_rek("állás")]})
+    out = regresszio.regresszio_szamit({"kulcsszavak": {}}, tort, _config(["állás"]), "T")
+    assert out["kulcsszavak"]["állás"]["meres_kezdete"] == "2026-07-30"
+
+
+def test_horgonyos_only_szo_kimarad():
+    tort = _tortenet({"2026-07-21": [{"kulcsszo": "MNB", "csoport": "gazd",
+                                      "atlag": 3.0, "csucs": 3.0, "ervenyes_pontok": 1}]})
+    out = regresszio.regresszio_szamit({"kulcsszavak": {}}, tort, _config(["állás"]), "T")
+    assert "MNB" not in out["kulcsszavak"]
+
+
+def test_eltavolitott_szo_aktiv_es_meres_vege():
+    tort = _tortenet({"2026-07-30": [_uj_rek("régi")]})
+    out = regresszio.regresszio_szamit({"kulcsszavak": {}}, tort, _config(["állás"]), "T")
+    r = out["kulcsszavak"]["régi"]
+    assert r["aktiv"] is False and r["meres_vege"] == "2026-07-30"
+    assert r["domen"] == "d" and r["tipus"] == "t"
+
+
+def test_2_het_nincs_lancolas_es_top_mezok():
+    nyers = {"kulcsszavak": {"állás": [{"ablak_kezdet_utc": KEZD.isoformat(),
+                                        "ablak_veg_utc": (KEZD + timedelta(hours=168)).isoformat(),
+                                        "pontok": _oras(168, meredekseg=-0.2, partial=True)}]}}
+    out = regresszio.regresszio_szamit(nyers, _tortenet({}), _config(["állás"]), "T")
+    assert out["irany_kuszob"] == 1.0 and out["meredekseg_egyseg"] == "relatív pont / nap"
+    iv = out["kulcsszavak"]["állás"]["intervallumok"]
+    assert iv["2_het"] == {"ervenyes": False, "ok": "nincs_lancolas"}
+    assert iv["1_het"]["ervenyes"] is True
+
+
+def test_len_agnosztikus_3_es_20():
+    for n in (3, 20):
+        out = regresszio.regresszio_szamit({"kulcsszavak": {}}, _tortenet({}),
+                                           _config([f"szo{i}" for i in range(n)]), "T")
+        assert len(out["kulcsszavak"]) == n
+
+
+# ── writer + valós integráció ────────────────────────────────────────────────
+def test_regresszio_ir_visszaolvas(tmp_path):
+    import json
+    p = regresszio.regresszio_ir(tmp_path, {"szamitva_utc": "T", "kulcsszavak": {}})
+    assert json.loads(p.read_text(encoding="utf-8"))["szamitva_utc"] == "T"
+
+
+def test_valos_adatbol():
+    import json
+    from pathlib import Path
+    from trendfigyelo import config as cfgmod
+    DATA = Path(__file__).resolve().parent.parent / "docs" / "data"
+    nyers = json.loads((DATA / "kulcsszo_nyers.json").read_text(encoding="utf-8"))
+    tort = json.loads((DATA / "tortenet.json").read_text(encoding="utf-8"))
+    cfg = cfgmod.betolt()
+    out = regresszio.regresszio_szamit(nyers, tort, cfg, "2026-08-04T20:39:28+00:00")
+    kk = out["kulcsszavak"]
+    assert len(kk) == len(cfg.osszes_kulcsszo())
+    for szo, v in kk.items():
+        assert v["meres_kezdete"] == "2026-07-30" and v["aktiv"] is True
+        assert v["intervallumok"]["1_het"]["ervenyes"] is True
+        assert v["intervallumok"]["2_het"]["ok"] == "nincs_lancolas"
