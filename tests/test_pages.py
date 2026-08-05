@@ -190,7 +190,44 @@ def _index_html() -> str:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def test_index_html_letezik():
-    assert "Trendfigyelő" in _index_html()
+    html = _index_html()
+    assert "Trendfigyelő" in html                                  # tartós azonosító (Task 1)
+    # Task 5 váz-horgonyok: a kétblokkos elrendezés (§7.1) + a két vezérlő + a saját/vendorolt eszközök.
+    for horgony in (
+        'id="kulcsszo-blokk"', 'id="trend-blokk"',
+        'id="intervallum-vezerlo"', 'id="datum-valaszto"',
+        'href="css/app.css"',
+        'src="vendor/chartjs/chart.umd.js"',
+        'src="js/app.js"',
+    ):
+        assert horgony in html, horgony
+
+
+def test_loader_cache_busting():
+    # A data-fetch cache-busting: ?v= + Date.now() (§4.1). Forrás-szintű (statikus) ellenőrzés;
+    # a futásidejű hatást a Playwright-smoke igazolná (ledger nyitott elem).
+    js = DOCS / "js" / "app.js"
+    assert js.exists(), "docs/js/app.js hiányzik"
+    src = js.read_text(encoding="utf-8")
+    assert "?v=" in src and "Date.now()" in src
+
+
+def test_loader_hibakezeles():
+    # Nem néma, IZOLÁLT hibaállapot (§7.5, finding 6).
+    # FIGYELEM: a RÉGI assert ("catch" in src + textContent) a HIBÁS kódot is átengedte —
+    # a blokk-szintű Promise.all miatt a hiányzó kulcsszo_regresszio.json elvitte a betöltött
+    # kulcsszo_nyers.json-t is, és a textContent felülírta a konténert. NE egyszerűsítsd vissza
+    # "catch"-re: az allSettled-alapú helyes megoldásban NINCS try/catch, a hibát rejected-
+    # státuszból kezeljük, KÜLÖN gyerek-elembe írva.
+    js = DOCS / "js" / "app.js"
+    assert js.exists(), "docs/js/app.js hiányzik"
+    src = js.read_text(encoding="utf-8")
+    assert "allSettled" in src                              # per-blokk ÉS per-fájl izoláció
+    assert "Hiba az adat betöltésekor" in src               # felhasználónak szánt magyar hibaszöveg
+    assert "createElement" in src and "appendChild" in src, \
+        "a hiba KÜLÖN gyerek-elembe kerüljön (ne a konténer textContent-jét írja felül)"
+    # Statikusan NEM ellenőrizhető: a fájlonkénti izoláció TÉNYE és a hibaüzenet MINŐSÉGE
+    # (melyik fájl + ok) — ezek a Playwright-smoke tárgyai (ledger nyitott elem).
 
 
 # ─────────────────────────────────────────────────────────────────────────────

@@ -4,29 +4,45 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Trendfigyelő — magyarországi keresési trendek</title>
-  <style>
-    body { font-family: system-ui, sans-serif; max-width: 42rem; margin: 3rem auto;
-           padding: 0 1rem; line-height: 1.6; color: #222; }
-    h1 { margin-bottom: .25rem; }
-    .halvany { color: #666; }
-    ul { padding-left: 1.2rem; }
-    code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
-  </style>
+  <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
   <h1>Trendfigyelő</h1>
   <p class="halvany">Magyarországi (geo=HU) Google Trends adatok, napi frissítéssel.</p>
 
-  <p>Ez az oldal jelenleg <strong>placeholder</strong>: az interaktív grafikonok
-  (kulcsszó-idősorok, napi top trendek, dátumválasztó) a <strong>Phase 3</strong>-ban
-  érkeznek. Addig a nyers adat közvetlenül elérhető:</p>
+  <div id="dashboard">
+    <section id="vezerlok">
+      <div id="intervallum-vezerlo" aria-label="Kulcsszó időtartomány">
+        <!-- 1 hét / 2 hét / 1 hó / 3 hó / 1 év — a gombok elérhetősége a kulcsszo_regresszio.json-ból (Task 6) -->
+      </div>
+      <div id="datum-valaszto" aria-label="Trend dátumválasztó">
+        <!-- napok/index.json alapján; belépéskor a legfrissebb nap (Task 6) -->
+      </div>
+    </section>
 
-  <ul>
-    <li><a href="data/legfrissebb.json"><code>data/legfrissebb.json</code></a> — a legutóbbi futás összesítése</li>
-    <li><a href="data/tortenet.json"><code>data/tortenet.json</code></a> — kulcsszó-történet (napi átlag + csúcs)</li>
-    <li><a href="data/napok/index.json"><code>data/napok/index.json</code></a> — az elérhető napi trendlisták dátumai</li>
-  </ul>
+    <section id="kulcsszo-blokk" aria-label="Kulcsszavak">
+      <h2>Kulcsszavak</h2>
+      <!-- szavanként külön chart regresszióval + mérőszámokkal — Task 9b -->
+    </section>
 
-  <p class="halvany">Minden adat kizárólag Magyarországra (geo=HU), az elmúlt 24 órára vonatkozik.</p>
+    <section id="trend-blokk" aria-label="Napi legfrissebb trendek">
+      <h2>Napi legfrissebb trendek</h2>
+      <!-- lista + kategória-címke + napi görbe (regresszió nélkül) — Task 7/8 -->
+    </section>
+  </div>
+
+  <!-- ÁTMENETI fallback: a nyers adat elérése, amíg a dashboard elkészül (Task 9b/10 távolítja el) -->
+  <footer id="nyers-adat" class="halvany">
+    <p>Nyers adat (átmeneti, a felület elkészültéig):</p>
+    <ul>
+      <li><a href="data/legfrissebb.json"><code>data/legfrissebb.json</code></a> — a legutóbbi futás összesítése</li>
+      <li><a href="data/tortenet.json"><code>data/tortenet.json</code></a> — kulcsszó-történet (napi átlag + csúcs)</li>
+      <li><a href="data/napok/index.json"><code>data/napok/index.json</code></a> — az elérhető napi trendlisták dátumai</li>
+    </ul>
+    <p>Minden adat kizárólag Magyarországra (geo=HU), az elmúlt 24 órára vonatkozik.</p>
+  </footer>
+
+  <script src="vendor/chartjs/chart.umd.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
