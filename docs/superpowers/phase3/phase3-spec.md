@@ -51,7 +51,7 @@ Négy publikált JSON, két külön időszemantikával:
 | Fájl | Tartalom | Felbontás / ablak | Láncolódik? |
 |---|---|---|---|
 | `legfrissebb.json` → `top_trendek` | napi felkapott trendek + `idosor` | 8 perc, `now 1-d`, 180 pont/trend | **nem** |
-| `legfrissebb.json` → `trend_idosorok` | ugyanaz más alakban (15 sorozat, 2700 pont) | 8 perc, `now 1-d` | **nem** |
+| `legfrissebb.json` → `trend_idosorok` | ugyanaz más alakban (15 sorozat × ~180 pont ≈ ~2705, futásonként ingadozik) | 8 perc, `now 1-d` | **nem** |
 | `legfrissebb.json` → `kulcsszavak`, `kulcsszo_osszesites` | a nap kulcsszó-metszete, `atlag`/`csucs` | napi aggregátum | — |
 | `kulcsszo_nyers.json` | **kulcsszavanként nyers órás sorozat** | 1 óra, `now 7-d`, 169 pont/szó | **ez a láncolás bemenete** |
 | `napok/YYYY-MM-DD.json` + `index.json` | trend-archívum | napi | csak előre nő |
@@ -63,9 +63,16 @@ Mért tények a 2026-07-30-i első éles szóló futásból (run `30578843096`):
   kiírt szó pontosan eléri a 100-at. Ugyanez igaz a 15 trend-idősorra.
 - Az órás rács hiánytalan, duplikátum nélkül; minden időbélyeg **tz-aware
   UTC** (`+00:00`).
-- **Az `ablak_veg_utc` minden szónál azonos**, mert a trendspy órahatárra
-  igazít — a közös perem **szerkezeti**, nem a futás rövidségének
-  következménye. A láncolás „közös perem" feltevése ezért tartható.
+- **Egy futáson belül az `ablak_veg_utc` minden szónál azonos**, mert a
+  trendspy órahatárra igazít — a közös perem **szerkezeti**, nem a futás
+  rövidségének következménye. A `kulcsszo_nyers.json` mára **halmozódó**
+  (`nyers_kimenet.ir_gordulo`), ezért az akkumulált fájlban **futásonként egy**
+  perem van, nem globálisan egyetlen; a fenti „minden szónál azonos" az első,
+  egyszeri szóló futásra volt szó szerint igaz. A szerződés ezt futásonként
+  őrzi: minden `ablak_veg_utc`-hez **pontosan egy** `ablak_kezdet_utc` tartozik,
+  és a `(kezdet, veg)` párok száma a megtartott napok nagyságrendjében marad
+  (nem szó×nap). A láncolás „közös perem" feltevése ezért — futáson belül —
+  tartható.
 - Szavanként pontosan a záró órás pont `reszleges: true` (a Trends `isPartial`
   oszlopából); sehol máshol.
 - A `trend_idosorok` pontjain **nincs** `reszleges` mező — tudatos
