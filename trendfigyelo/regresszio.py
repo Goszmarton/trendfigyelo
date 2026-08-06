@@ -31,7 +31,10 @@ MIN_PONT = 24
 IRANY_KUSZOB = 1.0                          # relatív pont / nap
 MEREDEKSEG_EGYSEG = "relatív pont / nap"
 R2_MEGJEGYZES = ("Az R² autokorrelált órás soron számolt — MÁSODLAGOS; az elsődleges a "
-                 "meredekség és az irány (spec 4.1). Az r2_masodlagos_autokorrelacio ezt jelzi.")
+                 "meredekség és az irány (spec 4.1). Az r2_masodlagos_autokorrelacio ezt jelzi. "
+                 "A se_meredekseg (OLS standard hiba) UGYANEZEN autokorreláció miatt szintén "
+                 "MÁSODLAGOS és torzított (lefelé) — a se_masodlagos_autokorrelacio jelzi; a "
+                 "felület NEM írja ki konfidencia-sávként.")
 
 
 def _dt(iso):
@@ -39,24 +42,26 @@ def _dt(iso):
 
 
 def _illesztes(xs, ys):
-    """Legkisebb négyzetek. Visszaad: (meredekseg, r2, se_meredekseg).
+    """Legkisebb négyzetek. Visszaad: (meredekseg, METSZET, r2, se_meredekseg).
 
-    Degenerált eset (nincs x-variancia, sxx == 0) → (None, None, None), hogy a hívó
-    NE építsen belőle ervenyes:true rekordot (illesztés nem történt).
+    A metszet (a = my - b*mx) itt, EGY forrásból számolódik — a hívó NE számolja
+    újra (divergencia-kockázat). Degenerált eset (nincs x-variancia, sxx == 0) →
+    (None, None, None, None), hogy a hívó NE építsen belőle ervenyes:true rekordot.
     """
     n = len(xs)
     mx = sum(xs) / n
     my = sum(ys) / n
     sxx = sum((x - mx) ** 2 for x in xs)
     if sxx == 0:
-        return None, None, None
+        return None, None, None, None
     sxy = sum((x - mx) * (y - my) for x, y in zip(xs, ys))
     syy = sum((y - my) ** 2 for y in ys)
     b = sxy / sxx
+    a = my - b * mx                                        # metszet (y az x=0-nál)
     r2 = (sxy * sxy) / (sxx * syy) if syy > 0 else 0.0
     sse = max(syy - b * sxy, 0.0)                          # maradék négyzetösszeg
     se = (sse / ((n - 2) * sxx)) ** 0.5 if n > 2 else 0.0
-    return b, r2, se
+    return b, a, r2, se
 
 
 def _irany(meredekseg):
@@ -95,7 +100,7 @@ def regresszio_egy_ablak(pontok, ablak_kezdet_utc, ablak_veg_utc, ablak_hossz_na
     x0 = ts[0]
     xs = [(t - x0).total_seconds() / 86400 for t in ts]
     ys = [p["ertek"] for p in lezart]
-    b, r2, se = _illesztes(xs, ys)
+    b, a, r2, se = _illesztes(xs, ys)
     if b is None:                                          # degenerált: nincs x-variancia
         return {"ervenyes": False, "ok": "degeneralt",
                 "pontok_hasznalt": n, "pontok_kihagyva_reszleges": kihagyva}
@@ -103,10 +108,19 @@ def regresszio_egy_ablak(pontok, ablak_kezdet_utc, ablak_veg_utc, ablak_hossz_na
     if span_nap < ablak_hossz_nap / 2:
         return {"ervenyes": False, "ok": "rovid_span",
                 "pontok_hasznalt": n, "pontok_kihagyva_reszleges": kihagyva}
+    # A regressziós vonal két végpont-horgonya: az ELSŐ és UTOLSÓ LEZÁRT pont EREDETI
+    # idopont_utc-jénél (a részleges záró NEM horgony → a vonal megáll előtte). Az ertek
+    # TELJES float, adatréteg-kerekítés NÉLKÜL (szemben a meredekseg_nap/se/r2 kerekítéssel):
+    # a horgony a görbe végpontjához illeszkedik, a MEGJELENÍTÉST a frontend kerekíti.
+    illesztes_vonal = [
+        {"idopont_utc": lezart[0]["idopont_utc"], "ertek": a + b * xs[0]},
+        {"idopont_utc": lezart[-1]["idopont_utc"], "ertek": a + b * xs[-1]},
+    ]
     return {
         "ervenyes": True,
         "meredekseg_nap": round(b, 3),
         "se_meredekseg": round(se, 4),
+        "se_masodlagos_autokorrelacio": True,              # az se ugyanúgy autokorreláció-torzított, mint az R²
         "irany": _irany(b),
         "r2": round(r2, 3),
         "r2_masodlagos_autokorrelacio": True,
@@ -115,6 +129,7 @@ def regresszio_egy_ablak(pontok, ablak_kezdet_utc, ablak_veg_utc, ablak_hossz_na
         "pontok_hasznalt": n,
         "pontok_kihagyva_reszleges": kihagyva,
         "pontok_hianyzo": _hianyzo_orak(ablak_kezdet_utc, ablak_veg_utc, ts),
+        "illesztes_vonal": illesztes_vonal,
     }
 
 

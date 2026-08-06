@@ -20,18 +20,19 @@ def _oras(n_lezart, meredekseg=0.1, kezd=KEZD, partial=False):
 
 # ── _illesztes ──────────────────────────────────────────────────────────────
 def test_illesztes_pontos_egyenes():
-    b, r2, se = regresszio._illesztes([0, 1, 2, 3], [0, 2, 4, 6])
-    assert round(b, 6) == 2.0 and round(r2, 6) == 1.0 and se == 0.0
+    # mini-9a: az _illesztes 4-tuple-t ad → (meredekseg, METSZET, r2, se). y=2x → metszet 0.
+    b, a, r2, se = regresszio._illesztes([0, 1, 2, 3], [0, 2, 4, 6])
+    assert round(b, 6) == 2.0 and round(a, 6) == 0.0 and round(r2, 6) == 1.0 and se == 0.0
 
 
 def test_illesztes_lapos():
-    b, r2, _ = regresszio._illesztes([0, 1, 2], [5, 5, 5])
-    assert b == 0.0 and r2 == 0.0
+    b, a, r2, _ = regresszio._illesztes([0, 1, 2], [5, 5, 5])
+    assert b == 0.0 and a == 5.0 and r2 == 0.0
 
 
 def test_illesztes_degeneralt_none():
-    # nincs x-variancia (minden x azonos) → degeneráltság-jelzés
-    assert regresszio._illesztes([3, 3, 3], [1, 2, 3]) == (None, None, None)
+    # nincs x-variancia (minden x azonos) → degeneráltság-jelzés (4-tuple None, a metszet is None)
+    assert regresszio._illesztes([3, 3, 3], [1, 2, 3]) == (None, None, None, None)
 
 
 # ── _irany (fix 1.0 küszöb, ASCII enum) ──────────────────────────────────────
@@ -89,6 +90,57 @@ def test_vegi_lyuk_latszik():
     assert r["pontok_hianyzo"] == 24
 
 
+# ── mini-9a: illesztes_vonal (két végpont-horgony) + se-flag ──────────────────
+def test_illesztes_vonal_ket_vegpont():
+    # ervenyes ág: két végpont-horgony {idopont_utc, ertek}, az első és UTOLSÓ LEZÁRT pontnál.
+    # meredekseg=-0.07 SZÁNDÉKOS: y_veg = 50 - 0.07*167 = 38.31, azaz 2-tizedes végpont.
+    # A korábbi -0.2 véletlenül 1-tizedes végpontot ad (16.6), azon egy adatréteg-kerekítés
+    # LÁTHATATLAN marad (M2-mutációval igazolva) — a 2-tizedes végpont teszi élessé a
+    # "nincs adatréteg-kerekítés, teljes float" szerződést.
+    pts = _oras(168, meredekseg=-0.07, partial=True)
+    veg = KEZD + timedelta(hours=168)
+    r = regresszio.regresszio_egy_ablak(pts, KEZD.isoformat(), veg.isoformat(), 7)
+    assert "illesztes_vonal" in r
+    v = r["illesztes_vonal"]
+    assert len(v) == 2
+    assert set(v[0]) == {"idopont_utc", "ertek"} and set(v[1]) == {"idopont_utc", "ertek"}
+    assert round(v[0]["ertek"], 6) == 50.0
+    assert round(v[1]["ertek"], 6) == 38.31
+    # explicit tiltás: az adatréteg NEM kerekíthet 1 tizedesre (38.31 != 38.3)
+    assert round(v[1]["ertek"], 6) != round(v[1]["ertek"], 1)
+
+
+def test_illesztes_vonal_zaropont_lezart():
+    # a vonal UTOLSÓ pontja az utolsó LEZÁRT pont (T+167h), NEM a részleges záró (T+168h)
+    pts = _oras(168, meredekseg=-0.2, partial=True)
+    veg = KEZD + timedelta(hours=168)
+    r = regresszio.regresszio_egy_ablak(pts, KEZD.isoformat(), veg.isoformat(), 7)
+    v = r["illesztes_vonal"]
+    assert v[0]["idopont_utc"] == KEZD.isoformat()
+    assert v[1]["idopont_utc"] == (KEZD + timedelta(hours=167)).isoformat()
+    assert v[1]["idopont_utc"] != (KEZD + timedelta(hours=168)).isoformat()
+
+
+def test_se_masodlagos_flag():
+    # a se_meredekseg ugyanúgy autokorreláció-torzított, mint az R² → önleíró flag, true
+    pts = _oras(168, meredekseg=-0.2, partial=True)
+    veg = KEZD + timedelta(hours=168)
+    r = regresszio.regresszio_egy_ablak(pts, KEZD.isoformat(), veg.isoformat(), 7)
+    assert r["se_masodlagos_autokorrelacio"] is True
+
+
+# FIGYELEM: ez a teszt SZÁNDÉKOSAN NEM RED — regressziós őr a 4. tervdöntésre.
+# Azt betonozza be, hogy az ÉRVÉNYTELEN ágra (ervenyes:false) NEM kerül illesztes_vonal
+# (nincs vonal, amit rajzolni), és se-flag sem. Ne törölje senki "feleslegesként": ha valaki
+# később a horgonyt/flaget az érvénytelen ágra is ráteszi, ennek a tesztnek EL KELL buknia.
+def test_illesztes_vonal_csak_ervenyes():
+    r = regresszio.regresszio_egy_ablak(_oras(10), KEZD.isoformat(),
+                                        (KEZD + timedelta(hours=10)).isoformat(), 7)
+    assert r["ervenyes"] is False and r["ok"] == "keves_pont"
+    assert "illesztes_vonal" not in r
+    assert "se_masodlagos_autokorrelacio" not in r
+
+
 def test_nincs_adat():
     r = regresszio.regresszio_egy_ablak([], KEZD.isoformat(), (KEZD + timedelta(hours=168)).isoformat(), 7)
     assert r["ervenyes"] is False and r["ok"] == "nincs_adat"
@@ -141,6 +193,9 @@ def test_2_het_nincs_lancolas_es_top_mezok():
     iv = out["kulcsszavak"]["állás"]["intervallumok"]
     assert iv["2_het"] == {"ervenyes": False, "ok": "nincs_lancolas"}
     assert iv["1_het"]["ervenyes"] is True
+    # mini-9a: az érvényes 1_het a teljes szerkezetben is hordozza a horgonyt + se-flaget
+    assert "illesztes_vonal" in iv["1_het"]
+    assert iv["1_het"]["se_masodlagos_autokorrelacio"] is True
 
 
 def test_len_agnosztikus_3_es_20():
