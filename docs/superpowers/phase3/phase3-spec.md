@@ -175,8 +175,8 @@ hit-testing, mobil érintés és tengelyskálázás minden sora saját tesztelen
 kód). **Új szempont a v2-ben:** 13 külön chart egy oldalon — a döntésnél a
 teljesítmény és a lusta (viewportba érés szerinti) rajzolás is mérlegelendő.
 
-**A `napelem`-típusú gyenge szavak kezelése.** Lásd 7.6 — nem eldöntött,
-hogy a tartósan üres chart elrejtendő-e vagy megjelenítendő üres állapottal.
+**A `napelem`-típusú gyenge szavak kezelése — LEZÁRVA** (Task 9b, lásd 11.2):
+megjelenítendő üres/csupa-nulla állapottal (7.5), nem elrejtve.
 
 ---
 
@@ -207,7 +207,7 @@ Playwright smoke).
   `ablak_kezdet_utc` / `ablak_veg_utc` (tz-aware, órahatárra igazított),
   pontlista `idopont_utc` + `ertek` + `reszleges` mezőkkel.
 - **A kulcsszó-halmaz nem konstans.** A kiírt szavak száma naponta legitim
-  módon ingadozik (lásd 7.6) — a teszt **ne** kössön 13-ra.
+  módon ingadozik (lásd 7.5) — a teszt **ne** kössön 13-ra.
 - `modszertan_valtas`: ha jelen van, kanonikus `YYYY-MM-DD` **string**
   (a betöltő `.isoformat()`-tal normalizál; idő-komponens `KonfigHiba`).
 - A `reszleges: true` **pontosan a záró órás ponton** áll, sehol máshol.
@@ -386,9 +386,19 @@ Belépéskor a **legfrissebb** szereplő napon áll — nem feltétlenül a mai 
 nap, hanem az utolsó sikeres gyűjtésé (7.3) —, innen léphet a látogató korábbi
 napokra. Nem létező nap kérése esetén érthető hibaüzenet.
 
-**Felirat kötelező** a két blokk eltérő frissességéről: a kulcsszóadat a
-legutóbbi *teljes* napot mutatja, tehát egy napot késik a trendekhez képest
-(1.3). E nélkül a látogató tegnapi számokat néz mai címke alatt.
+**Felirat kötelező** a kulcsszó-blokkban, de **NEM késésről**: a 9b a
+`kulcsszo_nyers.json` órás `now 7-d` ablakából rajzol (7.2), amely a futás
+pillanatáig ér — normál esetben ugyanabból a futásból, mint a `legfrissebb.json`
+trendlistája. (A §1.3 egy napos lemaradás a `tortenet.json` napi aggregátumára
+vonatkozik, amelyet a 9b nem használ; egy „teljes nap"-dátum a friss órás görbe
+alatt önellentmondó volna.) **A felirat dátuma mindig a rajzolt intervallum
+tényleges `ablak_veg_utc`-jéből jön**, nem a „közös futás" feltevésből — így egy
+feladott ág (`AgFeladva`) vagy kiesett nap okozta elcsúszást a derivált dátum
+magától, helyesen kezel; a spec **nem** állít szerkezeti frissesség-azonosságot.
+A felirat két tényt közöljön: (1) meddig tart az adat (a fenti `ablak_veg_utc`,
+böngészőbeli dátumaritmetika nélkül, 7.4 elve); (2) hogy a dátumválasztó a
+kulcsszó-blokkra nem hat (7.1), és hogy a pontszámok szavanként külön 0–100
+skálán állnak, egymással nem összemérhetők (1.4).
 
 **Közös elv.** Mindkét blokk a legtöbb elérhető kontextussal indul — a
 kulcsszavaknál ez a leghosszabb érvényes időszak, a trendeknél a legfrissebb
@@ -623,11 +633,19 @@ szerződés-tesztektől (Task 2) függ.
 
 ## 11. Nyitott kérdések
 
-1. **Grafikon-könyvtár** — Chart.js vendorolva vs. saját SVG (4.2), a 13
-   chart teljesítményével együtt mérlegelve.
-2. **Tartósan üres kulcsszó-chart** — elrejtés vagy üres állapot (4.2).
-3. **A `domen`/`tipus` melyike csoportosítson** a kulcsszó-blokkban, és
-   legyen-e egyáltalán csoportosítás az első körben.
+1. **Grafikon-könyvtár — LEZÁRVA** (2026-08-05, Task 4, commit 0c76b78):
+   vendorolt **Chart.js 4.5.1** (MIT), `docs/vendor/FORRAS.md` sha256-tal +
+   hash-teszttel; a 13-chart teljesítményét a lusta (viewportba érés szerinti)
+   rajzolás kezeli (Task 9b, #3 döntés).
+2. **Tartósan üres/gyenge kulcsszó-chart — LEZÁRVA** (2026-08-06, Task 9b #4 +
+   7.5): NEM elrejtés → explicit üres állapot. Adat nélküli intervallumon a szó
+   `.ures` magyar üzenetet kap (7.5); a mért-de-csupa-nulla szó a lapos görbét +
+   informatív feliratot (szigorú „minden lezárt pont = 0" küszöb). A puszta
+   elrejtés elvetve (a „soha nem törlünk" ígéretet mosná el). Ide tartozik a §4.2
+   `napelem`-gyenge-szó kérdése is.
+3. **Csoportosítás — LEZÁRVA** (2026-08-06, Task 9b #2): IGEN, `domen` szerint
+   (nem `tipus`), slug→magyar fejléc-térképpel; `domen: null` → „Egyéb", a lista
+   végén.
 4. **A `kulcsszo_osszesites` sorsa** — a Task 9 review megállapította, hogy
    ma nem közöl szavak közti rangsort, és így is kell maradnia; eldöntendő,
    hogy a felület használja-e egyáltalán.
