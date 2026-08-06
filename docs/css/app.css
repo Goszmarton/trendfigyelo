@@ -22,3 +22,14 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 #intervallum-vezerlo button[disabled] { cursor: not-allowed; color: #999; }
 #intervallum-vezerlo .ok { color: #666; font-size: .85rem; margin-right: .8rem; }
 .ures { color: #666; font-style: italic; }
+
+/* Task 9b kulcsszó-blokk — szavankénti chartok, domen-csoportokban (rács, small multiples).
+   A kártya-magasság KELL a lusta rendereléshez: enélkül a canvasok összeesnek és nem lóg túl a viewporton. */
+#kulcsszo-blokk .frissesseg { color: #666; font-style: italic; font-size: .9rem; margin: .25rem 0 1rem; }
+#kulcsszo-blokk .domen-csoport { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+#kulcsszo-blokk .domen-fejlec { grid-column: 1 / -1; font-size: 1rem; margin: .5rem 0 0; }
+#kulcsszo-blokk .kulcsszo-chart { min-height: 240px; border: 1px solid #eee; border-radius: 4px; padding: .5rem; }
+#kulcsszo-blokk .kulcsszo-chart canvas { width: 100% !important; height: 180px !important; }
+#kulcsszo-blokk .merteszamok { font-size: .8rem; margin: .4rem 0 0; }
+#kulcsszo-blokk .tengely-felirat { font-size: .7rem; color: #666; margin: .1rem 0 0; }
+#kulcsszo-blokk .csupa-nulla, #kulcsszo-blokk .elettartam { font-size: .75rem; color: #666; margin: .2rem 0 0; }
