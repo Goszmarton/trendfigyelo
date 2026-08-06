@@ -26,10 +26,16 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 /* Task 9b kulcsszó-blokk — szavankénti chartok, domen-csoportokban (rács, small multiples).
    A kártya-magasság KELL a lusta rendereléshez: enélkül a canvasok összeesnek és nem lóg túl a viewporton. */
 #kulcsszo-blokk .frissesseg { color: #666; font-style: italic; font-size: .9rem; margin: .25rem 0 1rem; }
-#kulcsszo-blokk .domen-csoport { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+/* H2a: EXPLICIT 2 oszlop (nem auto-fill minmax — az a konténer-szélességtől függött, 3-at is adott);
+   a minmax(0,1fr) engedi a kártyát a konténer FELÉRE zsugorodni (a canvas min-content nélkül). <900px → 1 oszlop. */
+#kulcsszo-blokk .domen-csoport { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+@media (max-width: 900px) { #kulcsszo-blokk .domen-csoport { grid-template-columns: 1fr; } }
 #kulcsszo-blokk .domen-fejlec { grid-column: 1 / -1; font-size: 1rem; margin: .5rem 0 0; }
-#kulcsszo-blokk .kulcsszo-chart { min-height: 240px; border: 1px solid #eee; border-radius: 4px; padding: .5rem; }
-#kulcsszo-blokk .kulcsszo-chart canvas { width: 100% !important; height: 180px !important; }
+#kulcsszo-blokk .kulcsszo-chart { border: 1px solid #eee; border-radius: 4px; padding: .5rem; }
+/* H1: látható kulcsszó-címke a canvas fölött (visszafogott: félkövér, kis alsó margó) */
+#kulcsszo-blokk .kulcsszo-cimke { font-size: .9rem; font-weight: 600; margin: 0 0 .3rem; }
+/* H2b: a Chart.js kanonikus wrapper — fix magasság + position:relative, a canvas ezt tölti ki 100%-ban */
+#kulcsszo-blokk .chart-doboz { position: relative; height: 250px; }
 #kulcsszo-blokk .merteszamok { font-size: .8rem; margin: .4rem 0 0; }
 #kulcsszo-blokk .tengely-felirat { font-size: .7rem; color: #666; margin: .1rem 0 0; }
 #kulcsszo-blokk .csupa-nulla, #kulcsszo-blokk .elettartam { font-size: .75rem; color: #666; margin: .2rem 0 0; }

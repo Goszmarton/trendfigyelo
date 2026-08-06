@@ -69,7 +69,7 @@ async function nap_betolt(datum) {
 // ── DOM-szerződés kulcs-konstansai (osztály- és attribútumnevek + magyar szövegek) ───────────
 // NÉVVEL ellátva, mert a Playwright-smoke-ok pontos szöveg-/attribútum-egyezésre mennek (egy elgépelés drága).
 const OSZT = {
-  kartya: "kulcsszo-chart", csoport: "domen-csoport", fejlec: "domen-fejlec",
+  kartya: "kulcsszo-chart", cimke: "kulcsszo-cimke", chart_doboz: "chart-doboz", csoport: "domen-csoport", fejlec: "domen-fejlec",
   merteszamok: "merteszamok", tengely_felirat: "tengely-felirat", ures: "ures",
   csupa_nulla: "csupa-nulla", elettartam: "elettartam", frissesseg: "frissesseg",
 };
@@ -403,6 +403,12 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs) {
   const kartya = document.createElement("div");
   kartya.className = OSZT.kartya;
   kartya.setAttribute(ATTR.kulcsszo, szo);
+  // H1: LÁTHATÓ kulcsszó-címke MINDEN kártyán (a canvas/ures FÖLÖTT), mindkét ág ELŐTT — a .ures ág korán
+  // return-öl, ezért itt, a legelső gyermekként; a szó eddig csak a data-kulcsszo attribútumban volt (gépnek).
+  const cimke = document.createElement("h4");
+  cimke.className = OSZT.cimke;
+  cimke.textContent = szo;
+  kartya.appendChild(cimke);
   const iv = szoreg.intervallumok ? szoreg.intervallumok[aktiv_kulcs] : null;
   const ablak = (iv && iv.ervenyes) ? nyers_ablak(szo, iv.ablak_veg_utc) : null;
 
@@ -426,8 +432,14 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs) {
   kartya.setAttribute(ATTR.vonal, racs.vonal_van ? "true" : "false");
   kartya.setAttribute(ATTR.ymax, "100");
 
+  // H2b: a canvas dedikált, fix-magasságú, position:relative WRAPPERBE kerül (Chart.js kanonikus minta) —
+  // a responsive+maintainAspectRatio:false a WRAPPER 100%-át tölti, így a görbe a kártya teljes belső
+  // szélességét használja (a korábbi width/height !important a Chart.js méretezésével ütközött).
+  const doboz = document.createElement("div");
+  doboz.className = OSZT.chart_doboz;
   const canvas = document.createElement("canvas");
-  kartya.appendChild(canvas);
+  doboz.appendChild(canvas);
+  kartya.appendChild(doboz);
 
   const m = document.createElement("p");
   m.className = OSZT.merteszamok;
@@ -473,7 +485,7 @@ function chart_letrehoz(kartya) {
         y: { min: 0, max: 100, title: { display: true, text: TENGELY_FELIRAT } },
         // J3: a tengely-TICK csak a dátumot mutatja (a záró " HH:MM"-et levágja), a TOOLTIP a teljes labelt
         // (dátum + óra) → a #9 órás felbontás a tooltipben. Canvas-belső, DOM-ból nem assertálható (ledger).
-        x: { type: "category", ticks: { maxTicksLimit: 8, callback: function (v) { const l = this.getLabelForValue(v); return l ? l.replace(/\s\d{2}:\d{2}$/, "") : l; } } },
+        x: { type: "category", ticks: { maxTicksLimit: 10, callback: function (v) { const l = this.getLabelForValue(v); return l ? l.replace(/\s\d{2}:\d{2}$/, "") : l; } } },
       },
       plugins: { legend: { display: false }, tooltip: { enabled: true } },   // hover-tooltip IGEN, zoom NEM (spec 8.3)
     },

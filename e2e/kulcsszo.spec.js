@@ -453,3 +453,29 @@ test("18. illesztes_vonal végpontja a részleges záró pont → data-vonal=fal
   await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"] canvas`)).toHaveCount(1);
   await expect(page.locator(`${K} .hiba`)).toHaveCount(0);
 });
+
+// ── 20. LÁTHATÓ kulcsszó-címke minden kártyán (H1) — rajzolható ÉS nem-rajzolható is ──────────
+// A szó eddig csak a data-kulcsszo attribútumban volt (gépnek, nem embernek); a canvas fölé LÁTHATÓ
+// h4.kulcsszo-cimke kell, a szó szövegével, ékezetes szónál is, és a .ures kártyán KÜLÖNÖSEN (ott csak
+// egy magyarázó mondat áll szó nélkül). A címke szövege PONTOSAN a data-kulcsszo értéke.
+test("20. minden kártyán LÁTHATÓ .kulcsszo-cimke a szó pontos szövegével (rajzolható + üres, ékezetes)", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({
+      "albérlet": regSzo({ domen: "lakhatas" }),                       // rajzolható, ékezetes
+      "tüntetés": regSzo({ domen: "kozelet" }),                        // rajzolható, ékezetes
+      // ervenyes:false → nem rajzolható (.ures), itt KÜLÖNÖSEN kell a látható szó
+      "hitel": regSzo({ domen: "lakhatas", intervallumok: {
+        "1_het": ivHibas("nincs_adat"), "2_het": ivHibas("nincs_lancolas"),
+        "1_ho": ivHibas("nincs_lancolas"), "3_ho": ivHibas("nincs_lancolas"), "1_ev": ivHibas("nincs_lancolas") } }),
+    }),
+    nyersObj: nyers({ "albérlet": [nyersRekord("albérlet")], "tüntetés": [nyersRekord("tüntetés")], "hitel": [nyersRekord("hitel")] }),
+  });
+  await page.goto("/");
+  for (const szo of ["albérlet", "tüntetés", "hitel"]) {
+    const cimke = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="${szo}"] h4.kulcsszo-cimke`);
+    await expect(cimke).toHaveCount(1);
+    await expect(cimke).toHaveText(szo);   // PONTOS egyezés a data-kulcsszo értékkel
+  }
+  // a nem-rajzolható kártyán a címke a magyarázó szöveg MELLETT áll (nem helyette)
+  await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="hitel"][data-drawable="false"] .ures`)).toBeVisible();
+});
