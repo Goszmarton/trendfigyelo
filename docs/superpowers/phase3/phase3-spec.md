@@ -99,9 +99,12 @@ Három különböző normalizálás él egy oldalon, és ezek **soha nem
 1. **Kulcsszó-sorozat** (`kulcsszo_nyers`): minden szó a saját `now 7-d`
    lekérdezésén belüli maximumához viszonyítva 0–100.
 2. **Trend-idősor**: minden trend a saját `now 1-d` napi maximumához.
-3. **`volumen`**: abszolút, de durva — négy szinten (2000 / 5000 / 10000 /
-   20000), és **string típusú**. A `novekedes_pct` szinte mindenütt `"1000"`,
-   azaz felső korlát, nem mérés → **használhatatlan**.
+3. **`volumen`**: abszolút, de durva — a 2026-07-23-i (egyetlen megfigyelt)
+   futásban HÉT szint fordult elő: 100 / 200 / 500 / 1000 / 2000 / 5000 /
+   10000 (a 20000 egyszer sem), és **string típusú**. Ez EGY futás mérése — a
+   szintek száma és értékei futásonként változhatnak, ne általánosíts belőle.
+   A `novekedes_pct` szinte mindenütt `"1000"`, azaz felső korlát, nem mérés →
+   **használhatatlan**.
 
 Ebből következik a fázis egyik alapszabálya, amely már a README-ben is
 rögzítve van: **a kulcsszavak pontszámai egymással nem összemérhetők; közös
@@ -320,13 +323,62 @@ fejléc), különben a látogató azt hiszi, egy globális szűrőt állít.
   az adat más alakban — a frontend **az egyiket** használja, ne mindkettőt
   töltse be).
 - **A lista kizárólag az API-ágból épül.** A `futtato.top_trend_struktura`
-  (`futtato.py:47`) csak az `api_trendek`-et rendezi és vágja top-N-re; az
+  (`futtato.py:49`) csak az `api_trendek`-et rendezi (`volumen` szerint,
+  csökkenő); a MEGJELENÍTETT lista hossza az alábbi holtverseny-szabály szerint
+  áll elő, nem pusztán top-`trend_idosor_max`. Az
   RSS-ág (`rss_trendek`) **csak a `hirek`-et párosítja** kifejezés szerint,
   listaelemet nem ad. Ezért **minden friss-napi elem kategória-képes** (az
   `api_trendek` `TrendKeyword`-jén ott a `topics`/`topic_names`), és **nincs
   negyedik állapot** a kategória-címke három esete mellett. Ha az API-ág
   kapu-blokk vagy bukás miatt nem ad adatot, a lista **üres vagy rövid** (7.5),
   nem pedig kategória nélküli — ezt a felület a 7.5 üres-állapotával kezeli.
+- **Megjelenített lista vs. idősor-lista — holtverseny-kiterjesztés (D1).** A
+  Google `volumen`-e sáv, nem darabszám (§1.4: durva, sávos; a 2026-07-23-i
+  futásban hét szint 100–10000 között). A top-`trend_idosor_max` vágás így egy
+  volumen-rekesz KÖZEPÉRE eshet, és azonos keresettségű trendek közül önkényesen
+  dob ki (2026-07-23: 65 trend; a 15-ös vágás a 2000-es rekesz közepén — 7
+  jelölt 4 helyre). Ezért a két lista SZÉTVÁLIK:
+  - **idősor-lista** (hálózati költség): változatlanul a top `trend_idosor_max`.
+    Itt van a hívásköltség; a `Kliens` plafonja (`tervezett_hivasszam`) tisztán
+    configból, a futás ELŐTT számol — ezt a kiterjesztés nem érintheti.
+  - **megjelenített lista**: a top `trend_idosor_max`, KIBŐVÍTVE mindazon
+    trendekkel, amelyek `volumen`-e MEGEGYEZIK a küszöb-trendével (az utolsó
+    bekerülőével) — a TELJES holtverseny-rekesz, nem csak a véletlenül „befért"
+    része.
+  Ez **monoton** változás: az eddig bekerült top-`trend_idosor_max` ezután is
+  bekerül (a tie-break bitre azonos a mai viselkedéssel, lásd lent), a rekesz
+  többi tagja MELLÉ jön — semmi nem esik ki. Ezért **nem** igényel
+  `modszertan_valtas` töréspont-jelölőt. Vö. a lenti „Ne feltételezz fix 15
+  elemet" ponttal: a hossz eddig is változó volt, ez csak egy további,
+  adatvezérelt forrása a változásnak.
+- **Tie-break: az EREDETI API-POZÍCIÓ (D2)** — a volumen-rendezés ELŐTTI
+  lista-index, NEM ábécé és NEM a `keyword`. Azonos bemenetre azonos kimenet
+  kell; bemenet-független (pl. ábécé) rendezés NEM. Az API-pozíció megőrzi a
+  Google sávon belüli maradék rangsorát, és **bitre azonos a mai viselkedéssel**
+  (a `sorted` stabil, az `api_trendek` sorrendje = az API-pozíció). A tie-break
+  EGYETLEN közös helyről (egy helper) menjen: ma két külön `volumen`-rendezés
+  van — `futtato.py:49` (a megjelenített `legnagyobbak`) és `futtato.py:133` (az
+  idősor-ágnak átadott `top_kifejezesek`). Ha a tie-break csak az egyikbe kerül,
+  a két lista szétcsúszhat, és egy megjelenített trend időgörbe nélkül maradhat.
+  **Invariáns (tesztelendő):** az idősor-lista a megjelenített lista első
+  `trend_idosor_max` eleme — PREFIX. A közös helper követelménye ezt biztosítja;
+  ez az invariáns az, ami ellenőrizhető.
+- **Felső korlát: `trend_megjelenites_max` config-kulcs (D3)** — opcionális,
+  default **25**, a `naplo_max_sor` mintájára (visszafelé kompatibilis). A
+  tényleges korlát `max(trend_megjelenites_max, trend_idosor_max)`, különben egy
+  `trend_idosor_max=30` config kisebb megjelenített listát adna, mint az
+  idősoros. A rekesz mérete ADATFÜGGŐ és nem korlátos; ha a kiterjesztés átlépné
+  a korlátot, a vágás a korlátnál történik — és ott ISMÉT egy holtverseny
+  KÖZEPÉRE eshet (a felső korlát nem oldja fel a holtversenyt, csak a lista
+  méretét fékezi meg). A vágás ekkor is a fenti tie-break (API-pozíció) szerint
+  dönt.
+- **A kiterjesztés 0-volumenű sávba NEM lép be (D4).** A `volumen_szam`
+  (`felkapott.py:8`) 0-t ad hiányzó, nem numerikus ÉS „5000+" alakú volumenre
+  is; ezek egyetlen nagy blokkba esnek a lista alján. Ha a küszöb-volumen 0, a
+  kiterjesztés ELMARAD (a megjelenített lista marad top-`trend_idosor_max`).
+  FIGYELEM: ez KIZÁRÓLAG a kiterjesztésre vonatkozik. Az alap top-N változatlan —
+  oda ma is bejuthat 0-volumenű trend, ha nincs elég nem-nulla; ezt a szabály
+  NEM módosítja (az viselkedésváltozás lenne).
 - **Regresszió nincs.** A felkapott lista naponta kicserélődik, nincs
   folytonosság, amit meg kellene őrizni; egy trendvonal itt értelmetlen.
 - **Kategória-címke** minden elemen (Task 3a után), a v1 7.1 három
@@ -341,6 +393,15 @@ fejléc), különben a látogató azt hiszi, egy globális szűrőt állít.
   2000-es volumenű trendek 10 körül lapulnának. Több görbe egy ábrán legitim,
   **ha a kérdés az, hogy mikor csúcsosodtak** — a „melyik volt nagyobb"
   olvasatot felirattal vagy kiírt `volumen`-nel kell megelőzni.
+- **Elemenkénti üres görbe (a D1-kiterjesztés következménye).** A
+  holtverseny-kiterjesztéssel bekerülő elemek NINCSENEK az idősor-listában (az
+  idősor a top `trend_idosor_max`-ra fut), ezért az `idosor`-uk ÜRES (a
+  `top_trend_struktura` `idosor_map.get(kif, [])` fallbackja). Lesz tehát
+  trendkártya GÖRBE NÉLKÜL. Ez **elemenkénti** üres-állapot, KÜLÖNBÖZŐ a §7.5
+  lista-szintű üres-állapotától (az az egész listára szól). A felületnek kezelnie
+  kell: az ilyen kártya a `volumen`/kategória/`hirek` alapján megjelenik, de
+  görbe helyett elemenkénti „nincs idősor ezen a napon" jelölést kap — ne törje
+  meg az elrendezést, és ne keveredjen a lista-szintű üres állapottal.
 - **Hírek:** cím + forrás + link, kép nélkül. Az üres `hirek` tömb a normális
   eset.
 - **Ne feltételezz fix 15 elemet** — a `trend_idosor_max` konfigurálható, és
