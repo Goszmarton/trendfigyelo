@@ -28,6 +28,34 @@ def tervezett_hivasszam(config) -> int:
     return 2 + config.trend_idosor_max + len(config.osszes_kulcsszo())
 
 
+def rangsorolt_trendek(api_trendek) -> list:
+    """Az api-trendek volumen-CSÖKKENŐ rangsora, tie-break az EREDETI API-POZÍCIÓ (a
+    rendezés ELŐTTI lista-index). A `sorted` ma is stabil, de az explicit (index) kulcs
+    egy jövőbeli refaktor ellen is véd. EGYETLEN közös forrás a megjelenített és az
+    idősoros listához → a prefix-invariáns szerkezetileg teljesül."""
+    return [t for _, t in sorted(
+        enumerate(api_trendek),
+        key=lambda p: (-felkapott.volumen_szam(p[1]), p[0]))]
+
+
+def megjelenitendo_trendek(api_trendek, config) -> list:
+    """A MEGJELENÍTETT trendlista (spec §7.3 D1–D4). Alap: a top `trend_idosor_max`
+    (változatlan). Kiterjesztés (D1): a levágott lista UTOLSÓ elemének volumenével
+    MEGEGYEZŐ további trendek is bekerülnek (a teljes holtverseny-rekesz). Felső korlát
+    (D3): `max(trend_megjelenites_max, trend_idosor_max)`, a vágás a tie-break szerint.
+    0-kapu (D4): ha a küszöb-volumen 0, a kiterjesztés ELMARAD (az alap top-N változatlan)."""
+    rangsor = rangsorolt_trendek(api_trendek)
+    alap = rangsor[: config.trend_idosor_max]
+    if not alap:
+        return alap                                    # üres bemenet → üres kimenet, kivétel nélkül
+    kuszob = felkapott.volumen_szam(alap[-1])           # a LEVÁGOTT lista tényleges utolsó eleme (nem [max-1] index)
+    if kuszob == 0:
+        return alap                                     # D4: 0-volumenű küszöb → nincs kiterjesztés
+    korlat = max(config.trend_megjelenites_max, config.trend_idosor_max)
+    bovitett = [t for t in rangsor if felkapott.volumen_szam(t) >= kuszob]
+    return bovitett[:korlat]                             # D3: felső korlát, a rangsor (tie-break) szerint vágva
+
+
 def top_trend_struktura(api_trendek, trend_idosorok, rss_trendek, config) -> list:
     """A legnagyobb volumenű trendek strukturált listája: idősor + hírek párosítva.
 
@@ -46,8 +74,7 @@ def top_trend_struktura(api_trendek, trend_idosorok, rss_trendek, config) -> lis
             "idopont_utc": p["idopont_utc"], "ertek": p["ertek"],
         })
 
-    legnagyobbak = sorted(api_trendek, key=felkapott.volumen_szam, reverse=True)
-    legnagyobbak = legnagyobbak[: config.trend_idosor_max]
+    legnagyobbak = megjelenitendo_trendek(api_trendek, config)
 
     struktura = []
     ures_topics = []
@@ -127,11 +154,9 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
         kulcsszo_eredmeny = _ag(bejegyzesek, kliens, "kulcsszo",
                             lambda: kulcsszavak.gyujt(kliens, config, most))
         kulcsszo_pontok, kulcsszo_napi_pontok, kulcsszo_nyers = kulcsszo_eredmeny or ([], {}, {})
-        # volumen szerint rendezett kifejezéslista — az idősor-ág belül vág top-N-re
-        top_kifejezesek = [
-            getattr(t, "keyword", "")
-            for t in sorted(api_trendek, key=felkapott.volumen_szam, reverse=True)
-        ]
+        # a KÖZÖS rangsor kifejezéslistája (a megjelenítéssel azonos forrás → prefix-invariáns);
+        # az idősor-ág belül vág trend_idosor_max-ra, a hívásköltség NEM nő
+        top_kifejezesek = [getattr(t, "keyword", "") for t in rangsorolt_trendek(api_trendek)]
         trend_idosorok = _ag(bejegyzesek, kliens, "idosor",
                             lambda: idosorok.gyujt(kliens, config, top_kifejezesek)) or []
     except AgFeladva:

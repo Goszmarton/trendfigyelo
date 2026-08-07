@@ -37,6 +37,7 @@ class Config:
     naplo_max_sor: int = 2000
     tortenet_visszapotlas_nap: int = 3
     modszertan_valtas: object = None  # kanonikus ISO 'YYYY-MM-DD' | None — töréspont-jelölő (CSAK jelöl)
+    trend_megjelenites_max: int = 25  # a megjelenített trendlista felső korlátja (holtverseny-kiterjesztés, spec §7.3 D3)
 
     def osszes_kulcsszo(self):
         """[KulcsszoTetel(kifejezes, domen, tipus), ...] a beolvasás sorrendjében."""
@@ -159,6 +160,7 @@ def betolt(utvonal="config.yaml") -> Config:
         kulcsszavak=kulcsszavak,
         kulcsszo_idokeret=nyers.get("kulcsszo_idokeret", "now 7-d"),
         naplo_max_sor=int(nyers.get("naplo_max_sor", 2000)),
+        trend_megjelenites_max=int(nyers.get("trend_megjelenites_max", 25)),
         tortenet_visszapotlas_nap=int(nyers.get("tortenet_visszapotlas_nap", 3)),
         modszertan_valtas=_modszertan_valtas_beolvas(nyers),
     )

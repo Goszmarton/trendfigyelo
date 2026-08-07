@@ -4,7 +4,7 @@ from types import SimpleNamespace
 
 import pandas as pd
 
-from trendfigyelo import futtato, json_export, kliens
+from trendfigyelo import felkapott, futtato, json_export, kliens
 from trendfigyelo.config import Config, KulcsszoTetel
 
 
@@ -499,6 +499,219 @@ def test_topics_attributum_nelkul():
     s = futtato.top_trend_struktura([lite], [], [], _config())
     assert "topics" in s[0] and s[0]["topics"] == []
     assert "temak" in s[0] and s[0]["temak"] == []
+
+
+# --- D1–D4: holtverseny-kiterjesztés + tie-break + felső korlát + 0-kapu (spec §7.3, 026231a) ---
+# A mai top_trend_struktura = sorted(api, key=volumen_szam, reverse=True)[:trend_idosor_max]:
+# nincs rekesz-kiterjesztés, nincs trend_megjelenites_max. A VALÓBAN új viselkedés csak a
+# D1-kiterjesztés és a D3-korlát → csak T1/T6/T7 RED; a többi a MÁR MEGLÉVŐ viselkedést
+# kodifikáló SZÁNDÉKOSAN ZÖLD őr/diszkriminátor (a kód e körben NEM változik, hogy a RED valódi legyen).
+
+def _tr(keyword, volume):
+    """API-trend teszt-dummy: string volumen (spec §1.4), topics-szal (nincs ures-topics FIGYELEM)."""
+    return SimpleNamespace(keyword=keyword, volume=volume, volume_growth_pct="1000",
+                           topics=[1], topic_names=["X"])
+
+
+def _cfg_trend(idosor_max, megjelenites_max=None):
+    """_config() a kért trend_idosor_max-szal; a trend_megjelenites_max PÉLDÁNY-ATTRIBÚTUMKÉNT
+    (a Config nem frozen, a config.py e körben érintetlen — a majdani mező helyettese)."""
+    cfg = _config()
+    cfg.trend_idosor_max = idosor_max
+    if megjelenites_max is not None:
+        cfg.trend_megjelenites_max = megjelenites_max
+    return cfg
+
+
+class TrendListaKliens:
+    """Integrációhoz: konfigurálható api-trendlista + idosor-df minden kért kifejezéshez;
+    a kulcsszo/rss a SorrendKemKliens érvényes alakját követi. Ági hívásszámot számol."""
+    def __init__(self, trendek):
+        self.tr = _dummy_tr()
+        self._trendek = trendek          # [(keyword, volume), ...]
+        self._szam = {}
+    def hivas(self, ag, fn, *a, **k):
+        self._szam[ag] = self._szam.get(ag, 0) + 1
+        if ag == "felkapott_api":
+            return [_tr(kw, vol) for kw, vol in self._trendek]
+        if ag == "felkapott_rss":
+            return [SimpleNamespace(keyword=self._trendek[0][0], news=[])]
+        if ag == "kulcsszo":
+            return _egy_szo_df("a", [30, 40], [
+                datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
+                datetime(2021, 1, 2, 10, tzinfo=timezone.utc)], [False, True])
+        if ag == "idosor":
+            kif = a[0][0]                # gyujt: kliens.hivas("idosor", fn, [kif], ...)
+            return _egy_szo_df(kif, [40], [datetime(2021, 1, 1, 10, tzinfo=timezone.utc)], [False])
+        return []
+    def hivasszam(self, ag):
+        return self._szam.get(ag, 0)
+    def osszes_hivas(self):
+        return sum(self._szam.values())
+
+
+# ── D1 — holtverseny-kiterjesztés ──────────────────────────────────────────────
+
+def test_megjelenites_kiterjed_a_kuszob_rekeszre():
+    # RED: a 2000-es küszöb-rekeszt TELJESEN beveszi → A,B,C,D,E (5), nem a mai [:3]=A,B,C.
+    cfg = _cfg_trend(3)
+    api = [_tr("A", "10000"), _tr("B", "5000"), _tr("C", "2000"),
+           _tr("D", "2000"), _tr("E", "2000"), _tr("F", "1000")]
+    s = futtato.top_trend_struktura(api, [], [], cfg)
+    assert [d["kifejezes"] for d in s] == ["A", "B", "C", "D", "E"]
+
+
+def test_nincs_holtverseny_pontos_hossz():
+    # SZÁNDÉKOSAN ZÖLD (D1 regr.-őr): a küszöbön (2000) nincs holtverseny → pontosan
+    # trend_idosor_max hosszú; a mai [:3] is ezt adja. A kiterjesztés NE aktiválódjon feleslegesen.
+    cfg = _cfg_trend(3)
+    api = [_tr("A", "10000"), _tr("B", "5000"), _tr("C", "2000"),
+           _tr("D", "1000"), _tr("E", "500")]
+    s = futtato.top_trend_struktura(api, [], [], cfg)
+    assert [d["kifejezes"] for d in s] == ["A", "B", "C"]
+
+
+# ── D2 — tie-break és prefix-invariáns ─────────────────────────────────────────
+
+def test_azonos_bemenet_azonos_kimenet():
+    # SZÁNDÉKOSAN ZÖLD (D2 determinizmus): a mai sorted determinisztikus. Őrzi, hogy
+    # egy jövőbeli refaktor se hozzon be bemenet-függő sorrendet.
+    cfg = _cfg_trend(3)
+    api = [_tr("A", "2000"), _tr("B", "5000"), _tr("C", "2000"), _tr("D", "1000")]
+    s1 = futtato.top_trend_struktura(api, [], [], cfg)
+    s2 = futtato.top_trend_struktura(api, [], [], cfg)
+    assert [d["kifejezes"] for d in s1] == [d["kifejezes"] for d in s2]
+
+
+def test_tie_break_eredeti_api_pozicio():
+    # SZÁNDÉKOSAN ZÖLD (D2): azonos volumennél az EREDETI API-sorrend marad (stabil sorted),
+    # NEM ábécé. Az input-sorrend (zebra,alma,medve) KÜLÖNBÖZIK az ábécétől (alma,medve,zebra)
+    # → diszkriminál egy jövőbeli ábécé-tie-break ellen; a mai kóddal zöld.
+    cfg = _cfg_trend(3)
+    api = [_tr("zebra", "2000"), _tr("alma", "2000"), _tr("medve", "2000")]
+    s = futtato.top_trend_struktura(api, [], [], cfg)
+    assert [d["kifejezes"] for d in s] == ["zebra", "alma", "medve"]
+
+
+def test_idosor_lista_a_megjelenites_prefixe(tmp_path):
+    # SZÁNDÉKOSAN ZÖLD (D2 prefix-invariáns, integrációs): a megjelenített lista azon elemei,
+    # amelyeknek van idősora, a lista első trend_idosor_max eleme (PREFIX). A TÉNYLEGES
+    # kimenetből (legfrissebb.json), nem mellékszámlálóból.
+    # ADAT (T14-alak): a 2000-es holtverseny ÁTNYÚLIK a vágáson — base top-2 = A,Z (küszöb 2000),
+    # és Y,X is 2000, tehát a GREEN után a megjelenített lista A,Z,Y,X, az idősoros A,Z (prefix).
+    # MA azért zöld, mert NINCS kiterjesztés (a mai kód [:2]=A,Z-t ad, mindkettő kap idősort) —
+    # NEM azért, mert az invariáns triviális. Diszkrimináció: ha egy hibás impl a két rendezést
+    # szétcsúsztatná (pl. az idosor-lista ábécé szerint → A,X), az `idosorral` [A,X] lenne a
+    # `megjelenitett[:2]` = [A,Z] helyett → a teszt BUKNA.
+    import json
+    cfg = _cfg_trend(2)
+    kli = TrendListaKliens([("A", "10000"), ("Z", "2000"), ("Y", "2000"), ("X", "2000")])
+    most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)
+    futtato.futtat(cfg, kli, tmp_path / "adatok", tmp_path / "docs" / "data", most=most)
+    top = json.loads((tmp_path / "docs" / "data" / "legfrissebb.json").read_text(encoding="utf-8"))["top_trendek"]
+    megjelenitett = [d["kifejezes"] for d in top]
+    idosorral = [d["kifejezes"] for d in top if d["idosor"]]
+    assert idosorral == megjelenitett[: cfg.trend_idosor_max]
+
+
+# ── D3 — felső korlát ──────────────────────────────────────────────────────────
+
+def test_felso_korlat_vag():
+    # RED: 22 trend, óriási 2000-rekesz; a korlát max(5,3)=5 → 5 elem. A mai [:3] → 3.
+    cfg = _cfg_trend(3, 5)
+    api = [_tr("A", "10000"), _tr("B", "5000")] + [_tr(f"C{i}", "2000") for i in range(20)]
+    s = futtato.top_trend_struktura(api, [], [], cfg)
+    assert [d["kifejezes"] for d in s] == ["A", "B", "C0", "C1", "C2"]
+
+
+def test_felso_korlat_tie_break_dont():
+    # RED: base top-2=[A,Z]; küszöb 2000; a rekeszből a korlátig (max(3,2)=3) az API-pozíció
+    # szerint Z,Y marad → [A,Z,Y]. Input (Z,Y,X,W) ≠ ábécé (W,X,Y,Z) → a tie-break diszkriminál.
+    # A mai [:2] → [A,Z].
+    cfg = _cfg_trend(2, 3)
+    api = [_tr("A", "10000"), _tr("Z", "2000"), _tr("Y", "2000"),
+           _tr("X", "2000"), _tr("W", "2000")]
+    s = futtato.top_trend_struktura(api, [], [], cfg)
+    assert [d["kifejezes"] for d in s] == ["A", "Z", "Y"]
+
+
+def test_max_korlat_nem_rovidebb_mint_idosor():
+    # SZÁNDÉKOSAN ZÖLD (D3 max()): trend_idosor_max=4 > trend_megjelenites_max=2 → a tényleges
+    # korlát max(2,4)=4, a lista NEM rövidül 2-re. Ma [:4]=4. Diszkriminál egy hibás impl ellen,
+    # ami trend_megjelenites_max-ra (2-re) vágna.
+    cfg = _cfg_trend(4, 2)
+    api = [_tr("A", "10000"), _tr("B", "5000"), _tr("C", "2000"),
+           _tr("D", "1000"), _tr("E", "500"), _tr("F", "200")]
+    s = futtato.top_trend_struktura(api, [], [], cfg)
+    assert [d["kifejezes"] for d in s] == ["A", "B", "C", "D"]
+
+
+# ── D4 — 0-volumenű sáv kapuja ─────────────────────────────────────────────────
+
+def test_nulla_kuszob_nincs_kiterjesztes():
+    # SZÁNDÉKOSAN ZÖLD (D4 kapu): a küszöb-volumen 0 → a kiterjesztés ELMARAD, len marad 3.
+    # Ma [:3]=3. Diszkriminál egy 0-sávba kiterjesztő hibás impl ellen (az 5-öt adna).
+    cfg = _cfg_trend(3)
+    api = [_tr("A", "10000"), _tr("B", "5000"),
+           _tr("C", "0"), _tr("D", "0"), _tr("E", "0")]
+    s = futtato.top_trend_struktura(api, [], [], cfg)
+    assert [d["kifejezes"] for d in s] == ["A", "B", "C"]
+
+
+def test_alap_top_n_valtozatlan_nulla_bejut():
+    # SZÁNDÉKOSAN ZÖLD (D4): kevesebb nem-nulla trend, mint trend_idosor_max → a 0-volumenű
+    # trendek BEJUTNAK az alap top-N-be (ma is). A D4-kapu CSAK a kiterjesztésre vonatkozik;
+    # az alap top-N-t NEM módosítjuk (különben viselkedésváltozás lenne).
+    cfg = _cfg_trend(5)
+    api = [_tr("A", "10000"), _tr("B", "5000"), _tr("C", "2000"),
+           _tr("D", "0"), _tr("E", "0")]
+    s = futtato.top_trend_struktura(api, [], [], cfg)
+    assert [d["kifejezes"] for d in s] == ["A", "B", "C", "D", "E"]
+
+
+def test_volumen_szam_5000plus_es_hianyzo_nulla():
+    # SZÁNDÉKOSAN ZÖLD (D4 premisz): a volumen_szam 0-t ad "5000+"-ra (ValueError-ág), None-ra
+    # és hiányzó volume-ra; a "2000" valódi 2000 (nem-tautológ horgony). Ma is így viselkedik.
+    assert felkapott.volumen_szam(SimpleNamespace(volume="5000+")) == 0
+    assert felkapott.volumen_szam(SimpleNamespace(volume=None)) == 0
+    assert felkapott.volumen_szam(SimpleNamespace()) == 0
+    assert felkapott.volumen_szam(SimpleNamespace(volume="2000")) == 2000
+
+
+# ── él-esetek: üres / rövid lista, idosor-hívásszám ────────────────────────────
+
+def test_ures_api_lista_nem_omlik_ossze():
+    # SZÁNDÉKOSAN ZÖLD (§7.5 él): üres api → üres lista, NINCS kivétel. A jövőbeli impl
+    # küszöbe (a levágott lista utolsó eleme) üres listán IndexError-t dobhatna — ezt őrzi.
+    cfg = _cfg_trend(3)
+    s = futtato.top_trend_struktura([], [], [], cfg)
+    assert s == []
+
+
+def test_rovidebb_lista_mint_idosor_max():
+    # SZÁNDÉKOSAN ZÖLD (off-by-one csapda): rövidebb lista, mint trend_idosor_max → a lista a
+    # TÉNYLEGES hosszú. A küszöb a LEVÁGOTT lista utolsó eleme, NEM a [trend_idosor_max-1] index
+    # (az egy rövid listán IndexError-t adna a jövőbeli implnél).
+    cfg = _cfg_trend(3)
+    api = [_tr("A", "10000"), _tr("B", "5000")]
+    s = futtato.top_trend_struktura(api, [], [], cfg)
+    assert [d["kifejezes"] for d in s] == ["A", "B"]
+    # rövid lista VÉGÉN holtverseny → mind bent, len 3
+    cfg2 = _cfg_trend(5)
+    api2 = [_tr("A", "10000"), _tr("B", "2000"), _tr("C", "2000")]
+    s2 = futtato.top_trend_struktura(api2, [], [], cfg2)
+    assert [d["kifejezes"] for d in s2] == ["A", "B", "C"]
+
+
+def test_idosor_hivasszam_nem_no_a_kiterjesztessel(tmp_path):
+    # SZÁNDÉKOSAN ZÖLD (integrációs, a T5 mellé): az idosor-ág hívásszáma <= trend_idosor_max,
+    # mert a gyujt a top_kifejezesek[:trend_idosor_max]-ra vág (idosorok.py:50). A megjelenítés-
+    # kiterjesztés ezt NEM növelheti — közvetlen őr a plafon-ütközés ellen.
+    cfg = _cfg_trend(2)
+    kli = TrendListaKliens([("A", "10000"), ("B", "2000"), ("C", "2000"), ("D", "2000")])
+    most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)
+    futtato.futtat(cfg, kli, tmp_path / "adatok", tmp_path / "docs" / "data", most=most)
+    assert kli.hivasszam("idosor") <= cfg.trend_idosor_max
 
 
 # --- B2: folytonosság-diagnosztika a naplóban (kimaradt napi futás észlelése) ---
