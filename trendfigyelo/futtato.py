@@ -101,6 +101,24 @@ def top_trend_struktura(api_trendek, trend_idosorok, rss_trendek, config) -> lis
     return struktura
 
 
+def parositas_szamit(rss_trendek, api_trendek, top_trendek):
+    """RSS↔API párosítás-diagnosztika (TISZTA: nincs IO/óra/hálózat). Visszaad:
+    (rss_db, api_egyezes, megjelenitett_hirrel, nem_egyezok).
+
+    A kérdés: az RSS-halmaz részhalmaza-e az api_trendek TELJES keyword-halmazának
+    (NEM a top-N/megjelenített listának). A rss_db és a nem_egyezok az rss_trendek-ből
+    KÖZVETLENÜL (NEM a hir_sorok-ból — az kihagyná a hír nélküli RSS-trendet). A
+    nem_egyezok az RSS EREDETI SORRENDJÉBEN (nem halmaz-iterációból, ami futásonként
+    ingadozna). A megjelenitett_hirrel a MEGLÉVŐ top_trendek["hirek"] mezőből, nem újraszámolva.
+    Üres bemenet → (0, 0, 0, [])."""
+    api_kulcsok = {getattr(t, "keyword", "") for t in api_trendek}
+    rss_kulcsok = [getattr(t, "keyword", "") for t in rss_trendek]
+    nem_egyezok = [k for k in rss_kulcsok if k not in api_kulcsok]
+    api_egyezes = len(rss_kulcsok) - len(nem_egyezok)
+    megjelenitett_hirrel = sum(1 for t in top_trendek if t["hirek"])
+    return len(rss_trendek), api_egyezes, megjelenitett_hirrel, nem_egyezok
+
+
 def _ag(bejegyzesek, kliens, ag, fn):
     """Egy ág futtatása naplózással. AgFeladva propagál (block-stop), egyéb hiba
     csak az adott ágat bukja (None-t ad vissza)."""
@@ -242,6 +260,22 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
         bejegyzesek.append({"ag": "folytonossag", "eredmeny": "hiba",
                             "hivasok_szama": 0, "hibakodok": type(e).__name__})
         print(f"FIGYELEM: a folytonosság-ellenőrzés kimaradt — nem blokkolja a naplót ({e}).")
+
+    # ---------- párosítás-diagnosztika (RSS↔API, származtatott; CSAK naplóz, VÉDETTEN) ----------
+    # Ugyanaz a minta, mint a folytonosság/regresszió: 0 Google-hívás, heartbeat (a bejegyzes MINDIG
+    # bekerül, akkor is, ha a checker bukik), CSAK naplóz — a diagnosztika hibája nem viheti el a ma
+    # összegyűjtött adatot. A kérdés: az RSS-halmaz részhalmaza-e a TELJES api_trendek keyword-
+    # halmazának (a hírblokk erre az állításra épülne). A formázás ITT történik, a helper adatot ad.
+    try:
+        rss_db, api_egyezes, hirrel, nem_egyezok = parositas_szamit(rss_trendek, api_trendek, top_trendek)
+        bejegyzesek.append({"ag": "parositas",
+                            "eredmeny": "siker" if api_egyezes == rss_db else "hiany",
+                            "hivasok_szama": 0,
+                            "hibakodok": "|".join([f"{rss_db}/{api_egyezes}/{hirrel}"] + nem_egyezok)})
+    except Exception as e:
+        bejegyzesek.append({"ag": "parositas", "eredmeny": "hiba",
+                            "hivasok_szama": 0, "hibakodok": type(e).__name__})
+        print(f"FIGYELEM: a párosítás-diagnosztika kimaradt — nem blokkolja a naplót ({e}).")
 
     # ---------- napló ----------
     naplo.naplo_ir(adatok_mappa, letoltve, bejegyzesek, config.naplo_max_sor)

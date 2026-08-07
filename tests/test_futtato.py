@@ -523,19 +523,29 @@ def _cfg_trend(idosor_max, megjelenites_max=None):
     return cfg
 
 
+def _rss_trend(keyword, hirrel):
+    """RSS-trend teszt-dummy (TrendKeywordLite-szerű): keyword + opcionális EGY hír."""
+    news = [SimpleNamespace(title="c", source="f", url="u", time=None, picture="", snippet="s")] if hirrel else []
+    return SimpleNamespace(keyword=keyword, news=news)
+
+
 class TrendListaKliens:
-    """Integrációhoz: konfigurálható api-trendlista + idosor-df minden kért kifejezéshez;
-    a kulcsszo/rss a SorrendKemKliens érvényes alakját követi. Ági hívásszámot számol."""
-    def __init__(self, trendek):
+    """Integrációhoz: konfigurálható api-trendlista + testreszabott rss-halmaz + idosor-df minden
+    kért kifejezéshez; a kulcsszo a SorrendKemKliens érvényes alakját követi. Ági hívásszámot számol.
+    rss=None → a régi viselkedés (az api első keyword-je, hír nélkül); rss=[(kw, hirrel_bool), ...] → testreszabott."""
+    def __init__(self, trendek, rss=None):
         self.tr = _dummy_tr()
         self._trendek = trendek          # [(keyword, volume), ...]
+        self._rss = rss                  # None → régi; [(keyword, hirrel_bool), ...] → testreszabott
         self._szam = {}
     def hivas(self, ag, fn, *a, **k):
         self._szam[ag] = self._szam.get(ag, 0) + 1
         if ag == "felkapott_api":
             return [_tr(kw, vol) for kw, vol in self._trendek]
         if ag == "felkapott_rss":
-            return [SimpleNamespace(keyword=self._trendek[0][0], news=[])]
+            if self._rss is None:
+                return [SimpleNamespace(keyword=self._trendek[0][0], news=[])]
+            return [_rss_trend(kw, hirrel) for kw, hirrel in self._rss]
         if ag == "kulcsszo":
             return _egy_szo_df("a", [30, 40], [
                 datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
@@ -767,3 +777,118 @@ def test_futtat_folytonossag_serult_index_naplo_keszul(tmp_path):
             "regresszio", "folytonossag"} <= set(sorok)              # mind a hat ág megvan
     assert sorok["folytonossag"]["eredmeny"] == "hiba"
     assert sorok["folytonossag"]["hibakodok"] == "JSONDecodeError"
+
+
+# --- Párosítás-diagnosztika (parositas naplósor): RSS ⊆ API? — a B2-minta szerint ---
+# A kód e körben ÉRINTETLEN → a `parositas` sor NEM létezik → P1-P6 és P8 mind ugyanazért RED:
+# a sor hiányzik (`.get("parositas")` = None). A tartalmi diszkriminációt (küszöb-forrás, szeparátor,
+# eredmeny-logika, except-ág) NEM a RED bizonyítja, hanem a KÉSŐBBI mutációs kör. A helper, amit a
+# GREEN bevezet és a P8/P9 patchel: futtato.parositas_szamit (tiszta függvény).
+_PAR_MOST = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)
+
+
+def test_parositas_sor_megjelenik_heartbeat(tmp_path):
+    # RED: heartbeat — a sornak MINDEN futáson meg kell jelennie. Mivel a naplo.csv-ből olvassuk,
+    # a jelenléte egyben igazolja, hogy a bejegyzés a naplo_ir ELŐTT került be.
+    kli = TrendListaKliens([("A", "10000"), ("B", "5000")], rss=[("A", True)])
+    futtato.futtat(_cfg_trend(2), kli, tmp_path / "adatok", tmp_path / "docs" / "data", most=_PAR_MOST)
+    sorok = {s["ag"]: s for s in _naplo_soronkent(tmp_path / "adatok")}
+    assert "parositas" in sorok
+
+
+def test_parositas_teljes_egyezes_siker(tmp_path):
+    # RED: minden RSS-keyword az api-halmazban → siker, üres nem_egyezok-rész (nincs lógó pipe).
+    kli = TrendListaKliens([("A", "10000"), ("B", "5000"), ("C", "2000")],
+                           rss=[("A", True), ("B", True), ("C", True)])
+    futtato.futtat(_cfg_trend(3), kli, tmp_path / "adatok", tmp_path / "docs" / "data", most=_PAR_MOST)
+    sorok = {s["ag"]: s for s in _naplo_soronkent(tmp_path / "adatok")}
+    assert sorok.get("parositas", {}).get("eredmeny") == "siker"
+    assert sorok.get("parositas", {}).get("hibakodok") == "3/3/3"
+
+
+def test_parositas_reszleges_hiany_pipe(tmp_path):
+    # RED: két RSS-trend nincs az api-ban → hiany, a nevek PIPE-pal (a rss_trendek sorrendjében).
+    kli = TrendListaKliens([("A", "10000"), ("B", "5000")],
+                           rss=[("A", True), ("napelem", True), ("kórház", True)])
+    futtato.futtat(_cfg_trend(2), kli, tmp_path / "adatok", tmp_path / "docs" / "data", most=_PAR_MOST)
+    sorok = {s["ag"]: s for s in _naplo_soronkent(tmp_path / "adatok")}
+    assert sorok.get("parositas", {}).get("eredmeny") == "hiany"
+    assert sorok.get("parositas", {}).get("hibakodok") == "3/1/1|napelem|kórház"
+
+
+def test_parositas_hir_nelkuli_rss_beleszamit_rss_db(tmp_path):
+    # RED + a hir_sorok-CSAPDA diszkriminátora: B benne van az RSS-ben, de NINCS híre. Az rss_db-nek
+    # 2-nek kell lennie (a rss_trendek-ből), NEM 1-nek (amit a hir_sorok adna). megjelenitett_hirrel=1
+    # (B-nek nincs híre) → a két szám KÜLÖNBÖZIK, tehát nem esik véletlenül egybe.
+    kli = TrendListaKliens([("A", "10000"), ("B", "5000")], rss=[("A", True), ("B", False)])
+    futtato.futtat(_cfg_trend(2), kli, tmp_path / "adatok", tmp_path / "docs" / "data", most=_PAR_MOST)
+    sorok = {s["ag"]: s for s in _naplo_soronkent(tmp_path / "adatok")}
+    assert sorok.get("parositas", {}).get("hibakodok") == "2/2/1"
+
+
+def test_parositas_vesszos_kifejezes_ep_es_pipe_visszabonthato(tmp_path):
+    # RED: vesszőt tartalmazó nem-egyező név → a CSV cella ép (a , nem elválasztó), és a pipe-bontás
+    # egyértelmű (a vessző a néven belül marad).
+    kli = TrendListaKliens([("A", "10000")], rss=[("A", True), ("eladó lakás, olcsón", True)])
+    futtato.futtat(_cfg_trend(1), kli, tmp_path / "adatok", tmp_path / "docs" / "data", most=_PAR_MOST)
+    sorok = {s["ag"]: s for s in _naplo_soronkent(tmp_path / "adatok")}
+    hk = sorok.get("parositas", {}).get("hibakodok")
+    assert hk == "2/1/1|eladó lakás, olcsón"
+    assert (hk.split("|")[1:] if hk else None) == ["eladó lakás, olcsón"]
+
+
+def test_parositas_ures_rss_nulla_per_nulla(tmp_path):
+    # RED: üres rss (az ág üreset ad) → 0/0/0, siker (0==0), nem omlik össze.
+    kli = TrendListaKliens([("A", "10000"), ("B", "5000")], rss=[])
+    futtato.futtat(_cfg_trend(2), kli, tmp_path / "adatok", tmp_path / "docs" / "data", most=_PAR_MOST)
+    sorok = {s["ag"]: s for s in _naplo_soronkent(tmp_path / "adatok")}
+    assert sorok.get("parositas", {}).get("eredmeny") == "siker"
+    assert sorok.get("parositas", {}).get("hibakodok") == "0/0/0"
+
+
+def test_naplo_pipe_es_vesszos_hibakodok_ep_csv(tmp_path):
+    # SZÁNDÉKOSAN ZÖLD: a napló-réteg (csv, ;-delimiter, QUOTE_MINIMAL) a |+, tartalmú cellát ÉPEN
+    # körbejárja — ez a D1-premissza (pipe-szeparátor + vessző-biztos név), a parositas-blokktól
+    # függetlenül igaz ma is (mint a B2 volumen_szam-karakterizáció).
+    from trendfigyelo import naplo
+    adatok = tmp_path / "adatok"
+    adatok.mkdir()
+    naplo.naplo_ir(adatok, "2021-01-02T00:00:00+00:00", [
+        {"ag": "parositas", "eredmeny": "hiany", "hivasok_szama": 0,
+         "hibakodok": "2/1/1|eladó lakás, olcsón|benzin ár"}], 2000)
+    sorok = {s["ag"]: s for s in _naplo_soronkent(adatok)}
+    hk = sorok["parositas"]["hibakodok"]
+    assert hk == "2/1/1|eladó lakás, olcsón|benzin ár"          # egy ép cella (a , nem törte szét)
+    assert hk.split("|")[1:] == ["eladó lakás, olcsón", "benzin ár"]   # pipe-bontás egyértelmű
+
+
+def test_parositas_hiba_ag_naplo_keszul(tmp_path, monkeypatch):
+    # RED: a parositas dedikált helperét kivétel-dobásra patcheljük (a védett except-et NEM kerüli meg).
+    # raising=False: stub-RED-ben a helper még nincs, a futtat nem hívja → a patch inert → nincs
+    # parositas sor → RED (mint P1-P6). GREEN után: a helper bukik → 'parositas;hiba;0;ValueError'.
+    def _dob(*a, **k):
+        raise ValueError("teszt")
+    monkeypatch.setattr(futtato, "parositas_szamit", _dob, raising=False)
+    kli = TrendListaKliens([("A", "10000")], rss=[("A", True)])
+    futtato.futtat(_cfg_trend(1), kli, tmp_path / "adatok", tmp_path / "docs" / "data", most=_PAR_MOST)
+    sorok = {s["ag"]: s for s in _naplo_soronkent(tmp_path / "adatok")}
+    assert sorok.get("parositas", {}).get("eredmeny") == "hiba"
+    assert sorok.get("parositas", {}).get("hibakodok") == "ValueError"
+
+
+def test_parositas_hiba_nem_blokkolja_az_adatmentest(tmp_path, monkeypatch):
+    # SZÁNDÉKOSAN ZÖLD (§0.1/9): ugyanaz a bukó patch, mint P8. A parositas hibája NEM viheti el az
+    # adatot: exit-kód változatlan, CSV/JSON kiírva, a hat meglévő ág naplózva. A parositas sort NEM
+    # assertáljuk (azt P8). Ma trivi (nincs blokk, ami bukna); GREEN után éles.
+    def _dob(*a, **k):
+        raise ValueError("teszt")
+    monkeypatch.setattr(futtato, "parositas_szamit", _dob, raising=False)
+    docs_data = tmp_path / "docs" / "data"
+    kli = TrendListaKliens([("A", "10000"), ("B", "5000")], rss=[("A", True)])
+    kod = futtato.futtat(_cfg_trend(2), kli, tmp_path / "adatok", docs_data, most=_PAR_MOST)
+    sorok = {s["ag"]: s for s in _naplo_soronkent(tmp_path / "adatok")}
+    assert kod == 0
+    assert (docs_data / "legfrissebb.json").exists()
+    assert (tmp_path / "adatok" / "naplo.csv").exists()
+    for ag in ("felkapott_api", "felkapott_rss", "kulcsszo", "idosor", "regresszio", "folytonossag"):
+        assert ag in sorok
