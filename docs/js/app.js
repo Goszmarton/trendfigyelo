@@ -75,7 +75,7 @@ const OSZT = {
 };
 const ATTR = {
   aktiv: "data-aktiv-intervallum", kulcsszo: "data-kulcsszo", drawable: "data-drawable",
-  ablak_veg: "data-ablak-veg", pontok: "data-pontok", reszleges: "data-reszleges",
+  ablak_veg: "data-ablak-veg", adat_veg: "data-adat-veg", pontok: "data-pontok", reszleges: "data-reszleges",
   hianyzo: "data-hianyzo", vonal: "data-vonal", szakadas: "data-szakadas",
   ymax: "data-y-max", rendered: "data-rendered", ok: "data-ok", intervallum: "data-intervallum",
 };
@@ -304,14 +304,15 @@ function merteszamok_szoveg(iv) {
 }
 
 // §7.4 frissesség-felirat: NEM késésről (a nyers órás ablak a futásig ér, mint a trendlista) — két tény:
-// (1) meddig tart az adat (a rajzolt intervallum ablak_veg_utc-jéből, string-szeletelés, nincs Date);
+// (1) meddig tart az adat: az utolsó KIRAJZOLT LEZÁRT pont napja (B1: NEM az ablak_veg részleges slotja, ami
+//     a ~00:43-futásnál másnapra esne; string-szeletelés, nincs Date);
 // (2) a dátumválasztó nem hat rá + a skála szavanként saját, nem összemérhető (§1.4).
-function frissesseg_szoveg(aktiv_kulcs, ablak_veg) {
+function frissesseg_szoveg(aktiv_kulcs, adat_veg) {
   const iv = INTERVALLUMOK.find(function (i) { return i.kulcs === aktiv_kulcs; });
   const cimke = iv ? iv.cimke : aktiv_kulcs;
   // a datum_formaz már záró pontot ad → NEM teszünk mögé még egyet (különben "05.. A")
   return "A kulcsszó-görbék a kiválasztott időszakot (" + cimke + ") mutatják, az adat vége: "
-    + datum_formaz(ablak_veg.slice(0, 10)) + " A dátumválasztó csak a napi trendekre hat, ezekre a "
+    + datum_formaz(adat_veg.slice(0, 10)) + " A dátumválasztó csak a napi trendekre hat, ezekre a "
     + "görbékre nem; a pontszámok szavanként külön 0–100 skálán állnak, egymással nem összemérhetők.";
 }
 
@@ -392,7 +393,11 @@ function racs_epit(ablak, iv) {
   }
   // J1: a data-szakadas a TÉNYLEGES rajzolt datasetből derül (nem párhuzamos számláló) → egy null→0
   // interpoláló mutáció (§7.5 tiltja a nullával tömést) így PIROSÍT, nem marad láthatatlan
+  // B1: az „adat vége" az utolsó KIRAJZOLT LEZÁRT pont (a lezart növekvő; az utolsó a legkésőbbi) — NEM az
+  // ablak_veg_utc (részleges záró slot). A ~00:43-futásnál a kettő KÜLÖN napra esik → a felirat egyébként
+  // egy nappal többet állítana, mint amennyi ki van rajzolva (ugyanaz a tautológia-osztály, mint a data-ablak-veg).
   return { labels: labels, ertekek: ertekek, vonal: vonal, vonal_van: vonal_van,
+           adat_veg: lezart[lezart.length - 1].idopont_utc,
            szakadas: ertekek.filter(function (v) { return v === null; }).length,
            csupa_nulla: lezart.length > 0 && !van_nemnulla };
 }
@@ -424,7 +429,8 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs) {
 
   const racs = racs_epit(ablak, iv);
   kartya.setAttribute(ATTR.drawable, "true");
-  kartya.setAttribute(ATTR.ablak_veg, ablak.ablak_veg_utc);   // a TÉNYLEGESEN kirajzolt ablak vége (nem a regresszió állítása)
+  kartya.setAttribute(ATTR.ablak_veg, ablak.ablak_veg_utc);   // a kiválasztott nyers ablak KULCSA (regresszió ablak_veg_utc-vel egyező); részleges záró slot
+  kartya.setAttribute(ATTR.adat_veg, racs.adat_veg);          // B1: a felirat „adat vége"-je — az utolsó KIRAJZOLT LEZÁRT pont (nem az ablak_veg)
   kartya.setAttribute(ATTR.pontok, String(iv.pontok_hasznalt));
   kartya.setAttribute(ATTR.reszleges, String(iv.pontok_kihagyva_reszleges));
   kartya.setAttribute(ATTR.hianyzo, String(iv.pontok_hianyzo));
@@ -542,7 +548,7 @@ function kulcsszo_blokk_render() {
   // kártyák felépítése; a frissesseg-dátum a ténylegesen RAJZOLHATÓ kártya ablakából (D1), NEM a regresszió
   // állításából — ha egy szó ervenyes:true, de nincs nyers ablaka (14./16.), NEM ad dátumot (nincs mit dátumozni).
   const rajzolhatok = [];
-  let ablak_veg = null;
+  let adat_veg = null;
   DOMEN_SORREND.forEach(function (d) {
     const kulcs = d === null ? EGYEB_KULCS : d;
     const szavak = csoportok[kulcs];
@@ -559,17 +565,17 @@ function kulcsszo_blokk_render() {
       cs.appendChild(k);
       if (k.getAttribute(ATTR.drawable) === "true") {
         rajzolhatok.push(k);
-        if (!ablak_veg) ablak_veg = k.getAttribute(ATTR.ablak_veg);   // az ELSŐ rajzolható kártya ablakának vége
+        if (!adat_veg) adat_veg = k.getAttribute(ATTR.adat_veg);   // az ELSŐ rajzolható kártya utolsó KIRAJZOLT LEZÁRT pontja (B1)
       }
     });
     blokk.appendChild(cs);
   });
 
   // frissesseg CSAK ha van legalább egy RAJZOLHATÓ kártya (különben — mint 15a/15b — elmarad); a h2 után
-  if (ablak_veg) {
+  if (adat_veg) {
     const f = document.createElement("p");
     f.className = OSZT.frissesseg;
-    f.textContent = frissesseg_szoveg(aktiv, ablak_veg);
+    f.textContent = frissesseg_szoveg(aktiv, adat_veg);
     const h2 = blokk.querySelector("h2");
     if (h2) h2.insertAdjacentElement("afterend", f); else blokk.appendChild(f);
   }

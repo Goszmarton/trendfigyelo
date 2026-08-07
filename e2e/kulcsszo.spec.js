@@ -479,3 +479,33 @@ test("20. minden kártyán LÁTHATÓ .kulcsszo-cimke a szó pontos szövegével 
   // a nem-rajzolható kártyán a címke a magyarázó szöveg MELLETT áll (nem helyette)
   await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="hitel"][data-drawable="false"] .ures`)).toBeVisible();
 });
+
+// ── 21. B1: a frissesség-dátum az utolsó KIRAJZOLT LEZÁRT pontból, NEM az ablak_veg (részleges slot) ─
+// A ~00:43 UTC-s futás konstellációja: az ablak T00:00-ra záródik (RÉSZLEGES slot, MÁSNAP), az utolsó
+// LEZÁRT pont az ELŐZŐ nap T23:00. Eddig a felirat az ablak_veg napját írta ki (tautológia) → egy nappal
+// többet állított, mint amennyi adat ki van rajzolva. A felirat az utolsó lezárt pont napját mutassa.
+// MUTÁCIÓ (vissza ablak_veg-re) ezt PIROSÍTJA. A ~20:37-es futásoknál a két nap egybeesik → 13. zöld marad.
+test("21. frissesség-dátum = utolsó kirajzolt lezárt pont napja (00:43-futás: ablak_veg másnap T00:00)", async ({ page }) => {
+  const ABL_KEZD = "2026-08-06T00:00:00+00:00";
+  const UTOLSO   = "2026-08-06T23:00:00+00:00";   // utolsó LEZÁRT pont — ez a HELYES „adat vége"
+  const ABL_VEG  = "2026-08-07T00:00:00+00:00";   // RÉSZLEGES záró slot — MÁSNAP (a tautológia forrása)
+  const lezartPontok = [];
+  for (let h = 0; h < 24; h++) {                  // 24 lezárt óra 08-06-on (00:00..23:00)
+    lezartPontok.push({ idopont_utc: `2026-08-06T${String(h).padStart(2, "0")}:00:00+00:00`, ertek: 30 + h, reszleges: false });
+  }
+  lezartPontok.push({ idopont_utc: ABL_VEG, ertek: 0, reszleges: true });   // részleges záró (08-07T00:00)
+  await mock(page, {
+    regObj: reg({ "állás": regSzo({ intervallumok: {
+      "1_het": ivErvenyes({ ablak_kezdet_utc: ABL_KEZD, ablak_veg_utc: ABL_VEG, pontok_hasznalt: 24,
+        illesztes_vonal: [{ idopont_utc: ABL_KEZD, ertek: 30 }, { idopont_utc: UTOLSO, ertek: 53 }] }),
+      "2_het": ivHibas("nincs_lancolas"), "1_ho": ivHibas("nincs_lancolas"),
+      "3_ho": ivHibas("nincs_lancolas"), "1_ev": ivHibas("nincs_lancolas"),
+    } }) }),
+    nyersObj: nyers({ "állás": [{ kulcsszo: "állás", ablak_kezdet_utc: ABL_KEZD, ablak_veg_utc: ABL_VEG, pontok: lezartPontok }] }),
+  });
+  await page.goto("/");
+  const f = page.locator(`${K} .frissesseg`);
+  await expect(f).toContainText("(1 hét)");
+  await expect(f).toContainText("2026. 08. 06.");        // az utolsó LEZÁRT pont napja (a kirajzolt adat vége)
+  await expect(f).not.toContainText("2026. 08. 07.");    // az ablak_veg (részleges slot) napja NEM jelenhet meg
+});
