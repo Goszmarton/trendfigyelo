@@ -499,3 +499,58 @@ def test_topics_attributum_nelkul():
     s = futtato.top_trend_struktura([lite], [], [], _config())
     assert "topics" in s[0] and s[0]["topics"] == []
     assert "temak" in s[0] and s[0]["temak"] == []
+
+
+# --- B2: folytonosság-diagnosztika a naplóban (kimaradt napi futás észlelése) ---
+
+def _seed_index(docs_data, napok):
+    import json
+    napok_mappa = docs_data / "napok"
+    napok_mappa.mkdir(parents=True, exist_ok=True)
+    (napok_mappa / "index.json").write_text(json.dumps({"napok": napok}), encoding="utf-8")
+
+
+def test_futtat_folytonossag_hiany_naploz(tmp_path):
+    """Előírt index [2020-12-31], a mai nap 2021-01-02 → a napi_ir után az utolsó két dátum
+    köze 2 nap → 'folytonossag;hiany;0;2021-01-01' naplósor."""
+    docs_data = tmp_path / "docs" / "data"
+    _seed_index(docs_data, ["2020-12-31"])
+    most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)   # budapesti nap 2021-01-02
+    futtato.futtat(_config(), SorrendKemKliens(), tmp_path / "adatok", docs_data, most=most)
+    sorok = {s["ag"]: s for s in _naplo_soronkent(tmp_path / "adatok")}
+    assert "folytonossag" in sorok
+    assert sorok["folytonossag"]["eredmeny"] == "hiany"
+    assert sorok["folytonossag"]["hivasok_szama"] == "0"
+    assert sorok["folytonossag"]["hibakodok"] == "2021-01-01"
+
+
+def test_futtat_folytonossag_siker_naploz(tmp_path):
+    """Előírt index [2021-01-01], a mai nap 2021-01-02 → folytonos → 'folytonossag;siker;0;'
+    (üres hibakodok); a heartbeat-sor MINDEN futáson ott van."""
+    docs_data = tmp_path / "docs" / "data"
+    _seed_index(docs_data, ["2021-01-01"])
+    most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)
+    futtato.futtat(_config(), SorrendKemKliens(), tmp_path / "adatok", docs_data, most=most)
+    sorok = {s["ag"]: s for s in _naplo_soronkent(tmp_path / "adatok")}
+    assert "folytonossag" in sorok
+    assert sorok["folytonossag"]["eredmeny"] == "siker"
+    assert sorok["folytonossag"]["hibakodok"] == ""
+
+
+def test_futtat_folytonossag_serult_index_naplo_keszul(tmp_path):
+    """C1: sérült index.json ('{') → a folytonosság-blokk NEM viszi el az EGÉSZ futás naplóját.
+    A hat ág + folytonossag;hiba;0;JSONDecodeError kiíródik, a kód változatlan (0, mert van adat).
+    (Nincs api-trend → top_trendek üres → napi_ir kimarad → a sérült index a blokkig él.)"""
+    cfg = _config([KulcsszoTetel("a", "megelhetes", "szintmero")])
+    docs_data = tmp_path / "docs" / "data"
+    napok_mappa = docs_data / "napok"
+    napok_mappa.mkdir(parents=True, exist_ok=True)
+    (napok_mappa / "index.json").write_text("{", encoding="utf-8")   # sérült JSON
+    most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)
+    kod = futtato.futtat(cfg, KulcsszoAdatKliens(), tmp_path / "adatok", docs_data, most=most)
+    sorok = {s["ag"]: s for s in _naplo_soronkent(tmp_path / "adatok")}
+    assert kod == 0                                                  # a futás NEM szállt el
+    assert {"felkapott_api", "felkapott_rss", "kulcsszo", "idosor",
+            "regresszio", "folytonossag"} <= set(sorok)              # mind a hat ág megvan
+    assert sorok["folytonossag"]["eredmeny"] == "hiba"
+    assert sorok["folytonossag"]["hibakodok"] == "JSONDecodeError"

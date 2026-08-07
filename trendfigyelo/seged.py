@@ -1,7 +1,7 @@
 """Közös segédfüggvények: idő, szöveggé alakítás, CSV-író."""
 
 import csv
-from datetime import datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -53,3 +53,24 @@ def csv_iro(fajl: Path):
     """utf-8-sig, pontosvesszős CSV-író. Visszaad: (fájlobjektum, writer)."""
     f = fajl.open("w", newline="", encoding="utf-8-sig")
     return f, csv.writer(f, delimiter=";")
+
+
+def utolso_res(napok: list) -> list:
+    """B2: az ISO-dátumlista UTOLSÓ KÉT eleme közé eső naptári nap(ok), rendezve.
+
+    Belső folytonosság-ellenőrzés kimaradt napi futás észlelésére: NEM a „ma"-hoz
+    mér (időzóna-/éjfél-zaj mentes), csak az utolsó intervallumot nézi (minden rés
+    pontosan egyszer naplózódik). TISZTA: nincs IO, nincs rendszeróra.
+
+    A függvény MAGA rendezi a bemenetet (nem előfeltétel a hívói sorrend), majd a két
+    legkésőbbi dátum KÖZÉ (nyílt intervallum) eső napokat adja vissza ISO-alakban,
+    valódi dátum-aritmetikával (`date.fromisoformat`). Folytonos pár (1 nap köz) →
+    []; üres/egyelemű lista → [].
+    """
+    rendezett = sorted(napok)
+    if len(rendezett) < 2:
+        return []
+    elozo = date.fromisoformat(rendezett[-2])
+    utolso = date.fromisoformat(rendezett[-1])
+    return [(elozo + timedelta(days=n)).isoformat()
+            for n in range(1, (utolso - elozo).days)]

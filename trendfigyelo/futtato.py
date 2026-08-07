@@ -198,6 +198,26 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
                                 "hivasok_szama": 0, "hibakodok": type(e).__name__})
             print(f"FIGYELEM: a regresszió kimaradt — nem blokkolja az adatmentést ({e}).")
 
+    # ---------- folytonosság-diagnosztika (B2, származtatott; CSAK naplóz, VÉDETTEN) ----------
+    # A napi_ir ekkorra már beírta a mai nap_iso-t az index.json-ba. Az utolsó két rögzített
+    # dátum köze mutatja, kimaradt-e futás (belső folytonosság, NEM a „ma"-hoz mérve). CSAK
+    # naplóz: egy múltbeli rés nem viheti el a ma összegyűjtött adatot (mint a regresszio-ág).
+    # VÉDETTEN (C1): sérült/nem-dict/olvashatatlan index.json (JSONDecodeError/AttributeError/OSError)
+    # SEM viheti el az EGÉSZ futás naplóját — hiba esetén folytonossag;hiba sor + FIGYELEM, futás tovább.
+    # A bejegyzes MINDIG bekerül (heartbeat), akkor is, ha maga a checker bukott.
+    index_fajl = docs_data_mappa / "napok" / "index.json"
+    try:
+        napok_index = (json.loads(index_fajl.read_text(encoding="utf-8")).get("napok", [])
+                       if index_fajl.exists() else [])
+        res = seged.utolso_res(napok_index)
+        bejegyzesek.append({"ag": "folytonossag",
+                            "eredmeny": "hiany" if res else "siker",
+                            "hivasok_szama": 0, "hibakodok": ",".join(res)})
+    except Exception as e:
+        bejegyzesek.append({"ag": "folytonossag", "eredmeny": "hiba",
+                            "hivasok_szama": 0, "hibakodok": type(e).__name__})
+        print(f"FIGYELEM: a folytonosság-ellenőrzés kimaradt — nem blokkolja a naplót ({e}).")
+
     # ---------- napló ----------
     naplo.naplo_ir(adatok_mappa, letoltve, bejegyzesek, config.naplo_max_sor)
 
