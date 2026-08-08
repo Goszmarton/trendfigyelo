@@ -589,7 +589,7 @@ function kulcsszo_blokk_render() {
 const OSZT_T = {
   osszefoglalo: "trend-osszefoglalo", chart_doboz: "kategoria-chart-doboz", chart: "kategoria-chart",
   magyarazat: "kategoria-magyarazat", szuro: "kategoria-szuro", gomb: "kategoria-gomb",
-  gomb_other: "kategoria-gomb--other", lista: "trend-lista", kartya: "trend-kartya",
+  gomb_other: "kategoria-gomb--other", gomb_reset_aktiv: "kategoria-gomb--reset-aktiv", lista: "trend-lista", kartya: "trend-kartya",
   kifejezes: "trend-kifejezes", volumen: "trend-volumen", kategoria: "trend-kategoria", ures: "ures",
 };
 const ATTR_T = {
@@ -671,8 +671,9 @@ function trend_chart_epit(canvas, eloszlas, blokk) {
       responsive: true, maintainAspectRatio: false, animation: false,
       scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
       plugins: { legend: { display: false } },
-      onClick: function (evt, elemek) {   // a sávra kattintás = szűrés (ugyanaz az egy forrás)
+      onClick: function (evt, elemek) {   // sávra kattintás = szűrés; ÜRES területre = nullázás — ugyanaz az egy forrás
         if (elemek && elemek.length) trend_kategoria_valt(blokk, eloszlas[elemek[0].index].kategoria);
+        else trend_kategoria_valt(blokk, "");   // üres területre → mint az "Összes" (data-aktiv-kategoria törlődik)
       },
     },
   });
@@ -762,6 +763,11 @@ function trend_szinkron(blokk) {
     // az "Összes" gomb data-kategoria-ja "" → szűrés nélkül (aktiv="") kat===aktiv igaz rá; a második
     // tag (aktiv===""&&kat==="") REDUNDÁNS volt (ha igaz, kat===aktiv már igaz). Egyszerűsítve.
     g.setAttribute("aria-pressed", kat === aktiv ? "true" : "false");
+    if (kat === "") {   // az "Összes" reset-gomb: szűrt állapotban HANGSÚLYOS ("× Összes" + reset-osztály) — a felfedezhető kilépés
+      const szurt = aktiv !== "";
+      g.classList.toggle(OSZT_T.gomb_reset_aktiv, szurt);
+      g.textContent = szurt ? "× " + OSSZES_CIMKE : OSSZES_CIMKE;
+    }
   });
   trend_chart_szinez(aktiv);
 }

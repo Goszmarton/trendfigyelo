@@ -281,3 +281,17 @@ test("16. pipe-tartalmú kategórianév: a teljes néven szűr, a fél-néven NE
   await felnev.click();
   await expect(multi).toBeHidden();
 });
+
+// ── T17 — az "Összes" reset-gomb szűrt állapotban HANGSÚLYOS (reset-osztály; DOM-oldali → tesztelhető) ──
+test("17. az »Összes« reset-gomb: szűrt állapotban reset-osztály, szűretlenül és kikapcsolás után nincs", async ({ page }) => {
+  await mock(page, { legfrissebb: { top_trendek: MAI16 } });
+  await page.goto("/");
+  const ossz = page.locator(`${T} .kategoria-gomb[data-kategoria=""]`);
+  const politics = page.locator(`${T} .kategoria-gomb[data-kategoria="Politics"]`);
+  await expect(ossz).toHaveCount(1);
+  await expect(ossz).not.toHaveClass(/kategoria-gomb--reset-aktiv/);   // szűretlen: NINCS
+  await politics.click();
+  await expect(ossz).toHaveClass(/kategoria-gomb--reset-aktiv/);       // szűrve: RAJTA VAN (az egy forrásból: data-aktiv-kategoria)
+  await politics.click();
+  await expect(ossz).not.toHaveClass(/kategoria-gomb--reset-aktiv/);   // kikapcsolva: megint NINCS
+});

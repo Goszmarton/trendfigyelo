@@ -53,6 +53,8 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 /* „Other" — a besorolás Google-gyűjtővödre: vizuálisan elválik (szürke), az OSZTÁLYON keresztül (nem számított szín) */
 #trend-blokk .kategoria-gomb--other { border-color: #bbb; color: #666; }
 #trend-blokk .kategoria-gomb--other[aria-pressed="true"] { background: #9e9e9e; color: #fff; border-color: #9e9e9e; }
+/* az "Összes" reset-gomb szűrt állapotban: visszafogott hangsúly (keret + szöveg), a "×" a kilépést jelzi */
+#trend-blokk .kategoria-gomb--reset-aktiv { border-color: #a33; color: #a33; font-weight: 600; }
 /* explicit rejtés: a szűrt kártya biztosan tűnjön el (a natív [hidden]-t a rács-elem display-e felül ne írja) */
 #trend-blokk .trend-kartya[hidden] { display: none; }
 #trend-blokk .trend-lista { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1rem 0; }
