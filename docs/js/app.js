@@ -582,13 +582,293 @@ function kulcsszo_blokk_render() {
   lusta_megfigyel(rajzolhatok);
 }
 
+// ── Task 7: trend-blokk — napi felkapott trendlista + kategória-eloszlás chart + kategória-szűrő ──
+// Forrás: legfrissebb.json → top_trendek (a legfrissebb nap), régi napokon napok/<nap>.json → trendek.
+// A dátumválasztó vezérli (a select változása → trend_nap_valt). NINCS görbe (8a) és NINCS hírblokk (L8).
+// Egyetlen igazságforrás a szűréshez: #trend-blokk[data-aktiv-kategoria] (9b data-aktiv-intervallum mintája).
+const OSZT_T = {
+  osszefoglalo: "trend-osszefoglalo", chart_doboz: "kategoria-chart-doboz", chart: "kategoria-chart",
+  magyarazat: "kategoria-magyarazat", szuro: "kategoria-szuro", gomb: "kategoria-gomb",
+  gomb_other: "kategoria-gomb--other", lista: "trend-lista", kartya: "trend-kartya",
+  kifejezes: "trend-kifejezes", volumen: "trend-volumen", kategoria: "trend-kategoria", ures: "ures",
+};
+const ATTR_T = {
+  aktiv_kategoria: "data-aktiv-kategoria", nap: "data-nap", kifejezes: "data-kifejezes",
+  volumen: "data-volumen", kategoriak: "data-kategoriak", kategoria_allapot: "data-kategoria-allapot",
+  kategoria: "data-kategoria", count: "data-count",
+};
+const OTHER_CIMKE = "Other";       // a Google gyűjtő-KATEGÓRIÁJA (van szűrő-gomb, szürke, utolsó)
+const EGYEB_CIMKE = "egyéb";       // a besorolás HIÁNYA ([]/hiányzó mező) — NINCS szűrő-gomb
+const OSSZES_CIMKE = "Összes";
+const TREND_URES_SZOVEG = "Ma nem érkezett friss felkapott trend erre a napra.";
+
+let kategoria_chart = null;        // az eloszlás-chart SAJÁT példánya (NEM a kulcsszó chart_peldanyok/chart_takarit)
+let trend_esemeny_kotve = false;   // a dátumválasztó change-kötése egyszer
+
+// a rendezett nap-lista + a legfrissebb nap (a napok/index.json-ból)
+function trend_napok() {
+  const idx = adat["napok/index.json"];
+  return (idx && Array.isArray(idx.napok)) ? idx.napok.slice().sort() : [];
+}
+function trend_legfrissebb_nap() {
+  const n = trend_napok();
+  return n.length ? n[n.length - 1] : null;
+}
+
+// az adott nap trendjei: legfrissebb → legfrissebb.json top_trendek; régebbi → napok/<nap>.json trendek.
+// Visszaad: tömb, VAGY null (a régi nap még nincs betöltve — a trend_nap_valt tölti be és újrahív).
+function trend_adat_nap(nap) {
+  if (!nap || nap === trend_legfrissebb_nap()) {
+    const lf = adat["legfrissebb.json"];
+    return lf ? (lf.top_trendek || []) : [];
+  }
+  const napi = adat["napok/" + nap + ".json"];
+  return napi ? (napi.trendek || []) : null;
+}
+
+// a megjelenítendő nap: a #trend-blokk data-nap-ja, vagy a dátumválasztó értéke, vagy a legfrissebb
+function trend_aktualis_nap(blokk) {
+  const meglevo = blokk.getAttribute(ATTR_T.nap);
+  if (meglevo) return meglevo;
+  const sel = document.querySelector("#datum-valaszto select");
+  if (sel && sel.value) return sel.value;
+  return trend_legfrissebb_nap();
+}
+
+// kategória-eloszlás: MINDEN elem MINDEN temak-kategóriájában számít (a multi többször);
+// []/hiányzó NEM számít. Sorrend: valódi kategóriák count-CSÖKKENŐ (tie ábécé), majd "Other" UTOLSÓ.
+function kategoria_eloszlas(trendek) {
+  const szam = {};
+  trendek.forEach(function (t) {
+    (Array.isArray(t.temak) ? t.temak : []).forEach(function (k) { szam[k] = (szam[k] || 0) + 1; });
+  });
+  const kulcsok = Object.keys(szam);
+  const valodi = kulcsok.filter(function (k) { return k !== OTHER_CIMKE; })
+    .sort(function (a, b) { return szam[b] - szam[a] || (a < b ? -1 : 1); });
+  const rend = valodi.concat(kulcsok.indexOf(OTHER_CIMKE) >= 0 ? [OTHER_CIMKE] : []);
+  return rend.map(function (k) { return { kategoria: k, count: szam[k] }; });
+}
+
+function trend_szin(kategoria, tompitott) {
+  if (kategoria === OTHER_CIMKE) return tompitott ? "#d4d4d4" : "#9e9e9e";   // "Other" mindig szürke
+  return tompitott ? "#aec4ef" : "#3366cc";
+}
+
+function trend_chart_takarit() {
+  if (kategoria_chart) { kategoria_chart.destroy(); kategoria_chart = null; }
+}
+
+function trend_chart_epit(canvas, eloszlas, blokk) {
+  if (typeof Chart === "undefined") return;   // a canvas elem akkor is megvan (a szerződés DOM-oldali)
+  kategoria_chart = new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels: eloszlas.map(function (e) { return e.kategoria; }),
+      datasets: [{ data: eloszlas.map(function (e) { return e.count; }),
+                   backgroundColor: eloszlas.map(function (e) { return trend_szin(e.kategoria, false); }) }],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+      plugins: { legend: { display: false } },
+      onClick: function (evt, elemek) {   // a sávra kattintás = szűrés (ugyanaz az egy forrás)
+        if (elemek && elemek.length) trend_kategoria_valt(blokk, eloszlas[elemek[0].index].kategoria);
+      },
+    },
+  });
+  kategoria_chart._eloszlas = eloszlas;
+}
+
+// szűréskor a chart CSAK SZÍNEZ (aktív teli, többi tompított); a sáv-ÉRTÉKEK/count-ok VÁLTOZATLANOK
+function trend_chart_szinez(aktiv) {
+  if (!kategoria_chart) return;
+  const el = kategoria_chart._eloszlas || [];
+  kategoria_chart.data.datasets[0].backgroundColor = el.map(function (e) {
+    return trend_szin(e.kategoria, aktiv !== "" && e.kategoria !== aktiv);
+  });
+  kategoria_chart.update();
+}
+
+function trend_gomb_epit(kategoria, cimke, count, blokk) {
+  const g = document.createElement("button");
+  g.className = OSZT_T.gomb + (kategoria === OTHER_CIMKE ? " " + OSZT_T.gomb_other : "");
+  g.setAttribute(ATTR_T.kategoria, kategoria);
+  if (count != null) g.setAttribute(ATTR_T.count, String(count));
+  g.setAttribute("aria-pressed", "false");
+  g.textContent = count != null ? (cimke + " (" + count + ")") : cimke;
+  g.addEventListener("click", function () { trend_kategoria_valt(blokk, kategoria); });
+  return g;
+}
+
+// egy trendkártya: kifejezes + volumen + kategória-címke (három állapot). NINCS görbe (8a) és hír (L8).
+function trend_kartya_epit(t) {
+  const k = document.createElement("div");
+  k.className = OSZT_T.kartya;
+  const kif = t.kifejezes || "";
+  k.setAttribute(ATTR_T.kifejezes, kif);
+  k.setAttribute(ATTR_T.volumen, t.volumen != null ? String(t.volumen) : "");
+  // három kategória-állapot (spec:386-387): van / nincs ([]) / hianyzik (mező hiányzik) — az adatban KÜLÖNBÖZŐ
+  const van_mezo = Object.prototype.hasOwnProperty.call(t, "temak");
+  const temak = Array.isArray(t.temak) ? t.temak : [];
+  const allapot = !van_mezo ? "hianyzik" : (temak.length === 0 ? "nincs" : "van");
+  k.setAttribute(ATTR_T.kategoria_allapot, allapot);
+  // JSON-tömb (NEM pipe): bármely Google-címkére biztos, verzió-független
+  k.setAttribute(ATTR_T.kategoriak, JSON.stringify(allapot === "van" ? temak : []));
+
+  const cimke = document.createElement("h4");
+  cimke.className = OSZT_T.kifejezes;
+  cimke.textContent = kif;
+  k.appendChild(cimke);
+
+  const vol = document.createElement("p");
+  vol.className = OSZT_T.volumen;
+  vol.textContent = "volumen: " + (t.volumen != null ? t.volumen : "—");
+  k.appendChild(vol);
+
+  const kat = document.createElement("p");
+  kat.className = OSZT_T.kategoria;
+  if (allapot === "van") {
+    const szoveg = temak.join(", ");
+    kat.textContent = szoveg;
+    kat.setAttribute("aria-label", "Google Trends kategória: " + szoveg);   // forrás-attribúció a címkénél
+    kat.setAttribute("title", "Google Trends kategória: " + szoveg);
+  } else {
+    kat.textContent = EGYEB_CIMKE;   // [] és hiányzó egyaránt „egyéb" a felületen
+  }
+  k.appendChild(kat);
+  return k;
+}
+
+// szűrés (toggle): az aktív kategóriára (vagy Összesre) újra kattintva kikapcsol; különben beáll
+function trend_kategoria_valt(blokk, kategoria) {
+  const jelenlegi = blokk.getAttribute(ATTR_T.aktiv_kategoria) || "";
+  const uj = (kategoria === "" || kategoria === jelenlegi) ? "" : kategoria;
+  if (uj) blokk.setAttribute(ATTR_T.aktiv_kategoria, uj);
+  else blokk.removeAttribute(ATTR_T.aktiv_kategoria);
+  trend_szinkron(blokk);
+}
+
+// MINDENT a data-aktiv-kategoria-ból derivál: kártya-láthatóság, gomb aria-pressed, chart-színezés
+function trend_szinkron(blokk) {
+  const aktiv = blokk.getAttribute(ATTR_T.aktiv_kategoria) || "";
+  blokk.querySelectorAll("." + OSZT_T.kartya).forEach(function (k) {
+    let kategoriak = [];
+    try { kategoriak = JSON.parse(k.getAttribute(ATTR_T.kategoriak) || "[]"); } catch (e) { kategoriak = []; }
+    const lathato = !aktiv || kategoriak.indexOf(aktiv) >= 0;   // a multi-elem MINDEN kategóriájánál látszik
+    if (lathato) k.removeAttribute("hidden"); else k.setAttribute("hidden", "");
+  });
+  blokk.querySelectorAll("." + OSZT_T.gomb).forEach(function (g) {
+    const kat = g.getAttribute(ATTR_T.kategoria) || "";
+    // az "Összes" gomb data-kategoria-ja "" → szűrés nélkül (aktiv="") kat===aktiv igaz rá; a második
+    // tag (aktiv===""&&kat==="") REDUNDÁNS volt (ha igaz, kat===aktiv már igaz). Egyszerűsítve.
+    g.setAttribute("aria-pressed", kat === aktiv ? "true" : "false");
+  });
+  trend_chart_szinez(aktiv);
+}
+
+// az összefoglaló (chart + magyarázat + szűrő) — CSAK kategóriás napon (van_kategoria)
+function trend_osszefoglalo_epit(trendek, eloszlas, blokk) {
+  const oss = document.createElement("div");
+  oss.className = OSZT_T.osszefoglalo;
+
+  const doboz = document.createElement("div");
+  doboz.className = OSZT_T.chart_doboz;
+  const canvas = document.createElement("canvas");
+  canvas.className = OSZT_T.chart;
+  doboz.appendChild(canvas);
+  oss.appendChild(doboz);
+
+  const besorolas = eloszlas.reduce(function (s, e) { return s + e.count; }, 0);
+  const mag = document.createElement("p");
+  mag.className = OSZT_T.magyarazat;
+  mag.textContent = "A kategóriákat a Google Trends napi osztályozása adja — nem a mi besorolásunk. "
+    + "Egy trend több kategóriába is tartozhat, ezért a kategóriák összege (" + besorolas + ") több lehet, "
+    + "mint a megjelenített trendek száma (" + trendek.length + ").";
+  oss.appendChild(mag);
+
+  const szuro = document.createElement("div");
+  szuro.className = OSZT_T.szuro;
+  szuro.appendChild(trend_gomb_epit("", OSSZES_CIMKE, null, blokk));   // „Összes" reset — count nélkül
+  eloszlas.forEach(function (e) { szuro.appendChild(trend_gomb_epit(e.kategoria, e.kategoria, e.count, blokk)); });
+  oss.appendChild(szuro);
+
+  trend_chart_epit(canvas, eloszlas, blokk);   // a canvas már a DOM-ban van, mire a Chart példányosít
+  return oss;
+}
+
+// a trend-blokk teljes újraépítése az aktuális napra (init + minden napváltás)
+function trend_blokk_render() {
+  const blokk = document.getElementById("trend-blokk");
+  if (!blokk) return;
+  trend_esemeny_kot();
+
+  const nap = trend_aktualis_nap(blokk);
+  if (nap) blokk.setAttribute(ATTR_T.nap, nap);
+
+  trend_chart_takarit();
+  blokk.querySelectorAll("." + OSZT_T.osszefoglalo + ", ." + OSZT_T.lista + ", ." + OSZT_T.ures)
+    .forEach(function (e) { e.remove(); });
+
+  const trendek = trend_adat_nap(nap);
+  if (trendek === null) return;   // a régi nap még tölt (async) — a trend_nap_valt újrahív
+
+  if (!trendek.length) {          // §7.5 lista-szintű üres állapot
+    const u = document.createElement("p");
+    u.className = OSZT_T.ures;
+    u.textContent = TREND_URES_SZOVEG;
+    blokk.appendChild(u);
+    return;
+  }
+
+  // EGY közös predikátum a teljes összefoglalóra (chart + szűrő): eloszlas.length > 0.
+  // EZ EKVIVALENS a "van legalább egy elem nem-üres temak-kal" (van_kategoria) feltétellel: a
+  // kategoria_eloszlas MINDEN temak-bejegyzést számol, tehát eloszlas.length > 0 ⟺ van legalább egy
+  // temak-bejegyzés ⟺ van legalább egy nem-üres temak ([]/hiányzó semmit nem ad hozzá). NE bontsd szét.
+  const eloszlas = kategoria_eloszlas(trendek);
+  if (eloszlas.length > 0) blokk.appendChild(trend_osszefoglalo_epit(trendek, eloszlas, blokk));
+
+  const lista = document.createElement("div");
+  lista.className = OSZT_T.lista;
+  trendek.forEach(function (t) { lista.appendChild(trend_kartya_epit(t)); });   // NINCS fix hossz-feltevés
+  blokk.appendChild(lista);
+
+  trend_szinkron(blokk);   // a kezdő állapot (nincs szűrés) szinkronja
+}
+
+// a dátumválasztó változása vezérli a napot (esemény-delegálás a konténeren → túléli a select újraépítését)
+function trend_esemeny_kot() {
+  if (trend_esemeny_kotve) return;
+  const el = document.getElementById("datum-valaszto");
+  if (!el) return;
+  el.addEventListener("change", function (ev) {
+    if (ev.target && ev.target.tagName === "SELECT") trend_nap_valt(ev.target.value);
+  });
+  trend_esemeny_kotve = true;
+}
+
+// napváltás: a szűrés NULLÁZÓDIK; a régi napot igény szerint betölti, majd újrarenderel
+async function trend_nap_valt(nap) {
+  const blokk = document.getElementById("trend-blokk");
+  if (!blokk) return;
+  blokk.setAttribute(ATTR_T.nap, nap);
+  blokk.removeAttribute(ATTR_T.aktiv_kategoria);   // a szűrés SOHA nem éli túl a napváltást
+  const rel = "napok/" + nap + ".json";
+  if (nap !== trend_legfrissebb_nap() && !(rel in adat)) {
+    try { adat[rel] = await nap_betolt(nap); }
+    catch (e) { hiba_kiir("trend-blokk", [(e && e.message) || rel]); return; }
+  }
+  trend_blokk_render();
+}
+
 const RENDER_HIBA_SZOVEG = "Hiba a vezérlő megjelenítésekor";
 // SORREND SZÁMÍT: az intervallum-vezérlő állítja be a data-aktiv-intervallum-ot, amit a kulcsszó-blokk
-// olvas; a datum-választó független. Mindhárom szinkron fn → a microtask-sorrend = a tömb sorrendje.
+// olvas; a datum-választó a TREND-BLOKK ELŐTT fut, mert a trend-blokk a legyártott <select>-hez köti a
+// napváltást. Mind szinkron fn → a microtask-sorrend = a tömb sorrendje.
 const RENDEREK = [
   { id: "intervallum-vezerlo", fn: intervallum_vezerlo_render },
   { id: "kulcsszo-blokk", fn: kulcsszo_blokk_render },
   { id: "datum-valaszto", fn: datum_valaszto_render },
+  { id: "trend-blokk", fn: trend_blokk_render },
 ];
 
 // a renderek EGYMÁSTÓL FÜGGETLENÜL futnak (Task 5 allSettled-izoláció); a render-KIVÉTELT
