@@ -11,24 +11,30 @@
   <p class="halvany">Magyarországi (geo=HU) Google Trends adatok, napi frissítéssel.</p>
 
   <div id="dashboard">
-    <section id="vezerlok">
-      <div id="intervallum-vezerlo" aria-label="Kulcsszó időtartomány">
-        <!-- 1 hét / 2 hét / 1 hó / 3 hó / 1 év — a gombok elérhetősége a kulcsszo_regresszio.json-ból (Task 6) -->
-      </div>
-      <div id="datum-valaszto" aria-label="Trend dátumválasztó">
-        <!-- napok/index.json alapján; belépéskor a legfrissebb nap (Task 6) -->
-      </div>
-    </section>
+    <!-- §7.1 per-szekció elrendezés: minden szekció a SAJÁT (sticky) vezérlősávjával -->
+    <div class="szekcio">
+      <aside class="vezerlo-sav">
+        <div id="intervallum-vezerlo" aria-label="Kulcsszó időtartomány">
+          <!-- 1 hét / 2 hét / 1 hó / 3 hó / 1 év — a gombok elérhetősége a kulcsszo_regresszio.json-ból (Task 6) -->
+        </div>
+      </aside>
+      <section id="kulcsszo-blokk" aria-label="Kulcsszavak">
+        <h2>Kulcsszavak</h2>
+        <!-- szavanként külön chart regresszióval + mérőszámokkal — Task 9b -->
+      </section>
+    </div>
 
-    <section id="kulcsszo-blokk" aria-label="Kulcsszavak">
-      <h2>Kulcsszavak</h2>
-      <!-- szavanként külön chart regresszióval + mérőszámokkal — Task 9b -->
-    </section>
-
-    <section id="trend-blokk" aria-label="Napi legfrissebb trendek">
-      <h2>Napi legfrissebb trendek</h2>
-      <!-- lista + kategória-címke + napi görbe (regresszió nélkül) — Task 7/8 -->
-    </section>
+    <div class="szekcio">
+      <aside class="vezerlo-sav">
+        <div id="datum-valaszto" aria-label="Trend dátumválasztó">
+          <!-- napok/index.json alapján; belépéskor a legfrissebb nap (Task 6) -->
+        </div>
+      </aside>
+      <section id="trend-blokk" aria-label="Napi legfrissebb trendek">
+        <h2>Napi legfrissebb trendek</h2>
+        <!-- lista + kategória-címke + napi görbe (regresszió nélkül) — Task 7/8 -->
+      </section>
+    </div>
   </div>
 
   <!-- ÁTMENETI fallback: a nyers adat elérése, amíg a dashboard elkészül (Task 9b/10 távolítja el) -->

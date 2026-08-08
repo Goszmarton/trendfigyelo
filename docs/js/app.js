@@ -306,14 +306,15 @@ function merteszamok_szoveg(iv) {
 // §7.4 frissesség-felirat: NEM késésről (a nyers órás ablak a futásig ér, mint a trendlista) — két tény:
 // (1) meddig tart az adat: az utolsó KIRAJZOLT LEZÁRT pont napja (B1: NEM az ablak_veg részleges slotja, ami
 //     a ~00:43-futásnál másnapra esne; string-szeletelés, nincs Date);
-// (2) a dátumválasztó nem hat rá + a skála szavanként saját, nem összemérhető (§1.4).
+// (2) a skála szavanként saját, nem összemérhető (§1.4). A "dátumválasztó nem hat rá" tagmondat KIKERÜLT:
+//     a §7.1 per-szekció elrendezés (a vezérlő a vezérelt szekció mellett) magától közli.
 function frissesseg_szoveg(aktiv_kulcs, adat_veg) {
   const iv = INTERVALLUMOK.find(function (i) { return i.kulcs === aktiv_kulcs; });
   const cimke = iv ? iv.cimke : aktiv_kulcs;
   // a datum_formaz már záró pontot ad → NEM teszünk mögé még egyet (különben "05.. A")
   return "A kulcsszó-görbék a kiválasztott időszakot (" + cimke + ") mutatják, az adat vége: "
-    + datum_formaz(adat_veg.slice(0, 10)) + " A dátumválasztó csak a napi trendekre hat, ezekre a "
-    + "görbékre nem; a pontszámok szavanként külön 0–100 skálán állnak, egymással nem összemérhetők.";
+    + datum_formaz(adat_veg.slice(0, 10)) + " A pontszámok szavanként külön 0–100 skálán állnak, "
+    + "egymással nem összemérhetők.";
 }
 
 // spec 7.2 élettartam-jelölés — HÁROM állapot szétválasztva, string-összehasonlítással (nincs Date):
