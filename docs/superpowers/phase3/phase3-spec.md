@@ -234,28 +234,30 @@ kikényszeríthető, nem böngészőben.
 
 ### 7.1 Elrendezés
 
-Három blokk, kétfelé osztott vezérlővel:
+Két szekció, mindegyik a SAJÁT vezérlőjével egy bal oldali sávban (asztali nézet):
 
 ```
-┌─────────────────┐  ┌───────────────────────────────────────┐
-│ DASHBOARD       │  │ KULCSSZAVAK                           │
-│                 │  │  13 külön chart, mindegyiken saját    │
-│ ── felső ──     │  │  regresszióval + mérőszámokkal        │
-│ intervallum:    │  │                                       │
-│ 1 hét / 2 hét / │  └───────────────────────────────────────┘
-│ 1 hó / 3 hó /   │
-│ 1 év            │  ┌───────────────────────────────────────┐
-│                 │  │ NAPI LEGFRISSEBB TRENDEK              │
-│ ── alsó ──      │  │  aznapi szavak + görbék + kategória    │
-│ dátumválasztó   │  │  REGRESSZIÓ NINCS                     │
-│ (egy nap)       │  │                                       │
-└─────────────────┘  └───────────────────────────────────────┘
+┌──────────────┐  ┌────────────────────────────────────┐
+│ intervallum  │  │ KULCSSZAVAK                        │
+│ 1 hét/2 hét/ │  │  szavanként külön chart +          │
+│ 1 hó/3 hó/1év│  │  regresszió + mérőszámok           │
+│  (sticky)    │  │                                    │
+└──────────────┘  └────────────────────────────────────┘
+┌──────────────┐  ┌────────────────────────────────────┐
+│ dátumválasztó│  │ NAPI LEGFRISSEBB TRENDEK           │
+│  (egy nap)   │  │  eloszlás-chart + kategória-szűrő  │
+│  (sticky)    │  │  + trendlista — REGRESSZIÓ NINCS   │
+└──────────────┘  └────────────────────────────────────┘
 ```
 
-A kettéosztás **szemantikai, nem esztétikai**: a felső vezérlő „lásd a
-sorozatot", az alsó „válassz egy napot". A vezérlők **nem hatnak egymásra**
-— ezt a felületnek vizuálisan egyértelművé kell tennie (elválasztó, külön
-fejléc), különben a látogató azt hiszi, egy globális szűrőt állít.
+ELTÉRÉS a v2 első tervrajzától: az EGY közös bal „DASHBOARD" sáv helyett
+PER-SZEKCIÓ sávok. Indok: a kettéosztás szemantikai (a felső „lásd a sorozatot",
+az alsó „válassz egy napot"); egy KÖZÖS sávban a felhasználó nem látja, melyik
+vezérlő mire hat — ezt eddig egy külön magyarázó mondat kompenzálta (§7.4). A
+vezérlő közvetlenül a vezérelt szekció mellett magától egyértelmű → a magyarázó
+mondat elhagyható (§7.4). A sávok `position: sticky`: görgetéskor a saját
+szekciójuk mellett láthatók maradnak. A MOBIL viselkedés (a sáv nem maradhat sáv)
+a Task 10 hatóköre (§11.6) — az asztali sticky itt épül, a reszponzív összecsukás ott.
 
 ### 7.2 Kulcsszó-blokk
 
@@ -457,9 +459,10 @@ tényleges `ablak_veg_utc`-jéből jön**, nem a „közös futás" feltevésbő
 feladott ág (`AgFeladva`) vagy kiesett nap okozta elcsúszást a derivált dátum
 magától, helyesen kezel; a spec **nem** állít szerkezeti frissesség-azonosságot.
 A felirat két tényt közöljön: (1) meddig tart az adat (a fenti `ablak_veg_utc`,
-böngészőbeli dátumaritmetika nélkül, 7.4 elve); (2) hogy a dátumválasztó a
-kulcsszó-blokkra nem hat (7.1), és hogy a pontszámok szavanként külön 0–100
-skálán állnak, egymással nem összemérhetők (1.4).
+böngészőbeli dátumaritmetika nélkül, 7.4 elve); (2) hogy a pontszámok szavanként
+külön 0–100 skálán állnak, egymással nem összemérhetők (1.4). A dátumválasztó-
+tagmondat NEM része a feliratnak; a kulcsszó- és trend-vezérlő szétválasztottságát
+a §7.1 per-szekció elrendezése közli.
 
 **Közös elv.** Mindkét blokk a legtöbb elérhető kontextussal indul — a
 kulcsszavaknál ez a leghosszabb érvényes időszak, a trendeknél a legfrissebb
