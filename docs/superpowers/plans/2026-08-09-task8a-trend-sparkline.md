@@ -333,7 +333,7 @@ Run: `npx playwright test --workers=1` → **54 passed**. Run: `.venv/bin/pytest
 git add docs/js/app.js e2e/trend.spec.js
 git commit -F <jóváhagyott üzenet>
 ```
-Javasolt üzenet: `feat(phase3): §7.3 Task 8a/2 — trend-sparkline KÜLÖN életciklus (trend_chart_peldanyok + trend_megfigyelo)`
+Javasolt üzenet: `feat(phase3): §7.3 Task 8a/2 — trend-sparkline KÜLÖN életciklus (trend_chart_peldanyok, azonnali rajzolás, observer nélkül)`
 
 ---
 
