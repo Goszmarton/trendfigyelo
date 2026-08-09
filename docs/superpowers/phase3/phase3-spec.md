@@ -324,9 +324,11 @@ a Task 10 hatóköre (§11.6) — az asztali sticky itt épül, a reszponzív ö
 - **Forrás:** `legfrissebb.json` → `top_trendek` (a `trend_idosorok` ugyanaz
   az adat más alakban — a frontend **az egyiket** használja, ne mindkettőt
   töltse be).
-- **A lista kizárólag az API-ágból épül.** A `futtato.top_trend_struktura`
-  (`futtato.py:49`) csak az `api_trendek`-et rendezi (`volumen` szerint,
-  csökkenő); a MEGJELENÍTETT lista hossza az alábbi holtverseny-szabály szerint
+- **A lista kizárólag az API-ágból épül.** A rendezés EGY közös helyen történik — a
+  `rangsorolt_trendek` helper (ma `futtato.py:31`, `sorted` explicit
+  `(-volumen, eredeti_index)` kulccsal); ezt a `megjelenitendo_trendek` (ma
+  `futtato.py:41`) hívja, a `top_trend_struktura` (ma `futtato.py:59`) pedig AZON
+  keresztül jut a rangsorhoz; a MEGJELENÍTETT lista hossza az alábbi holtverseny-szabály szerint
   áll elő, nem pusztán top-`trend_idosor_max`. Az
   RSS-ág (`rss_trendek`) **csak a `hirek`-et párosítja** kifejezés szerint,
   listaelemet nem ad. Ezért **minden friss-napi elem kategória-képes** (az
@@ -358,10 +360,11 @@ a Task 10 hatóköre (§11.6) — az asztali sticky itt épül, a reszponzív ö
   kell; bemenet-független (pl. ábécé) rendezés NEM. Az API-pozíció megőrzi a
   Google sávon belüli maradék rangsorát, és **bitre azonos a mai viselkedéssel**
   (a `sorted` stabil, az `api_trendek` sorrendje = az API-pozíció). A tie-break
-  EGYETLEN közös helyről (egy helper) menjen: ma két külön `volumen`-rendezés
-  van — `futtato.py:49` (a megjelenített `legnagyobbak`) és `futtato.py:133` (az
-  idősor-ágnak átadott `top_kifejezesek`). Ha a tie-break csak az egyikbe kerül,
-  a két lista szétcsúszhat, és egy megjelenített trend időgörbe nélkül maradhat.
+  EGYETLEN közös helyről megy: a `rangsorolt_trendek` helper (ma `futtato.py:31`)
+  — ebből merít mind a megjelenített lista (`megjelenitendo_trendek`, ma
+  `futtato.py:41`), mind az idősor-ág kifejezéslistája (`top_kifejezesek`, ma
+  `futtato.py:177`). A korábbi kockázat (két külön `volumen`-rendezés, szétcsúszó
+  listák) így **orvosolva** — a prefix-invariánst a közös helper biztosítja.
   **Invariáns (tesztelendő):** az idősor-lista a megjelenített lista első
   `trend_idosor_max` eleme — PREFIX. A közös helper követelménye ezt biztosítja;
   ez az invariáns az, ami ellenőrizhető.
@@ -390,11 +393,29 @@ a Task 10 hatóköre (§11.6) — az asztali sticky itt épül, a reszponzív ö
 - **Többértékű szűrő**: egy trend több kategóriában is megjelenhet. Ha a
   betöltött napon egyetlen elemen sincs kategória, a szűrő ne jelenjen meg
   vagy legyen letiltva.
-- **Görbe:** a v1 7.2 szerint — alapszint mint folytonos vonal, napi csúcs
-  kiemelve; az önnormalizálás itt **helyes tervezés**, mert közös skálán a
-  2000-es volumenű trendek 10 körül lapulnának. Több görbe egy ábrán legitim,
-  **ha a kérdés az, hogy mikor csúcsosodtak** — a „melyik volt nagyobb"
-  olvasatot felirattal vagy kiírt `volumen`-nel kell megelőzni.
+- **Görbe (MÉRT adatalak, 2026-08-08).** A napi `idosor` a `now 1-d` ablak
+  **8 perces** rácsa (`{idopont_utc, ertek}` pontok), 24h span. A `0` értékek
+  **mért nullák, nem hézagok** → `spanGaps`-kérdés NINCS. Az ábrázolás **NEM
+  feltételezhet folytonos alapszintet** (a mért nulla-arány sorozatonként
+  **30–86%, medián 69%** — 2026-08-08); nagy volumenű napon valódi alapszint is
+  előfordulhat, ezért a forma **egyik képet sem** (se folytonos vonal, se fésű)
+  írja elő kötelezően. A `max` **mindig 100** (szóló lekérdezés, önnormalizálás)
+  — **helyes tervezés**, mert közös skálán a 2000-es volumenű trendek 10 körül
+  lapulnának; ára, hogy minden kártya 100-ig skálázódik, ezért a „melyik volt
+  nagyobb" olvasatot a kártyán kiírt `volumen` előzi meg (már a kódban).
+  **Regresszió nincs** (lásd fent), így **a regresszióból fakadó hamis
+  pontosság** veszélye nem áll fenn. Több sorozat egy ábrán legitim, **ha a
+  kérdés az, mikor csúcsosodtak** — de az összeillesztés **KIZÁRÓLAG időbélyeg
+  (`idopont_utc`) szerint**, SOHA index szerint.
+- **A rács nem uniform — se fix pontszám, se közös kezdet (MÉRT 2026-08-07).** A
+  `now 1-d` ablak a KÉRÉS idejéhez horgonyzódik, a hívások szét vannak húzva
+  (`alap_keses_mp`/`szoras_mp` → 15 hívás több percen át), ezért a korábbi
+  kérések még egy korábbi 8-perces slotba esnek: `2026-08-07` — **4 sorozat 181
+  pont** (kezdet `19:52`), **11 sorozat 180 pont** (kezdet `20:00`); a **vég
+  közös** (`2026-08-07T19:52:00Z`). Futásidő-függő, nem determinisztikus (a
+  `2026-07-30` mind 180, a `2026-08-08` mind 181). **TILOS** fix pontszámot vagy
+  közös kezdetet feltételezni; a teszt-fixture ELTÉRŐ hosszú/kezdetű sorozatokat
+  tartalmazzon (0.2/13).
 - **Elemenkénti üres görbe (a D1-kiterjesztés következménye).** A
   holtverseny-kiterjesztéssel bekerülő elemek NINCSENEK az idősor-listában (az
   idősor a top `trend_idosor_max`-ra fut), ezért az `idosor`-uk ÜRES (a
@@ -404,6 +425,20 @@ a Task 10 hatóköre (§11.6) — az asztali sticky itt épül, a reszponzív ö
   kell: az ilyen kártya a `volumen`/kategória/`hirek` alapján megjelenik, de
   görbe helyett elemenkénti „nincs idősor ezen a napon" jelölést kap — ne törje
   meg az elrendezést, és ne keveredjen a lista-szintű üres állapottal.
+- **Blokk-szintű üres görbe — mind-üres nap (MÉRT, 2026-07-27/28).** Ha az
+  idősor-ág BUKIK / 429 / feladás (`AgFeladva` → `trend_idosorok=[]`), a nap
+  MINDEN eleme üres `idosor`-t kap — nem D1-szórtan, hanem **100%**
+  (`2026-07-27` és `2026-07-28` = 15/15). Ekkor a 15+ elemenkénti „nincs
+  idősor…" egy ismételt fal lenne, ami akaratlanul átvenné a §7.5 szerepét.
+  Ezért a felület **blokk-szinten összevon**: egyetlen jelzés a szekció élén, az
+  elemenkénti copy helyett. **DOM-szerződés:** a kártyák MEGTARTJÁK a
+  `data-idosor-allapot="nincs"` attribútumot; csak a LÁTHATÓ elemenkénti szöveg
+  vonódik össze egyetlen szekció-szintű jelzésbe — a smoke az **attribútumból**
+  assertál. Kiváltó: **üres == elemszám**. Köztes arányoknál (pl. 14/15) az
+  elemenkénti kezelés marad (**VÁLLALT**); a 0% / szórt / 100% hármas az
+  archívum **2026-08-09-i állapotának MEGFIGYELÉSE, nem garancia**. KÜLÖNBÖZŐ a
+  §7.5-től: itt VAN trend (volumen/kategória), csak idősor nincs — a §7.5
+  `TREND_URES_SZOVEG` (nulla trend) NEM tüzel.
 - **Hírek:** cím + forrás + link, kép nélkül. Az üres `hirek` tömb a normális
   eset.
 - **Ne feltételezz fix 15 elemet** — a `trend_idosor_max` konfigurálható, és
