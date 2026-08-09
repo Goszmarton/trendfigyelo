@@ -592,16 +592,20 @@ const OSZT_T = {
   magyarazat: "kategoria-magyarazat", szuro: "kategoria-szuro", gomb: "kategoria-gomb",
   gomb_other: "kategoria-gomb--other", gomb_reset_aktiv: "kategoria-gomb--reset-aktiv", lista: "trend-lista", kartya: "trend-kartya",
   kifejezes: "trend-kifejezes", volumen: "trend-volumen", kategoria: "trend-kategoria", ures: "ures",
+  sparkline_doboz: "trend-sparkline-doboz", idosor_ures: "trend-idosor-ures",
 };
 const ATTR_T = {
   aktiv_kategoria: "data-aktiv-kategoria", nap: "data-nap", kifejezes: "data-kifejezes",
   volumen: "data-volumen", kategoriak: "data-kategoriak", kategoria_allapot: "data-kategoria-allapot",
   kategoria: "data-kategoria", count: "data-count",
+  idosor_allapot: "data-idosor-allapot", idosor_rendered: "data-idosor-rendered",
 };
 const OTHER_CIMKE = "Other";       // a Google gyűjtő-KATEGÓRIÁJA (van szűrő-gomb, szürke, utolsó)
 const EGYEB_CIMKE = "egyéb";       // a besorolás HIÁNYA ([]/hiányzó mező) — NINCS szűrő-gomb
 const OSSZES_CIMKE = "Összes";
 const TREND_URES_SZOVEG = "Ma nem érkezett friss felkapott trend erre a napra.";
+const TREND_IDOSOR_URES_ELEM = "nincs idősor ezen a napon";               // elemenkénti (D1-kiterjesztett kártya)
+const TREND_IDOSOR_URES_BLOKK = "Ezen a napon egyetlen felkapott trendhez sincs idősor.";  // blokk-szintű (mind-üres nap, Task 3)
 
 let kategoria_chart = null;        // az eloszlás-chart SAJÁT példánya (NEM a kulcsszó chart_peldanyok/chart_takarit)
 let trend_esemeny_kotve = false;   // a dátumválasztó change-kötése egyszer
@@ -703,7 +707,7 @@ function trend_gomb_epit(kategoria, cimke, count, blokk) {
 }
 
 // egy trendkártya: kifejezes + volumen + kategória-címke (három állapot). NINCS görbe (8a) és hír (L8).
-function trend_kartya_epit(t) {
+function trend_kartya_epit(t, blokk_ures) {
   const k = document.createElement("div");
   k.className = OSZT_T.kartya;
   const kif = t.kifejezes || "";
@@ -738,6 +742,26 @@ function trend_kartya_epit(t) {
     kat.textContent = EGYEB_CIMKE;   // [] és hiányzó egyaránt „egyéb" a felületen
   }
   k.appendChild(kat);
+
+  // 8a: idősor-állapot BINÁRIS (az idosor kulcs mind a napi elemeken jelen van, üresen is → nincs "hianyzik")
+  const idosor = Array.isArray(t.idosor) ? t.idosor : [];
+  const van_idosor = idosor.length > 0;
+  k.setAttribute(ATTR_T.idosor_allapot, van_idosor ? "van" : "nincs");
+  if (van_idosor) {
+    // H2b: fix-magasságú, position:relative WRAPPER (különben a canvas összeesik) — a Chart.js LUSTA (Task 2)
+    const doboz = document.createElement("div");
+    doboz.className = OSZT_T.sparkline_doboz;
+    const canvas = document.createElement("canvas");
+    doboz.appendChild(canvas);
+    k.appendChild(doboz);
+    k._idosor = idosor;   // a lusta Chart-példányosításhoz (Task 2)
+  } else if (!blokk_ures) {
+    // elemenkénti üzenet — CSAK ha NEM blokk-szintű összevonás (Task 3: mind-üres napon a szöveg összevonódik)
+    const u = document.createElement("p");
+    u.className = OSZT_T.idosor_ures;
+    u.textContent = TREND_IDOSOR_URES_ELEM;
+    k.appendChild(u);
+  }
   return k;
 }
 

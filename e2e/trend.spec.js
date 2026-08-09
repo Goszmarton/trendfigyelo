@@ -1,6 +1,6 @@
 const { test, expect } = require("@playwright/test");
 
-// Task 7 trend-blokk smoke-ok (16 db) — MOCKOLT legfrissebb.json + napok/index.json + napok/<nap>.json.
+// Trend-blokk smoke-ok (19 db; Task 7 + 8a) — MOCKOLT legfrissebb.json + napok/index.json + napok/<nap>.json.
 // A DOM-szerződést az OSZT_T/ATTR_T konstansok rögzítik. A chart-sávok canvas-belsők → a tesztelhető
 // eloszlást a szűrő-gombok data-count-jai + a caption hordozzák (a T8/L9 korlátja). A T16 a JSON-tömb
 // szerializálást védi egy pipe-tartalmú kategórianévvel (a pipe-változat elhasítaná).
@@ -10,10 +10,22 @@ const { test, expect } = require("@playwright/test");
 const T = "#trend-blokk";
 
 // egy trend-elem; temak === undefined → a mező HIÁNYZIK (régi archív nap), [] → nincs besorolás, [...] → van
-function trend(kifejezes, volumen, temak) {
-  const e = { kifejezes, volumen, novekedes_pct: "100", idosor: [], hirek: [] };
+// idosor: opcionális pont-tömb ({idopont_utc, ertek}); alap [] (üres — D1-kiterjesztett / mind-üres eset).
+function trend(kifejezes, volumen, temak, idosor) {
+  const e = { kifejezes, volumen, novekedes_pct: "100", idosor: idosor || [], hirek: [] };
   if (temak !== undefined) { e.temak = temak; e.topics = temak.map(function (_, i) { return i + 1; }); }
   return e;
+}
+
+// SZÁNDÉKOSAN nem-uniform sorozat: n pont, adott kezdettel, 8 perces ráccsal, szórt értékekkel.
+// A fixture-ben két eltérő hosszú/kezdetű sorozat bizonyítja, hogy a kód nem feltételez fix pontszámot/közös kezdetet.
+function idosor_sorozat(n, kezdet_iso) {
+  const t0 = new Date(kezdet_iso).getTime();
+  const pontok = [];
+  for (let i = 0; i < n; i++) {
+    pontok.push({ idopont_utc: new Date(t0 + i * 8 * 60000).toISOString(), ertek: (i % 3 === 0) ? 100 : 0 });
+  }
+  return pontok;
 }
 
 // kategóriás nap: 16 elem, egy MULTI-kategóriás (huth gergely) → 17 besorolás 16 trendre.
@@ -294,4 +306,31 @@ test("17. az »Összes« reset-gomb: szűrt állapotban reset-osztály, szűretl
   await expect(ossz).toHaveClass(/kategoria-gomb--reset-aktiv/);       // szűrve: RAJTA VAN (az egy forrásból: data-aktiv-kategoria)
   await politics.click();
   await expect(ossz).not.toHaveClass(/kategoria-gomb--reset-aktiv/);   // kikapcsolva: megint NINCS
+});
+
+// ── T18 — idősoros kártya: canvas + data-idosor-allapot="van" (nem-uniform sorozatok) ──
+test("18. idősoros kártya → canvas + data-idosor-allapot=van (nem-uniform)", async ({ page }) => {
+  const VAN = [
+    trend("alfa", "50000", ["Other"], idosor_sorozat(4, "2026-08-06T19:52:00+00:00")),
+    trend("beta", "50000", ["Other"], idosor_sorozat(3, "2026-08-06T20:00:00+00:00")),
+  ];
+  await mock(page, { legfrissebb: { top_trendek: VAN } });
+  await page.goto("/");
+  const kartyak = page.locator(`${T} .trend-kartya[data-idosor-allapot="van"]`);
+  await expect(kartyak).toHaveCount(2);
+  await expect(kartyak.first().locator(".trend-sparkline-doboz canvas")).toHaveCount(1);
+});
+
+// ── T19 — D1-kiterjesztett (üres idosor) kártya: elemenkénti üzenet + data-idosor-allapot="nincs", NINCS canvas ──
+test("19. üres idosor → 'nincs idősor ezen a napon' + data-idosor-allapot=nincs, nincs canvas", async ({ page }) => {
+  const VEGYES = [
+    trend("van-gorbe", "50000", ["Other"], idosor_sorozat(4, "2026-08-06T19:52:00+00:00")),
+    trend("nincs-gorbe", "2000", ["Other"]),   // D1-kiterjesztett: idosor []
+  ];
+  await mock(page, { legfrissebb: { top_trendek: VEGYES } });
+  await page.goto("/");
+  const nincs = page.locator(`${T} .trend-kartya[data-idosor-allapot="nincs"]`);
+  await expect(nincs).toHaveCount(1);
+  await expect(nincs.locator(".trend-idosor-ures")).toHaveText("nincs idősor ezen a napon");
+  await expect(nincs.locator("canvas")).toHaveCount(0);
 });
