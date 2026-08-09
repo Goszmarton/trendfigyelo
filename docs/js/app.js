@@ -608,6 +608,7 @@ const TREND_IDOSOR_URES_ELEM = "nincs idősor ezen a napon";               // el
 const TREND_IDOSOR_URES_BLOKK = "Ezen a napon egyetlen felkapott trendhez sincs idősor.";  // blokk-szintű (mind-üres nap, Task 3)
 
 let kategoria_chart = null;        // az eloszlás-chart SAJÁT példánya (NEM a kulcsszó chart_peldanyok/chart_takarit)
+let trend_chart_peldanyok = {};    // 8a: kifejezes -> sparkline Chart — KÜLÖN a kulcsszó chart_peldanyok-tól
 let trend_esemeny_kotve = false;   // a dátumválasztó change-kötése egyszer
 
 // a rendezett nap-lista + a legfrissebb nap (a napok/index.json-ból)
@@ -659,8 +660,36 @@ function trend_szin(kategoria, tompitott) {
   return tompitott ? "#aec4ef" : "#3366cc";
 }
 
+// egy trend-sparkline AZONNALI Chart-példányosítása (mint a kategoria_chart ma — NINCS lusta observer).
+// Önnormalizált y (0–100), mért nullák (spanGaps:false), NEM feltételez folytonos alapszintet; tengely/legend/
+// tooltip nélkül (sparkline; a tooltip a 8b hatóköre). A data-idosor-rendered idempotencia-őr.
+function trend_sparkline_letrehoz(kartya) {
+  if (kartya.getAttribute(ATTR_T.idosor_rendered) === "true") return;
+  const idosor = kartya._idosor;
+  const canvas = kartya.querySelector("canvas");
+  if (!idosor || !canvas || typeof Chart === "undefined") return;
+  trend_chart_peldanyok[kartya.getAttribute(ATTR_T.kifejezes)] = new Chart(canvas, {
+    type: "line",
+    data: {
+      labels: idosor.map(function (p) { return p.idopont_utc; }),   // időbélyeg-alapú (SOHA nem index-alapú)
+      datasets: [{ data: idosor.map(function (p) { return p.ertek; }), spanGaps: false,
+                   borderColor: "#3366cc", borderWidth: 1, pointRadius: 0 }],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      scales: { x: { display: false }, y: { display: false, min: 0, max: 100 } },
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+    },
+  });
+  kartya.setAttribute(ATTR_T.idosor_rendered, "true");
+}
+
 function trend_chart_takarit() {
   if (kategoria_chart) { kategoria_chart.destroy(); kategoria_chart = null; }
+  Object.keys(trend_chart_peldanyok).forEach(function (k) {   // 8a: a sparkline-példányok is destroy (nem halmozódhatnak)
+    if (trend_chart_peldanyok[k]) trend_chart_peldanyok[k].destroy();
+    delete trend_chart_peldanyok[k];
+  });
 }
 
 function trend_chart_epit(canvas, eloszlas, blokk) {
@@ -862,6 +891,11 @@ function trend_blokk_render() {
   lista.className = OSZT_T.lista;
   trendek.forEach(function (t) { lista.appendChild(trend_kartya_epit(t)); });   // NINCS fix hossz-feltevés
   blokk.appendChild(lista);
+
+  // 8a: a "van" kártyák sparkline-jai AZONNAL rajzolódnak (mint a kategoria_chart ma) — a lista már a DOM-ban van
+  Array.prototype.slice.call(
+    lista.querySelectorAll("." + OSZT_T.kartya + "[" + ATTR_T.idosor_allapot + "='van']"))
+    .forEach(trend_sparkline_letrehoz);
 
   trend_szinkron(blokk);   // a kezdő állapot (nincs szűrés) szinkronja
 }

@@ -1,6 +1,6 @@
 const { test, expect } = require("@playwright/test");
 
-// Trend-blokk smoke-ok (19 db; Task 7 + 8a) — MOCKOLT legfrissebb.json + napok/index.json + napok/<nap>.json.
+// Trend-blokk smoke-ok (20 db; Task 7 + 8a) — MOCKOLT legfrissebb.json + napok/index.json + napok/<nap>.json.
 // A DOM-szerződést az OSZT_T/ATTR_T konstansok rögzítik. A chart-sávok canvas-belsők → a tesztelhető
 // eloszlást a szűrő-gombok data-count-jai + a caption hordozzák (a T8/L9 korlátja). A T16 a JSON-tömb
 // szerializálást védi egy pipe-tartalmú kategórianévvel (a pipe-változat elhasítaná).
@@ -333,4 +333,33 @@ test("19. üres idosor → 'nincs idősor ezen a napon' + data-idosor-allapot=ni
   await expect(nincs).toHaveCount(1);
   await expect(nincs.locator(".trend-idosor-ures")).toHaveText("nincs idősor ezen a napon");
   await expect(nincs.locator("canvas")).toHaveCount(0);
+});
+
+// ── T20 — KÜLÖN életciklus: kulcsszó-intervallum váltás NEM destroy-olja a trend-sparkline-t (L9-őr) ──
+test("20. kulcsszó-intervallum váltás után a trend-sparkline Chart él (KÜLÖN életciklus)", async ({ page }) => {
+  // LOKÁLIS route CSAK ide (a közös mock()-ot a 16 meglévő smoke használja — ott NEM bővítünk). Két intervallum
+  // ervenyes → van kattintható, a default-kiválasztottól (leghosszabb=1_ho) KÜLÖNBÖZŐ gomb (1_het) is.
+  await page.route(/kulcsszo_regresszio\.json/, function (r) {
+    r.fulfill({ contentType: "application/json", body: JSON.stringify({
+      kulcsszavak: { "próba": { aktiv: true, domen: "g", tipus: "szintmero", intervallumok: {
+        "1_het": { ervenyes: true, meredekseg_nap: -1.0, se_meredekseg: 0.5, irany: "csokken" },
+        "2_het": { ervenyes: false, ok: "nincs_lancolas" },
+        "1_ho":  { ervenyes: true, meredekseg_nap: -1.0, se_meredekseg: 0.5, irany: "csokken" },
+        "3_ho":  { ervenyes: false, ok: "nincs_lancolas" },
+        "1_ev":  { ervenyes: false, ok: "nincs_lancolas" },
+      } } },
+    }) });
+  });
+  await mock(page, {
+    legfrissebb: { top_trendek: [ trend("alfa", "50000", ["Other"], idosor_sorozat(4, "2026-08-06T20:52:00+00:00")) ] },
+  });
+  await page.goto("/");
+  const canvas = page.locator(`${T} .trend-sparkline-doboz canvas`).first();
+  await expect(canvas).toHaveCount(1);
+  // AZONNALI rajzolás: a Chart már a renderkor létezik (nincs scrollIntoView / első poll)
+  expect(await canvas.evaluate((c) => !!Chart.getChart(c))).toBe(true);
+  // kulcsszó-intervallum váltás (1_het, ≠ a default-kiválasztott 1_ho) → globális chart_takarit() fut
+  await page.locator("#intervallum-vezerlo button:not([disabled])").first().click();
+  // a trend-sparkline Chart TOVÁBBRA is él (a KÜLÖN életciklus nem engedte destroy-olni)
+  expect(await canvas.evaluate((c) => !!Chart.getChart(c))).toBe(true);
 });
