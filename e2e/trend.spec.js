@@ -1,6 +1,6 @@
 const { test, expect } = require("@playwright/test");
 
-// Trend-blokk smoke-ok (21 db; Task 7 + 8a) — MOCKOLT legfrissebb.json + napok/index.json + napok/<nap>.json.
+// Trend-blokk smoke-ok (22 db; Task 7 + 8a) — MOCKOLT legfrissebb.json + napok/index.json + napok/<nap>.json.
 // A DOM-szerződést az OSZT_T/ATTR_T konstansok rögzítik. A chart-sávok canvas-belsők → a tesztelhető
 // eloszlást a szűrő-gombok data-count-jai + a caption hordozzák (a T8/L9 korlátja). A T16 a JSON-tömb
 // szerializálást védi egy pipe-tartalmú kategórianévvel (a pipe-változat elhasítaná).
@@ -376,4 +376,25 @@ test("21. mind-üres nap → egyetlen blokk-jelzés, N kártya data-idosor-allap
   await expect(page.locator(`${T} .trend-idosor-ures-blokk`)).toHaveText("Ezen a napon egyetlen felkapott trendhez sincs idősor.");
   await expect(page.locator(`${T} .trend-kartya[data-idosor-allapot="nincs"]`)).toHaveCount(3);
   await expect(page.locator(`${T} .trend-idosor-ures`)).toHaveCount(0);   // az elemenkénti szöveg ÖSSZEVONÓDOTT
+});
+
+// ── T22 — archív nap (temak nélkül, idosor-ral): sparkline MEGVAN, de kategória-chart + szűrő NINCS ──
+test("22. archív nap → sparkline megvan, kategória-chart+szűrő nincs (diszkriminátor)", async ({ page }) => {
+  const REGI_IDOS = [
+    trend("autóversenyző", "10000", undefined, idosor_sorozat(4, "2026-07-29T20:52:00+00:00")),
+    trend("valami", "5000", undefined, idosor_sorozat(3, "2026-07-29T21:00:00+00:00")),
+  ];
+  await mock(page, {
+    legfrissebb: { top_trendek: [] },   // a legfrissebb nap üres, hogy a dátumválasztó a régi napra váltson
+    index: { napok: ["2026-07-30", "2026-08-08"] },
+    napok: { "2026-07-30": REGI_IDOS },
+  });
+  await page.goto("/");
+  await page.locator("#datum-valaszto select").selectOption("2026-07-30");
+  // sparkline MEGVAN
+  await expect(page.locator(`${T} .trend-kartya[data-idosor-allapot="van"]`)).toHaveCount(2);
+  await expect(page.locator(`${T} .trend-sparkline-doboz canvas`)).toHaveCount(2);
+  // kategória-chart + szűrő NINCS (nincs temak → nincs eloszlás → nincs összefoglaló)
+  await expect(page.locator(`${T} .kategoria-chart-doboz`)).toHaveCount(0);
+  await expect(page.locator(`${T} .kategoria-szuro`)).toHaveCount(0);
 });
