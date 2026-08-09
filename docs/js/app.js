@@ -592,7 +592,7 @@ const OSZT_T = {
   magyarazat: "kategoria-magyarazat", szuro: "kategoria-szuro", gomb: "kategoria-gomb",
   gomb_other: "kategoria-gomb--other", gomb_reset_aktiv: "kategoria-gomb--reset-aktiv", lista: "trend-lista", kartya: "trend-kartya",
   kifejezes: "trend-kifejezes", volumen: "trend-volumen", kategoria: "trend-kategoria", ures: "ures",
-  sparkline_doboz: "trend-sparkline-doboz", idosor_ures: "trend-idosor-ures",
+  sparkline_doboz: "trend-sparkline-doboz", idosor_ures: "trend-idosor-ures", idosor_ures_blokk: "trend-idosor-ures-blokk",
 };
 const ATTR_T = {
   aktiv_kategoria: "data-aktiv-kategoria", nap: "data-nap", kifejezes: "data-kifejezes",
@@ -866,7 +866,7 @@ function trend_blokk_render() {
   if (nap) blokk.setAttribute(ATTR_T.nap, nap);
 
   trend_chart_takarit();
-  blokk.querySelectorAll("." + OSZT_T.osszefoglalo + ", ." + OSZT_T.lista + ", ." + OSZT_T.ures)
+  blokk.querySelectorAll("." + OSZT_T.osszefoglalo + ", ." + OSZT_T.lista + ", ." + OSZT_T.ures + ", ." + OSZT_T.idosor_ures_blokk)
     .forEach(function (e) { e.remove(); });
 
   const trendek = trend_adat_nap(nap);
@@ -887,9 +887,19 @@ function trend_blokk_render() {
   const eloszlas = kategoria_eloszlas(trendek);
   if (eloszlas.length > 0) blokk.appendChild(trend_osszefoglalo_epit(trendek, eloszlas, blokk));
 
+  // 8a Tétel-4: ha a nap MINDEN eleme üres idosor-ú (idosor-ág bukása), az elemenkénti üzenet EGY blokk-jelzéssé
+  // vonódik össze (üres == elemszám; köztes arányoknál elemenkénti marad). A kártyák data-idosor-allapot="nincs"-e MARAD.
+  const mind_ures = trendek.every(function (t) { return !Array.isArray(t.idosor) || t.idosor.length === 0; });
+  if (mind_ures) {
+    const bu = document.createElement("p");
+    bu.className = OSZT_T.idosor_ures_blokk;
+    bu.textContent = TREND_IDOSOR_URES_BLOKK;
+    blokk.appendChild(bu);   // a szekció élén, a lista előtt
+  }
+
   const lista = document.createElement("div");
   lista.className = OSZT_T.lista;
-  trendek.forEach(function (t) { lista.appendChild(trend_kartya_epit(t)); });   // NINCS fix hossz-feltevés
+  trendek.forEach(function (t) { lista.appendChild(trend_kartya_epit(t, mind_ures)); });   // NINCS fix hossz-feltevés
   blokk.appendChild(lista);
 
   // 8a: a "van" kártyák sparkline-jai AZONNAL rajzolódnak (mint a kategoria_chart ma) — a lista már a DOM-ban van

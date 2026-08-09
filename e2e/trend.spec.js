@@ -1,6 +1,6 @@
 const { test, expect } = require("@playwright/test");
 
-// Trend-blokk smoke-ok (20 db; Task 7 + 8a) — MOCKOLT legfrissebb.json + napok/index.json + napok/<nap>.json.
+// Trend-blokk smoke-ok (21 db; Task 7 + 8a) — MOCKOLT legfrissebb.json + napok/index.json + napok/<nap>.json.
 // A DOM-szerződést az OSZT_T/ATTR_T konstansok rögzítik. A chart-sávok canvas-belsők → a tesztelhető
 // eloszlást a szűrő-gombok data-count-jai + a caption hordozzák (a T8/L9 korlátja). A T16 a JSON-tömb
 // szerializálást védi egy pipe-tartalmú kategórianévvel (a pipe-változat elhasítaná).
@@ -362,4 +362,18 @@ test("20. kulcsszó-intervallum váltás után a trend-sparkline Chart él (KÜL
   await page.locator("#intervallum-vezerlo button:not([disabled])").first().click();
   // a trend-sparkline Chart TOVÁBBRA is él (a KÜLÖN életciklus nem engedte destroy-olni)
   expect(await canvas.evaluate((c) => !!Chart.getChart(c))).toBe(true);
+});
+
+// ── T21 — mind-üres nap (idosor-ág bukása): EGY blokk-szintű jelzés, NINCS elemenkénti fal ──
+test("21. mind-üres nap → egyetlen blokk-jelzés, N kártya data-idosor-allapot=nincs, nincs elemenkénti szöveg", async ({ page }) => {
+  const MIND_URES = [
+    trend("egy", "50000", ["Other"]),    // mind idosor: []
+    trend("ketto", "10000", ["Politics"]),
+    trend("harom", "5000", ["Other"]),
+  ];
+  await mock(page, { legfrissebb: { top_trendek: MIND_URES } });
+  await page.goto("/");
+  await expect(page.locator(`${T} .trend-idosor-ures-blokk`)).toHaveText("Ezen a napon egyetlen felkapott trendhez sincs idősor.");
+  await expect(page.locator(`${T} .trend-kartya[data-idosor-allapot="nincs"]`)).toHaveCount(3);
+  await expect(page.locator(`${T} .trend-idosor-ures`)).toHaveCount(0);   // az elemenkénti szöveg ÖSSZEVONÓDOTT
 });
