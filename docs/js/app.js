@@ -593,6 +593,7 @@ const OSZT_T = {
   gomb_other: "kategoria-gomb--other", gomb_reset_aktiv: "kategoria-gomb--reset-aktiv", lista: "trend-lista", kartya: "trend-kartya",
   kifejezes: "trend-kifejezes", volumen: "trend-volumen", kategoria: "trend-kategoria", ures: "ures",
   sparkline_doboz: "trend-sparkline-doboz", idosor_ures: "trend-idosor-ures", idosor_ures_blokk: "trend-idosor-ures-blokk",
+  normalizalas_magyarazat: "trend-normalizalas-magyarazat",   // 8b: a görbe-magasság félreolvasása ellen (LELET 2)
 };
 const ATTR_T = {
   aktiv_kategoria: "data-aktiv-kategoria", nap: "data-nap", kifejezes: "data-kifejezes",
@@ -606,6 +607,10 @@ const OSSZES_CIMKE = "Összes";
 const TREND_URES_SZOVEG = "Ma nem érkezett friss felkapott trend erre a napra.";
 const TREND_IDOSOR_URES_ELEM = "nincs idősor ezen a napon";               // elemenkénti (D1-kiterjesztett kártya)
 const TREND_IDOSOR_URES_BLOKK = "Ezen a napon egyetlen felkapott trendhez sincs idősor.";  // blokk-szintű (mind-üres nap, Task 3)
+// 8b (LELET 2): KÉTFELŰ — mi NEM olvasható ki (magasság-összevetés, §1.4 önnormalizálás) + mi IGEN (alak + időzítés, §7.3).
+const TREND_NORMALIZALAS_SZOVEG = "ⓘ A görbék magassága nem összemérhető: mindegyik a saját aznapi csúcsához (100) "
+  + "van skálázva, ezért két hasonló magasságú görbe eltérő keresettséget takarhat — azt a „volumen” mutatja. "
+  + "Amit a görbe megbízhatóan mutat: egy trend saját napi lefutásának alakját és a csúcs időzítését.";
 
 let kategoria_chart = null;        // az eloszlás-chart SAJÁT példánya (NEM a kulcsszó chart_peldanyok/chart_takarit)
 let trend_chart_peldanyok = {};    // 8a: kifejezes -> sparkline Chart — KÜLÖN a kulcsszó chart_peldanyok-tól
@@ -661,8 +666,13 @@ function trend_szin(kategoria, tompitott) {
 }
 
 // egy trend-sparkline AZONNALI Chart-példányosítása (mint a kategoria_chart ma — NINCS lusta observer).
-// Önnormalizált y (0–100), mért nullák (spanGaps:false), NEM feltételez folytonos alapszintet; tengely/legend/
-// tooltip nélkül (sparkline; a tooltip a 8b hatóköre). A data-idosor-rendered idempotencia-őr.
+// Önnormalizált y (0–100), mért nullák (spanGaps:false), NEM feltételez folytonos alapszintet; tengely/legend
+// nélkül (sparkline). A data-idosor-rendered idempotencia-őr.
+// 8b: HOVER-TOOLTIP bekapcsolva. A J3 kulcsszó-formátum NEM vehető át (az órás, formázott label; itt 8 PERCES
+// rács, nyers ISO label) → saját callback. interaction index/nem-intersect → OSZLOPOS hover, a célzás x-alapú,
+// a doboz-magasságtól FÜGGETLEN. y max=110 (~9% FEJTÉR): a 100-értékű csúcs különben a felső peremen VÁGNA
+// (LELET 3 — a magasság önmagában nem oldaná; az adat marad 0–100, csak a tengely-skála kap fejteret).
+// A tooltip canvas-belső → DOM-ból NEM assertálható (L9/J3), helyessége kézi szemle.
 function trend_sparkline_letrehoz(kartya) {
   if (kartya.getAttribute(ATTR_T.idosor_rendered) === "true") return;
   const idosor = kartya._idosor;
@@ -673,12 +683,27 @@ function trend_sparkline_letrehoz(kartya) {
     data: {
       labels: idosor.map(function (p) { return p.idopont_utc; }),   // időbélyeg-alapú (SOHA nem index-alapú)
       datasets: [{ data: idosor.map(function (p) { return p.ertek; }), spanGaps: false,
-                   borderColor: "#3366cc", borderWidth: 1, pointRadius: 0 }],
+                   borderColor: "#3366cc", borderWidth: 1, pointRadius: 0, pointHoverRadius: 3 }],
     },
     options: {
       responsive: true, maintainAspectRatio: false, animation: false,
-      scales: { x: { display: false }, y: { display: false, min: 0, max: 100 } },
-      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      interaction: { mode: "index", intersect: false },   // oszlopos hover → magasság-független célzás
+      scales: { x: { display: false }, y: { display: false, min: 0, max: 110 } },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          enabled: true,
+          callbacks: {
+            // cím: a nyers ISO-ból UTC „ÉÉÉÉ. HH. NN. óó:pp” (8 perces slot) — konzisztens a kulcsszó-oldallal (UTC)
+            title: function (elemek) {
+              const iso = (elemek[0] && elemek[0].label) || "";
+              return iso.length >= 16 ? datum_formaz(iso.slice(0, 10)) + " " + iso.slice(11, 16) : iso;
+            },
+            // a „/ 100” finoman jelzi az önnormalizálást (a részletes magyarázat a blokk-szintű feliraté)
+            label: function (elem) { return "érték: " + elem.parsed.y + " / 100"; },
+          },
+        },
+      },
     },
   });
   kartya.setAttribute(ATTR_T.idosor_rendered, "true");
@@ -866,7 +891,8 @@ function trend_blokk_render() {
   if (nap) blokk.setAttribute(ATTR_T.nap, nap);
 
   trend_chart_takarit();
-  blokk.querySelectorAll("." + OSZT_T.osszefoglalo + ", ." + OSZT_T.lista + ", ." + OSZT_T.ures + ", ." + OSZT_T.idosor_ures_blokk)
+  blokk.querySelectorAll("." + OSZT_T.osszefoglalo + ", ." + OSZT_T.lista + ", ." + OSZT_T.ures
+    + ", ." + OSZT_T.idosor_ures_blokk + ", ." + OSZT_T.normalizalas_magyarazat)
     .forEach(function (e) { e.remove(); });
 
   const trendek = trend_adat_nap(nap);
@@ -895,6 +921,14 @@ function trend_blokk_render() {
     bu.className = OSZT_T.idosor_ures_blokk;
     bu.textContent = TREND_IDOSOR_URES_BLOKK;
     blokk.appendChild(bu);   // a szekció élén, a lista előtt
+  } else {
+    // 8b (LELET 2): normalizálás-magyarázat a lista FÖLÉ — CSAK ha van görbe (!mind_ures). A feltétel
+    // SZÁNDÉKOSAN a mind_ures-tükre, NEM a kategória (eloszlas>0): archív napon van görbe, de nincs kategória
+    // → a magyarázat AKKOR IS kell; mind-üres napon nincs mit magyarázni. Az összefoglaló UTÁN, a lista ELŐTT.
+    const nm = document.createElement("p");
+    nm.className = OSZT_T.normalizalas_magyarazat;
+    nm.textContent = TREND_NORMALIZALAS_SZOVEG;
+    blokk.appendChild(nm);
   }
 
   const lista = document.createElement("div");

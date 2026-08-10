@@ -398,3 +398,61 @@ test("22. archív nap → sparkline megvan, kategória-chart+szűrő nincs (disz
   await expect(page.locator(`${T} .kategoria-chart-doboz`)).toHaveCount(0);
   await expect(page.locator(`${T} .kategoria-szuro`)).toHaveCount(0);
 });
+
+// ── T23 — 8b: van-görbe napon a normalizálás-magyarázat JELEN + KÉTFELŰ szöveg (volumen ÉS időzítés) ──
+// A tooltip canvas-belső (L9/J3) → NEM assertálható; ezért a 8b DOM-szerződése a blokk-szintű magyarázat.
+test("23. van-görbe napon a normalizálás-magyarázat jelen + kétfelű (volumen + időzítés)", async ({ page }) => {
+  const VAN_KAT = [
+    trend("alfa", "50000", ["Other"], idosor_sorozat(4, "2026-08-06T19:52:00+00:00")),
+    trend("beta", "10000", ["Politics"], idosor_sorozat(3, "2026-08-06T20:00:00+00:00")),
+  ];
+  await mock(page, { legfrissebb: { top_trendek: VAN_KAT } });
+  await page.goto("/");
+  const nm = page.locator(`${T} .trend-normalizalas-magyarazat`);
+  await expect(nm).toHaveCount(1);
+  await expect(nm).toContainText("volumen");    // mi NEM olvasható ki → a keresettséget a volumen mutatja
+  await expect(nm).toContainText("időzítés");   // mi IGEN → a görbe alakja + a csúcs időzítése
+});
+
+// ── T24 — 8b: mind-üres napon NINCS normalizálás-magyarázat (diszkriminátor a blokk-üres jelzés mellett) ──
+test("24. mind-üres nap → nincs normalizálás-magyarázat (van blokk-üres jelzés, de nincs görbe = nincs mit magyarázni)", async ({ page }) => {
+  const MIND_URES = [
+    trend("egy", "50000", ["Other"]),      // mind idosor: []
+    trend("ketto", "5000", ["Politics"]),
+  ];
+  await mock(page, { legfrissebb: { top_trendek: MIND_URES } });
+  await page.goto("/");
+  await expect(page.locator(`${T} .trend-idosor-ures-blokk`)).toHaveCount(1);        // a blokk-jelzés VAN
+  await expect(page.locator(`${T} .trend-normalizalas-magyarazat`)).toHaveCount(0);  // a magyarázat NINCS
+});
+
+// ── T25 — 8b: DOM-sorrend — a magyarázat a LISTA ELŐTT (Q1: „előbb érkezzen"); a kategória-magyarázattól KÜLÖN elem ──
+test("25. a normalizálás-magyarázat a lista ELŐTT áll, és külön elem a kategória-magyarázattól", async ({ page }) => {
+  const VAN_KAT = [ trend("alfa", "50000", ["Other"], idosor_sorozat(4, "2026-08-06T19:52:00+00:00")) ];
+  await mock(page, { legfrissebb: { top_trendek: VAN_KAT } });
+  await page.goto("/");
+  await expect(page.locator(`${T} .kategoria-magyarazat`)).toHaveCount(1);            // külön elem (kategóriás napon)
+  await expect(page.locator(`${T} .trend-normalizalas-magyarazat`)).toHaveCount(1);
+  const rend = await page.evaluate(function () {
+    const kids = Array.prototype.slice.call(document.getElementById("trend-blokk").children);
+    const idx = function (cls) { return kids.findIndex(function (e) { return e.classList.contains(cls); }); };
+    return { nm: idx("trend-normalizalas-magyarazat"), lista: idx("trend-lista") };
+  });
+  expect(rend.nm).toBeGreaterThanOrEqual(0);
+  expect(rend.lista).toBeGreaterThan(rend.nm);   // a magyarázat DOM-sorrendben a lista ELŐTT
+});
+
+// ── T26 — 8b: archív nap (görbe VAN, kategória NINCS) → magyarázat JELEN, összefoglaló NINCS ──
+// A feltétel-szétválasztás igazolása: a magyarázat a !mind_ures-ből él (van görbe), NEM a kategóriából.
+test("26. archív nap: görbe van/kategória nincs → normalizálás-magyarázat jelen, összefoglaló nincs", async ({ page }) => {
+  const REGI_IDOS = [ trend("autóversenyző", "10000", undefined, idosor_sorozat(4, "2026-07-29T20:52:00+00:00")) ];
+  await mock(page, {
+    legfrissebb: { top_trendek: [] },   // a friss nap üres → a dátumválasztó a régi napra vált
+    index: { napok: ["2026-07-30", "2026-08-08"] },
+    napok: { "2026-07-30": REGI_IDOS },
+  });
+  await page.goto("/");
+  await page.locator("#datum-valaszto select").selectOption("2026-07-30");
+  await expect(page.locator(`${T} .trend-normalizalas-magyarazat`)).toHaveCount(1);   // van görbe → magyarázat kell
+  await expect(page.locator(`${T} .trend-osszefoglalo`)).toHaveCount(0);              // nincs kategória → nincs összefoglaló
+});
