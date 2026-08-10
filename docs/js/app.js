@@ -72,6 +72,7 @@ const OSZT = {
   kartya: "kulcsszo-chart", cimke: "kulcsszo-cimke", chart_doboz: "chart-doboz", csoport: "domen-csoport", fejlec: "domen-fejlec",
   merteszamok: "merteszamok", tengely_felirat: "tengely-felirat", ures: "ures",
   csupa_nulla: "csupa-nulla", elettartam: "elettartam", frissesseg: "frissesseg",
+  intervallum_tetel: "intervallum-tetel",   // per-intervallum wrapper: a gomb + (ha van) a saját .ok EGY sorban
 };
 const ATTR = {
   aktiv: "data-aktiv-intervallum", kulcsszo: "data-kulcsszo", drawable: "data-drawable",
@@ -188,21 +189,27 @@ function intervallum_vezerlo_render() {
     blokk.setAttribute(ATTR.aktiv, kivalasztott.kulcs);
   }
   allapotok.forEach(function (a) {
+    // per-intervallum wrapper: a gomb és a saját ok-szövege EGY sorban maradjon, az intervallumok EGYMÁS ALATT
+    // (a CSS a konténert flex-column-ra, a tételt flex-row-ra teszi). A meglévő szelektorok LESZÁRMAZOTTAK
+    // (#intervallum-vezerlo button / .ok / .ures) → a wrapper nem töri őket.
+    const tetel = document.createElement("div");
+    tetel.className = OSZT.intervallum_tetel;
     const gomb = document.createElement("button");
     gomb.setAttribute(ATTR.intervallum, a.kulcs);
     gomb.textContent = a.cimke;
     if (a.ervenyes) {
       gomb.setAttribute("aria-pressed", "false");        // a tényleges értéket az aria_szinkron állítja be
       gomb.addEventListener("click", function () { aktiv_intervallum_valt(a.kulcs); });
-      el.appendChild(gomb);
+      tetel.appendChild(gomb);   // ÉRVÉNYES: CSAK a gomb — SZÁNDÉKOSAN NINCS üres .ok span (a .ok-szám szemantikája marad)
     } else {
       gomb.disabled = true;
-      el.appendChild(gomb);
+      tetel.appendChild(gomb);
       const ok = document.createElement("span"); // LÁTHATÓ magyar ok a gomb mellé (nem csak title)
       ok.className = "ok";
       ok.textContent = OK_MAGYAR[a.ok] || a.ok;
-      el.appendChild(ok);
+      tetel.appendChild(ok);
     }
+    el.appendChild(tetel);
   });
   aria_szinkron();
 }
