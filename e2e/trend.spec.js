@@ -1,6 +1,6 @@
 const { test, expect } = require("@playwright/test");
 
-// Trend-blokk smoke-ok (22 db; Task 7 + 8a) — MOCKOLT legfrissebb.json + napok/index.json + napok/<nap>.json.
+// Trend-blokk smoke-ok (27 db; Task 7 + 8a + 8b + A3-cím) — MOCKOLT legfrissebb.json + napok/index.json + napok/<nap>.json.
 // A DOM-szerződést az OSZT_T/ATTR_T konstansok rögzítik. A chart-sávok canvas-belsők → a tesztelhető
 // eloszlást a szűrő-gombok data-count-jai + a caption hordozzák (a T8/L9 korlátja). A T16 a JSON-tömb
 // szerializálást védi egy pipe-tartalmú kategórianévvel (a pipe-változat elhasítaná).
@@ -455,4 +455,11 @@ test("26. archív nap: görbe van/kategória nincs → normalizálás-magyaráza
   await page.locator("#datum-valaszto select").selectOption("2026-07-30");
   await expect(page.locator(`${T} .trend-normalizalas-magyarazat`)).toHaveCount(1);   // van görbe → magyarázat kell
   await expect(page.locator(`${T} .trend-osszefoglalo`)).toHaveCount(0);              // nincs kategória → nincs összefoglaló
+});
+
+// ── T27 — A3: a látható trend-cím »Ma felkapott keresések« (megkülönböztetés a »Kulcsszavak«-tól; DOM-szerződés-őr) ──
+test("27. a trend-blokk h2 szövege »Ma felkapott keresések« (nem »Napi legfrissebb trendek«)", async ({ page }) => {
+  await mock(page, { legfrissebb: { top_trendek: MAI16 } });
+  await page.goto("/");
+  await expect(page.locator(`${T} h2`)).toHaveText("Ma felkapott keresések");
 });
