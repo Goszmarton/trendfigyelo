@@ -60,6 +60,20 @@ test("(b) minden intervallum ervenyes:false → 5 LETILTOTT gomb ok-szöveggel +
   await expect(page.locator("#intervallum-vezerlo .ok")).toHaveCount(5);                    // mindegyik mellett ok-szöveg
 });
 
+test("(b2) a letiltott intervallum-gomb OLVASHATÓ marad (a11y: jelentést hordoz — »ez a táv nem elérhető«)", async ({ page }) => {
+  // Ugyanaz a fixture, mint (b): mind az 5 intervallum ervenyes:false → letiltott gombok.
+  // A letiltott vezérlő WCAG 1.4.3 alól KIVÉTEL (nem szabálysértés), DE jelentést hordoz → olvashatónak kell lennie.
+  // Ez az őr a #999 (2,85:1) → #6b6b6b (~5:1) váltást rögzíti. Diszkriminátor: #999-re visszaállítva ez a teszt bukik.
+  await mock_regresszio(page, {
+    "1_het": { ervenyes: false, ok: "nincs_adat" }, "2_het": NL, "1_ho": NL, "3_ho": NL, "1_ev": NL,
+  });
+  await page.goto("/");
+  const gomb = page.locator("#intervallum-vezerlo button[disabled]").first();
+  await expect(gomb).toBeVisible();
+  const szin = await gomb.evaluate(function (el) { return getComputedStyle(el).color; });
+  expect(szin).toBe("rgb(107, 107, 107)");
+});
+
 test("(a) hiányzó kulcsszo_regresszio.json → .ures üzenet ÉS NULLA gomb (ez különbözteti meg a (b)-től)", async ({ page }) => {
   await page.route(/kulcsszo_regresszio\.json/, function (route) {
     route.fulfill({ status: 404, contentType: "text/plain", body: "Not Found" });

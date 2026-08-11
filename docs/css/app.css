@@ -33,9 +33,10 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
    minden .intervallum-tetel flex-row (a gomb + a saját .ok egy sorban). A gombköz margin-right → wrapper-gap. */
 #intervallum-vezerlo { display: flex; flex-direction: column; align-items: flex-start; gap: .35rem; }
 #intervallum-vezerlo .intervallum-tetel { display: flex; align-items: baseline; gap: .5rem; }
-#intervallum-vezerlo button { padding: .3rem .7rem; cursor: pointer; }
+#intervallum-vezerlo button { padding: .3rem .7rem; cursor: pointer;
+  background: #fff; border: 1px solid #ccc; border-radius: 4px; color: #222; }
 #intervallum-vezerlo button[aria-pressed="true"] { font-weight: bold; background: #e8e8e8; }
-#intervallum-vezerlo button[disabled] { cursor: not-allowed; color: #999; }
+#intervallum-vezerlo button[disabled] { cursor: not-allowed; color: #6b6b6b; background: #f0f0f0; }
 #intervallum-vezerlo .ok { color: #666; font-size: .85rem; }
 .ures { color: #666; font-style: italic; }
 
