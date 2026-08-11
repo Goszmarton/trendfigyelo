@@ -462,4 +462,5 @@ test("27. a trend-blokk h2 szövege »Ma felkapott keresések« (nem »Napi legf
   await mock(page, { legfrissebb: { top_trendek: MAI16 } });
   await page.goto("/");
   await expect(page.locator(`${T} h2`)).toHaveText("Ma felkapott keresések");
+  await expect(page.locator(T)).toHaveAttribute("aria-label", "Ma felkapott keresések");
 });
