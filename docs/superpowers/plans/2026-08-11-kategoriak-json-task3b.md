@@ -217,7 +217,15 @@ Expected: FAIL. Állítsd vissza. `grep -rn "MUTÁCIÓ" trendfigyelo/` üres, `g
 
 ```bash
 git add trendfigyelo/kategoriak.py tests/test_kategoriak.py
-git commit -m "feat(phase3): Task 3b — kategoria_aggregatum tiszta osztályozó/aggregáló"
+git commit -m "$(cat <<'MSG'
+feat(phase3): Task 3b — kategoria_aggregatum tiszta osztályozó/aggregáló
+
+A Step 5 három tesztje (None / merve:false / vegyes) a Step 3 logikáján
+SZÁNDÉKOSAN ELŐRE JELÖLT ZÖLD: regressziós őr, nem RED-diszkriminátor. A
+valódi RED a teljes modul hiánya volt (Step 2); a nem-vacuous voltot a
+Step 7 mutáció-igazolás bizonyítja.
+MSG
+)"
 ```
 
 ---
@@ -231,6 +239,11 @@ git commit -m "feat(phase3): Task 3b — kategoria_aggregatum tiszta osztályoz�
 **Interfaces:**
 - Consumes: `kategoria_aggregatum(nap_iso, trendek)` (Task 1); `json_export._ir_json(fajl, adat)`.
 - Produces: `kategoriak_ir(docs_data) -> Path` — beolvassa a `napok/index.json` szerinti napi fájlokat, `{"napok": [rekord, ...]}`-t ír `docs_data/kategoriak.json`-ba, nap szerint rendezve, a `None`-okat kihagyva.
+
+**Skálázási megjegyzés (design §6):** a tükör futásonként a teljes `napok/`
+könyvtárat beolvassa — O(napok). ~500 nap felett ez érezhetővé válik; akkor a
+`naplo_max_sor` mintájára retenció vagy inkrementális upsert a megoldás. Phase
+3-ban egyik sem kell (~1,5 évnyi futás a küszöb).
 
 - [ ] **Step 1: Írd meg a bukó teszteket (tükör + hiányzó nap + idempotencia)**
 
@@ -436,6 +449,18 @@ git commit -m "feat(phase3): Task 3b — kategoriak.json bekötése a futtatóba
 **Interfaces:**
 - Consumes: `kategoriak.kategoriak_ir` (Task 2) a valós `docs/data`-n.
 
+> **FIGYELEM — ez az EGYETLEN lépés, ami adatfájlt ír a repóba, és az éjszakai
+> adat-commit ugyanide nyúl.** A kód (Task 1–3) és az adat (Task 4) commitja
+> KÜLÖN marad, hogy egy esetleges rebase ne ragassza össze őket.
+
+- [ ] **Step 0: Szinkron-kapu (adatfájl-írás előtt kötelező)**
+
+Run:
+```bash
+git fetch && git rev-list --left-right --count origin/main...HEAD
+```
+Expected: `0	0`. Ha `origin/main` előrébb van (éjszakai adat-commit), `git pull --rebase` ELŐBB, majd ismételd a rev-listet, és csak `0 0` után tovább.
+
 - [ ] **Step 1: Generáld a valós `kategoriak.json`-t a meglévő 18 napból**
 
 Run:
@@ -466,11 +491,17 @@ Expected: `OK — 5 mért nap, 0 nem-mért, a 13 régi + 08-06 kihagyva`
 
 ```bash
 git add docs/data/kategoriak.json
-git commit -m "adat(phase3): kategoriak.json backfill — 5 API-nap (08-05..08-10)
+git commit -m "$(cat <<'MSG'
+adat(phase3): kategoriak.json backfill — 5 API-nap (08-05..08-10)
 
-A 13 régi (3a előtti, 07-23..08-04) nap és a 08-06 hiányzó nap TUDATOSAN
-kimarad: kategória csak a 3a élesítésétől (2026-08-05) létezik a napi
-fájlokban, visszamenőleg nem szerezhető meg (§8.1)."
+TUDATOS KIMARADÁSOK (nem hiba, ne tűnjön annak később):
+- a 13 régi, 3a előtti nap (2026-07-23..08-04): kategória-mező nem létezik
+  a napi fájlokban, visszamenőleg nem szerezhető meg — a történet a 3a
+  élesítésétől (2026-08-05) épül (§8.1).
+- a 2026-08-06 HIÁNYZÓ nap: nincs napi fájl → NEM kap bejegyzést (a merve
+  megfigyelés, nem futott nap). A hiányt a napok/index.json hiánya jelöli.
+MSG
+)"
 ```
 
 ---
