@@ -8,13 +8,15 @@ Az `ok` mező MEGFIGYELÉST rögzít, nem OKOT: a "nincs_kategoria_adat" nem ál
 MIÉRT nincs adat (a valódi ág utólag a naplo.csv felkapott_api sorából fejthető
 vissza). Az "Other" valódi Google-kategória (topic ID 11), nem a kategoria_nelkul gyűjtő.
 """
+from __future__ import annotations
+
 import json
 from pathlib import Path
 
 from . import json_export
 
 
-def kategoria_aggregatum(nap_iso, trendek):
+def kategoria_aggregatum(nap_iso: str, trendek: list[dict]) -> dict | None:
     """Egy nap trendlistája → kategória-rekord, VAGY None (3a előtti nap, kihagyandó).
 
     None: egyetlen elemnek sincs "temak" KULCSA (3a előtti korszak).
@@ -45,7 +47,7 @@ def kategoria_aggregatum(nap_iso, trendek):
             "kategoria_nelkul": kategoria_nelkul, "kategoriak": kategoriak}
 
 
-def kategoriak_ir(docs_data):
+def kategoriak_ir(docs_data) -> Path:
     """A napok/*.json determinisztikus tükre → kategoriak.json (spec 8.1).
 
     A napok/index.json szerinti összes napi fájlt beolvassa, minden napra
