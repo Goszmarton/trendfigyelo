@@ -1,0 +1,183 @@
+# Task 3b — `kategoriak.json` kategória-aggregátum (design)
+
+Dátum: 2026-08-11
+Spec-horgony: `docs/superpowers/phase3/phase3-spec.md` §8.1 (+ §7.5 hivatkozva)
+Hatókör: **adatréteg, felület nélkül.** A heti/havi eloszlás-görbe megjelenítése
+NEM ennek a tasknak a hatóköre.
+
+## 1. Cél
+
+Új kimenet `docs/data/kategoriak.json`, amely a napi felkapott trendlista
+`temak` kategóriáit **napi bontásban** aggregálja, hogy a történet a Task 3a
+élesítésétől (2026-08-05) épüljön, és később heti/havi részesedés-görbe
+építhető legyen belőle. A §8.1 két követelménye: tárolni a **kategóriánkénti
+nyers darabszámot ÉS a napi trendlista teljes hosszát** (a puszta darabszám
+félrevezet, mert rövid listán a részesedés ugrál).
+
+## 2. Kiinduló mérés (2026-08-11, rögzítve)
+
+18 napi fájl `docs/data/napok/`-ban, három csoport:
+
+| Csoport | Napok | Db | Sors |
+|---|---|---|---|
+| Nincs `temak` kulcs (3a előtti) | 2026-07-23 … 08-04 | 13 | **Kihagyva** — kategória nem visszaszerezhető, és a §8.1 szerint a történet 3a-tól épül |
+| `temak` kulcs jelen, van nem-üres | 2026-08-05, 07, 08, 09, 10 | 5 | **Backfill** (mind API-nap, mind trend kategorizált) |
+| Nincs napi fájl | 2026-08-06 | 1 | **Nem reprezentálható** — kimaradt futás; a hiányt a `napok/index.json` hiánya jelöli |
+
+**RSS-only nap (kulcs jelen, de mindenhol `[]`): a valós adatban ma 0 db.** A
+sémának mégis kezelnie kell, mert jövőben előfordulhat, és a §8.1 „kategória
+nélküli" gyűjtője különben egybemosná a hiányzó mezős és az üres-lista esetet.
+
+## 3. A kulcsdöntés: az idősor explicit a nem-mért napról
+
+A `kategoriak.json` **idősor**. Idősorban a hiányzó bejegyzés **kétértelmű** —
+nem különbözteti meg a „futottunk, de nem mértünk kategóriát" esetet a „még
+nem jutottunk el odáig / nem futottunk" esettől. A heti/havi görbénél pont ez
+számít: egy **nem-mért nap kihagyandó a nevezőből**, egy **hiányzó nap** csak
+annyit jelent, hogy nem tudjuk. Ugyanaz a minta, mint a
+`data-idosor-allapot`-nál: **explicit jelölés > néma hiány.**
+
+Ezért:
+
+- **Mért nap** → `merve: true` + aggregátum.
+- **Nem-mért nap, amelyről VAN napi fájl** (RSS-only) → `merve: false` + `ok`.
+- **Hiányzó nap** (nincs napi fájl, pl. 08-06) → **NINCS bejegyzés.** A
+  `merve: false` azt jelenti, „futottunk és nem mértünk"; a 08-06-on nem
+  futottunk. A fájl **csak azokról a napokról nyilatkozik, amelyekről van napi
+  fájl** — nem modellez olyan állapotot, amiről nincs adat.
+- **3a előtti nap** (nincs `temak` kulcs sehol) → **NINCS bejegyzés** (más
+  korszak; a történet 3a-tól épül, §8.1).
+
+## 4. Fájl-alak
+
+`tortenet.json` mintájára `{ "napok": [ ... ] }`, nap szerint rendezve.
+
+```json
+{
+  "napok": [
+    {
+      "nap": "2026-08-10",
+      "merve": true,
+      "lista_hossz": 20,
+      "lista_kategoriaval": 20,
+      "kategoria_nelkul": 0,
+      "kategoriak": { "Other": 6, "Sports": 3, "Health": 2 }
+    },
+    {
+      "nap": "2026-08-12",
+      "merve": false,
+      "ok": "rss_only",
+      "lista_hossz": 15
+    }
+  ]
+}
+```
+
+**`merve: true` mezők:**
+
+- `lista_hossz`: a napi trendlista teljes hossza (§8.1 nevező).
+- `lista_kategoriaval`: hány trendnek van legalább egy nem-üres `temak`.
+- `kategoria_nelkul`: hány trend `temak`-ja `[]` **vagy** hiányzó kulcs (§8.1
+  „kategória nélküli" gyűjtő). `lista_hossz = lista_kategoriaval + kategoria_nelkul`.
+- `kategoriak`: `{ temak_név: darabszám }`. **Minden elem MINDEN `temak`-jában
+  számít** (a többértékű trend többször), ezért a darabszámok összege
+  **meghaladhatja** `lista_hossz`-t (§8.1). Az **„Other" valódi Google-kategória**
+  (topic ID 11), saját kulcsként szerepel — **NEM** a `kategoria_nelkul` gyűjtő.
+  A `kategoriak` **kulcs-sorrendje nem jelentőségteljes** (a fenti példa
+  count-csökkenő, de a data-fájl fogyasztója maga rendez, mint a Task 7 frontend).
+
+**`merve: false` mezők:**
+
+- `ok`: **zárt, dokumentált értékkészlet.** Ma az egyetlen érték `"rss_only"`
+  (mező jelen, de minden `temak` üres → az RSS-ág futott, nem az API). Az
+  értékkészlet **bővíthető**: ha később más ok merül fel (pl. ág-bukás, 429),
+  az **ÚJ érték** legyen, nem az `rss_only`-ba söpörve. **Ma egyik `ok`-érték
+  sem fordult elő valós adatban** — a `rss_only` ág egyelőre elméleti.
+- `lista_hossz`: megtartva (a lista létezik, csak kategória nincs).
+- **Nincs** `kategoriak` / `kategoria_nelkul` (nem mértünk).
+
+## 5. Aggregálási + osztályozási logika
+
+Egy napi fájl (`{ "nap", "trendek": [...] }`) → egy rekord **vagy** `None`
+(kihagyás). Diszkriminátor a `trendek` elemein:
+
+- `tem_m = azon elemek száma, ahol a "temak" KULCS jelen van`
+- **`tem_m == 0`** → 3a előtti nap → **`None`** (kihagyás; a fájlba nem kerül).
+- **`tem_m > 0`** (a mező jelen — 3a utáni nap, API vagy RSS ág egyaránt betette):
+  - `van_kategoria = van legalább egy nem-üres temak`
+  - **`van_kategoria`** → `merve: true`, aggregálás:
+    ```
+    for e in trendek:
+        temak = e.get("temak") or []      # hiányzó kulcs VAGY [] → []
+        if not temak:  kategoria_nelkul += 1
+        else:          lista_kategoriaval += 1; minden k-ra kategoriak[k] += 1
+    ```
+  - **mind üres** → `merve: false`, `ok: "rss_only"`.
+
+**Dokumentált korlát:** a `rss_only` felismerés heurisztika (mező-jelen +
+mind-üres). Elvi álpozitív: egy API-nap, ahol az API **egyetlen** trendhez sem
+adott kategóriát, tévesen `rss_only`-nak jelölődne. **Empirikusan nem fordult
+elő** — minden megfigyelt API-nap teljesen kategorizált (15/15 … 20/20). A
+napi fájl nem hordoz explicit ág-jelölőt, ezért ez a legjobb elérhető
+megkülönböztetés; a mérés (§2) definíciója szerint „mező jelen + mindenhol `[]`
+= az RSS-ág futott".
+
+## 6. Modul + bekötés
+
+**Új modul `trendfigyelo/kategoriak.py`** (a `regresszio.py` / `nyers_kimenet.py`
+mintájára — önálló kimenet, egy felelősség):
+
+- `kategoria_aggregatum(nap_iso, trendek) -> dict | None` — **tiszta függvény**,
+  a §5 logikája. Ez a TDD gerince.
+- `kategoriak_ir(docs_data) -> Path` — a `napok/index.json` szerinti összes
+  napi fájlt beolvassa, minden napra `kategoria_aggregatum`-ot hív, a `None`-t
+  kihagyja, a `merve:false`-t/`merve:true`-t felveszi, nap szerint rendez, kiír.
+
+**Eltérés a spec §9-től (explicit jelölve):** a §9 3b-sora „aggregátum
+**upserttel**"-t ír. Itt tudatosan **teljes újraépítésre** (determinisztikus
+tükör) váltunk a forward-upsert helyett, mert (a) a mérés fő célja a **backfill**
+volt — egy csak-előre upsert az 5 meglévő napot **nem** pótolná vissza
+automatikusan, iterálni kellene rajtuk; a tükör ezt természetesen megteszi; (b)
+idempotens és önjavító (nincs Minor 3-típusú elsodródás); (c) illeszkedik a
+`regresszio.json` származtatott-nézet mintájához. A **kimeneti fájl
+upsert-ekvivalens**, csak elsodródás-mentes.
+
+**A `kategoriak.json` a `napok/*.json` determinisztikus tükre** — a
+`regresszio.json` mintájára származtatott nézet. Előny:
+
+- **Az első futás magától backfilleli** az 5 meglévő napot (nincs külön script).
+- **Önjavító és idempotens** — nincs Minor 3-típusú duplikálódás; a fájl mindig
+  a napi fájlok függvénye.
+- Olcsó: ~18–30 kis JSON beolvasása futásonként.
+
+**Bekötés a `futtato.main`-ben**, közvetlenül a `napi_ir` (210. sor) UTÁN (hogy a
+mai napi fájl már elérhető legyen), a **regresszió-ág védelmi mintájával**
+(215–242): `try/except`, hiba → `FIGYELEM` a run.log-ba + `kategoriak` naplósor
+(`eredmeny=hiba/siker`), **sosem blokkolja az adatmentést vagy az exit-kódot**,
+és **nem néma** (finding 6). Nulla Google-hívás.
+
+## 7. TDD-diszkriminátorok (a plan részletezi)
+
+`tests/test_kategoriak.py`, valódi RED-ekkel:
+
+1. **Multi-kategória számlálás:** egy elem `temak=["A","B"]` → mindkettőben +1;
+   `sum(kategoriak) > lista_hossz` lehetséges.
+2. **`kategoria_nelkul`:** `temak=[]` ÉS hiányzó `temak` kulcs is ide számít.
+3. **„Other" nem gyűjtő:** `temak=["Other"]` → `kategoriak["Other"]`, nem
+   `kategoria_nelkul`.
+4. **`rss_only`:** minden elem `temak=[]` (kulcs jelen) → `merve:false`,
+   `ok:"rss_only"`, nincs `kategoriak`.
+5. **3a előtti nap:** egyik elemnek sincs `temak` kulcsa → `None` (kihagyás).
+6. **`lista_hossz = lista_kategoriaval + kategoria_nelkul`** invariáns.
+7. **`kategoriak_ir` integráció a valós 5 napi fájlon:** 5 `merve:true` rekord,
+   0 `merve:false`, a 13 régi nap kihagyva, nap szerint rendezve.
+8. **Determinisztikus tükör:** kétszeri `kategoriak_ir` azonos kimenet (idempotencia).
+
+## 8. Amit ez a task NEM csinál
+
+- **Nincs felület** — heti/havi görbe a megjelenítési körben (más nap).
+- **Nincs `napok/*.json` visszapótlása** kategóriával (a 13 régi nap kimarad;
+  ezt a commit-üzenet is rögzíti, hogy később ne tűnjön hibának).
+- **Nincs új Google-hívás** — a `tervezett_hivasszam` és a hívás-plafon
+  változatlan.
+- A 08-06 hiányzó nap nem kap bejegyzést (nincs napi fájl).
