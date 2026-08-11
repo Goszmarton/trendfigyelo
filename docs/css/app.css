@@ -34,7 +34,8 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 #intervallum-vezerlo { display: flex; flex-direction: column; align-items: flex-start; gap: .35rem; }
 #intervallum-vezerlo .intervallum-tetel { display: flex; align-items: baseline; gap: .5rem; }
 #intervallum-vezerlo button { padding: .3rem .7rem; cursor: pointer;
-  background: #fff; border: 1px solid #ccc; border-radius: 4px; color: #222; }
+  background: #fff; border: 1px solid #ccc; border-radius: 4px; color: #222;
+  min-width: 3.5rem; box-sizing: border-box; white-space: nowrap; }
 
 /* Task 10 §2: a dátum-<select> érintési célmérete AA-ra (19px → >=24px, kényelmes 32px); egérrel is bukó volt */
 #datum-valaszto select { min-height: 32px; }
@@ -97,6 +98,12 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
   border-left: 3px solid #3366cc; padding: .3rem 0 .3rem .6rem; margin: .6rem 0 .2rem; max-width: 40rem; }
 #trend-blokk .trend-idosor-ures { color: #666; font-style: italic; font-size: .85rem; margin-top: .4rem; }
 #trend-blokk .trend-idosor-ures-blokk { color: #666; font-style: italic; margin: .5rem 0; }
+
+/* Task 10 §3: látható billentyűzet-fókusz (eddig nem volt focus-CSS; az A2 explicit gomb-háttere mellett
+   a natív ring inkonzisztens). :focus-visible → csak billentyűzetnél, egérkattintásnál nem villan. */
+#intervallum-vezerlo button:focus-visible,
+#trend-blokk .kategoria-gomb:focus-visible,
+#datum-valaszto select:focus-visible { outline: 2px solid #3366cc; outline-offset: 2px; }
 
 /* Task 10 §2: érintő-eszközön minden vezérlő tap-magassága >= 44px (AAA 2.5.5 komfort). A DESKTOP VÁLTOZATLAN.
    A pill/szögletes forma megmarad — csak a magasság nő. */
