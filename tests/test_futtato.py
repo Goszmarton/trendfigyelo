@@ -897,15 +897,37 @@ def test_parositas_hiba_nem_blokkolja_az_adatmentest(tmp_path, monkeypatch):
 
 # --- Task 3b: kategoriak.json bekötése a futtatóba (védett, nem néma) ---
 
+class KategoriaKliens:
+    """felkapott_api ad EGY trendet topics+topic_names-szel → top_trend_struktura valódi
+    temak-os trendet gyárt → napi_ir kiírja a mai napok/*.json-t → kategoriak_ir tükrözi.
+    A kategória CSAK az API-ág TrendKeyword-jén van (a felkapott_rss nem ad kategóriát)."""
+    def __init__(self):
+        self.tr = _dummy_tr()
+    def hivas(self, ag, fn, *a, **k):
+        if ag == "felkapott_api":
+            return [SimpleNamespace(keyword="infláció", volume=50000, volume_growth_pct=120,
+                                    topics=[1], topic_names=["Sports"])]
+        return []
+    def hivasszam(self, ag):
+        return 1
+    def osszes_hivas(self):
+        return 4
+
+
 def test_kategoriak_json_letrejon_a_futasban(tmp_path):
-    # a felkapott_rss egy trendet ad → napi_ir ír napok fájlt → kategoriak_ir tükrözi
+    # a felkapott_api egy trendet ad topics+topic_names-szel → top_trend_struktura temak-os
+    # trendet gyárt → napi_ir ír napok/*.json fájlt → kategoriak_ir azt tükrözi
     most = datetime(2021, 1, 4, 12, 0, tzinfo=timezone.utc)
-    futtato.futtat(_config(), KulcsszoAdatKliens(),
+    futtato.futtat(_config(), KategoriaKliens(),
                    tmp_path / "adatok", tmp_path / "docs" / "data", most=most)
     kat = tmp_path / "docs" / "data" / "kategoriak.json"
     assert kat.exists()
     adat = json.loads(kat.read_text(encoding="utf-8"))
-    assert "napok" in adat
+    # valódi diszkriminátor: a tükör a mai napi adatot fogja meg (napi_ir UTÁN)
+    assert adat["napok"], "a napok lista nem lehet üres — a tükör a napi adatot fogja meg"
+    nap = next(n for n in adat["napok"] if n["nap"] == "2021-01-04")
+    assert nap["merve"] is True
+    assert nap["kategoriak"]["Sports"] == 1
     sorok = _naplo_soronkent(tmp_path / "adatok")
     assert {s["ag"]: s["eredmeny"] for s in sorok}["kategoriak"] == "siker"
 
