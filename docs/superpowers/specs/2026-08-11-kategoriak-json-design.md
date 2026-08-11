@@ -105,27 +105,44 @@ Ezért:
 ## 5. Aggregálási + osztályozási logika
 
 Egy napi fájl (`{ "nap", "trendek": [...] }`) → egy rekord **vagy** `None`
-(kihagyás). Diszkriminátor a `trendek` elemein:
+(kihagyás). A diszkriminátor a **nem-üres `temak` megléte**, NEM pusztán a
+`tem_m > 0` (a kulcs jelenléte) — lásd az alábbi négy esetet, mindegyik mellett a
+mai valós előfordulásával. `tem_m = azon elemek száma, ahol a "temak" KULCS jelen van`:
 
-- `tem_m = azon elemek száma, ahol a "temak" KULCS jelen van`
-- **`tem_m == 0`** → 3a előtti nap → **`None`** (kihagyás; a fájlba nem kerül).
-- **`tem_m > 0`** (a mező jelen — 3a utáni nap, API vagy RSS ág egyaránt betette):
-  - `van_kategoria = van legalább egy nem-üres temak`
-  - **`van_kategoria`** → `merve: true`, aggregálás:
-    ```
-    for e in trendek:
-        temak = e.get("temak") or []      # hiányzó kulcs VAGY [] → []
-        if not temak:  kategoria_nelkul += 1
-        else:          lista_kategoriaval += 1; minden k-ra kategoriak[k] += 1
-    ```
-  - **mind üres** → `merve: false`, `ok: "nincs_kategoria_adat"`.
+| Eset | Feltétel | Eredmény | Mai előfordulás |
+|---|---|---|---|
+| Nincs sehol `temak` kulcs | `tem_m == 0` | **`None`** (kihagyás) | **VALÓS: 13 nap** (07-23…08-04) |
+| Van kulcs, van nem-üres | `van_kategoria` | **`merve: true`** + aggregálás | **VALÓS: 5 nap** (08-05…08-10) |
+| Van kulcs, mind üres | `tem_m>0`, nincs nem-üres | **`merve: false`**, `nincs_kategoria_adat` | **ELMÉLETI: 0 nap** |
+| Vegyes (némelyiken kulcs, némelyiken nem) | — | a nem-üresek szerint (lásd lent) | **ELMÉLETI: 0 nap** |
 
-**Vegyes nap (tudatos döntés):** elvileg előállhat olyan nap, ahol **néhány**
-elemen van `temak` kulcs, néhányon nincs. Ez `tem_m > 0`, tehát **mért nap**
-(`merve: true`), és a pszeudokód `e.get("temak") or []` révén a **kulcs nélküli
-elem a `kategoria_nelkul`-ba esik** (§8.1 „kategória nélküli" gyűjtő) — pontosan
-úgy, mint az üres-listás elem. Ez **szándékos**: a nap egésze mért, az egyes
-kulcs-hiányos elemek pedig kategória nélküliek.
+`van_kategoria = van legalább egy nem-üres temak`. A `merve:true` aggregálás:
+
+```
+for e in trendek:
+    temak = e.get("temak") or []      # hiányzó kulcs VAGY [] → []
+    if not temak:  kategoria_nelkul += 1
+    else:          lista_kategoriaval += 1; minden k-ra kategoriak[k] += 1
+```
+
+**Miért a nem-üres megléte a diszkriminátor, nem a `tem_m > 0`:** ha a puszta
+`tem_m > 0` döntene (`merve:true`), akkor a **valós RSS-only nap** — ahol a
+`top_trend_struktura` MINDEN elemre ráteszi a `temak` kulcsot, mind `[]`, tehát
+`tem_m = len > 0` — tévesen `merve:true` lenne. Ezzel **pont az az eset
+semmisülne meg, amiért a `merve` mezőt bevezettük**: a `nincs_kategoria_adat`
+jelölés célja tűnne el. Ezért a `merve:true` feltétele a **nem-üres `temak`
+megléte**.
+
+**Vegyes nap (ELMÉLETI — a pipeline nem állítja elő):** elvileg előállhat olyan
+nap, ahol **néhány** elemen van `temak` kulcs, néhányon nincs. Ilyenkor a
+besorolás a nem-üresek szerint dől el (`van_kategoria` → `merve:true`, különben
+`merve:false`), és a kulcs nélküli / üres elemek a `kategoria_nelkul`-ba esnek
+(§8.1 gyűjtő). **Ez az eset a valós adatban nem áll elő** — a
+`top_trend_struktura` minden elemre ráteszi a `temak` kulcsot, vagy (3a előtt)
+egyikre sem; sosem vegyesen. Ugyanaz a fegyelem, mint az `ok` értékkészleténél:
+ami nem fordult elő valós adatban, azt **elméletiként** jelöljük. A
+`test_vegyes_nap_merve_true` regressziós őr (a kulcs nélküli elem a gyűjtőbe
+essen, ne dobjon hibát), de elméleti esetet őriz.
 
 **Dokumentált korlát:** a `nincs_kategoria_adat` felismerés heurisztika
 (mező-jelen + mind-üres). Elvi álpozitív: egy API-nap, ahol az API **egyetlen**
