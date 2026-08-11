@@ -66,7 +66,7 @@ Ezért:
     {
       "nap": "2026-08-12",
       "merve": false,
-      "ok": "rss_only",
+      "ok": "nincs_kategoria_adat",
       "lista_hossz": 15
     }
   ]
@@ -88,11 +88,17 @@ Ezért:
 
 **`merve: false` mezők:**
 
-- `ok`: **zárt, dokumentált értékkészlet.** Ma az egyetlen érték `"rss_only"`
-  (mező jelen, de minden `temak` üres → az RSS-ág futott, nem az API). Az
-  értékkészlet **bővíthető**: ha később más ok merül fel (pl. ág-bukás, 429),
-  az **ÚJ érték** legyen, nem az `rss_only`-ba söpörve. **Ma egyik `ok`-érték
-  sem fordult elő valós adatban** — a `rss_only` ág egyelőre elméleti.
+- `ok`: **zárt, dokumentált értékkészlet.** Ma az egyetlen érték
+  `"nincs_kategoria_adat"` (mező jelen, de minden `temak` üres). A mező
+  **MEGFIGYELÉST rögzít** (nincs kategória-adat ezen a napon), **nem OKOT** — a
+  kód nem tudja megállapítani, hogy azért nincs adat, mert az RSS-ág futott,
+  vagy másért; ezért a név nem állít okot (ugyanaz a fegyelem, mint az L12
+  párhuzamos-flake és a „fésű"-korrekció esetében: plauzibilis magyarázat ≠
+  megállapított ok). A valódi ág **utólag a `naplo.csv`-ből állapítható meg** (a
+  `felkapott_api` sor megléte) — az információ nem vész el, csak nem ebbe a
+  mezőbe kerül. Az értékkészlet **bővíthető**: ha később más, ténylegesen
+  megállapítható ok merül fel, az **ÚJ érték** legyen, nem ebbe söpörve. **Ma
+  egyik `ok`-érték sem fordult elő valós adatban** — ez az ág egyelőre elméleti.
 - `lista_hossz`: megtartva (a lista létezik, csak kategória nincs).
 - **Nincs** `kategoriak` / `kategoria_nelkul` (nem mértünk).
 
@@ -112,15 +118,21 @@ Egy napi fájl (`{ "nap", "trendek": [...] }`) → egy rekord **vagy** `None`
         if not temak:  kategoria_nelkul += 1
         else:          lista_kategoriaval += 1; minden k-ra kategoriak[k] += 1
     ```
-  - **mind üres** → `merve: false`, `ok: "rss_only"`.
+  - **mind üres** → `merve: false`, `ok: "nincs_kategoria_adat"`.
 
-**Dokumentált korlát:** a `rss_only` felismerés heurisztika (mező-jelen +
-mind-üres). Elvi álpozitív: egy API-nap, ahol az API **egyetlen** trendhez sem
-adott kategóriát, tévesen `rss_only`-nak jelölődne. **Empirikusan nem fordult
-elő** — minden megfigyelt API-nap teljesen kategorizált (15/15 … 20/20). A
-napi fájl nem hordoz explicit ág-jelölőt, ezért ez a legjobb elérhető
-megkülönböztetés; a mérés (§2) definíciója szerint „mező jelen + mindenhol `[]`
-= az RSS-ág futott".
+**Vegyes nap (tudatos döntés):** elvileg előállhat olyan nap, ahol **néhány**
+elemen van `temak` kulcs, néhányon nincs. Ez `tem_m > 0`, tehát **mért nap**
+(`merve: true`), és a pszeudokód `e.get("temak") or []` révén a **kulcs nélküli
+elem a `kategoria_nelkul`-ba esik** (§8.1 „kategória nélküli" gyűjtő) — pontosan
+úgy, mint az üres-listás elem. Ez **szándékos**: a nap egésze mért, az egyes
+kulcs-hiányos elemek pedig kategória nélküliek.
+
+**Dokumentált korlát:** a `nincs_kategoria_adat` felismerés heurisztika
+(mező-jelen + mind-üres). Elvi álpozitív: egy API-nap, ahol az API **egyetlen**
+trendhez sem adott kategóriát, tévesen `merve:false`-nak jelölődne. **Empirikusan
+nem fordult elő** — minden megfigyelt API-nap teljesen kategorizált (15/15 …
+20/20). A napi fájl nem hordoz explicit ág-jelölőt, ezért ez a legjobb elérhető
+megkülönböztetés; a valódi ág utólag a `naplo.csv`-ből fejthető vissza (lásd §4).
 
 ## 6. Modul + bekötés
 
@@ -148,7 +160,15 @@ upsert-ekvivalens**, csak elsodródás-mentes.
 - **Az első futás magától backfilleli** az 5 meglévő napot (nincs külön script).
 - **Önjavító és idempotens** — nincs Minor 3-típusú duplikálódás; a fájl mindig
   a napi fájlok függvénye.
-- Olcsó: ~18–30 kis JSON beolvasása futásonként.
+- Olcsó: ma ~18–30 kis JSON beolvasása futásonként.
+
+**Skálázási nagyságrend (hogy egy év múlva ne kelljen újramérni):** a `napok/`
+halmozódik (nincs retenció), a tükör futásonként beolvassa az összeset. A napi
+fájlok kicsik (~10–50 KB), a teljes beolvasás **~500 nap felett válik
+érezhetővé** (nagyságrendileg 10–25 MB napi I/O). Ekkor a `naplo_max_sor`
+mintájára a megoldás **retenció** (a tükör csak az utolsó N napot építi) **vagy
+inkrementális upsert** (a mai nap hozzáírása a meglévő fájlhoz, a többi
+érintetlen). Phase 3-ban egyik sem kell — a küszöb ~1,5 évnyi napi futás.
 
 **Bekötés a `futtato.main`-ben**, közvetlenül a `napi_ir` (210. sor) UTÁN (hogy a
 mai napi fájl már elérhető legyen), a **regresszió-ág védelmi mintájával**
@@ -165,13 +185,15 @@ mai napi fájl már elérhető legyen), a **regresszió-ág védelmi mintájáva
 2. **`kategoria_nelkul`:** `temak=[]` ÉS hiányzó `temak` kulcs is ide számít.
 3. **„Other" nem gyűjtő:** `temak=["Other"]` → `kategoriak["Other"]`, nem
    `kategoria_nelkul`.
-4. **`rss_only`:** minden elem `temak=[]` (kulcs jelen) → `merve:false`,
-   `ok:"rss_only"`, nincs `kategoriak`.
+4. **`nincs_kategoria_adat`:** minden elem `temak=[]` (kulcs jelen) →
+   `merve:false`, `ok:"nincs_kategoria_adat"`, nincs `kategoriak`.
 5. **3a előtti nap:** egyik elemnek sincs `temak` kulcsa → `None` (kihagyás).
 6. **`lista_hossz = lista_kategoriaval + kategoria_nelkul`** invariáns.
 7. **`kategoriak_ir` integráció a valós 5 napi fájlon:** 5 `merve:true` rekord,
    0 `merve:false`, a 13 régi nap kihagyva, nap szerint rendezve.
 8. **Determinisztikus tükör:** kétszeri `kategoriak_ir` azonos kimenet (idempotencia).
+9. **Vegyes nap:** néhány elemen van `temak` kulcs, néhányon nincs → `merve:true`,
+   és a kulcs nélküli elemek a `kategoria_nelkul`-ban (nem `None`, nem `merve:false`).
 
 ## 8. Amit ez a task NEM csinál
 
