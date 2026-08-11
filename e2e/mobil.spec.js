@@ -36,3 +36,19 @@ test("G1. render-on-load: első kulcsszó-kártya data-rendered=true 360x640-en 
   // Ha a data-rendered eagerly kerülne fel (canvas-tautológia), ez is "true" lenne → a teszt bukna.
   await expect(kartyak.last()).not.toHaveAttribute("data-rendered", "true");
 });
+
+// ── G2 — a dátum-<select> érintési célmérete >= 24px (WCAG 2.5.8 AA); MÉRT ma: 19px (BUKIK) ──
+test("G2. a dátum-select magassága >= 24px (WCAG 2.5.8 AA; ma 19px bukna)", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 640 });
+  await page.goto("/");
+  const sel = page.locator("#datum-valaszto select");
+  await expect(sel).toHaveCount(1);
+  const bb = await sel.boundingBox();
+  expect(bb.height).toBeGreaterThanOrEqual(24);
+});
+
+// ── G3 — a coarse-réteg (44px érintési célméret) nem törölhető NÉMÁN: a @media (pointer: coarse) szabály LÉTEZIK ──
+test("G3. a @media (pointer: coarse) réteg jelen az app.css-ben (a 44px érintési célméret őre)", async ({ page }) => {
+  const css = await (await page.request.get("/css/app.css")).text();
+  expect(css).toMatch(/@media\s*\(\s*pointer:\s*coarse\s*\)/);
+});
