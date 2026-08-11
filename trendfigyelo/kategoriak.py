@@ -43,3 +43,26 @@ def kategoria_aggregatum(nap_iso, trendek):
     return {"nap": nap_iso, "merve": True, "lista_hossz": lista_hossz,
             "lista_kategoriaval": lista_kategoriaval,
             "kategoria_nelkul": kategoria_nelkul, "kategoriak": kategoriak}
+
+
+def kategoriak_ir(docs_data):
+    """A napok/*.json determinisztikus tükre → kategoriak.json (spec 8.1).
+
+    A napok/index.json szerinti összes napi fájlt beolvassa, minden napra
+    kategoria_aggregatum-ot hív, a None-t (3a előtti nap) kihagyja, nap szerint
+    rendez, kiír. Idempotens: a kimenet a napi fájlok determinisztikus függvénye.
+    """
+    napok_mappa = Path(docs_data) / "napok"
+    index_fajl = napok_mappa / "index.json"
+    napok_index = (json.loads(index_fajl.read_text(encoding="utf-8")).get("napok", [])
+                   if index_fajl.exists() else [])
+    rekordok = []
+    for nap_iso in sorted(napok_index):
+        nap_fajl = napok_mappa / f"{nap_iso}.json"
+        if not nap_fajl.exists():
+            continue                                 # index-ben van, fájl nincs → nem reprezentáljuk
+        nap = json.loads(nap_fajl.read_text(encoding="utf-8"))
+        rek = kategoria_aggregatum(nap_iso, nap.get("trendek", []))
+        if rek is not None:
+            rekordok.append(rek)
+    return json_export._ir_json(Path(docs_data) / "kategoriak.json", {"napok": rekordok})

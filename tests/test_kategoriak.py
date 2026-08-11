@@ -73,8 +73,62 @@ def test_nincs_kategoria_adat_merve_false():
 def test_vegyes_nap_merve_true():
     # néhány elemen van (nem-üres) temak kulcs, néhányon nincs → merve:true,
     # a kulcs nélküli elemek kategoria_nelkul-ban (nem None, nem merve:false)
+    # MEGJEGYZÉS: ez ELMÉLETI eset — a valós pipeline sosem állít elő "vegyes"
+    # temak-jelenlétet egy napon belül: a top_trend_struktura minden elemre
+    # ráteszi a temak kulcsot, vagy (3a előtti napon) egyikre sem; a teszt itt
+    # a függvény defenzív viselkedését dokumentálja, nem egy valós bemenetet.
     trendek = [_t("a", ["Sports"]), _t("b"), _t("c")]   # b,c: nincs temak kulcs
     r = kategoriak.kategoria_aggregatum("2026-08-10", trendek)
     assert r["merve"] is True
     assert r["kategoria_nelkul"] == 2
     assert r["kategoriak"] == {"Sports": 1}
+
+
+def _napi_fajl(napok_mappa, nap_iso, trendek):
+    napok_mappa.mkdir(parents=True, exist_ok=True)
+    (napok_mappa / f"{nap_iso}.json").write_text(
+        json.dumps({"nap": nap_iso, "trendek": trendek}, ensure_ascii=False), encoding="utf-8")
+
+
+def _index(napok_mappa, napok):
+    napok_mappa.mkdir(parents=True, exist_ok=True)
+    (napok_mappa / "index.json").write_text(json.dumps({"napok": napok}), encoding="utf-8")
+
+
+def test_kategoriak_ir_tukor_harom_csoport(tmp_path):
+    docs_data = tmp_path / "docs" / "data"
+    napok = docs_data / "napok"
+    _napi_fajl(napok, "2026-07-28", [_t("regi")])                     # 3a előtti: nincs temak
+    _napi_fajl(napok, "2026-08-10", [_t("a", ["Sports"]), _t("b", ["Health"])])
+    _napi_fajl(napok, "2026-08-12", [_t("x", []), _t("y", [])])       # RSS-only: mind []
+    _index(napok, ["2026-07-28", "2026-08-10", "2026-08-12"])
+    kategoriak.kategoriak_ir(docs_data)
+    adat = json.loads((docs_data / "kategoriak.json").read_text(encoding="utf-8"))
+    napok_ki = adat["napok"]
+    assert [n["nap"] for n in napok_ki] == ["2026-08-10", "2026-08-12"]   # 07-28 kihagyva, rendezett
+    assert napok_ki[0]["merve"] is True
+    assert napok_ki[0]["kategoriak"] == {"Sports": 1, "Health": 1}
+    assert napok_ki[1]["merve"] is False and napok_ki[1]["ok"] == "nincs_kategoria_adat"
+
+
+def test_kategoriak_ir_hianyzo_napi_fajl_kihagyva(tmp_path):
+    # index-ben szereplő, de hiányzó fájlú nap (mint 2026-08-06) NEM kap bejegyzést
+    docs_data = tmp_path / "docs" / "data"
+    napok = docs_data / "napok"
+    _napi_fajl(napok, "2026-08-10", [_t("a", ["Sports"])])
+    _index(napok, ["2026-08-06", "2026-08-10"])                       # 08-06 fájl nincs
+    kategoriak.kategoriak_ir(docs_data)
+    adat = json.loads((docs_data / "kategoriak.json").read_text(encoding="utf-8"))
+    assert [n["nap"] for n in adat["napok"]] == ["2026-08-10"]
+
+
+def test_kategoriak_ir_idempotens(tmp_path):
+    docs_data = tmp_path / "docs" / "data"
+    napok = docs_data / "napok"
+    _napi_fajl(napok, "2026-08-10", [_t("a", ["Sports"])])
+    _index(napok, ["2026-08-10"])
+    kategoriak.kategoriak_ir(docs_data)
+    elso = (docs_data / "kategoriak.json").read_text(encoding="utf-8")
+    kategoriak.kategoriak_ir(docs_data)
+    masodik = (docs_data / "kategoriak.json").read_text(encoding="utf-8")
+    assert elso == masodik
