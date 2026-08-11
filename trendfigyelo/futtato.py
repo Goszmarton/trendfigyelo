@@ -10,8 +10,8 @@ import json
 import sys
 from pathlib import Path
 
-from . import (felkapott, idosorok, json_export, kulcsszavak, naplo, nyers_kimenet,
-               regresszio, seged)
+from . import (felkapott, idosorok, json_export, kategoriak, kulcsszavak, naplo,
+               nyers_kimenet, regresszio, seged)
 from .config import betolt
 from .kliens import AgFeladva, Kliens
 
@@ -211,6 +211,19 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
     # nyers órás sorozat verziókövetett gördülő kimenete (üres sorozat NE írjon fájlt)
     if kulcsszo_nyers:
         nyers_kimenet.ir_gordulo(docs_data_mappa, kulcsszo_nyers)
+
+    # ---------- kategória-aggregátum (származtatott, VÉDETTEN; CSAK naplóz) ----------
+    # A napok/*.json determinisztikus tükre → kategoriak.json (spec 8.1). Nulla Google-hívás.
+    # A regresszió-ág védelmi mintája: hiba SOHA nem viheti el az adatmentést/exit-kódot,
+    # de NEM néma (finding 6) — FIGYELEM a run.log-ba + kategoriak naplósor.
+    try:
+        kategoriak.kategoriak_ir(docs_data_mappa)
+        bejegyzesek.append({"ag": "kategoriak", "eredmeny": "siker",
+                            "hivasok_szama": 0, "hibakodok": ""})
+    except Exception as e:
+        bejegyzesek.append({"ag": "kategoriak", "eredmeny": "hiba",
+                            "hivasok_szama": 0, "hibakodok": type(e).__name__})
+        print(f"FIGYELEM: a kategória-aggregátum kimaradt — nem blokkolja az adatmentést ({e}).")
 
     # ---------- regresszió (származtatott nézet, VÉDETTEN) ----------
     # Nulla Google-hívás; egy hibája SOHA nem viheti el az adatmentést vagy az exit-kódot,

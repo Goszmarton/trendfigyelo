@@ -1,4 +1,5 @@
 import csv
+import json
 from datetime import datetime, timezone
 from types import SimpleNamespace
 
@@ -892,3 +893,32 @@ def test_parositas_hiba_nem_blokkolja_az_adatmentest(tmp_path, monkeypatch):
     assert (tmp_path / "adatok" / "naplo.csv").exists()
     for ag in ("felkapott_api", "felkapott_rss", "kulcsszo", "idosor", "regresszio", "folytonossag"):
         assert ag in sorok
+
+
+# --- Task 3b: kategoriak.json bekötése a futtatóba (védett, nem néma) ---
+
+def test_kategoriak_json_letrejon_a_futasban(tmp_path):
+    # a felkapott_rss egy trendet ad → napi_ir ír napok fájlt → kategoriak_ir tükrözi
+    most = datetime(2021, 1, 4, 12, 0, tzinfo=timezone.utc)
+    futtato.futtat(_config(), KulcsszoAdatKliens(),
+                   tmp_path / "adatok", tmp_path / "docs" / "data", most=most)
+    kat = tmp_path / "docs" / "data" / "kategoriak.json"
+    assert kat.exists()
+    adat = json.loads(kat.read_text(encoding="utf-8"))
+    assert "napok" in adat
+    sorok = _naplo_soronkent(tmp_path / "adatok")
+    assert {s["ag"]: s["eredmeny"] for s in sorok}["kategoriak"] == "siker"
+
+
+def test_kategoriak_hiba_nem_blokkol(tmp_path, monkeypatch):
+    # a származtatott ág hibája SOHA nem viheti el az adatmentést vagy az exit-kódot (finding 6)
+    def _dob(*a, **k):
+        raise RuntimeError("boom")
+    monkeypatch.setattr(futtato.kategoriak, "kategoriak_ir", _dob)
+    most = datetime(2021, 1, 4, 12, 0, tzinfo=timezone.utc)
+    kod = futtato.futtat(_config(), KulcsszoAdatKliens(),
+                         tmp_path / "adatok", tmp_path / "docs" / "data", most=most)
+    assert kod == 0                                                        # exit-kód érintetlen
+    assert (tmp_path / "docs" / "data" / "legfrissebb.json").exists()      # adatmentés megvan
+    sorok = _naplo_soronkent(tmp_path / "adatok")
+    assert {s["ag"]: s["eredmeny"] for s in sorok}["kategoriak"] == "hiba"
