@@ -490,9 +490,46 @@ pillanatáig ér — normál esetben ugyanabból a futásból, mint a `legfrisse
 trendlistája. (A §1.3 egy napos lemaradás a `tortenet.json` napi aggregátumára
 vonatkozik, amelyet a 9b nem használ; egy „teljes nap"-dátum a friss órás görbe
 alatt önellentmondó volna.) **A felirat dátuma mindig a rajzolt intervallum
-tényleges `ablak_veg_utc`-jéből jön**, nem a „közös futás" feltevésből — így egy
-feladott ág (`AgFeladva`) vagy kiesett nap okozta elcsúszást a derivált dátum
-magától, helyesen kezel; a spec **nem** állít szerkezeti frissesség-azonosságot.
+tényleges `ablak_veg_utc`-jéből jön**, nem a „közös futás" feltevésből. Ez a
+derivált dátum **egyetlen dolgot garantál, negatívan:** megakadályozza a HAMIS
+frissesség-állítást (nem írja ki a mai naptári napot, ha a rajzolt adat régebbi).
+Amit **NEM** tesz: nem jelzi, hogy aznap **nem érkezett új kulcsszó-adat**. Ez
+**vállalt korlát, nem megoldott kérdés** (§7.5), nem „a derivált dátum magától,
+helyesen kezel".
+
+**A kulcsszó-ág blokkolása kaszkád, és az ág mindent-vagy-semmit ír — VALÓS eset,
+a 2026-08-11-i schedule-futás (run #20) mért lefolyása:**
+- A kulcsszó-ág a **2. szónál** (`kormányablak`) 4× 429 után **feladta** (`AgFeladva`):
+  a stdout szó-szinten jelzi („a kulcsszó-ág feladva (429) a(z) 'kormányablak' szónál"),
+  majd az `_ag` a teljes ágat **`blokkolva`**-ként naplózza („a hátralévő ágak
+  kimaradnak") → az `idosor` `kihagyva`. A `blokkolva` tehát **nem** az `AgFeladva`
+  alternatívája, hanem UGYANANNAK az eseménynek az ág-szintű naplócímkéje.
+- **A két csatorna nem ugyanazt mutatja:** a `naplo.csv` csak
+  `kulcsszo;blokkolva;5;429,429,429,429`-et rögzít (az 5 = `állás` 1 sikeres +
+  `kormányablak` 4× 429); a **stdout** viszont MINDKETTŐT (a szó-szintű feladást ÉS
+  az ág-blokkot). A napló-csatornából a WHY (melyik szónál) nem derül ki.
+- **Mindent-vagy-semmit:** az `állás` (1. szó) **sikeresen mért** (a 7 tényleges
+  hívásból 1 az övé), DE a `kulcsszavak.gyujt` a `kormányablak`-nál dobott
+  `AgFeladva`-t, **mielőtt visszatért volna** → a `kulcsszo_nyers` üres maradt
+  (`futtato.py:163,212`, `if kulcsszo_nyers:` guard), az `ir_gordulo` **nem futott**,
+  a `kulcsszo_nyers.json` **érintetlen** (a 08-11-i `e660f2e` commit fájllistája nem
+  tartalmazza). A részlegesen sikeres mérés tehát **eldobódott**: a fájlban **nulla**
+  08-11-es pont, mind a 13 szó vége `2026-08-10T19:00`. Ez **nem** harmadik,
+  „részleges" fájl-állapot — a perzisztált kép bináris, **mert a részleges siker nem marad meg**.
+
+Ebből **a két blokk dátuma legálisan szétcsúszik**: a kulcsszó-blokk `ablak_veg`-je
+**2026-08-10**, a trend-blokk alap-napja **2026-08-11** → a felületen **egyszerre két
+dátum** jelenik meg, magyarázat nélkül. (Külön csapda: a `kulcsszo_regresszio.json`
+top-szintű `szamitva_utc`-je a 08-11-i újraszámoláskor **08-11-re ugrott** a
+változatlan 08-10-es adat mellett — ezért a felirat **kizárólag** az `ablak_veg`-ből
+jöhet, sosem a `szamitva_utc`-ből. **Grep-igazolt** (2026-08-12): a frontend
+(`docs/js`, `docs/index.html`) nem hivatkozza a `szamitva_utc`-t; a `.frissesseg`
+felirat az aktív intervallum `ablak_veg`-jéből jön, és ezt e2e-őr rögzíti
+(`e2e/kulcsszo.spec.js:326`, a fixture-ben szándékosan KÉSŐBBI `szamitva_utc`-vel).
+Ez az egyetlen **helyességi** állítás a blokkban — a csapda ellenőrizve nem él, nem
+feltételezés.) A spec **nem** állít szerkezeti
+frissesség-azonosságot (ez szándékos), de a szétcsúszás **látható következményét** a
+felület ma nem jelzi; ezt a §7.5 rögzíti vállalt korlátként, a feloldása külön tétel (Phase 4).
 A felirat két tényt közöljön: (1) meddig tart az adat (a fenti `ablak_veg_utc`,
 böngészőbeli dátumaritmetika nélkül, 7.4 elve); (2) hogy a pontszámok szavanként
 külön 0–100 skálán állnak, egymással nem összemérhetők (1.4). A dátumválasztó-
@@ -535,6 +572,19 @@ Következmények a felületre:
   illeszteni, és jelezni kell, hány napból hány mért.
 - Ha a legutóbbi futásban egy ág feladta (`AgFeladva`), a trendlista lehet
   rövid vagy üres — ezt magyarul, érthetően kell közölni.
+- **A kulcsszó-ág is kieshet — nem csak a trendlista.** A fenti `AgFeladva`-eset a
+  kulcsszó-ágra is áll: ha az ág egy szónál 429 miatt feladja (`kulcsszo;blokkolva`
+  a naplóban; VALÓS: 2026-08-11, a `kormányablak` szónál), az ág
+  **mindent-vagy-semmit** — a korábbi, sikeresen mért szavak (pl. `állás`) adata is
+  **eldobódik**, aznap **nincs új `kulcsszo_nyers` pont** (7.4). Ekkor a kulcsszó-blokk
+  a trend-blokknál **régebbi** adatot mutat, a két blokk dátuma szétcsúszik.
+  **VÁLLALT KORLÁT (Phase 3):** a felület ezt ma **nem jelzi** — a frissesség-felirat
+  csak az adat *végét* mutatja, nem azt, hogy aznap nem frissült, és a workflow-státusz
+  is **Success** marad (§10). A folytonosság-diagnosztika (`seged.utolso_res`, „B2") ma
+  kizárólag a naplóba kerül (`futtato.py`), a frontendhez nem jut el. A feloldás — a B2
+  kimenetének publikálása egy JSON-ba + elavultság-jelzés a kulcsszó-blokkon — **külön
+  tétel (Phase 4 jelölt)**, nem Phase 3; rokon az L7 bemenet-perzisztálás adat-útjával,
+  de nem olvad össze vele.
 
 ---
 
@@ -718,9 +768,21 @@ szerződés-tesztektől (Task 2) függ.
   frissítés kézi marad.
 - **Pages cache.** A `?v=Date.now()` a JSON-okét megoldja; a HTML/JS/CSS-re a
   Pages saját cache-viselkedése áll — deploy után hard reload.
-- **A gyűjtés még nem stabil rezsimben van.** A 429-viselkedés
-  jellemzése ~2 hét naplóra vár; addig egy-egy nap kiesése reális, és a
-  felületnek ezt el kell viselnie (7.5).
+- **A gyűjtés még nem stabil rezsimben van.** A 429-viselkedés jellemzése ~2 hét
+  naplóra várt; a jelenség **létezése** 2026-08-11-én igazolódott: az új ágsorrenden
+  az első éles **kapu-blokk** (`kulcsszo;blokkolva;5;429,429,429,429`, a `kormányablak`
+  szónál), amivel a **Task 8 jegyzőkönyv §4** kapu-blokk-pontja beteljesült. **DE n=1:**
+  egyetlen megfigyelt eset a rátát NEM jellemzi — a **429-ráta jellemzése NYITVA marad**,
+  további napló kell hozzá. Egy-egy nap kiesése reális, a felületnek ezt el kell viselnie (7.5).
+- **Elveszett nap = ZÖLD workflow (monitorozási vakság).** A 08-11-i futás státusza
+  **Success** volt (`van_adat=True` → exit 0; az egyetlen warning Node.js-deprekáció).
+  Egy elveszett kulcsszó-nap tehát **sem a CI-ben, sem a felületen** nem jelez — ez
+  erősíti az L1-et (blokkolt nap jelzése, 7.5); a **blokkolt nap felületi jelzése** külön
+  tétel (Phase 4).
+- **MÉRT hívás-adat (a jövőnek):** a várt ~30 hívás helyett **7 tényleges** futott le
+  (api 1 + rss 1 + `állás` 1 + `kormányablak` 4× 429). Ez a „minden kártyán legyen görbe"
+  (+6 trend-idősor-hívás) döntés bemenete: **nem a hívás-plafon a korlát, hanem a
+  429-rezsim** — a plafon (120) messze a tényleges terhelés felett van.
 - **Python-verzió eltérés a teszt-futtatásban.** A fejlesztői venv 3.14, az
   átadó/CI-környezet (`napi.yml`) 3.12. Mivel a teszt-suite **nem CI-kapu**,
   hanem lokális eszköz (3. fejezet), a Phase 3 megnövelt pytest-felülete (Task
@@ -745,9 +807,13 @@ szerződés-tesztektől (Task 2) függ.
 3. **Csoportosítás — LEZÁRVA** (2026-08-06, Task 9b #2): IGEN, `domen` szerint
    (nem `tipus`), slug→magyar fejléc-térképpel; `domen: null` → „Egyéb", a lista
    végén.
-4. **A `kulcsszo_osszesites` sorsa** — a Task 9 review megállapította, hogy
-   ma nem közöl szavak közti rangsort, és így is kell maradnia; eldöntendő,
-   hogy a felület használja-e egyáltalán.
+4. **A `kulcsszo_osszesites` sorsa — LEZÁRVA** (2026-08-12, grep-igazolt): a
+   **felület NEM használja** (`docs/js/` + `docs/index.html` = nulla hivatkozás);
+   egyetlen termelője a `json_export.py`, a `legfrissebb.json` hordozza, fogyasztó
+   nélkül. A frontend a mérőszámokat a `kulcsszo_regresszio.json`-ból veszi (9a/9b).
+   Az export ettől még kiírja — **ártalmatlan holt-adat**; az eltávolítása opcionális
+   takarítás (Phase 4 jelölt), nem Phase 3-ügy. A „nem közöl szavak közti rangsort"
+   invariáns áll (1.4).
 5. **A nyers fájl retenciós ablaka — LEZÁRVA** (2026-07-31, kód-ellenőrzés).
    **Nincs `config.yaml`-kulcs.** Az érték a `nyers_kimenet.ir_gordulo`
    `megtartott_nap: int = 14` **kód-szintű alapértelmezése** (nem konfig). A
@@ -756,12 +822,17 @@ szerződés-tesztektől (Task 2) függ.
    szabja meg, meddig számolható a nyers fájlból visszamenőleg a láncoló (8.2):
    **~14 nap**. Ha ennél mélyebb visszatekintés kell, a kumulált skálázót külön,
    tartós kimenetbe kell menteni (8.2).
-6. **A kettéosztott dashboard mobilon** — a tervrajz asztali elrendezés
-   (bal sáv + két jobb panel). Mobilon a bal sáv nem maradhat sáv; el kell
-   dönteni, hogy a két vezérlő a saját blokkja fölé kerül-e, vagy egy
-   összecsukható fejlécbe. A Task 10 ezt megvalósítja, de a **döntés** ide
-   tartozik, mert a két vezérlő szétválasztottsága (7.1) mobilon is
-   megőrzendő.
+6. **A kettéosztott dashboard mobilon — LEZÁRVA** (2026-08-12, a §7.1
+   per-szekció elrendezésből + a leszállított kódból). **Döntés: a két vezérlő a
+   SAJÁT blokkja fölé kerül** (NEM összecsukható fejléc). Megvalósítás: minden
+   szekció a saját `.vezerlo-sav`-jában hordozza a vezérlőjét (asztalin balra,
+   `position: sticky`, `flex: 0 0 14rem`); mobilon a `@media (max-width: 900px)` a
+   `.szekcio`-t **flex-column**-ná teszi, a `.vezerlo-sav` `position: static;
+   flex: 0 0 auto` → a vezérlő a saját blokkja **fölé** kerül (`docs/css/app.css:20-24`,
+   `docs/index.html` per-szekció `.vezerlo-sav`). A **7.1 szétválasztottság mobilon
+   is megmarad** (a két vezérlő nem olvad össze egy fejlécbe). A Task 10 ehhez az
+   érintési célméretet (coarse pointer) és a fókusz-láthatóságot adta, **nem** a
+   layout-döntést. (A döntés eddig csak kódban élt; ezért rögzítjük itt is.)
 
 7. **A nyers retenció-horgony robusztussága (Minor 2, Task 6-ból áthozva).**
    Az `ir_gordulo` a retenciós határt `max(ablak_veg_utc) − megtartott_nap`-ként
