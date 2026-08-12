@@ -275,7 +275,7 @@ const DOMEN_MAGYAR = {
 const DOMEN_SORREND = ["munkaeropiac", "kozigazgatas", "lakhatas", "fogyasztas", "egeszseg",
   "energia", "jovedelem", "haztartasi_penzugy", "kozelet", null];
 const EGYEB_KULCS = "__egyeb__";
-const IRANY_MAGYAR = { novekszik: "Növekszik", csokken: "Csökken", stagnal: "Stagnál" };
+const IRANY_MAGYAR = { novekszik: "iránya növekvő", csokken: "iránya csökkenő", stagnal: "iránya stagnáló" };
 
 const chart_peldanyok = {};   // szo -> Chart-példány (a destroy()-hoz, spec 8b: nem halmozódhatnak)
 let megfigyelo = null;        // IntersectionObserver a lusta canvas-rajzoláshoz (mobil-görgetés, spec 6)
@@ -297,7 +297,9 @@ function ora_index(iso) {   // "YYYY-MM-DDTHH:..." -> egész óra-index (UTC)
 function tizedes2(x) { return x.toFixed(2).replace(".", ","); }   // magyar tizedesvessző
 function mered_szoveg(x) { return (x < 0 ? "-" : "+") + tizedes2(Math.abs(x)); }   // explicit előjel
 
-// mérőszám-sor (spec 7.2/8.3): irány + meredekség (egységgel) + R² (másodlagos) + a jel erőssége.
+// mérőszám-sor (spec 7.2/8.3): irány LEÍRÓ tendencia + meredekség (egységgel) + R² önmagyarázó legenda + a jel erőssége.
+// A hamis tekintély forrása a verdikt-erejű irányszó volt (§10, MÉRT R²=0,00–0,30) → "iránya csökkenő" nem "Csökken";
+// az R² legendája a SKÁLÁT írja le, nem ítéli meg az adott értéket (nincs küszöb → nincs tristate).
 // A záró elem a NEM-NULLA számmal ELÖL (§8.3): "N/M óra nem-nulla (M/nevezo lezárt, K részleges kihagyva)" —
 // az első szám a jel erőssége (pontok_nem_nulla/lezárt), nem a puszta fedettség; a régi "M/M óra" teljes mérést sugallt.
 // A se_meredekseg NEM jelenik meg (autokorreláció-torzított, mint az R², de a ± hamis szignifikanciát
@@ -307,7 +309,7 @@ function merteszamok_szoveg(iv) {
   return [
     IRANY_MAGYAR[iv.irany] || iv.irany,
     mered_szoveg(iv.meredekseg_nap) + " relatív pont/nap",
-    "R² = " + tizedes2(iv.r2) + " (másodlagos)",
+    "R² = " + tizedes2(iv.r2) + " (illeszkedés-jóság 0–1; a magasabb érték erősebb irányt jelent)",
     iv.pontok_nem_nulla + "/" + iv.pontok_hasznalt + " óra nem-nulla (" + iv.pontok_hasznalt + "/" + nevezo + " lezárt, " + iv.pontok_kihagyva_reszleges + " részleges kihagyva)",
   ].join(" · ");
 }

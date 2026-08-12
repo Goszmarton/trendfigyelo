@@ -131,16 +131,16 @@ test("1. render + domen-csoportosítás + üres kártya + K1 (.merteszamok == da
 });
 
 // ── 2. mérőszám-sor formátum ─────────────────────────────────────────────────────────────────
-test("2. mérőszám-sor: irány nagybetű, 2 tizedes vessző, előjel, R² másodlagos, nevező — nincs ± / se", async ({ page }) => {
+test("2. mérőszám-sor: irány LEÍRÓ tendencia, 2 tizedes vessző, előjel, R² önmagyarázó legenda, nevező — nincs ± / se", async ({ page }) => {
   await mock(page, {
     regObj: reg({ "állás": regSzo({ iv1het: { meredekseg_nap: 1.5, irany: "novekszik", r2: 0.31 } }) }),
     nyersObj: nyers({ "állás": [nyersRekord("állás")] }),
   });
   await page.goto("/");
   const m = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"] .merteszamok`);
-  await expect(m).toContainText("Növekszik");
+  await expect(m).toContainText("iránya növekvő");
   await expect(m).toContainText("+1,50 relatív pont/nap");
-  await expect(m).toContainText("R² = 0,31 (másodlagos)");
+  await expect(m).toContainText("R² = 0,31 (illeszkedés-jóság 0–1; a magasabb érték erősebb irányt jelent)");
   await expect(m).toContainText("166/168 óra nem-nulla");                            // a jel erőssége ELÖL (§8.3)
   await expect(m).toContainText("168/168 lezárt");                                   // nevező = hasznalt + hianyzo, zárójelben
   await expect(m).toContainText("1 részleges kihagyva");
