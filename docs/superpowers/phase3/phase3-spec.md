@@ -160,7 +160,7 @@ módosítás; backend, adatbázis, felhasználói fiókok, analitika), az alább
 | Kulcsszó-megjelenítés | **Szavanként külön chart** | Szerkezetileg kizárja a 1.4 szerinti érvénytelen összevetést; közös charton 13 vonal épp azt hívná elő |
 | Regresszió hatóköre | **Csak a kulcsszó-blokkban** | A trendlista naponta kicserélődik, nincs folytonosság, amin trendvonal értelmes lenne |
 | Regresszió bemenete | A **lezárt** pontok; a `reszleges: true` záró pont **kihagyva** | A részleges óra csonka aggregátum, lefelé húzná a meredekséget |
-| Kiírt mérőszámok | Meredekség + irány **elsődlegesen**, R² **mellette**, nem helyette | Autokorrelált órás soron az R² rendszeresen magas anélkül, hogy bármit bizonyítana |
+| Kiírt mérőszámok | Az irány **leíró tendencia** (nem verdikt), a meredekség egységgel, az R² **önmagyarázó legendával** (0–1) | MÉRT (2026-08-12): az R² NEM „rendszeresen magas", hanem **0,00–0,30** — a hamis tekintély forrása az IRÁNYSZÓ, nem az R²; a régi „(másodlagos)" épp a becsületes jelet fokozta le |
 | **Regresszió számítási helye** | **Az exportban, Pythonban** → `kulcsszo_regresszio.json`; a frontend csak rajzol | Lásd 8.3 — a `reszleges` kizárása és a lyukas sorozat kezelése adat-szemantika, nem megjelenítés, tehát pytesttel kell őrizni |
 | Intervallum-gombok | A ténylegesen elérhető napszámból **számolva** engedélyezettek | Precedens: v1 7.1 opcionális kategória-szűrő („ne látszódjon működésképtelennek") |
 | Taxonómia | **Két külön**: kulcsszó → `domen`/`tipus` (config), trend → `topics`/`temak` (trendspy) | Két különböző fogalom, két blokk; keveredésük hibaforrás |
@@ -266,8 +266,13 @@ a Task 10 hatóköre (§11.6) — az asztali sticky itt épül, a reszponzív ö
 - **Kulcsszavanként külön chart.** Egy charton egy vonal. Több szó egy
   ábrára tétele **tilos** (1.4).
 - **Lineáris regresszió** minden charton, a lezárt pontokra illesztve.
-  Kiírandó: **meredekség** (irány + nagyságrend, egységgel: relatív
-  pont / nap), és mellette **R²**. A tengely mondja ki, hogy **relatív skála**.
+  Kiírandó: **meredekség** (nagyságrend, egységgel: relatív pont / nap), és mellette
+  **R²**. A tengely mondja ki, hogy **relatív skála**. **Az irány LEÍRÓ TENDENCIA, nem
+  verdikt** („iránya csökkenő/növekvő/stagnáló", nem „Csökken/Növekszik/Stagnál") — mert a
+  hamis tekintély forrása épp a verdikt-erejű irányszó (§10, MÉRT: R²=0,00–0,30). Az R²
+  **önmagyarázó legendával** áll, amely a SKÁLÁT írja le, nem az adott értéket ítéli meg:
+  `R² = X (illeszkedés-jóság 0–1; a magasabb érték erősebb irányt jelent)`. A legenda **fix**
+  (nincs R²-küszöbhöz kötött szöveg — az tristate-mintázat volna, spec-bővítés, 7.5).
   A mérőszám-sor **záró eleme a fedettség, a nem-nulla számmal ELÖL**:
   `N/M óra nem-nulla (M/M lezárt, K részleges kihagyva)` — az első szám a **jel
   erőssége** (`pontok_nem_nulla`/lezárt), nem a puszta fedettség. A régi, egyedül álló
@@ -789,9 +794,14 @@ szerződés-tesztektől (Task 2) függ.
 - **Háromféle normalizálás egy oldalon** (1.4). Vizuálisan és feliratban is
   el kell választani, különben a látogató összemérhetőnek hiszi őket. Ez a
   fázis legnagyobb helyességi kockázata.
-- **A regresszió tekintélyt kölcsönöz.** Egy kiírt R² azt sugallja, hogy a
-  szám megbízható. Autokorrelált órás soron ez rendszeresen félrevezet — a
-  feliratozásnak ezt ellensúlyoznia kell (mit mér, mit nem).
+- **A regresszió tekintélyt kölcsönöz — de MÉRT módon (2026-08-12) átkeretezve.** A v1
+  feltevés („egy kiírt R² azt sugallja, hogy a szám megbízható; autokorrelált órás soron
+  rendszeresen **MAGAS**") **empirikusan téves**: az R² **0,00–0,30** (őszintén alacsony)
+  minden szónál. A hamis tekintély forrása tehát **az IRÁNYSZÓ** — a verdikt-erejű
+  „Csökken"/„Növekszik" —, nem az R². A régi „(másodlagos)" címke **rossz irányba**
+  ellensúlyozott (a becsületes, alacsony R²-t fokozta le). A felirat ellensúlya: az irány
+  **leíró tendencia** (nem verdikt), az R² pedig **önmagyarázó legendával** áll, hogy a szám
+  maga beszéljen (7.2).
 - **13 chart egy oldalon** — teljesítmény, mobil-görgetés, lusta rajzolás
   (4.2).
 - **Heterogén archívum.** A Task 3a után a `napok/` fájlok tartósan kétféle
