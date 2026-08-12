@@ -268,6 +268,12 @@ a Task 10 hatóköre (§11.6) — az asztali sticky itt épül, a reszponzív ö
 - **Lineáris regresszió** minden charton, a lezárt pontokra illesztve.
   Kiírandó: **meredekség** (irány + nagyságrend, egységgel: relatív
   pont / nap), és mellette **R²**. A tengely mondja ki, hogy **relatív skála**.
+  A mérőszám-sor **záró eleme a fedettség, a nem-nulla számmal ELÖL**:
+  `N/M óra nem-nulla (M/M lezárt, K részleges kihagyva)` — az első szám a **jel
+  erőssége** (`pontok_nem_nulla`/lezárt), nem a puszta fedettség. A régi, egyedül álló
+  „lezárt/lezárt" alak (pl. „168/168 óra") **teljes mérést sugallt** egy túlnyomóan
+  nulla sorozatnál is; a nem-nulla szám elöl ezt helyesbíti (8.3, a `pontok_nem_nulla`
+  indoka és a mérés: 2026-08-12).
 - **A `reszleges: true` záró pont kimarad a fittelésből**, de a görbén
   megjelenhet, vizuálisan megkülönböztetve (szaggatott vég vagy halvány pont).
 - **Csoportosítás:** a chartok a config `domen` (esetleg `tipus`) mezője
@@ -667,6 +673,7 @@ Vázlatos alak (a pontos séma a Task 9a szerződés-tesztjében dől el):
         "meredekseg_nap": -2.14,
         "r2": 0.31,
         "pontok_hasznalt": 168,
+        "pontok_nem_nulla": 166,
         "pontok_kihagyva_reszleges": 1,
         "pontok_hianyzo": 0
       },
@@ -686,7 +693,23 @@ Szerződés-tételek:
 - A **meredekség egysége relatív pont / nap**, és a felületnek ezt ki kell
   írnia — a nyers szám önmagában félrevezető (1.4).
 - A `pontok_kihagyva_reszleges` és a `pontok_hianyzo` **kötelező mező**, mert
-  a felület ezekből tudja megmondani, hány napból hány mért (7.5).
+  a felület ezekből tudja megmondani, hány napból hány **mért** (= nem-hiányzó,
+  van értéke; 7.5). Ez **nem** azonos a jel erősségével — a mért pont lehet 0.
+- A **`pontok_nem_nulla`** (a lezárt pontok közül a **nem-0 értékűek** száma)
+  **kötelező mező** ott, ahol a `pontok_hasznalt` is jelen van (a
+  `keves_pont`/`degeneralt`/`rovid_span` hibaágakon ÉS az `ervenyes`-en; a
+  `nincs_adat`-ról hiányzik, épp mint a `pontok_hasznalt` — nincs lezárt pont).
+  Indoka a mérés (2026-08-12): a nullák **éjszakai mintavételi artefaktumok** (a szó
+  a kvantálási küszöb alá süllyed), nem valós volumen; egy 97%-ban nulla eseményjelző
+  (`tüntetés`: 168 lezárt, 5 nem-nulla) `ervenyes:true` regressziót és „168/168 óra"
+  feliratot kap, ami **teljes mérést állít**, holott a görbe 5 valós pontból áll. A
+  `pontok_nem_nulla` teszi a jel erősségét láthatóvá.
+  - **CSAPDA — két hasonló nevű, ELTÉRŐ jelentésű szám (mint a `szamitva_utc` vs
+    `ablak_veg`: NEM felcserélhetők):** a `json_export.ervenyes_pontok` (a
+    `kulcsszo_osszesites`-ben) a **nem-nulla `nyers_ertek`** száma **NAPI** hatókörben,
+    az üres/NaN pontot külön kezelve; a `pontok_nem_nulla` a **nem-nulla `ertek`** száma
+    a **7 NAPOS órás regressziós ablakban**, csak a részlegest kizárva. Más ponthalmaz,
+    más span, más NaN-kezelés → **a kettő nem ugyanaz, nem cserélhető fel.**
 - Az `ervenyes: false` ághoz **kötelező `ok`** (pl. `nincs_lancolas`,
   `keves_pont`, `nincs_adat`), hogy a letiltott gomb magyarázatot adhasson.
 - **Kulcsszó-szintű élettartam-mezők** (a 7.2 lista-változásához), szavanként
