@@ -503,7 +503,8 @@ Amit **NEM** tesz: nem jelzi, hogy aznap **nem érkezett új kulcsszó-adat**. E
 **vállalt korlát, nem megoldott kérdés** (§7.5), nem „a derivált dátum magától,
 helyesen kezel".
 
-**A kulcsszó-ág blokkolása kaszkád, és az ág mindent-vagy-semmit ír — VALÓS eset,
+**A kulcsszó-ág blokkolása kaszkád; a blokk ELŐTT lemért szavakat a 2026-08-12-i javítás
+menti (a 08-11-i eset még a RÉGI, mindent-vagy-semmit viselkedés alatt esett) — VALÓS eset,
 a 2026-08-11-i schedule-futás (run #20) mért lefolyása:**
 - A kulcsszó-ág a **2. szónál** (`kormányablak`) 4× 429 után **feladta** (`AgFeladva`):
   a stdout szó-szinten jelzi („a kulcsszó-ág feladva (429) a(z) 'kormányablak' szónál"),
@@ -514,14 +515,23 @@ a 2026-08-11-i schedule-futás (run #20) mért lefolyása:**
   `kulcsszo;blokkolva;5;429,429,429,429`-et rögzít (az 5 = `állás` 1 sikeres +
   `kormányablak` 4× 429); a **stdout** viszont MINDKETTŐT (a szó-szintű feladást ÉS
   az ág-blokkot). A napló-csatornából a WHY (melyik szónál) nem derül ki.
-- **Mindent-vagy-semmit:** az `állás` (1. szó) **sikeresen mért** (a 7 tényleges
-  hívásból 1 az övé), DE a `kulcsszavak.gyujt` a `kormányablak`-nál dobott
-  `AgFeladva`-t, **mielőtt visszatért volna** → a `kulcsszo_nyers` üres maradt
-  (`futtato.py:163,212`, `if kulcsszo_nyers:` guard), az `ir_gordulo` **nem futott**,
-  a `kulcsszo_nyers.json` **érintetlen** (a 08-11-i `e660f2e` commit fájllistája nem
-  tartalmazza). A részlegesen sikeres mérés tehát **eldobódott**: a fájlban **nulla**
-  08-11-es pont, mind a 13 szó vége `2026-08-10T19:00`. Ez **nem** harmadik,
-  „részleges" fájl-állapot — a perzisztált kép bináris, **mert a részleges siker nem marad meg**.
+- **Részleges mentés (JAVÍTVA — 2026-08-12; a 08-11-i eset még a RÉGI viselkedés alatt esett):**
+  az `állás` (1. szó) **sikeresen mért** (a 7 hívásból 1 az övé), mielőtt a `kormányablak`
+  blokkolt. **RÉGI viselkedés:** a `kulcsszavak.gyujt` az `AgFeladva`-t a felhalmozott részleg
+  **visszaadása előtt** dobta (`kulcsszavak.py:128–130`, `raise` a `return` ELŐTT) → a
+  `kulcsszo_nyers` üres maradt, az `ir_gordulo` nem futott, a `kulcsszo_nyers.json` érintetlen
+  (a 08-11-i `e660f2e` nem tartalmazza; mind a 13 szó vége `08-10T19:00`). Az
+  `if kulcsszo_nyers:` guard (`futtato.py:212`) itt csak **tünet** — a részleg már a `gyujt`-ban
+  elveszett. **ÚJ viselkedés:** a `gyujt` az `AgFeladva`-ra **ráakasztja a részleget**
+  (`e.reszleges`), a futtato `except AgFeladva`-ja **kicsomagolja** → a blokk **ELŐTT** lemért
+  szavak (itt `állás`) **megmaradnak**; csak a blokkolt szótól kezdve vész el az adat. A guard
+  marad (valódi üresnél helyesen skippel). A napló `blokkolva`-sora változatlan; a megmentett
+  szavak számát a **stdout `FIGYELEM` sora** jelzi (a `naplo.csv` külön oszlopa szerkezet-
+  változás → külön kör).
+  - **HATÓKÖR-SZŰKÍTÉS (SZÁNDÉKOS, nem felejtés):** a részleg-mentés **KIZÁRÓLAG** az
+    `AgFeladva` (429-blokk) ágon él. Ha a `gyujt` MÁS kivétellel hasal el, nincs `e.reszleges`,
+    és a részleg elveszik, mint a régi viselkedésben. Elfogadható: a 429 az **egyetlen mért**
+    blokk-eset. A spec ezt **kimondja**, nehogy a következő olvasó azt higgye, minden hibaágra véd.
 
 Ebből **a két blokk dátuma legálisan szétcsúszik**: a kulcsszó-blokk `ablak_veg`-je
 **2026-08-10**, a trend-blokk alap-napja **2026-08-11** → a felületen **egyszerre két
@@ -580,10 +590,11 @@ Következmények a felületre:
   rövid vagy üres — ezt magyarul, érthetően kell közölni.
 - **A kulcsszó-ág is kieshet — nem csak a trendlista.** A fenti `AgFeladva`-eset a
   kulcsszó-ágra is áll: ha az ág egy szónál 429 miatt feladja (`kulcsszo;blokkolva`
-  a naplóban; VALÓS: 2026-08-11, a `kormányablak` szónál), az ág
-  **mindent-vagy-semmit** — a korábbi, sikeresen mért szavak (pl. `állás`) adata is
-  **eldobódik**, aznap **nincs új `kulcsszo_nyers` pont** (7.4). Ekkor a kulcsszó-blokk
-  a trend-blokknál **régebbi** adatot mutat, a két blokk dátuma szétcsúszik.
+  a naplóban; VALÓS: 2026-08-11, a `kormányablak` szónál), a **blokkolt szótól kezdve**
+  vész el az adat — a blokk ELŐTT lemért szavakat a 2026-08-12-i javítás **menti** (7.4).
+  Ha a blokk az ELSŐ szónál csap le, aznap **nincs új `kulcsszo_nyers` pont**; ekkor (és a
+  `tüntetés`-hez hasonló néma skipnél) a kulcsszó-blokk a trend-blokknál **régebbi** adatot
+  mutat, a két blokk dátuma szétcsúszik.
   **VÁLLALT KORLÁT (Phase 3):** a felület ezt ma **nem jelzi** — a frissesség-felirat
   csak az adat *végét* mutatja, nem azt, hogy aznap nem frissült, és a workflow-státusz
   is **Success** marad (§10). A folytonosság-diagnosztika (`seged.utolso_res`, „B2") ma
