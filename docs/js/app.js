@@ -297,7 +297,9 @@ function ora_index(iso) {   // "YYYY-MM-DDTHH:..." -> egész óra-index (UTC)
 function tizedes2(x) { return x.toFixed(2).replace(".", ","); }   // magyar tizedesvessző
 function mered_szoveg(x) { return (x < 0 ? "-" : "+") + tizedes2(Math.abs(x)); }   // explicit előjel
 
-// mérőszám-sor (spec 7.2/8.3): irány + meredekség (egységgel) + R² (másodlagos) + fedettség.
+// mérőszám-sor (spec 7.2/8.3): irány + meredekség (egységgel) + R² (másodlagos) + a jel erőssége.
+// A záró elem a NEM-NULLA számmal ELÖL (§8.3): "N/M óra nem-nulla (M/nevezo lezárt, K részleges kihagyva)" —
+// az első szám a jel erőssége (pontok_nem_nulla/lezárt), nem a puszta fedettség; a régi "M/M óra" teljes mérést sugallt.
 // A se_meredekseg NEM jelenik meg (autokorreláció-torzított, mint az R², de a ± hamis szignifikanciát
 // sugallna — spec 6:599, a se-döntés). NEVEZŐ = pontok_hasznalt + pontok_hianyzo (= a lezárt órarács, robusztus).
 function merteszamok_szoveg(iv) {
@@ -306,7 +308,7 @@ function merteszamok_szoveg(iv) {
     IRANY_MAGYAR[iv.irany] || iv.irany,
     mered_szoveg(iv.meredekseg_nap) + " relatív pont/nap",
     "R² = " + tizedes2(iv.r2) + " (másodlagos)",
-    iv.pontok_hasznalt + "/" + nevezo + " óra (" + iv.pontok_kihagyva_reszleges + " részleges kihagyva)",
+    iv.pontok_nem_nulla + "/" + iv.pontok_hasznalt + " óra nem-nulla (" + iv.pontok_hasznalt + "/" + nevezo + " lezárt, " + iv.pontok_kihagyva_reszleges + " részleges kihagyva)",
   ].join(" · ");
 }
 

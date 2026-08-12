@@ -90,6 +90,29 @@ def test_vegi_lyuk_latszik():
     assert r["pontok_hianyzo"] == 24
 
 
+# ── pontok_nem_nulla (a jel erőssége; a nullák éjszakai mintavételi artefaktumok, §8.3) ──
+def test_pontok_nem_nulla_ervenyes():
+    # 168 lezárt pont, ebből 163 NULLA + 5 nem-nulla (tüntetés-szerű eseményjelző);
+    # ervenyes marad (168 >= MIN_PONT), de a jel erőssége csak 5.
+    pts = [_pont(KEZD + timedelta(hours=i), 0) for i in range(168)]
+    for i in (10, 40, 80, 120, 160):
+        pts[i]["ertek"] = 100
+    veg = KEZD + timedelta(hours=168)
+    r = regresszio.regresszio_egy_ablak(pts, KEZD.isoformat(), veg.isoformat(), 7)
+    assert r["ervenyes"] is True and r["pontok_hasznalt"] == 168
+    assert r.get("pontok_nem_nulla") == 5
+
+
+def test_pontok_nem_nulla_hibaagon_is():
+    # szerződés-regularitás (§8.3): a mező ott van, ahol a pontok_hasznalt is — pl. a keves_pont ágon.
+    pts = [_pont(KEZD + timedelta(hours=i), 0) for i in range(10)]
+    for i in (2, 5, 8):
+        pts[i]["ertek"] = 42
+    r = regresszio.regresszio_egy_ablak(pts, KEZD.isoformat(), (KEZD + timedelta(hours=10)).isoformat(), 7)
+    assert r["ervenyes"] is False and r["ok"] == "keves_pont"
+    assert r.get("pontok_nem_nulla") == 3
+
+
 # ── mini-9a: illesztes_vonal (két végpont-horgony) + se-flag ──────────────────
 def test_illesztes_vonal_ket_vegpont():
     # ervenyes ág: két végpont-horgony {idopont_utc, ertek}, az első és UTOLSÓ LEZÁRT pontnál.

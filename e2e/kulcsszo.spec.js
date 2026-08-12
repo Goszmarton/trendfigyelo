@@ -53,6 +53,7 @@ function ivErvenyes(over = {}) {
     ablak_kezdet_utc: over.ablak_kezdet_utc ?? ELSO,
     ablak_veg_utc: over.ablak_veg_utc ?? VEG,
     pontok_hasznalt: over.pontok_hasznalt ?? 168,
+    pontok_nem_nulla: over.pontok_nem_nulla ?? 166,
     pontok_kihagyva_reszleges: over.pontok_kihagyva_reszleges ?? 1,
     pontok_hianyzo: over.pontok_hianyzo ?? 0,
     illesztes_vonal: over.illesztes_vonal ?? [
@@ -140,7 +141,8 @@ test("2. mérőszám-sor: irány nagybetű, 2 tizedes vessző, előjel, R² más
   await expect(m).toContainText("Növekszik");
   await expect(m).toContainText("+1,50 relatív pont/nap");
   await expect(m).toContainText("R² = 0,31 (másodlagos)");
-  await expect(m).toContainText("168/168 óra");                                      // nevező = hasznalt + hianyzo
+  await expect(m).toContainText("166/168 óra nem-nulla");                            // a jel erőssége ELÖL (§8.3)
+  await expect(m).toContainText("168/168 lezárt");                                   // nevező = hasznalt + hianyzo, zárójelben
   await expect(m).toContainText("1 részleges kihagyva");
   await expect(m).not.toContainText("±");                                            // se SEHOL
 });
@@ -193,7 +195,7 @@ test("5. hiányzó illesztes_vonal (4b) és ablak-elcsúszott végpont (4c) → 
 // ── 6. fedettség pontos számok + nevező (mod 4) ──────────────────────────────────────────────
 test("6. data-pontok / data-reszleges / data-hianyzo pontos egyenlőség; nevező = pontok + hianyzo", async ({ page }) => {
   await mock(page, {
-    regObj: reg({ "állás": regSzo({ iv1het: { pontok_hasznalt: 144, pontok_kihagyva_reszleges: 1, pontok_hianyzo: 24 } }) }),
+    regObj: reg({ "állás": regSzo({ iv1het: { pontok_hasznalt: 144, pontok_nem_nulla: 140, pontok_kihagyva_reszleges: 1, pontok_hianyzo: 24 } }) }),
     nyersObj: nyers({ "állás": [nyersRekord("állás", 50, { n: 144 })] }),
   });
   await page.goto("/");
@@ -201,7 +203,8 @@ test("6. data-pontok / data-reszleges / data-hianyzo pontos egyenlőség; nevez�
   await expect(c).toHaveAttribute("data-pontok", "144");
   await expect(c).toHaveAttribute("data-reszleges", "1");
   await expect(c).toHaveAttribute("data-hianyzo", "24");
-  await expect(c.locator(".merteszamok")).toContainText("144/168 óra");             // 144 + 24
+  await expect(c.locator(".merteszamok")).toContainText("140/144 óra nem-nulla");   // jel erőssége elöl
+  await expect(c.locator(".merteszamok")).toContainText("144/168 lezárt");          // nevező = 144 + 24, zárójelben
 });
 
 // ── 7. §7.5 üres intervallum + lyukas sorozat (6a + 6b) ──────────────────────────────────────

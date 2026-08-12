@@ -93,9 +93,11 @@ def regresszio_egy_ablak(pontok, ablak_kezdet_utc, ablak_veg_utc, ablak_hossz_na
     if not lezart:
         return {"ervenyes": False, "ok": "nincs_adat"}
     n = len(lezart)
+    nem_nulla = sum(1 for p in lezart if p["ertek"] != 0)   # a jel erőssége (§8.3): a nullák éjszakai artefaktumok
     if n < MIN_PONT:
         return {"ervenyes": False, "ok": "keves_pont",
-                "pontok_hasznalt": n, "pontok_kihagyva_reszleges": kihagyva}
+                "pontok_hasznalt": n, "pontok_nem_nulla": nem_nulla,
+                "pontok_kihagyva_reszleges": kihagyva}
     ts = [_dt(p["idopont_utc"]) for p in lezart]
     x0 = ts[0]
     xs = [(t - x0).total_seconds() / 86400 for t in ts]
@@ -103,11 +105,13 @@ def regresszio_egy_ablak(pontok, ablak_kezdet_utc, ablak_veg_utc, ablak_hossz_na
     b, a, r2, se = _illesztes(xs, ys)
     if b is None:                                          # degenerált: nincs x-variancia
         return {"ervenyes": False, "ok": "degeneralt",
-                "pontok_hasznalt": n, "pontok_kihagyva_reszleges": kihagyva}
+                "pontok_hasznalt": n, "pontok_nem_nulla": nem_nulla,
+                "pontok_kihagyva_reszleges": kihagyva}
     span_nap = (ts[-1] - ts[0]).total_seconds() / 86400
     if span_nap < ablak_hossz_nap / 2:
         return {"ervenyes": False, "ok": "rovid_span",
-                "pontok_hasznalt": n, "pontok_kihagyva_reszleges": kihagyva}
+                "pontok_hasznalt": n, "pontok_nem_nulla": nem_nulla,
+                "pontok_kihagyva_reszleges": kihagyva}
     # A regressziós vonal két végpont-horgonya: az ELSŐ és UTOLSÓ LEZÁRT pont EREDETI
     # idopont_utc-jénél (a részleges záró NEM horgony → a vonal megáll előtte). Az ertek
     # TELJES float, adatréteg-kerekítés NÉLKÜL (szemben a meredekseg_nap/se/r2 kerekítéssel):
@@ -127,6 +131,7 @@ def regresszio_egy_ablak(pontok, ablak_kezdet_utc, ablak_veg_utc, ablak_hossz_na
         "ablak_kezdet_utc": ablak_kezdet_utc,
         "ablak_veg_utc": ablak_veg_utc,
         "pontok_hasznalt": n,
+        "pontok_nem_nulla": nem_nulla,
         "pontok_kihagyva_reszleges": kihagyva,
         "pontok_hianyzo": _hianyzo_orak(ablak_kezdet_utc, ablak_veg_utc, ts),
         "illesztes_vonal": illesztes_vonal,
