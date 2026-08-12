@@ -111,7 +111,32 @@ commitolja (a web ezekből dolgozik); a per-futás nyers CSV-ket felhőben nem
 
 A **Settings → Pages** alatt: *Source* = `Deploy from a branch`, *Branch* =
 `main` / `/docs`. Mentés után az oldal a `https://<felhasználó>.github.io/trendfigyelo/`
-címen él, a `docs/index.html` placeholderrel (a teljes felület Phase 3).
+címen él — a `docs/index.html` az **interaktív dashboard** (lásd **A webes felület** lentebb).
+
+## A webes felület
+
+A `docs/index.html` egy önálló, interaktív dashboard (vendorolt Chart.js, **semmi
+külső betöltés**). Két, egymástól elkülönített szekció, mindegyik a **saját**
+vezérlőjével egy sticky sávban (asztalin balra, mobilon a blokk fölé csúszva):
+
+- **Kulcsszavak** — szavanként külön kis diagram (small-multiples), **domén szerint
+  csoportosítva**. Minden kártya a szó saját 0–100 sorozatát és a regresszió
+  mérőszámait (meredekség + irány) mutatja. Az **intervallum-vezérlő** csak azokat a
+  gombokat engedi, amikhez tényleg van elég mért nap: ma az **1 hét** aktív, a
+  hosszabbak (2 hét…1 év) a napok közti **láncolásig** letiltva, magyarázó szöveggel.
+  Üres/lyukas vagy csupa-nulla sorozat **explicit magyar üres-állapotot** kap, nem
+  néma üres dobozt.
+- **Ma felkapott keresések** — a napi legfrissebb trendek listája **kategória-címkével**
+  és opcionális **kategória-szűrővel**, trendenként egy napi **sparkline**-nal. A
+  **dátumválasztóval** korábbi gyűjtött napokra lehet lépni (a `napok/index.json`-ban
+  ténylegesen szereplő napok közül).
+
+**Mindkét blokk a SAJÁT adata végét mutatja** — nem feltétlenül a mai naptári napot,
+hanem az utolsó sikeres gyűjtését. A két blokk dátuma **el is térhet:** ha egy nap a
+kulcsszó-ág 429 miatt blokkol (lásd **B terv**), a kulcsszó-blokk a trend-blokknál
+régebbi adaton állhat, és ezt a felület ma **nem jelzi külön**. A felület tehát **nem**
+ígér „mindig friss" adatot; a kulcsszó-pontszámok ráadásul **szavanként külön skálán**
+állnak, egymással **nem összemérhetők** (nincs rangsor).
 
 ## Robusztusság röviden
 
