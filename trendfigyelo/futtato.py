@@ -177,7 +177,14 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
         top_kifejezesek = [getattr(t, "keyword", "") for t in rangsorolt_trendek(api_trendek)]
         trend_idosorok = _ag(bejegyzesek, kliens, "idosor",
                             lambda: idosorok.gyujt(kliens, config, top_kifejezesek)) or []
-    except AgFeladva:
+    except AgFeladva as e:
+        # a kulcsszó-ág block-stopja a blokk ELŐTT lemért szavakat MENTI (spec 7.4).
+        # HATÓKÖR (szándékos szűkítés): csak az AgFeladva-ra akasztott részleg jön vissza;
+        # más kivétel esetén nincs e.reszleges → a részleg elveszik, mint a régi viselkedésben.
+        resz = getattr(e, "reszleges", None)
+        if resz:
+            kulcsszo_pontok, kulcsszo_napi_pontok, kulcsszo_nyers = resz
+            print(f"FIGYELEM: részleges mentés — {len(kulcsszo_nyers)} kulcsszó adata megmaradt a blokk előtt.")
         # a blokkolt ág után minden még nem naplózott ág kimarad
         logolt = {b["ag"] for b in bejegyzesek}
         for ag in AGAK:

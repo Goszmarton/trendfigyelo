@@ -373,6 +373,50 @@ def test_futtato_ures_kulcsszo_nem_ir_nyers_fajlt(tmp_path):
     assert not (docs_data / "kulcsszo_nyers.json").exists()
 
 
+class ReszlegesBlokkKliens:
+    """A kulcsszo-ág 1. szava sikeres, a 2. AgFeladva-t dob (részleges blokk)."""
+    def __init__(self):
+        self.tr = _dummy_tr()
+        self.szamlalok = {}
+    def hivas(self, ag, fn, *a, **k):
+        self.szamlalok[ag] = self.szamlalok.get(ag, 0) + 1
+        if ag == "felkapott_api":
+            return [SimpleNamespace(keyword="infláció", volume=50000, volume_growth_pct=10)]
+        if ag == "felkapott_rss":
+            return [SimpleNamespace(keyword="infláció", news=[])]
+        if ag == "kulcsszo":
+            if self.szamlalok["kulcsszo"] >= 2:            # a 2. szó blokkol
+                raise kliens.AgFeladva("kulcsszo", ["429", "429", "429", "429"])
+            kif = a[0][0]                                   # interest_over_time([kif]) első argja
+            return _egy_szo_df(kif, [30, 40], [
+                datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
+                datetime(2021, 1, 2, 10, tzinfo=timezone.utc),
+            ], [False, True])
+        return []
+    def hivasszam(self, ag):
+        return self.szamlalok.get(ag, 0)
+    def osszes_hivas(self):
+        return sum(self.szamlalok.values())
+
+
+def test_reszleges_kulcsszo_mentes(tmp_path):
+    """Block-stop a 2. szónál: az 1. (lemért) szó adata MEGMARAD a nyers fájlban;
+    a blokkolt szó nem. A napló továbbra is 'blokkolva'."""
+    import json
+    cfg = _config([KulcsszoTetel("a", "megelhetes", "szintmero"),
+                   KulcsszoTetel("b", "megelhetes", "szintmero")])
+    docs_data = tmp_path / "docs" / "data"
+    most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)
+    futtato.futtat(cfg, ReszlegesBlokkKliens(), tmp_path / "adatok", docs_data, most=most)
+    fajl = docs_data / "kulcsszo_nyers.json"
+    assert fajl.exists()                                    # a részleg megmentve → a fájl létrejön
+    adat = json.loads(fajl.read_text(encoding="utf-8"))
+    assert "a" in adat.get("kulcsszavak", {})               # az 1. szó megmaradt
+    assert "b" not in adat.get("kulcsszavak", {})           # a blokkolt szó nincs
+    eredmeny = {s["ag"]: s["eredmeny"] for s in _naplo_soronkent(tmp_path / "adatok")}
+    assert eredmeny["kulcsszo"] == "blokkolva"              # az ág naplója változatlanul blokkolva
+
+
 # --- hívás-plafon drótozás (E): a main a Kliensnek tervezett_hivasszam*max_probak-ot ad ---
 
 def test_main_beallitja_a_hivas_plafont(monkeypatch):

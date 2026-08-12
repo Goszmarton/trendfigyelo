@@ -125,8 +125,11 @@ def gyujt(kliens, config, most=None):
                 "kulcsszo", kliens.tr.interest_over_time,
                 [tetel.kifejezes], geo=config.geo, timeframe=config.kulcsszo_idokeret,
             )
-        except AgFeladva:
+        except AgFeladva as e:
             print(f"FIGYELEM: a kulcsszó-ág feladva (429) a(z) {tetel.kifejezes!r} szónál.")
+            # a blokk ELŐTT lemért szavakat a kivételre akasztjuk → a futtato menti (spec 7.4).
+            # HATÓKÖR (szándékos): CSAK az AgFeladva viszi a részleget; más kivétel nem.
+            e.reszleges = (pontok, napi_pontok, nyers_sorozatok)
             raise
         except Exception as e:
             print(f"FIGYELEM: a(z) {tetel.kifejezes!r} kulcsszó kimaradt ({e}).")
