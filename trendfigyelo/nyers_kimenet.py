@@ -154,3 +154,76 @@ def ir_gordulo(docs_data, nyers_sorozatok: dict, megtartott_nap: int = 14) -> Pa
     fajl.parent.mkdir(parents=True, exist_ok=True)
     fajl.write_text(json.dumps(adat, ensure_ascii=False, indent=2), encoding="utf-8")
     return fajl
+
+
+# ---------- Task 2 (Phase 4): másodlagos (nap/het) nyers kimenet ----------
+
+_MASODLAGOS_RACSOK = {"nap", "het"}
+
+
+def ervenyes_masodlagos_rekord(rek) -> list:
+    """A másodlagos rekord szerződés-hibái; ÜRES lista = érvényes.
+
+    A bázis `ervenyes_nyers_rekord`-ot ÚJRAHASZNÁLJA (ablak/pontok/ertek/reszleges),
+    és hozzáadja a másodlagos-specifikus mezőket: `racs` ∈ {nap, het} és a
+    kötelező `lekerdezes_utc` (tz-aware UTC ISO — a 3 pillanatkép rendezéséhez).
+    """
+    hibak = ervenyes_nyers_rekord(rek)
+    if not isinstance(rek, dict):
+        return hibak
+    if rek.get("racs") not in _MASODLAGOS_RACSOK:
+        hibak.append('racs: "nap" vagy "het" kell')
+    if _aware_dt(rek.get("lekerdezes_utc")) is None:
+        hibak.append("lekerdezes_utc: hiányzó vagy nem tz-aware UTC ISO")
+    return hibak
+
+
+def ir_masodlagos(docs_data, sorozatok: dict, megtartott_db: int = 3) -> Path:
+    """A friss nap/het rekordokat a kulcsszo_masodlagos_nyers.json-ba upsertli.
+
+    Retenció ADAT-relatív: szavanként a `megtartott_db` legutóbbi rekord marad,
+    `lekerdezes_utc` szerint (NEM falióra) — ha egy szó nem frissül, a története
+    NEM ürül. A karantén/hard-fail kettéválasztás az ir_gordulo mintájára:
+    - LEMEZRŐL visszaolvasott sérült örökség → karantén (kihagyás + naplózás);
+    - FRISS producer-rekord hibája a MI bugunk → ValueError (fail-loud).
+    """
+    fajl = Path(docs_data) / "kulcsszo_masodlagos_nyers.json"
+    if fajl.exists():
+        adat = json.loads(fajl.read_text(encoding="utf-8"))
+    else:
+        adat = {"kulcsszavak": {}}
+    kulcsszavak = adat.setdefault("kulcsszavak", {})
+
+    # 1) VISSZAOLVASOTT örökség: sérült rekord KARANTÉN
+    for kif in list(kulcsszavak):
+        tiszta = []
+        for r in kulcsszavak[kif]:
+            hibak = ervenyes_masodlagos_rekord(r)
+            if hibak:
+                print(f"FIGYELEM: sérült másodlagos rekord karanténba ({kif}): {hibak}")
+                continue
+            tiszta.append(r)
+        if tiszta:
+            kulcsszavak[kif] = tiszta
+        else:
+            del kulcsszavak[kif]
+
+    # 2) FRISS producer-kimenet: hibás rekord a MI bugunk → hard fail
+    for kifejezes, rek in sorozatok.items():
+        rendezett = _rendezett(rek)
+        hibak = ervenyes_masodlagos_rekord(rendezett)
+        if hibak:
+            raise ValueError(f"{kifejezes}: érvénytelen friss másodlagos rekord: {hibak}")
+        kulcsszavak.setdefault(kifejezes, []).append(rendezett)
+
+    # 3) retenció: szavanként a megtartott_db legutóbbi rekord lekerdezes_utc szerint (adat-relatív)
+    for kif in list(kulcsszavak):
+        kulcsszavak[kif] = sorted(
+            kulcsszavak[kif],
+            key=lambda r: _aware_dt(r.get("lekerdezes_utc")) or _MIN_DT,
+            reverse=True,
+        )[:megtartott_db]
+
+    fajl.parent.mkdir(parents=True, exist_ok=True)
+    fajl.write_text(json.dumps(adat, ensure_ascii=False, indent=2), encoding="utf-8")
+    return fajl
