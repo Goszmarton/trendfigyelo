@@ -105,6 +105,45 @@ def test_kulcsszo_idokeret_alapertelmezes(tmp_path):
     assert c.kulcsszo_idokeret == "now 7-d"
 
 
+# --- per-szó rács-mező (Phase 4 Task 1: séma, viselkedés-változás nélkül) ---
+
+JO_RACS = JO.replace(
+    '- {kifejezes: "infláció", domen: gazdasag, tipus: szintmero}',
+    '- {kifejezes: "infláció", domen: gazdasag, tipus: szintmero, racs: nap}',
+).replace(
+    '- {kifejezes: "benzinár", domen: fogyasztas, tipus: szintmero}',
+    '- {kifejezes: "benzinár", domen: fogyasztas, tipus: szintmero, racs: het}',
+)
+
+
+def test_racs_alapertelmezes_ora(tmp_path):
+    # racs nélküli bejegyzés → "ora" (visszafelé kompatibilis default)
+    c = config.betolt(_ir(tmp_path, JO))
+    assert all(t.racs == "ora" for t in c.osszes_kulcsszo())
+
+
+def test_racs_beolvas_nap_es_het(tmp_path):
+    c = config.betolt(_ir(tmp_path, JO_RACS))
+    racsok = {t.kifejezes: t.racs for t in c.osszes_kulcsszo()}
+    assert racsok["infláció"] == "nap"
+    assert racsok["benzinár"] == "het"
+    assert racsok["tüntetés"] == "ora"      # racs nélkül maradt → default
+
+
+def test_ervenytelen_racs_konfighibat_dob(tmp_path):
+    rossz = JO.replace("tipus: szintmero}", "tipus: szintmero, racs: havi}", 1)
+    with pytest.raises(config.KonfigHiba):
+        config.betolt(_ir(tmp_path, rossz))
+
+
+def test_racs_idokeret_terkep():
+    assert config.RACS_IDOKERET == {
+        "ora": "now 7-d",
+        "nap": "today 3-m",
+        "het": "today 12-m",
+    }
+
+
 def test_eles_config_lassitott_anti_block_utem():
     # A valódi projekt-config.yaml anti-block üteme (2. füst-teszt: azonnali 429 → lassítás)
     gyoker = Path(__file__).resolve().parent.parent
@@ -121,6 +160,21 @@ def test_eles_config_13_kulcsszo():
     assert len(tetelek) == 13
     assert all(t.tipus in {"szintmero", "esemenyjelzo", "hibrid"} for t in tetelek)
     assert any(t.kifejezes == "tüntetés" and t.tipus == "esemenyjelzo" for t in tetelek)
+
+
+def test_eles_config_racs_besorolas():
+    # a MÉRT (2026-08-13) rács-besorolás — regresszió-őr a config-adaton
+    gyoker = Path(__file__).resolve().parent.parent
+    c = config.betolt(gyoker / "config.yaml")
+    racsok = {t.kifejezes: t.racs for t in c.osszes_kulcsszo()}
+    assert racsok == {
+        "benzin": "ora", "nyugdíj": "ora",
+        "eladó lakás": "nap", "albérlet": "nap", "betegség": "nap",
+        "napelem": "nap", "hitel": "nap", "nyaralás": "nap",
+        "kormányablak": "het", "állás": "het", "kórház": "het",
+        "akciós újság": "het", "tüntetés": "het",
+    }
+    assert all(t.racs in config.RACSOK for t in c.osszes_kulcsszo())
 
 
 def test_szoras_mp_skalar_konfighibat_dob(tmp_path):

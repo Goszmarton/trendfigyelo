@@ -16,17 +16,19 @@ modszertan_valtas: 2026-07-30  # módszertani töréspont: az első éles szól�
 proxy: null                  # pl. "http://user:pass@host:port" — valódi hitelesítőt NE commitolj (publikus repo!); alap: nincs
 # Phase 2.5: szóló lekérdezés kulcsszavanként (horgony elvetve). Minden szó a saját 0–100 tartományát kapja.
 # tipus ∈ {szintmero, esemenyjelzo, hibrid}; a domének ékezet nélküliek (a magyar címke a frontendé).
+# racs ∈ {ora, nap, het} — a megjelenítés/trend felbontása (Phase 4, MÉRT 2026-08-13); hiány → "ora".
+# A gyűjtés 1. (órás, now 7-d) lekérdezése MINDEN szóra változatlan; a racs a másodlagos nap/het sorozatot vezérli.
 kulcsszavak:
-  - {kifejezes: "állás",        domen: munkaeropiac,       tipus: szintmero}
-  - {kifejezes: "kormányablak", domen: kozigazgatas,       tipus: szintmero}
-  - {kifejezes: "eladó lakás",  domen: lakhatas,           tipus: szintmero}
-  - {kifejezes: "albérlet",     domen: lakhatas,           tipus: szintmero}
-  - {kifejezes: "akciós újság", domen: fogyasztas,         tipus: szintmero}
-  - {kifejezes: "benzin",       domen: fogyasztas,         tipus: szintmero}
-  - {kifejezes: "nyaralás",     domen: fogyasztas,         tipus: szintmero}
-  - {kifejezes: "kórház",       domen: egeszseg,           tipus: szintmero}
-  - {kifejezes: "betegség",     domen: egeszseg,           tipus: szintmero}
-  - {kifejezes: "napelem",      domen: energia,            tipus: hibrid}
-  - {kifejezes: "nyugdíj",      domen: jovedelem,          tipus: hibrid}
-  - {kifejezes: "hitel",        domen: haztartasi_penzugy, tipus: szintmero}
-  - {kifejezes: "tüntetés",     domen: kozelet,            tipus: esemenyjelzo}
+  - {kifejezes: "állás",        domen: munkaeropiac,       tipus: szintmero,    racs: het}
+  - {kifejezes: "kormányablak", domen: kozigazgatas,       tipus: szintmero,    racs: het}
+  - {kifejezes: "eladó lakás",  domen: lakhatas,           tipus: szintmero,    racs: nap}
+  - {kifejezes: "albérlet",     domen: lakhatas,           tipus: szintmero,    racs: nap}
+  - {kifejezes: "akciós újság", domen: fogyasztas,         tipus: szintmero,    racs: het}
+  - {kifejezes: "benzin",       domen: fogyasztas,         tipus: szintmero,    racs: ora}
+  - {kifejezes: "nyaralás",     domen: fogyasztas,         tipus: szintmero,    racs: nap}
+  - {kifejezes: "kórház",       domen: egeszseg,           tipus: szintmero,    racs: het}
+  - {kifejezes: "betegség",     domen: egeszseg,           tipus: szintmero,    racs: nap}
+  - {kifejezes: "napelem",      domen: energia,            tipus: hibrid,       racs: nap}
+  - {kifejezes: "nyugdíj",      domen: jovedelem,          tipus: hibrid,       racs: ora}
+  - {kifejezes: "hitel",        domen: haztartasi_penzugy, tipus: szintmero,    racs: nap}
+  - {kifejezes: "tüntetés",     domen: kozelet,            tipus: esemenyjelzo, racs: het}

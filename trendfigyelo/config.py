@@ -11,9 +11,15 @@ from pathlib import Path
 
 import yaml
 
-KulcsszoTetel = namedtuple("KulcsszoTetel", ["kifejezes", "domen", "tipus"])
+KulcsszoTetel = namedtuple(
+    "KulcsszoTetel", ["kifejezes", "domen", "tipus", "racs"], defaults=("ora",))
 
 TIPUSOK = {"szintmero", "esemenyjelzo", "hibrid"}
+
+RACSOK = {"ora", "nap", "het"}
+
+# a per-szó rács → Trends timeframe (Phase 4: szavanként a legfinomabb működő rács)
+RACS_IDOKERET = {"ora": "now 7-d", "nap": "today 3-m", "het": "today 12-m"}
 
 
 class KonfigHiba(Exception):
@@ -84,7 +90,11 @@ def _kulcsszavak_beolvas(nyers) -> list:
         if tipus not in TIPUSOK:
             raise KonfigHiba(
                 f"kulcsszavak[{i}].tipus: {tipus!r} — a megengedett: {sorted(TIPUSOK)} ({kifejezes!r})")
-        ki.append(KulcsszoTetel(kifejezes, domen, tipus))
+        racs = t.get("racs", "ora")   # hiány → "ora" (visszafelé kompatibilis: mai órás viselkedés)
+        if racs not in RACSOK:
+            raise KonfigHiba(
+                f"kulcsszavak[{i}].racs: {racs!r} — a megengedett: {sorted(RACSOK)} ({kifejezes!r})")
+        ki.append(KulcsszoTetel(kifejezes, domen, tipus, racs))
     latott = set()
     for t in ki:
         if t.kifejezes in latott:
