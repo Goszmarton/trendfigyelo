@@ -151,6 +151,28 @@ def gyujt(kliens, config, most=None):
     return pontok, napi_pontok, nyers_sorozatok
 
 
+def gyujt_egy_masodlagos(kliens, config, tetel, most):
+    """EGY nap/het szó másodlagos (RACS_IDOKERET szerinti) lekérdezése → egy rekord vagy None.
+
+    A `kulcsszo_masodlagos` ág-néven megy (külön Kliens-számláló + napló-címke). Üres/oszlop
+    nélküli df → None (a szó kimarad). AgFeladva (429) NEM itt fogódik el — a hívó (a másodlagos
+    ág) csendesen feladja, de a MÁR kiírt szavak megmaradnak (spec 7.4 mintája, pótolható adaton).
+    """
+    from .config import RACS_IDOKERET
+    df = kliens.hivas(
+        "kulcsszo_masodlagos", kliens.tr.interest_over_time,
+        [tetel.kifejezes], geo=config.geo, timeframe=RACS_IDOKERET[tetel.racs])
+    if df is None or len(df) == 0:
+        return None
+    oszlop = _ertek_oszlop(df, tetel.kifejezes)
+    if oszlop is None:
+        return None
+    rek = _nyers_sorozat(df, tetel, oszlop, _ispartial_oszlop(df))
+    rek["racs"] = tetel.racs
+    rek["lekerdezes_utc"] = most.isoformat()
+    return rek
+
+
 def csv_ir(mappa, idobelyeg, letoltve, geo, pontok):
     if not pontok:
         return None

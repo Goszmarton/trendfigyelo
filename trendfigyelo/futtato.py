@@ -16,7 +16,7 @@ from .config import betolt
 from .kliens import AgFeladva, Kliens
 
 # az ágak logolási sorrendje (block-stop kihagyás jelöléséhez) = a valós végrehajtási sorrend
-AGAK = ["felkapott_api", "felkapott_rss", "kulcsszo", "idosor"]
+AGAK = ["felkapott_api", "felkapott_rss", "kulcsszo", "idosor", "kulcsszo_masodlagos"]
 
 
 def tervezett_hivasszam(config) -> int:
@@ -26,6 +26,46 @@ def tervezett_hivasszam(config) -> int:
     + kulcsszo (SZÓLÓ: szavankénti egy hívás = len(kulcsszavak)).
     """
     return 2 + config.trend_idosor_max + len(config.osszes_kulcsszo())
+
+
+# a másodlagos (nap/het) ág napi maximuma — szerkezeti konstans (a 2-2-2-2-1-1-1
+# körbeforgó eloszlás csúcsa), NEM naptár-függő; a hívás-plafon fejtere ebből jön.
+MAX_MASODLAGOS_NAPI = 2
+
+
+def masodlagos_szavak_ma(config, most):
+    """A ma (a `most` UTC hétnapja) ütemezett nap/het szavak.
+
+    A nem-órás szavak config-sorrend szerinti SORSZÁMA % 7 == hétnap → körbeforgó,
+    konstrukcióból kiegyensúlyozott (11 szó → 2-2-2-2-1-1-1). FIGYELEM: a konkrét
+    szó→nap hozzárendelés config-sorrend-FÜGGŐ — egy szó beszúrása a lista közepére
+    minden alatta lévőt eltol (a nap/het pótolható, ez nem baj, de nem szerződés).
+    """
+    nem_oras = [t for t in config.osszes_kulcsszo() if t.racs != "ora"]
+    hetnap = most.weekday()
+    return [t for i, t in enumerate(nem_oras) if i % 7 == hetnap]
+
+
+def _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most):
+    """A másodlagos (nap/het) ág: a ma ütemezett szavakat SZAVANKÉNT kéri le és írja.
+
+    LEGUTOLSÓ ág (a pótolhatatlan órás UTÁN). A `kulcsszo_masodlagos` a napló-címke
+    és a Kliens-számláló kulcsa → a `naplo.csv`-ben elkülönül az órás `kulcsszo` blokktól.
+    429 → CSENDES FELADÁS (saját try/except; NEM propagál, nem block-stop): a futás
+    tisztán folytatódik (a nap/het pótolható). SZAVANKÉNTI írás → a blokk ELŐTT lemért
+    szavak megmaradnak (a 2026-08-12-i részleges-mentés fix rendszeres éles próbája).
+    """
+    ag = "kulcsszo_masodlagos"
+    try:
+        for tetel in masodlagos_szavak_ma(config, most):
+            rek = kulcsszavak.gyujt_egy_masodlagos(kliens, config, tetel, most)
+            if rek:
+                nyers_kimenet.ir_masodlagos(docs_data_mappa, {tetel.kifejezes: rek})
+        bejegyzesek.append({"ag": ag, "eredmeny": "siker",
+                            "hivasok_szama": kliens.hivasszam(ag), "hibakodok": ""})
+    except AgFeladva as e:
+        bejegyzesek.append({"ag": ag, "eredmeny": "blokkolva",
+                            "hivasok_szama": kliens.hivasszam(ag), "hibakodok": ",".join(e.hibakodok)})
 
 
 def rangsorolt_trendek(api_trendek) -> list:
@@ -177,6 +217,10 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
         top_kifejezesek = [getattr(t, "keyword", "") for t in rangsorolt_trendek(api_trendek)]
         trend_idosorok = _ag(bejegyzesek, kliens, "idosor",
                             lambda: idosorok.gyujt(kliens, config, top_kifejezesek)) or []
+        # másodlagos (nap/het) ág — LEGUTOLSÓ, pótolható; csendes feladás (saját try/except,
+        # NEM block-stop). Ha egy korábbi ág block-stopol, ide nem jutunk → a lenti except
+        # az AGAK-ban "kulcsszo_masodlagos"-t "kihagyva"-ra teszi.
+        _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most)
     except AgFeladva as e:
         # a kulcsszó-ág block-stopja a blokk ELŐTT lemért szavakat MENTI (spec 7.4).
         # HATÓKÖR (szándékos szűkítés): csak az AgFeladva-ra akasztott részleg jön vissza;
@@ -309,7 +353,7 @@ def main() -> int:
     config = betolt()
     # hívás-plafon = a strukturális maximum (minden logikai hívás mind a max_probak
     # próbát kimeríti); efölött már csak call-multiplying bug lehet → azonnali leállás
-    kliens = Kliens(config, plafon=tervezett_hivasszam(config) * config.max_probak)
+    kliens = Kliens(config, plafon=(tervezett_hivasszam(config) + MAX_MASODLAGOS_NAPI) * config.max_probak)
     print(f"Várható Google-hívásszám (429 nélkül): ~{tervezett_hivasszam(config)}")
     return futtat(config, kliens, Path("adatok"), Path("docs") / "data")
 

@@ -290,7 +290,7 @@ def test_kulcsszo_az_idosor_elott_fut(tmp_path):
 
 def test_agak_konstans_a_vegrehajtasi_sorrenddel_egyezik():
     """Az AGAK block-stop kihagyás-jelölő sorrendje = a valós végrehajtási sorrend."""
-    assert futtato.AGAK == ["felkapott_api", "felkapott_rss", "kulcsszo", "idosor"]
+    assert futtato.AGAK == ["felkapott_api", "felkapott_rss", "kulcsszo", "idosor", "kulcsszo_masodlagos"]
 
 
 class IdosorBlokkolKliens:
@@ -433,7 +433,7 @@ def test_main_beallitja_a_hivas_plafont(monkeypatch):
     monkeypatch.setattr(futtato, "futtat", lambda *a, **k: 0)
     futtato.main()
     cfg = betolt()
-    vart = futtato.tervezett_hivasszam(cfg) * cfg.max_probak
+    vart = (futtato.tervezett_hivasszam(cfg) + futtato.MAX_MASODLAGOS_NAPI) * cfg.max_probak
     # Csak a DRÓTOZÁST asszertáljuk (tervezett * max_probak), config-agnosztikusan: a
     # kulcsszólista a 6.2 szerint változhat, ezért NEM pinneljük a 120-at az élő confighoz.
     # (Az aritmetikai pin — 2+15+13=30 — a test_tervezett_hivasszam_teljes_config-ban él,
