@@ -115,6 +115,30 @@ a `kulcsszo_nyers` egyetlen napi pillanatképe 169 órás pontot, azaz **7 telje
 napot** fed le, egyetlen normalizálás alatt. Ezen a hét napon belül a
 sorozat alakja, iránya és meredeksége **értelmezhető** — láncolás nélkül is.
 
+#### 1.4.1 Ablak-relatív újranormálás — a harmadik mechanizmus (MEGFIGYELÉS)
+
+Az azonos naptári órához tartozó pontszám **futásról futásra változhat**, és ez
+NEM azonos két korábban ismert jelenséggel: nem az órás jitter (a Google enyhe
+zaja), és nem a kigördülés (a 7 napos ablak elejéről kieső órák). Egy **harmadik**
+mechanizmus is működik, amit 2026-08-13-án pontról pontra megmértünk:
+
+- **A mérés:** két egymást követő nap `now 7-d` lekérdezésének **71 átfedő
+  órájából 69 bájt-azonos**; a 2 eltérő pont **pontosan a régi ablak csúcsai**.
+- **A megfigyelt viselkedés:** a `now 7-d` minden pontszámot **az adott lekérdezés
+  ablakán belüli maximumhoz** normál 0–100-ra. Amikor az új ablakba a réginél
+  **nagyobb valós csúcs** kerül (a tegnapelőtti max, 08-08T01:00 = 100, kigördült,
+  és az új ablakban magasabb csúcsok jelentek meg), a régi **al-csúcsok relatív
+  értéke lecsökken**, a legkisebbek **0-ra kerekednek**. A `tüntetés` 5→2 esete
+  ennek a keveréke volt (kigördülés + újranormálás), nem jitter.
+
+**A megfogalmazás szándékosan MEGFIGYELÉST rögzít, nem okot:** azt mondjuk ki, MIT
+mértünk (átfedő pontok viselkedése), nem azt, hogy a Google belső algoritmusa
+pontosan hogyan dönt. A gyakorlati következmény ugyanaz, mint az 1.4 fő
+szabályáé: **különböző lekérdezésekből származó pontszámok nem összemérhetők**, és
+egy korábbi pillanatkép sub-csúcs értékei nem tekinthetők stabilnak, ha közben az
+ablak maximuma megváltozott. Ez a §8.2 láncolás egyik nyitott kockázatának is
+forrása.
+
 ---
 
 ## 2. Célok
@@ -650,6 +674,20 @@ Amit már most rögzíteni kell, mert a Phase 3 adatszerkezetét érinti:
 - A **hiányzó napok** (7.5) megtörik a láncot; a szomszédos átfedés hiányában
   a skálázó nem számolható, tehát a lánc szakaszokra bomlik. Ezt a Phase 4
   tervezésének kezelnie kell — a Minor 3 dedup **nem** erre való.
+
+**NYITOTT KÉRDÉS (2026-08-14, nem megoldva) — a lezárt szakasz sem invariáns.**
+A skálázó-visszaszámolás feltételezi, hogy a két szomszédos ablak **átfedő
+szakasza stabil** (ugyanazok a pontszámok mindkét lekérdezésben), és ezért a lánc
+a **lezárt (nem részleges)** részből biztonságosan épül. Az §1.4.1-ben megmért
+ablak-relatív újranormálás azonban azt mutatja, hogy **még a lezárt szakasz sem
+feltétlenül invariáns**: ha a két lekérdezés között az ablak maximuma
+megváltozik (új, nagyobb valós csúcs kerül be), az átfedő — akár lezárt — pontok
+relatív értéke elcsúszhat, a legkisebbek 0-ra kerekedhetnek. Ekkor a két ablakból
+számolt skálázó **nem konzisztens**, és a lánc egy rejtett törést kap, amit a
+hiányzó-nap-detektálás NEM lát (a nap megvan, csak a skálája csúszott). A feloldás
+Phase 4 tervezési kérdés (pl. csúcs-váltás detektálása az átfedésben, vagy a
+skálázó több átfedő pontra vett robusztus becslése) — itt csak **rögzítve, nem
+eldöntve**.
 
 ### 8.3 Regressziós kimenet (`kulcsszo_regresszio.json`)
 
