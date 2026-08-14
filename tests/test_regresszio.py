@@ -250,3 +250,103 @@ def test_valos_adatbol():
         assert v["meres_kezdete"] == "2026-07-30" and v["aktiv"] is True
         assert v["intervallumok"]["1_het"]["ervenyes"] is True
         assert v["intervallumok"]["2_het"]["ok"] == "nincs_lancolas"
+
+
+# ── Task 6a-1: _hianyzo_pontok(grid_step) ─────────────────────────────────────
+# A 3600-hardkód helyett rács-paraméter. Az órás (grid_step=3600) bitre a régi.
+
+def test_hianyzo_pontok_oras_azonos_a_regivel():
+    # 160 lezárt órás pont egy 168 órás ablakban → 8 hiányzó, mint a _hianyzo_orak
+    veg = KEZD + timedelta(hours=168)
+    ts = [KEZD + timedelta(hours=i) for i in range(160)]
+    assert regresszio._hianyzo_pontok(KEZD.isoformat(), veg.isoformat(), ts, 3600) == 8
+
+
+def test_hianyzo_pontok_napi_5_hianyzo():
+    # 85 lezárt NAPI pont egy 90 napos ablakban → 5 hiányzó (grid_step=86400)
+    veg = KEZD + timedelta(days=90)
+    ts = [KEZD + timedelta(days=i) for i in range(85)]
+    assert regresszio._hianyzo_pontok(KEZD.isoformat(), veg.isoformat(), ts, 86400) == 5
+
+
+def test_hianyzo_orak_wrapper_valtozatlan_SZANDEKOS_ZOLD():
+    # SZÁNDÉKOS-ZÖLD: a _hianyzo_orak a refaktor UTÁN is 8-at ad (golden, guard)
+    veg = KEZD + timedelta(hours=168)
+    ts = [KEZD + timedelta(hours=i) for i in range(160)]
+    assert regresszio._hianyzo_orak(KEZD.isoformat(), veg.isoformat(), ts) == 8
+
+
+# ── Task 6a-2: _intervallumok(rekordok, racs) — rács-szűrés + farokszeletelés ──
+def _rekord(kezd, veg, pontok):
+    return {"ablak_kezdet_utc": kezd.isoformat(), "ablak_veg_utc": veg.isoformat(), "pontok": pontok}
+
+
+def test_intervallumok_napi_szeleteles():
+    # 90 lezárt NAPI pont (napok 0..89) + részleges a 90. napon; nominal=90, MIN_PONT=12
+    veg = KEZD + timedelta(days=90)
+    pontok = [_pont(KEZD + timedelta(days=i), 10 + 0.5 * i) for i in range(90)]
+    pontok.append(_pont(veg, 60, reszleges=True))
+    iv = regresszio._intervallumok([_rekord(KEZD, veg, pontok)], "nap")
+    assert iv["1_het"]["ok"] == "keves_pont"          # ~7 pt < 12
+    assert iv["2_het"]["ervenyes"] is True            # ~14 pt
+    assert iv["1_ho"]["ervenyes"] is True             # ~30 pt
+    assert iv["3_ho"]["ervenyes"] is True             # teljes 90 napos ablak
+    assert iv["1_ev"]["ok"] == "nincs_lancolas"       # 365 > 90 → láncolás kellene
+
+
+def test_intervallumok_heti_szeleteles():
+    # 53 lezárt HETI pont (hét 0..52, nap 0..364) + részleges a 365. napon; nominal=365, MIN_PONT=7
+    veg = KEZD + timedelta(days=365)
+    pontok = [_pont(KEZD + timedelta(days=7 * i), 20 + 0.3 * i) for i in range(53)]
+    pontok.append(_pont(veg, 30, reszleges=True))
+    iv = regresszio._intervallumok([_rekord(KEZD, veg, pontok)], "het")
+    assert iv["1_het"]["ok"] == "keves_pont"          # ~1 pt
+    assert iv["2_het"]["ok"] == "keves_pont"          # ~2 pt
+    assert iv["1_ho"]["ok"] == "keves_pont"           # ~4 pt < 7
+    assert iv["3_ho"]["ervenyes"] is True             # ~13 heti pt
+    assert iv["1_ev"]["ervenyes"] is True             # teljes 365 napos ablak, ~53 pt
+
+
+def test_intervallumok_ora_valtozatlan_SZANDEKOS_ZOLD():
+    # SZÁNDÉKOS-ZÖLD: ora rácson a régi viselkedés — 1_het érvényes, a többi nincs_lancolas
+    veg = KEZD + timedelta(hours=168)
+    iv = regresszio._intervallumok([_rekord(KEZD, veg, _oras(168, partial=True))], "ora")
+    assert iv["1_het"]["ervenyes"] is True
+    assert iv["2_het"]["ok"] == "nincs_lancolas" and iv["1_ev"]["ok"] == "nincs_lancolas"
+
+
+# ── Task 6a-3: regresszio_masodlagos_szamit — a nap/het szavak regressziója ────
+def test_masodlagos_szamit_racs_es_intervallumok():
+    veg = KEZD + timedelta(days=90)
+    pontok = [_pont(KEZD + timedelta(days=i), 10 + 0.5 * i) for i in range(90)]
+    pontok.append(_pont(veg, 60, reszleges=True))
+    masodlagos = {"kulcsszavak": {"albérlet": [{
+        "racs": "nap", "lekerdezes_utc": veg.isoformat(),
+        "ablak_kezdet_utc": KEZD.isoformat(), "ablak_veg_utc": veg.isoformat(), "pontok": pontok}]}}
+    out = regresszio.regresszio_masodlagos_szamit(masodlagos, _tortenet({}), _config(["albérlet"]), "T")
+    w = out["kulcsszavak"]["albérlet"]
+    assert w["racs"] == "nap"                                  # a rács a rekordból
+    assert w["intervallumok"]["3_ho"]["ervenyes"] is True       # a nap rács szerint számol
+    assert w["intervallumok"]["1_ev"]["ok"] == "nincs_lancolas"
+
+
+# ── Task 6a-4: esemenyjelzo → nincs illesztés, van szint (medián) ─────────────
+def test_esemenyjelzo_skip_ok_es_szint():
+    # tüntetés-szerű: tipus=esemenyjelzo → minden intervallum ok:"esemenyjelzo",
+    # a szint a MEGJELENÍTETT sor nem-részleges értékeinek MEDIÁNJA (a backendben).
+    veg = KEZD + timedelta(days=365)
+    vals = [2, 4, 6, 8, 10]                                    # medián 6; a 99-es részleges kizárva
+    pontok = [_pont(KEZD + timedelta(days=7 * i), vals[i]) for i in range(5)]
+    pontok.append(_pont(veg, 99, reszleges=True))
+    masodlagos = {"kulcsszavak": {"tüntetés": [{
+        "racs": "het", "lekerdezes_utc": veg.isoformat(),
+        "ablak_kezdet_utc": KEZD.isoformat(), "ablak_veg_utc": veg.isoformat(), "pontok": pontok}]}}
+    cfg = SimpleNamespace(modszertan_valtas="2026-07-30",
+                          osszes_kulcsszo=lambda: [SimpleNamespace(
+                              kifejezes="tüntetés", domen="kz", tipus="esemenyjelzo")])
+    out = regresszio.regresszio_masodlagos_szamit(masodlagos, _tortenet({}), cfg, "T")
+    w = out["kulcsszavak"]["tüntetés"]
+    assert w["szint"] == 6 and w["szint_modszer"] == "median"   # backend számolja
+    assert w["intervallumok"]["1_ev"]["ok"] == "esemenyjelzo"   # nincs illesztés
+    assert w["intervallumok"]["3_ho"]["ok"] == "esemenyjelzo"
+    assert all(iv["ok"] == "esemenyjelzo" for iv in w["intervallumok"].values())

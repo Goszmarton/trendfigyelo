@@ -21,13 +21,20 @@ frissül, amikor a mai nap teljes napként bekerül a tortenet-be).
 """
 from __future__ import annotations
 
-from datetime import datetime
+import statistics
+from datetime import datetime, timedelta
 from pathlib import Path
 
 from . import json_export
 
 INTERVALLUMOK = {"1_het": 7, "2_het": 14, "1_ho": 30, "3_ho": 90, "1_ev": 365}
-MIN_PONT = 24
+MIN_PONT = 24                               # ora: 168/7 (a 7 napos ablak 1/7-e)
+# rács-tudatos regresszió (Task 6a): a rács szerinti slot-hossz és a rács-arányos
+# MIN_PONT = ⌊ablak_pontszám/7⌋ (ora 24 VÁLTOZATLAN / nap 12 / het 7); a RACS_ABLAK_NAP
+# a rács természetes ablaka (a "nincs_lancolas" határa üres adatnál).
+RACS_GRID_STEP = {"ora": 3600, "nap": 86400, "het": 604800}
+RACS_ABLAK_NAP = {"ora": 7, "nap": 90, "het": 365}
+RACS_MIN_PONT = {"ora": 24, "nap": 12, "het": 7}
 IRANY_KUSZOB = 1.0                          # relatív pont / nap
 MEREDEKSEG_EGYSEG = "relatív pont / nap"
 R2_MEGJEGYZES = ("Az R² autokorrelált órás soron számolt — MÁSODLAGOS; az elsődleges a "
@@ -70,23 +77,32 @@ def _irany(meredekseg):
     return "novekszik" if meredekseg > 0 else "csokken"
 
 
-def _hianyzo_orak(ablak_kezdet_utc, ablak_veg_utc, lezart_ts):
-    """A hiányzó lezárt órás slotok száma AZ ABLAKHOZ mérve (nem csak a pontok közt).
+def _hianyzo_pontok(ablak_kezdet_utc, ablak_veg_utc, lezart_ts, grid_step):
+    """A hiányzó lezárt slotok száma AZ ABLAKHOZ mérve (nem csak a pontok közt).
 
-    A [kezdet, veg) órás rács slotjai a várt lezárt pontok (a veg = részleges slot,
-    kizárva). Így az eleji ÉS a végi csonkolás is látszik, nem csak a belső lyuk.
+    A [kezdet, veg) rács slotjai (grid_step mp) a várt lezárt pontok (a veg = részleges
+    slot, kizárva). Így az eleji ÉS a végi csonkolás is látszik. A grid_step a rácstól
+    függ (ora 3600 / nap 86400 / het 604800) → rács-független számlálás.
     """
     kezd = _dt(ablak_kezdet_utc)
     veg = _dt(ablak_veg_utc)
-    vart = round((veg - kezd).total_seconds() / 3600)
+    vart = round((veg - kezd).total_seconds() / grid_step)
     return max(vart - len(lezart_ts), 0)
 
 
-def regresszio_egy_ablak(pontok, ablak_kezdet_utc, ablak_veg_utc, ablak_hossz_nap):
-    """Egy intervallum mérőszámai EGY szó EGY ablakának órás pontjaiból.
+def _hianyzo_orak(ablak_kezdet_utc, ablak_veg_utc, lezart_ts):
+    """Órás wrapper a _hianyzo_pontok fölött (grid_step=3600) — bitre a régi viselkedés."""
+    return _hianyzo_pontok(ablak_kezdet_utc, ablak_veg_utc, lezart_ts, 3600)
 
-    A reszleges:true pont(ok) kihagyva (spec 8.3). ervenyes = pontok_hasznalt >= MIN_PONT
+
+def regresszio_egy_ablak(pontok, ablak_kezdet_utc, ablak_veg_utc, ablak_hossz_nap,
+                         grid_step=3600, min_pont=MIN_PONT):
+    """Egy intervallum mérőszámai EGY szó EGY ablakának pontjaiból.
+
+    A reszleges:true pont(ok) kihagyva (spec 8.3). ervenyes = pontok_hasznalt >= min_pont
     ÉS span >= ablak_hossz_nap/2. Ok-kódok: nincs_adat / keves_pont / degeneralt / rovid_span.
+    A grid_step/min_pont a RÁCSTÓL függ (Task 6a); a defaultok (3600, 24) = az órás viselkedés,
+    bitre változatlan. A hiányzó-slot számlálás a grid_step szerint (nap/het is helyes).
     """
     lezart = sorted((p for p in pontok if not p.get("reszleges")), key=lambda p: p["idopont_utc"])
     kihagyva = len(pontok) - len(lezart)
@@ -94,7 +110,7 @@ def regresszio_egy_ablak(pontok, ablak_kezdet_utc, ablak_veg_utc, ablak_hossz_na
         return {"ervenyes": False, "ok": "nincs_adat"}
     n = len(lezart)
     nem_nulla = sum(1 for p in lezart if p["ertek"] != 0)   # a jel erőssége (§8.3): a nullák éjszakai artefaktumok
-    if n < MIN_PONT:
+    if n < min_pont:
         return {"ervenyes": False, "ok": "keves_pont",
                 "pontok_hasznalt": n, "pontok_nem_nulla": nem_nulla,
                 "pontok_kihagyva_reszleges": kihagyva}
@@ -133,7 +149,7 @@ def regresszio_egy_ablak(pontok, ablak_kezdet_utc, ablak_veg_utc, ablak_hossz_na
         "pontok_hasznalt": n,
         "pontok_nem_nulla": nem_nulla,
         "pontok_kihagyva_reszleges": kihagyva,
-        "pontok_hianyzo": _hianyzo_orak(ablak_kezdet_utc, ablak_veg_utc, ts),
+        "pontok_hianyzo": _hianyzo_pontok(ablak_kezdet_utc, ablak_veg_utc, ts, grid_step),
         "illesztes_vonal": illesztes_vonal,
     }
 
@@ -149,19 +165,38 @@ def _domen_tipus(szo, aktivak, napok):
     return None, None
 
 
-def _intervallumok(nyers_rekordok):
+def _intervallumok(nyers_rekordok, racs="ora"):
+    """A rács intervallumai a LEGFRISSEBB pillanatképből, farokszeleteléssel.
+
+    A rács természetes ablakán (RACS_ABLAK_NAP) TÚLNYÚLÓ intervallum → nincs_lancolas
+    (egyetlen pillanatkép nem fedi; órásnál a 2_het+ ide esik, spec 8.2). Az ablakon
+    BELÜLI intervallumot a pillanatkép farkából szeleteljük (nincs láncolás, nincs új
+    hívás); a teljes ablakot lefedő intervallum a rekord eredeti határaival megy (ora
+    1_het bitre változatlan). A rács adja a grid_step-et és a MIN_PONT-ot (Task 6a).
+    """
+    grid_step = RACS_GRID_STEP.get(racs, 3600)
+    min_pont = RACS_MIN_PONT.get(racs, MIN_PONT)
+    nominal = RACS_ABLAK_NAP.get(racs, 7)
+    rek = max(nyers_rekordok, key=lambda r: r["ablak_veg_utc"]) if nyers_rekordok else None
+    if rek is not None:
+        veg_dt = _dt(rek["ablak_veg_utc"])
+        ablak_nap = round((veg_dt - _dt(rek["ablak_kezdet_utc"])).total_seconds() / 86400)
     ki = {}
-    if nyers_rekordok:
-        rek = max(nyers_rekordok, key=lambda r: r["ablak_veg_utc"])     # a legfrissebb pillanatkép
-        ki["1_het"] = regresszio_egy_ablak(rek["pontok"], rek["ablak_kezdet_utc"],
-                                           rek["ablak_veg_utc"], INTERVALLUMOK["1_het"])
-    else:
-        ki["1_het"] = {"ervenyes": False, "ok": "nincs_adat"}
-    # 2_het+ : láncolás Phase 4 (spec 7.2/8.2). A napi tortenet-aggregátum NEM forrás (1.4):
-    # a napi átlagok naponként külön normalizáltak, nem összemérhetők. A gomb a láncolástól
-    # függ, NEM a naptártól — 14 szóló nap önmagában nem nyitja ki.
-    for kulcs in ("2_het", "1_ho", "3_ho", "1_ev"):
-        ki[kulcs] = {"ervenyes": False, "ok": "nincs_lancolas"}
+    for kulcs, hossz in INTERVALLUMOK.items():
+        if hossz > nominal:                          # túlnyúlik a rács ablakán → láncolás kell
+            ki[kulcs] = {"ervenyes": False, "ok": "nincs_lancolas"}
+        elif rek is None:
+            ki[kulcs] = {"ervenyes": False, "ok": "nincs_adat"}
+        elif hossz >= ablak_nap:                      # a teljes pillanatkép — eredeti határok
+            ki[kulcs] = regresszio_egy_ablak(rek["pontok"], rek["ablak_kezdet_utc"],
+                                             rek["ablak_veg_utc"], hossz,
+                                             grid_step=grid_step, min_pont=min_pont)
+        else:                                         # farokszelet: az utolsó `hossz` nap
+            kezdet_dt = veg_dt - timedelta(days=hossz)
+            szelet = [p for p in rek["pontok"] if _dt(p["idopont_utc"]) >= kezdet_dt]
+            ki[kulcs] = regresszio_egy_ablak(szelet, kezdet_dt.isoformat(),
+                                             rek["ablak_veg_utc"], hossz,
+                                             grid_step=grid_step, min_pont=min_pont)
     return ki
 
 
@@ -205,3 +240,56 @@ def regresszio_szamit(nyers, tortenet, config, szamitva_utc):
 
 def regresszio_ir(docs_data, adat) -> Path:
     return json_export._ir_json(Path(docs_data) / "kulcsszo_regresszio.json", adat)
+
+
+def regresszio_masodlagos_szamit(masodlagos_nyers, tortenet, config, szamitva_utc):
+    """A kulcsszo_masodlagos_regresszio.json: a nap/het szavak RÁCS-tudatos regressziója.
+
+    A racs a rekordból jön (per-szó nap/het), az intervallumok a rács szerint (Task 6a-2).
+    Külön fájl, hogy az órás kulcsszo_regresszio.json ÉRINTETLEN maradjon. Nulla Google-hívás.
+    Szóhalmaz: a másodlagos nyers fájl szavai (amiknek van nap/het adatuk).
+    """
+    marker = config.modszertan_valtas
+    aktivak = {t.kifejezes: t for t in config.osszes_kulcsszo()}
+    napok_szonkent = {}
+    for nap in tortenet.get("napok", []):
+        d = nap["nap"]
+        if marker is not None and d < marker:
+            continue
+        for rek in nap["kulcsszavak"]:
+            napok_szonkent.setdefault(rek["kulcsszo"], []).append((d, rek))
+
+    ki = {}
+    for szo, rekordok in masodlagos_nyers.get("kulcsszavak", {}).items():
+        rek = max(rekordok, key=lambda r: r["ablak_veg_utc"]) if rekordok else None
+        racs = rek.get("racs") if rek else None
+        napok = sorted(napok_szonkent.get(szo, []), key=lambda x: x[0])
+        domen, tipus = _domen_tipus(szo, aktivak, napok)
+        ki[szo] = {
+            "racs": racs,
+            "aktiv": szo in aktivak,
+            "domen": domen,
+            "tipus": tipus,
+        }
+        if tipus == "esemenyjelzo":
+            # esemény-jelző (pl. tüntetés): NINCS trendvonal — a friss szakasz kerekítési
+            # padló-zaja nem trend (§4). HELYETTE szint = a nem-részleges értékek MEDIÁNJA
+            # (robusztus az esemény-csúcsokra, ellentétben az átlaggal). A frontend csak rajzol.
+            lezart = [p["ertek"] for p in rek["pontok"] if not p.get("reszleges")] if rek else []
+            ki[szo]["szint"] = statistics.median(lezart) if lezart else None
+            ki[szo]["szint_modszer"] = "median"
+            ki[szo]["intervallumok"] = {k: {"ervenyes": False, "ok": "esemenyjelzo"}
+                                        for k in INTERVALLUMOK}
+        else:
+            ki[szo]["intervallumok"] = _intervallumok(rekordok, racs or "ora")
+    return {
+        "szamitva_utc": szamitva_utc,
+        "meredekseg_egyseg": MEREDEKSEG_EGYSEG,
+        "irany_kuszob": IRANY_KUSZOB,
+        "megjegyzes": R2_MEGJEGYZES,
+        "kulcsszavak": ki,
+    }
+
+
+def regresszio_ir_masodlagos(docs_data, adat) -> Path:
+    return json_export._ir_json(Path(docs_data) / "kulcsszo_masodlagos_regresszio.json", adat)

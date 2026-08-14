@@ -326,6 +326,30 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
                                 "hivasok_szama": 0, "hibakodok": type(e).__name__})
             print(f"FIGYELEM: a regresszió kimaradt — nem blokkolja az adatmentést ({e}).")
 
+    # ---------- másodlagos (nap/het) regresszió (származtatott, VÉDETTEN; Task 6a) ----------
+    # KÜLÖN fájl (kulcsszo_masodlagos_regresszio.json), hogy az órás nézet érintetlen legyen.
+    # Nulla Google-hívás; az órás regresszió mintája szerint egy hibája SOHA nem viheti el az
+    # adatmentést vagy az exit-kódot, de NEM néma (FIGYELEM + naplósor). A bemenet hiánya → kihagyva.
+    masodlagos_nyers_fajl = docs_data_mappa / "kulcsszo_masodlagos_nyers.json"
+    if not masodlagos_nyers_fajl.exists():
+        bejegyzesek.append({"ag": "regresszio_masodlagos", "eredmeny": "kihagyva",
+                            "hivasok_szama": 0, "hibakodok": ""})
+    else:
+        try:
+            masodlagos = json.loads(masodlagos_nyers_fajl.read_text(encoding="utf-8"))
+            tortenet_fajl = docs_data_mappa / "tortenet.json"
+            tortenet = (json.loads(tortenet_fajl.read_text(encoding="utf-8"))
+                        if tortenet_fajl.exists() else {})
+            regresszio.regresszio_ir_masodlagos(
+                docs_data_mappa,
+                regresszio.regresszio_masodlagos_szamit(masodlagos, tortenet, config, letoltve))
+            bejegyzesek.append({"ag": "regresszio_masodlagos", "eredmeny": "siker",
+                                "hivasok_szama": 0, "hibakodok": ""})
+        except Exception as e:
+            bejegyzesek.append({"ag": "regresszio_masodlagos", "eredmeny": "hiba",
+                                "hivasok_szama": 0, "hibakodok": type(e).__name__})
+            print(f"FIGYELEM: a másodlagos regresszió kimaradt — nem blokkolja az adatmentést ({e}).")
+
     # ---------- folytonosság-diagnosztika (B2, származtatott; CSAK naplóz, VÉDETTEN) ----------
     # A napi_ir ekkorra már beírta a mai nap_iso-t az index.json-ba. Az utolsó két rögzített
     # dátum köze mutatja, kimaradt-e futás (belső folytonosság, NEM a „ma"-hoz mérve). CSAK

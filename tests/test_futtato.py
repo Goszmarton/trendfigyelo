@@ -1040,3 +1040,24 @@ def test_futtat_meghivja_a_jelzot(tmp_path, monkeypatch):
     futtato.futtat(_config(), Mindig429Kliens(), tmp_path / "adatok", docs_data, most=most)
     assert len(hivva) == 1                              # pontosan egyszer
     assert hivva[0] == (docs_data, most)                # a helyes docs_data + most
+
+
+# --- Task 6a-3: a másodlagos regresszió bekötése a futatba -----------------
+def test_futtat_ir_masodlagos_regressziot(tmp_path):
+    docs_data = tmp_path / "docs" / "data"
+    docs_data.mkdir(parents=True)
+    veg = datetime(2026, 8, 13, tzinfo=timezone.utc)
+    kezd = veg - timedelta(days=90)
+    pontok = [{"idopont_utc": (kezd + timedelta(days=i)).isoformat(), "ertek": 10 + 0.5 * i,
+               "reszleges": False} for i in range(90)]
+    (docs_data / "kulcsszo_masodlagos_nyers.json").write_text(json.dumps({"kulcsszavak": {"albérlet": [{
+        "racs": "nap", "lekerdezes_utc": veg.isoformat(), "ablak_kezdet_utc": kezd.isoformat(),
+        "ablak_veg_utc": veg.isoformat(), "pontok": pontok}]}}), encoding="utf-8")
+    # weekday=1: az albérlet (nem-ora index 0) NINCS ma ütemezve → _masodlagos_ag no-op,
+    # a betett másodlagos nyers fájl érintetlen; a származtatott másodlagos regresszió abból számol.
+    most = datetime(2021, 1, 5, 12, tzinfo=timezone.utc)
+    cfg = _config([KulcsszoTetel("albérlet", "l", "szintmero", "nap")])
+    futtato.futtat(cfg, Mindig429Kliens(), tmp_path / "adatok", docs_data, most=most)
+    p = docs_data / "kulcsszo_masodlagos_regresszio.json"
+    assert p.exists()                                          # a bekötés hiánya nélkül nem jön létre
+    assert json.loads(p.read_text(encoding="utf-8"))["kulcsszavak"]["albérlet"]["racs"] == "nap"
