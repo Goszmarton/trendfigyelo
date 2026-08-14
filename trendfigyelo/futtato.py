@@ -68,6 +68,27 @@ def _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most):
                             "hivasok_szama": kliens.hivasszam(ag), "hibakodok": ",".join(e.hibakodok)})
 
 
+def _jelez_elavult_masodlagos(docs_data_mappa, most):
+    """Ha egy másodlagos szó legfrissebb `lekerdezes_utc`-je > 10 napja (kimaradt a
+    rotációból / tartósan blokkolt), FIGYELEM a run.log-ba. A success-vakság ellenszere:
+    a nap/het ág némán is elavulhat. Derivált, IDEMPOTENS napi jelzés (a forrás-tény a
+    commitolt fájlban van); ha nincs elavult, NÉMA (a néma siker itt helyes).
+    """
+    fajl = Path(docs_data_mappa) / "kulcsszo_masodlagos_nyers.json"
+    if not fajl.exists():
+        return
+    try:
+        sorozatok = json.loads(fajl.read_text(encoding="utf-8")).get("kulcsszavak", {})
+    except (ValueError, OSError):
+        return
+    elavultak = nyers_kimenet.elavult_masodlagos_szavak(sorozatok, most)
+    if not elavultak:
+        return
+    reszek = [f"{kif} ({napok} napja)" if napok is not None else f"{kif} (nincs adat)"
+              for kif, napok in elavultak]
+    print(f"FIGYELEM: elavult másodlagos: {', '.join(reszek)}")
+
+
 def rangsorolt_trendek(api_trendek) -> list:
     """Az api-trendek volumen-CSÖKKENŐ rangsora, tie-break az EREDETI API-POZÍCIÓ (a
     rendezés ELŐTTI lista-index). A `sorted` ma is stabil, de az explicit (index) kulcs
@@ -340,6 +361,12 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
         bejegyzesek.append({"ag": "parositas", "eredmeny": "hiba",
                             "hivasok_szama": 0, "hibakodok": type(e).__name__})
         print(f"FIGYELEM: a párosítás-diagnosztika kimaradt — nem blokkolja a naplót ({e}).")
+
+    # ---------- másodlagos elavultság-jelzés (Task 4, származtatott; CSAK stdout) ----------
+    # Ha egy nap/het szó legfrissebb lekerdezes_utc-je > 10 napja (kimaradt a rotációból vagy
+    # tartósan blokkolt), FIGYELEM a run.log-ba. A (B) ütemező csak SZŰKÍTI az elavulás-ablakot;
+    # tartós blokknál minden szó némán elavul → ez a success-vakság KÖZVETLEN ellenszere.
+    _jelez_elavult_masodlagos(docs_data_mappa, most)
 
     # ---------- napló ----------
     naplo.naplo_ir(adatok_mappa, letoltve, bejegyzesek, config.naplo_max_sor)

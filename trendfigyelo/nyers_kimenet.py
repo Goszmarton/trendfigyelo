@@ -227,3 +227,27 @@ def ir_masodlagos(docs_data, sorozatok: dict, megtartott_db: int = 3) -> Path:
     fajl.parent.mkdir(parents=True, exist_ok=True)
     fajl.write_text(json.dumps(adat, ensure_ascii=False, indent=2), encoding="utf-8")
     return fajl
+
+
+def elavult_masodlagos_szavak(sorozatok, most, kuszob_nap=10):
+    """A `sorozatok` (szó→rekordlista) azon szavai, amelyek legfrissebb `lekerdezes_utc`-je
+    kora `> kuszob_nap` nap — kor szerint CSÖKKENŐ, tie-break ábécé. Alak: [(kif, napok), ...].
+
+    CSAK a jelenlévő kulcsokon iterál → az ora-szavak (sosem másodlagos-kulcs) SOSEM jelennek
+    meg, a never-collected (kulcs nélküli) nem-ora szó SEM elavult (a rotációba még be nem
+    került → a Task 5 ütemező dolga). Kulcs jelen, de nincs érvényes `lekerdezes_utc` →
+    "nincs adat = elavult" (napok=None, legelöl). A `>` határ: 10 nap OK, 11 naptól riaszt.
+    """
+    elavultak = []
+    for kif, rekordok in sorozatok.items():
+        korok = [_aware_dt(r.get("lekerdezes_utc")) for r in rekordok]
+        legfrissebb = max((d for d in korok if d is not None), default=None)
+        if legfrissebb is None:
+            elavultak.append((kif, None))          # nincs érvényes adat = elavult
+            continue
+        napok = (most - legfrissebb).days
+        if napok > kuszob_nap:
+            elavultak.append((kif, napok))
+    # None (nincs adat) = maximálisan elavult → legelöl; azonos kor → ábécé
+    elavultak.sort(key=lambda t: (-(t[1] if t[1] is not None else 10**9), t[0]))
+    return elavultak

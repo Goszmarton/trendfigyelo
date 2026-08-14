@@ -1,6 +1,6 @@
 import csv
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 
 import pandas as pd
@@ -988,3 +988,55 @@ def test_kategoriak_hiba_nem_blokkol(tmp_path, monkeypatch):
     assert (tmp_path / "docs" / "data" / "legfrissebb.json").exists()      # adatmentés megvan
     sorok = _naplo_soronkent(tmp_path / "adatok")
     assert {s["ag"]: s["eredmeny"] for s in sorok}["kategoriak"] == "hiba"
+
+
+# --- Task 4 (Ciklus B): _jelez_elavult_masodlagos — stdout FIGYELEM ------------
+# A kibocsátó a lemezről olvassa a kulcsszo_masodlagos_nyers.json-t (MINDEN szó
+# legfrissebb lekerdezes_utc-je, nem csak a ma gyűjtötteké), és HA van elavult,
+# egy sort ír; HA nincs, NÉMA (a néma siker itt helyes).
+
+_MOST_JELZO = datetime(2026, 8, 14, 12, tzinfo=timezone.utc)
+
+
+def _ir_masodlagos_fajl(docs_data, kor_map):
+    """kor_map = {szó: napja} → kulcsszo_masodlagos_nyers.json a docs_data alá."""
+    docs_data.mkdir(parents=True, exist_ok=True)
+    kulcsszavak = {}
+    for szo, napja in kor_map.items():
+        lek = (_MOST_JELZO - timedelta(days=napja)).isoformat()
+        kulcsszavak[szo] = [{"racs": "het", "lekerdezes_utc": lek,
+                             "pontok": [{"idopont_utc": "2026-05-16T00:00:00+00:00",
+                                         "ertek": 5, "reszleges": False}]}]
+    (docs_data / "kulcsszo_masodlagos_nyers.json").write_text(
+        json.dumps({"kulcsszavak": kulcsszavak}, ensure_ascii=False), encoding="utf-8")
+
+
+def test_jelez_elavult_ir_figyelem_sort(tmp_path, capsys):
+    docs_data = tmp_path / "docs" / "data"
+    _ir_masodlagos_fajl(docs_data, {"albérlet": 3, "állás": 12})   # albérlet friss, állás elavult
+    futtato._jelez_elavult_masodlagos(docs_data, _MOST_JELZO)
+    ki = capsys.readouterr().out
+    assert "FIGYELEM: elavult másodlagos:" in ki      # a stub `pass` itt semmit nem ír
+    assert "állás (12 napja)" in ki
+    assert "albérlet" not in ki                        # a friss szó nem szerepel
+
+
+def test_jelez_nema_ha_nincs_elavult_SZANDEKOS_ZOLD(tmp_path, capsys):
+    # SZÁNDÉKOS-ZÖLD: a `pass` stub ellen eleve néma; az impl után is némának kell lennie
+    docs_data = tmp_path / "docs" / "data"
+    _ir_masodlagos_fajl(docs_data, {"albérlet": 3, "hitel": 2})    # mind friss
+    futtato._jelez_elavult_masodlagos(docs_data, _MOST_JELZO)
+    assert "elavult másodlagos" not in capsys.readouterr().out
+
+
+def test_futtat_meghivja_a_jelzot(tmp_path, monkeypatch):
+    # BEKÖTÉS-teszt: a futtat tényleg meghívja a jelzőt (a Ciklus B a viselkedést fedi,
+    # de nem azt, hogy valaki MEGHÍVJA — a bekötés önmagában elromolhat).
+    hivva = []
+    monkeypatch.setattr(futtato, "_jelez_elavult_masodlagos",
+                        lambda docs_data_mappa, most: hivva.append((docs_data_mappa, most)))
+    most = datetime(2021, 1, 4, 12, tzinfo=timezone.utc)
+    docs_data = tmp_path / "docs" / "data"
+    futtato.futtat(_config(), Mindig429Kliens(), tmp_path / "adatok", docs_data, most=most)
+    assert len(hivva) == 1                              # pontosan egyszer
+    assert hivva[0] == (docs_data, most)                # a helyes docs_data + most

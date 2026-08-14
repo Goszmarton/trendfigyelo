@@ -7,11 +7,12 @@ Az órás `ervenyes_nyers_rekord`-hoz NEM nyúlunk — a bázist újrahasználju
 """
 
 import json
+from datetime import datetime, timedelta, timezone
 
 import pytest
 
 from trendfigyelo import nyers_kimenet
-from trendfigyelo.nyers_kimenet import ervenyes_masodlagos_rekord
+from trendfigyelo.nyers_kimenet import elavult_masodlagos_szavak, ervenyes_masodlagos_rekord
 
 
 def _pont(iso, ertek=5, reszleges=False):
@@ -120,3 +121,58 @@ def test_ir_masodlagos_rendezi_a_pontokat(tmp_path):
     adat = json.loads(p.read_text(encoding="utf-8"))
     idok = [pt["idopont_utc"] for pt in adat["kulcsszavak"]["hitel"][0]["pontok"]]
     assert idok == sorted(idok)
+
+
+# --- Task 4 (Ciklus A): elavult_masodlagos_szavak — tiszta függvény ------------
+# A `most`-hoz relatív kor: legfrissebb lekerdezes_utc kora > kuszob_nap → elavult.
+# ORA-BIZTONSÁG: a függvény CSAK a `sorozatok` kulcsain iterál → a benzin/nyugdíj
+# (sosem másodlagos-kulcs) SOSEM jelenhet meg. A never-collected (kulcs nélküli)
+# nem-ora szó NEM elavult (a rotációba még be nem került; Task 5 dolga).
+
+_MOST = datetime(2026, 8, 14, 12, tzinfo=timezone.utc)
+
+
+def _mrek(napja, racs="nap"):
+    """Egy másodlagos rekord, aminek lekerdezes_utc-je `napja` nappal _MOST előtt."""
+    utc = (_MOST - timedelta(days=napja)).isoformat()
+    return {"racs": racs, "lekerdezes_utc": utc,
+            "pontok": [_pont("2026-05-16T00:00:00+00:00")]}
+
+
+def test_elavult_regi_lekerdezes_riaszt():
+    # 1 friss (3 napos) + 1 régi (12 napos) → csak a régi jön vissza
+    sorozatok = {"albérlet": [_mrek(3)], "állás": [_mrek(12, "het")]}
+    assert elavult_masodlagos_szavak(sorozatok, _MOST, 10) == [("állás", 12)]
+
+
+def test_elavult_hatar_pontosan_10_nap_nem_riaszt():
+    # a `>` határ: 10 nap NEM riaszt, 11 nap IGEN
+    sorozatok = {"hitel": [_mrek(10)], "napelem": [_mrek(11)]}
+    assert elavult_masodlagos_szavak(sorozatok, _MOST, 10) == [("napelem", 11)]
+
+
+def test_elavult_kor_szerint_csokkeno_sorrend():
+    # több elavult → a régebbi elöl (kor csökkenő), tie-break ábécé
+    sorozatok = {"kórház": [_mrek(11, "het")], "állás": [_mrek(13, "het")]}
+    assert elavult_masodlagos_szavak(sorozatok, _MOST, 10) == [("állás", 13), ("kórház", 11)]
+
+
+def test_elavult_kulcs_ures_rekordlista_nincs_adat():
+    # kulcs jelen, de nincs érvényes lekerdezes_utc → "nincs adat = elavult" (napok=None)
+    assert elavult_masodlagos_szavak({"állás": []}, _MOST, 10) == [("állás", None)]
+
+
+# --- SZÁNDÉKOS-ZÖLD (előre jelölve): regresszió-őrök, nincs valódi RED-fázisuk ---
+# A sorozatok-only konstrukció miatt eleve igazak; a stub `[]`-je ellen is zöldek.
+
+def test_elavult_ora_szo_sosem_jelenik_SZANDEKOS_ZOLD():
+    # a benzin/nyugdíj SOSEM másodlagos-kulcs → messze jövő `most` mellett sem jelenik
+    sorozatok = {"állás": [_mrek(30, "het")]}
+    kifejezesek = [k for k, _ in elavult_masodlagos_szavak(sorozatok, _MOST, 10)]
+    assert "benzin" not in kifejezesek and "nyugdíj" not in kifejezesek
+
+
+def test_elavult_mind_friss_ures_SZANDEKOS_ZOLD():
+    # minden szó 3 napos → nincs elavult
+    sorozatok = {"albérlet": [_mrek(3)], "hitel": [_mrek(2)]}
+    assert elavult_masodlagos_szavak(sorozatok, _MOST, 10) == []
