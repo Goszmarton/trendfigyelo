@@ -6,7 +6,7 @@ marad; ez a leltár a követett (commitolt) állapot-nézet, ami túléli a chat
 Ezzel oldjuk fel a §3-ban rögzített ledger↔repó ellentmondást (a ledger a
 döntéseket rögzítette, az állapotot nem).
 
-Utolsó frissítés: 2026-08-14.
+Utolsó frissítés: 2026-08-15.
 
 ## Hogyan frissítsd
 
@@ -16,7 +16,7 @@ Utolsó frissítés: 2026-08-14.
   új ID. Lezárt tétel a **LEZÁRT / ELAVULT** szakaszba kerül, **nem törlődik**.
 - **c) INVARIÁNS (frissítéskor ellenőrizd):**
   `aktív + kész + nem-task rekord + félretett = törzs-sorszám`.
-  Most: **36 + 6 + 5 + 1 = 48**. A **LEZÁRT / ELAVULT** külön számolódik: most **7**.
+  Most: **33 + 7 + 7 + 1 = 48**. A **LEZÁRT / ELAVULT** külön számolódik: most **10**.
   Ha ez az egyenlőség nem áll, a leltár driftel.
 
 Mezők: **ID | Név | Fázis | Állapot | MÉRT/BECS | Futásra hat | Méret | Függ**.
@@ -24,10 +24,11 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 
 ---
 
-## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (6)
+## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (7)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
+| LEDGER-HIG | állapot-leltár követett fájlba + a 6 hash rögzítése | fázis-függ. | LESZÁLLÍTVA (6f4091d) | MÉRT | nem | S-M | — |
 | PH4-T1 | config racs-mező (viselkedés-változás nélkül) | Ph4 | LESZÁLLÍTVA (486b3c7) | MÉRT | nem | — | — |
 | PH4-T2 | másodlagos nyers kimenet (N=3 adat-relatív retenció) | Ph4 | LESZÁLLÍTVA (9279f35) | MÉRT | igen | — | — |
 | PH4-T3 | másodlagos gyűjtő-ág + %7 hétnap-ütemezés | Ph4 | LESZÁLLÍTVA (71c2a95) | MÉRT | igen | — | — |
@@ -35,21 +36,16 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | PH4-SPEC | phase4-spec + phase3 §1.4.1/§8.2 bővítés | Ph4 | LESZÁLLÍTVA (d2fe35b) | MÉRT | nem | — | — |
 | PH4-T6a | rács-tudatos regresszió (nap/het + esemenyjelzo szint) | Ph4 | LESZÁLLÍTVA (75839d0) | MÉRT | igen (ma este 1. éles) | — | — |
 
-## META / FOLYAMATBAN (1)
+## META / FOLYAMATBAN (0)
 
-| ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
-|---|---|---|---|---|---|---|---|
-| LEDGER-HIG | állapot-leltár követett fájlba + a 6 hash rögzítése | fázis-függ. | FOLYAMATBAN (ez a commit) | MÉRT | nem | S-M | — |
+— (üres — a LEDGER-HIG leszállt: 6f4091d, lásd LESZÁLLÍTVA)
 
-## (B) Phase 3 / korábbról örökölt (28 — 27 nyitott + 1 félretett)
+## (B) Phase 3 / korábbról örökölt (25 — 24 nyitott + 1 félretett)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
 | L1 | B2 elavultság-jelzés a FRONTENDEN (a felület mutassa a szó elavultságát) — a PH4-T4 backend/run.log párjának UI-oldala | Ph3 | NYITOTT | MÉRT/BECS | igen (megjel.) | M | PH4-T4 |
-| L2 | trend_megjelenites_max nincs config.yaml-ban (csak config.py default 25) | Ph3 | NYITOTT (eldöntendő) | MÉRT | nem (default áll) | S | — |
-| L3 | naplo_max_sor komment elavult (~500 nap → ~333) | Ph3 | NYITOTT (kozmetikai) | MÉRT | nem | S | — |
-| L4 | Kliens-plafon RuntimeError vs „azonnali leállás" ellentmondás | Ph3 | NYITOTT (tisztázandó) | MÉRT | igen (viselkedés) | S-M | — |
-| L5 | parositas nem_egyezok determinista sorrend nem őrzött (HASHSEED=0 bukik) | Ph3 | NYITOTT (eldöntendő) | MÉRT | nem | S | — |
+| L4 | Kliens-plafon: custom kivétel PROPAGÁLJON (ne nyelje el idosorok.py/futtato.py `except Exception`) + adat-mentés + hangos napló + nem-nulla exit; KELL rá teszt | Ph3 | NYITOTT (terv kész) | MÉRT | igen (viselkedés) | S-M | — |
 | L6 | nulla-arány középső sáv (12–90%) őrizetlen (7 szó, a 9b csak a szélsőket) | Ph3 §11.2 | NYITOTT | MÉRT | igen (megjel.) | M | részben: rács-bővítés |
 | L7 | parositas bemenet-perzisztálás / a WHY nem auditálható | Ph3 | NYITOTT (irány kész) | MÉRT | nem (diagnoszt.) | M | — |
 | L8 | RSS↔trend párosítás hirrel=0 (3 adatpont, mind 0) | Ph3 | NYITOTT | MÉRT | nem | M | L7; blokkolja Task 7 |
@@ -67,7 +63,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | SUCCESS-VAK | success-vakság — elveszett kulcsszó-nap = ZÖLD workflow (exit 0) | Ph3 §10 | NYITOTT | MÉRT (08-11) | igen (diagnoszt.) | M | — |
 | 429-RATA | 429-ráta jellemzése (n=1, több nap napló kell) | Ph3 | NYITOTT (mérés) | MÉRT | nem | S / folyamatos | több nap napló |
 | GORBE-B | „minden kártyán legyen görbe" (B) | Ph3 | FÉLRETETT | MÉRT | igen (megjel.) | L | 429-RATA |
-| FOLYT | folytonossag él-trigger vs állapot-check | Ph3 | NYITOTT (eldöntendő) | MÉRT | nem (napló) | S-M | — |
+| FOLYT | folytonossag él-trigger vs állapot-check | Ph3 | NYITOTT (eldöntendő) | MÉRT | nem (napló) | S-M | SUCCESS-VAK |
 | NAPLO-MENTETT | naplo.csv „mentett-szám" 6. oszlop (a részleges-mentés fixből) | Ph3 | NYITOTT | MÉRT | igen (napló-séma) | S-M | — |
 | NAPTAR | naptáras (tól–ig) intervallumválasztó (elég-e az 5 fix ablak) | Ph3 | NYITOTT (9b után) | BECS | nem | M-L | — |
 | KAT-GORBE | kategória heti/havi görbe | Ph3/4-jelölt | NYITOTT (felvetés, nincs terv) | BECS | igen (új kimenet) | L | — |
@@ -79,15 +75,18 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
 | TASK5 | staleness-vezérelt ütemező (tie-break=config-index) | Ph4 | NYITOTT | BECS (terv kész) | igen | L | 6a megfigyelés (1-2 futás) |
-| 6b | nem-órás (nap/het) megjelenítés a felületen | Ph4 | NYITOTT (terv kész) | BECS | nem (frontend) | L | 6a valós adat; RACS-EGYSEG |
+| 6b | nem-órás (nap/het) megjelenítés a felületen | Ph4 | NYITOTT (terv kész) | BECS | nem (frontend) | L | 6a valós adat; RACS-EGYSEG; IRANY-KUSZOB |
 | 6c | tüntetés szint-vonal (medián, „stabil szint", nincs trendvonal) | Ph4 | NYITOTT (döntés kész) | MÉRT | nem | M | 6b |
 | LANC-ORAS | órás láncolás (2_het+; kumulált skálázó tartós tárolása) | Ph4 §8.2 | NYITOTT | BECS | igen (új kimenet) | XL | §8.2-INV |
 | RACS-EGYSEG | felirat-konstans kiemelés (a 6b első RED-szelete) | Ph4 | NYITOTT | BECS | nem (frontend) | S | — |
 
-## (D) Ma (2026-08-13..14) nyitott új tételek (8 — 3 nyitott + 5 rekord)
+## (D) Ma (2026-08-13..15) nyitott új tételek (11 — 4 nyitott + 7 rekord)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
+| IRANY-KUSZOB | irány-küszöb (1.0/nap) órásra kalibrálva (875ea1a), a nap/het ág örökölte — hosszú ablakon degenerál: 0/5 nem-stagnal; az 1_ev matematikailag holt irány-ág (elm.max 0.47<1.0); az 1_ev -14pt-ot is stagnal-nak címkézi → a címke nem adat-függő | Ph4 (új) | NYITOTT | MÉRT (08-15) | igen (címke); BLOKKOLJA a 6b-t | M | blokkolja: 6b |
+| KUDARC-VAK | SUCCESS-VAK + FOLYT + L4 UGYANAZ A HIBAOSZTÁLY: minden kudarc-út zöldre fut (van_adat→exit0 / él-trigger / `except Exception`) → a rendszer nem tud kudarcot jelezni | Ph3/4 | REKORD (lelet) | MÉRT (08-14) | igen (diagnoszt.) | — | SUCCESS-VAK, FOLYT, L4 |
+| PLAFON-128 | a Task 5 átírja a `tervezett_hivasszam` jelentését → a 128-as hívás-plafon ÚJRANÉZENDŐ a Task5 tervénél (blokkoló, ha L4 backstopként épül rá) | Ph4 (új) | REKORD/MEGKÖTÉS | MÉRT | igen (ha L4) | — | TASK5, L4 |
 | NEVER-COLL | never-collected nem-ora szavak láthatósága | Ph4 (új) | NYITOTT (Task5 után) | MÉRT | igen | S-M | TASK5 |
 | ADD-SWAP | „hozzáadás vs csere" rács-váltásnál (előbb mérünk) | Ph4 (új) | NYITOTT | BECS | igen (config) | M | több nap mérés |
 | §8.2-INV | „a lezárt szakasz sem invariáns" csúcs-váltásnál (csak órás lánc) | Ph4/spec (új) | NYITOTT | MÉRT (§1.4.1) | nem | M-L | LANC-ORAS |
@@ -97,10 +96,13 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | §1.4.1 | ablak-relatív újranormálás (69/71 bájt-azonos, harmadik mechanizmus) | Ph4/spec | REKORD (megfigyelés) | MÉRT | nem | — | táplálja §8.2-INV |
 | HET-MINPONT | het MIN_PONT=7 önmagában gyenge; a védelmet a rács-szűrés adja | Ph4 (új) | REKORD/MEGKÖTÉS | MÉRT | nem | — | — |
 
-## LEZÁRT / ELAVULT (7 — külön, nem a törzsben)
+## LEZÁRT / ELAVULT (10 — külön, nem a törzsben)
 
 | ID | Név | Fázis | Állapot / miért nincs a nyitottak közt |
 |---|---|---|---|
+| L2 | trend_megjelenites_max nincs config.yaml-ban (csak config.py default 25) | Ph3 | LEZÁRVA — 2026-08-15 user-döntés: a default (25) áll; kommentelt config.yaml-sor a következő érdemi commit mellékleteként |
+| L3 | naplo_max_sor komment elavult (~500 nap → ~333) | Ph3 | LEZÁRVA — átkeresve (naplo.py, config.py, phase3-spec.md), elavult komment NEM TALÁLHATÓ (2026-08-15) |
+| L5 | parositas nem_egyezok determinista sorrend nem őrzött | Ph3 | LEZÁRVA — output determinista, HASHSEED=0 mellett is zöld (mért 2026-08-14, 278 passed); a történeti „bukik" pre-fix kódon készült, a `futtato.py` determinista-by-design javítás (RSS-sorrendű lista) óta zöld |
 | L10 | mobil-geometria / rootMargin | LEZÁRT — Task 10 kész (ATADAS-08-12: „L10 LEZÁRVA") |
 | PERIODICITÁS | periodicitás-diszkriminátor | LEZÁRT — 2026-08-13 user-döntés, 4 indokkal |
 | §8.2-nap/het | láncolás a nap/het rácson | FELOLDVA — nem-órásnál nincs láncolás (2026-08-14 lelet) |
