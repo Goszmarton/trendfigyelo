@@ -35,7 +35,14 @@ MIN_PONT = 24                               # ora: 168/7 (a 7 napos ablak 1/7-e)
 RACS_GRID_STEP = {"ora": 3600, "nap": 86400, "het": 604800}
 RACS_ABLAK_NAP = {"ora": 7, "nap": 90, "het": 365}
 RACS_MIN_PONT = {"ora": 24, "nap": 12, "het": 7}
-IRANY_KUSZOB = 1.0                          # relatív pont / nap
+IRANY_KUSZOB = 1.0                          # relatív pont / nap — ÓRÁS ág (kalibrálva: 875ea1a)
+# IRANY-KUSZOB: a per-nap küszöb a hosszú nap/het ablakon degenerál (365 nap × 1.0/nap = 365
+# pont kellene, a skála max 100 → az 1_ev matematikailag holt irány-ág). A nap/het ág ezért
+# ABLAK-RELATÍV: a címke a TELJES elmozduláson (|meredekseg × span_nap| pont = % a 0-100
+# skálán) dől el. A ~7 pont az órás kalibráció átvitele (1.0/nap × 7 napos ablak); ELSŐ
+# közelítés, nem lezárt kalibráció (kis nap/het minta — több-napos adat után újranyílik).
+ELMOZDULAS_KUSZOB = 7.0                      # relatív pont (a 0-100 skála %-a), nap/het ág
+RACS_ELMOZDULAS_KUSZOB = {"nap": ELMOZDULAS_KUSZOB, "het": ELMOZDULAS_KUSZOB}  # ora hiányzik → None
 MEREDEKSEG_EGYSEG = "relatív pont / nap"
 R2_MEGJEGYZES = ("Az R² autokorrelált órás soron számolt — MÁSODLAGOS; az elsődleges a "
                  "meredekség és az irány (spec 4.1). Az r2_masodlagos_autokorrelacio ezt jelzi. "
@@ -77,6 +84,14 @@ def _irany(meredekseg):
     return "novekszik" if meredekseg > 0 else "csokken"
 
 
+def _irany_elmozdulas(meredekseg, span_nap, kuszob):
+    """Ablak-relatív iránycímke: a TELJES illesztett elmozduláson dönt (nap/het ág)."""
+    elmozdulas = meredekseg * span_nap
+    if abs(elmozdulas) < kuszob:
+        return "stagnal"
+    return "novekszik" if elmozdulas > 0 else "csokken"
+
+
 def _hianyzo_pontok(ablak_kezdet_utc, ablak_veg_utc, lezart_ts, grid_step):
     """A hiányzó lezárt slotok száma AZ ABLAKHOZ mérve (nem csak a pontok közt).
 
@@ -96,7 +111,7 @@ def _hianyzo_orak(ablak_kezdet_utc, ablak_veg_utc, lezart_ts):
 
 
 def regresszio_egy_ablak(pontok, ablak_kezdet_utc, ablak_veg_utc, ablak_hossz_nap,
-                         grid_step=3600, min_pont=MIN_PONT):
+                         grid_step=3600, min_pont=MIN_PONT, elmozdulas_kuszob=None):
     """Egy intervallum mérőszámai EGY szó EGY ablakának pontjaiból.
 
     A reszleges:true pont(ok) kihagyva (spec 8.3). ervenyes = pontok_hasznalt >= min_pont
@@ -141,7 +156,8 @@ def regresszio_egy_ablak(pontok, ablak_kezdet_utc, ablak_veg_utc, ablak_hossz_na
         "meredekseg_nap": round(b, 3),
         "se_meredekseg": round(se, 4),
         "se_masodlagos_autokorrelacio": True,              # az se ugyanúgy autokorreláció-torzított, mint az R²
-        "irany": _irany(b),
+        "irany": _irany(b) if elmozdulas_kuszob is None     # None (órás default) → per-nap küszöb, bitre változatlan
+                 else _irany_elmozdulas(b, span_nap, elmozdulas_kuszob),  # nap/het → ablak-relatív
         "r2": round(r2, 3),
         "r2_masodlagos_autokorrelacio": True,
         "ablak_kezdet_utc": ablak_kezdet_utc,
@@ -176,6 +192,7 @@ def _intervallumok(nyers_rekordok, racs="ora"):
     """
     grid_step = RACS_GRID_STEP.get(racs, 3600)
     min_pont = RACS_MIN_PONT.get(racs, MIN_PONT)
+    elmozdulas_kuszob = RACS_ELMOZDULAS_KUSZOB.get(racs)     # ora → None (per-nap, változatlan)
     nominal = RACS_ABLAK_NAP.get(racs, 7)
     rek = max(nyers_rekordok, key=lambda r: r["ablak_veg_utc"]) if nyers_rekordok else None
     if rek is not None:
@@ -190,13 +207,15 @@ def _intervallumok(nyers_rekordok, racs="ora"):
         elif hossz >= ablak_nap:                      # a teljes pillanatkép — eredeti határok
             ki[kulcs] = regresszio_egy_ablak(rek["pontok"], rek["ablak_kezdet_utc"],
                                              rek["ablak_veg_utc"], hossz,
-                                             grid_step=grid_step, min_pont=min_pont)
+                                             grid_step=grid_step, min_pont=min_pont,
+                                             elmozdulas_kuszob=elmozdulas_kuszob)
         else:                                         # farokszelet: az utolsó `hossz` nap
             kezdet_dt = veg_dt - timedelta(days=hossz)
             szelet = [p for p in rek["pontok"] if _dt(p["idopont_utc"]) >= kezdet_dt]
             ki[kulcs] = regresszio_egy_ablak(szelet, kezdet_dt.isoformat(),
                                              rek["ablak_veg_utc"], hossz,
-                                             grid_step=grid_step, min_pont=min_pont)
+                                             grid_step=grid_step, min_pont=min_pont,
+                                             elmozdulas_kuszob=elmozdulas_kuszob)
     return ki
 
 
@@ -285,7 +304,7 @@ def regresszio_masodlagos_szamit(masodlagos_nyers, tortenet, config, szamitva_ut
     return {
         "szamitva_utc": szamitva_utc,
         "meredekseg_egyseg": MEREDEKSEG_EGYSEG,
-        "irany_kuszob": IRANY_KUSZOB,
+        "elmozdulas_kuszob": ELMOZDULAS_KUSZOB,      # a nap/het iránycímke ABLAK-RELATÍV (nem per-nap)
         "megjegyzes": R2_MEGJEGYZES,
         "kulcsszavak": ki,
     }

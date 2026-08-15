@@ -75,7 +75,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
 | TASK5 | staleness-vezérelt ütemező (tie-break=config-index) | Ph4 | NYITOTT | BECS (terv kész) | igen | L | 6a megfigyelés (1-2 futás) |
-| 6b | nem-órás (nap/het) megjelenítés a felületen | Ph4 | NYITOTT (terv kész) | BECS | nem (frontend) | L | 6a valós adat; RACS-EGYSEG; IRANY-KUSZOB |
+| 6b | nem-órás (nap/het) megjelenítés a felületen | Ph4 | NYITOTT (terv kész) | BECS | nem (frontend) | L | 6a valós adat; RACS-EGYSEG |
 | 6c | tüntetés szint-vonal (medián, „stabil szint", nincs trendvonal) | Ph4 | NYITOTT (döntés kész) | MÉRT | nem | M | 6b |
 | LANC-ORAS | órás láncolás (2_het+; kumulált skálázó tartós tárolása) | Ph4 §8.2 | NYITOTT | BECS | igen (új kimenet) | XL | §8.2-INV |
 | RACS-EGYSEG | felirat-konstans kiemelés (a 6b első RED-szelete) | Ph4 | NYITOTT | BECS | nem (frontend) | S | — |
@@ -84,7 +84,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
-| IRANY-KUSZOB | irány-küszöb (1.0/nap) órásra kalibrálva (875ea1a), a nap/het ág örökölte — hosszú ablakon degenerál: 0/5 nem-stagnal; az 1_ev matematikailag holt irány-ág (elm.max 0.47<1.0); az 1_ev -14pt-ot is stagnal-nak címkézi → a címke nem adat-függő | Ph4 (új) | NYITOTT | MÉRT (08-15) | igen (címke); BLOKKOLJA a 6b-t | M | blokkolja: 6b |
+| IRANY-KUSZOB | irány-küszöb rács-tudatossá: a nap/het ág ABLAK-RELATÍV (\|meredekseg×span\| < 7 pont = a skála %-a), az órás per-nap 1.0 VÁLTOZATLAN (0 címke-eltérés valós nyers adaton); a másodlagos metaadat is javítva (elmozdulas_kuszob a félrevezető irany_kuszob helyett). A 7,0 az órás kalibráció átvitele, ELSŐ közelítés (5 intervallum mintája). LEZÁRHATÓ, ha ≥15 nap/het intervallumon újramérve a 7,0 továbbra is TERMÉSZETES HÉZAGBA esik ÉS elválasztja a stagnal/nem-stagnal halmazt (most a 2,89↔13,10 közti ~10 pontos hézagban ül); ha a tömeg a küszöb köré csúszik → újrakalibrálás | Ph4 | RÉSZBEN | MÉRT (08-15) | igen (címke) | M | ADD-SWAP |
 | KUDARC-VAK | SUCCESS-VAK + FOLYT + L4 UGYANAZ A HIBAOSZTÁLY: minden kudarc-út zöldre fut (van_adat→exit0 / él-trigger / `except Exception`) → a rendszer nem tud kudarcot jelezni | Ph3/4 | REKORD (lelet) | MÉRT (08-14) | igen (diagnoszt.) | — | SUCCESS-VAK, FOLYT, L4 |
 | PLAFON-128 | a Task 5 átírja a `tervezett_hivasszam` jelentését → a 128-as hívás-plafon ÚJRANÉZENDŐ a Task5 tervénél (blokkoló, ha L4 backstopként épül rá) | Ph4 (új) | REKORD/MEGKÖTÉS | MÉRT | igen (ha L4) | — | TASK5, L4 |
 | NEVER-COLL | never-collected nem-ora szavak láthatósága | Ph4 (új) | NYITOTT (Task5 után) | MÉRT | igen | S-M | TASK5 |

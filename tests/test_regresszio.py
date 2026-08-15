@@ -350,3 +350,77 @@ def test_esemenyjelzo_skip_ok_es_szint():
     assert w["intervallumok"]["1_ev"]["ok"] == "esemenyjelzo"   # nincs illesztés
     assert w["intervallumok"]["3_ho"]["ok"] == "esemenyjelzo"
     assert all(iv["ok"] == "esemenyjelzo" for iv in w["intervallumok"].values())
+
+
+# ── IRANY-KUSZOB: rács-tudatos (ablak-relatív) iránycímke a nap/het ágon ───────
+# A per-nap küszöb (1.0/nap) az ÓRÁS rácsra kalibrálva (875ea1a); a nap/het hosszú
+# ablakán degenerál (0/5 nem-stagnal). A címke ezért a TELJES ELMOZDULÁSON dől el
+# (|meredekseg * span_nap| pont = % a 0-100 skálán), küszöb ~7 pont (= 1.0/nap × 7 nap).
+def test_nap_racs_nagy_elmozdulas_iranyt_kap():
+    # ~0.15/nap (per-nap küszöb ALATT) DE ~+13 teljes elmozdulás → "novekszik".
+    veg = KEZD + timedelta(days=90)
+    pontok = [_pont(KEZD + timedelta(days=i), 60 + 0.15 * i) for i in range(90)]
+    pontok.append(_pont(veg, 80, reszleges=True))
+    iv = regresszio._intervallumok([_rekord(KEZD, veg, pontok)], "nap")
+    assert iv["3_ho"]["irany"] == "novekszik"
+
+
+def test_masodlagos_atfuzi_az_elmozdulas_kuszobot():
+    # ÁTFŰZÉS-ŐR (kudarc-vakság ellen): a másodlagos PRODUKCIÓS út
+    # (regresszio_masodlagos_szamit → _intervallumok → regresszio_egy_ablak) tényleg
+    # átadja-e a rács-küszöböt. Ha az átfűzés elromlik, a paraméter None marad, a nap ág
+    # NÉMÁN per-napra esik vissza (rossz címke, minden más zöld) → ez a teszt PIROS.
+    veg = KEZD + timedelta(days=90)
+    pontok = [_pont(KEZD + timedelta(days=i), 60 + 0.15 * i) for i in range(90)]
+    pontok.append(_pont(veg, 80, reszleges=True))
+    masodlagos = {"kulcsszavak": {"albérlet": [{
+        "racs": "nap", "lekerdezes_utc": veg.isoformat(),
+        "ablak_kezdet_utc": KEZD.isoformat(), "ablak_veg_utc": veg.isoformat(), "pontok": pontok}]}}
+    out = regresszio.regresszio_masodlagos_szamit(masodlagos, _tortenet({}), _config(["albérlet"]), "T")
+    assert out["kulcsszavak"]["albérlet"]["intervallumok"]["3_ho"]["irany"] == "novekszik"
+
+
+def test_het_racs_negativ_elmozdulas_csokken():
+    # het rács, negatív éves elmozdulás (~-14 pont) → "csokken" (előjel-ág).
+    veg = KEZD + timedelta(days=365)
+    pontok = [_pont(KEZD + timedelta(days=7 * i), 80 - 0.27 * i) for i in range(53)]
+    pontok.append(_pont(veg, 40, reszleges=True))
+    iv = regresszio._intervallumok([_rekord(KEZD, veg, pontok)], "het")
+    assert iv["1_ev"]["irany"] == "csokken"
+
+
+def test_elmozdulas_kuszob_kb_7_pont():
+    # a küszöb ~7 pont (a skála 7%-a): 6.9 elmozdulás még stagnal, 7.1 már irányt kap.
+    veg = KEZD + timedelta(days=90)
+
+    def _ramp(disp):
+        d = disp / 89                                          # tiszta rámpa: elmozdulás = d*89
+        pts = [_pont(KEZD + timedelta(days=i), 40 + d * i) for i in range(90)]
+        pts.append(_pont(veg, 99, reszleges=True))
+        return regresszio._intervallumok([_rekord(KEZD, veg, pts)], "nap")["3_ho"]
+    assert _ramp(6.9)["irany"] == "stagnal"
+    assert _ramp(7.1)["irany"] == "novekszik"
+
+
+def test_masodlagos_metaadat_elmozdulas_kuszobot_kozol():
+    # A másodlagos fájl nap/het címkéit az ELMOZDULÁS-küszöb dönti (nem a per-nap 1.0) →
+    # a metaadat ezt közölje, ne a félrevezető órás irany_kuszob-ot (a mező ne hazudjon).
+    veg = KEZD + timedelta(days=90)
+    pontok = [_pont(KEZD + timedelta(days=i), 60 + 0.15 * i) for i in range(90)]
+    pontok.append(_pont(veg, 80, reszleges=True))
+    masodlagos = {"kulcsszavak": {"albérlet": [{
+        "racs": "nap", "lekerdezes_utc": veg.isoformat(),
+        "ablak_kezdet_utc": KEZD.isoformat(), "ablak_veg_utc": veg.isoformat(), "pontok": pontok}]}}
+    out = regresszio.regresszio_masodlagos_szamit(masodlagos, _tortenet({}), _config(["albérlet"]), "T")
+    assert out.get("elmozdulas_kuszob") == 7.0
+    assert "irany_kuszob" not in out                          # az órás szabály itt félrevezető
+
+
+def test_oras_irany_per_nap_valtozatlan_SZANDEKOS_ZOLD():
+    # SZÁNDÉKOS-ZÖLD regresszió-őr: a DEFAULT (órás) út per-NAPON dönt, NEM elmozduláson.
+    # 0.9/nap meredekség (per-nap küszöb alatt) 20 napon = +18 elmozdulás (>7) → mégis stagnal.
+    veg = KEZD + timedelta(days=20)
+    pontok = [_pont(KEZD + timedelta(days=i), 10 + 0.9 * i) for i in range(20)]
+    r = regresszio.regresszio_egy_ablak(pontok, KEZD.isoformat(), veg.isoformat(), 20,
+                                        grid_step=86400, min_pont=12)
+    assert r["irany"] == "stagnal"                             # per-nap 0.9 < 1.0, nem a +18
