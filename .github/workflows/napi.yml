@@ -31,7 +31,9 @@ jobs:
 
       - name: Trendfigyelő futtatása
         shell: bash
-        run: python top_keresesek.py 2>&1 | tee run.log
+        run: |
+          set -o pipefail   # a python nem-nulla exitje (pl. L4 plafon = 2) NE vesszen el a `| tee` mögött
+          python top_keresesek.py 2>&1 | tee run.log
 
       - name: Változások commitolása (csak JSON + napló)
         if: always() && github.ref == 'refs/heads/main'
