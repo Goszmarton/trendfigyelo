@@ -2,6 +2,11 @@ name: Napi trendgyűjtés
 
 on:
   workflow_dispatch:
+    inputs:
+      plafon_override:
+        description: "Hívás-plafon override (CSAK csökkent; pl. 0 = az L4 szelep piros-út igazolása, 0 valódi hívás). Üresen normál."
+        required: false
+        default: ""
   # Napi ütemezett futás. A kézi (workflow_dispatch) futások igazolták, hogy a
   # felhő-runner IP-je nem kap azonnali 429-et a cél-idősávban (Task 9 élesítve):
   schedule:
@@ -31,6 +36,10 @@ jobs:
 
       - name: Trendfigyelő futtatása
         shell: bash
+        env:
+          # a plafon-override CSAK a workflow_dispatch triggeren létezik; a cron (schedule) ág
+          # MINDIG üres stringet kap → a _plafon_override_env némán None-t ad (nincs override).
+          PLAFON_OVERRIDE: ${{ github.event_name == 'workflow_dispatch' && inputs.plafon_override || '' }}
         run: |
           set -o pipefail   # a python nem-nulla exitje (pl. L4 plafon = 2) NE vesszen el a `| tee` mögött
           python top_keresesek.py 2>&1 | tee run.log

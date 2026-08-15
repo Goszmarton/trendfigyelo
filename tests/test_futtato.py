@@ -121,6 +121,21 @@ def test_plafon_override_env_int(monkeypatch):
     assert futtato._plafon_override_env() == 5
 
 
+def test_plafon_override_env_ures_none_nema(monkeypatch, capsys):
+    # Az ütemezett (cron) futáson az input üres → env="" → None, és NÉMA (nem 'érvénytelen'):
+    # üres = nincs beállítva, nem hiba. Így a napi futás nem kap fölösleges FIGYELEM-et.
+    monkeypatch.setenv("PLAFON_OVERRIDE", "")
+    assert futtato._plafon_override_env() is None
+    assert capsys.readouterr().out == ""
+
+
+def test_plafon_override_env_hiany_nema_SZANDEKOS_ZOLD(monkeypatch, capsys):
+    # SZÁNDÉKOS-ZÖLD: a változó hiánya is None + néma (a régi viselkedés változatlan).
+    monkeypatch.delenv("PLAFON_OVERRIDE", raising=False)
+    assert futtato._plafon_override_env() is None
+    assert capsys.readouterr().out == ""
+
+
 def test_main_bekoti_a_plafon_override_ot(monkeypatch):
     # ÁTFŰZÉS-ŐR: a main() TÉNYLEG beköti-e az override-ot a Kliens plafonjába (különben a hook
     # némán hatástalan — a szelep hibaosztálya). Kliens/futtat/betolt dublőrözve (nincs hálózat).

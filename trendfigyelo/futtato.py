@@ -426,7 +426,7 @@ def _plafon_override_env():
     """A PLAFON_OVERRIDE env-változó int-ként (a (c) CI-piros-út dispatch-hez), vagy None
     (hiány/érvénytelen → figyelmen kívül; érvénytelenre hangos FIGYELEM)."""
     ny = os.environ.get("PLAFON_OVERRIDE")
-    if ny is None:
+    if not ny:                                               # hiány VAGY üres string (cron ág) → None, némán
         return None
     try:
         return int(ny)
