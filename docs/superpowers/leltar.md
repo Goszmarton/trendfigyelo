@@ -16,7 +16,7 @@ Utolsó frissítés: 2026-08-15.
   új ID. Lezárt tétel a **LEZÁRT / ELAVULT** szakaszba kerül, **nem törlődik**.
 - **c) INVARIÁNS (frissítéskor ellenőrizd):**
   `aktív + kész + nem-task rekord + félretett = törzs-sorszám`.
-  Most: **33 + 8 + 7 + 1 = 49**. A **LEZÁRT / ELAVULT** külön számolódik: most **10**.
+  Most: **34 + 9 + 7 + 1 = 51**. A **LEZÁRT / ELAVULT** külön számolódik: most **10**.
   Ha ez az egyenlőség nem áll, a leltár driftel.
 - **d)** **Önhivatkozó hash TILOS:** a leltár nem tartalmazhatja a SAJÁT lezáró commitja
   hash-ét (nincs „(ez a commit)" placeholder sem, ami bent ragad). A lezáró sor állapota
@@ -28,10 +28,11 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 
 ---
 
-## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (8)
+## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (9)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
+| LEGFRISSEBB-GUARD | nulla-adatos futás NE írja felül üressel a jó legfrissebb.json-t (az EGYETLEN feltétel nélküli kanonikus felülíró; tortenet/napi/nyers már guardolt); feltétel: not(top_trendek or trend_idosorok or kulcsszavak); hangos FIGYELEM + megnevezi az üreseket; kapcsolódik: SUCCESS-VAK (bemeneti testvér) | Ph3 | LESZÁLLÍTVA (lásd git log) | MÉRT | igen (kimenet) | S | — |
 | L4 | Kliens-plafon HANGOS szelep: PlafonTullepve(RuntimeError) propagál (3 elnyelő hely szűrve) + részleg-mentés (.reszleges / másodlagos per-szavas upsert) + KILEPES_PLAFON=2 exit; PLAFON_OVERRIDE env CSAK csökkenthet (min, hangos); a pipefail-függés FELOLDVA (504103c); a KUDARC-VAK plafon-tagját zárja (SUCCESS-VAK/FOLYT NYITVA) | Ph3 | LESZÁLLÍTVA (lásd git log) | MÉRT | igen (viselkedés) | M | — |
 | LEDGER-HIG | állapot-leltár követett fájlba + a 6 hash rögzítése | fázis-függ. | LESZÁLLÍTVA (6f4091d) | MÉRT | nem | S-M | — |
 | PH4-T1 | config racs-mező (viselkedés-változás nélkül) | Ph4 | LESZÁLLÍTVA (486b3c7) | MÉRT | nem | — | — |
@@ -84,7 +85,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | LANC-ORAS | órás láncolás (2_het+; kumulált skálázó tartós tárolása) | Ph4 §8.2 | NYITOTT | BECS | igen (új kimenet) | XL | §8.2-INV |
 | RACS-EGYSEG | felirat-konstans kiemelés (a 6b első RED-szelete) | Ph4 | NYITOTT | BECS | nem (frontend) | S | — |
 
-## (D) Ma (2026-08-13..15) nyitott új tételek (12 — 5 nyitott + 7 rekord)
+## (D) Ma (2026-08-13..15) nyitott új tételek (13 — 6 nyitott + 7 rekord)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
@@ -92,6 +93,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | KUDARC-VAK | SUCCESS-VAK + FOLYT + L4 UGYANAZ A HIBAOSZTÁLY: minden kudarc-út zöldre fut (van_adat→exit0 / él-trigger / `except Exception`) → a rendszer nem tud kudarcot jelezni. **L4 LESZÁLLT** (a plafon-tag hangos, propagál); SUCCESS-VAK/FOLYT NYITVA | Ph3/4 | REKORD (lelet) | MÉRT (08-14) | igen (diagnoszt.) | — | SUCCESS-VAK, FOLYT |
 | PLAFON-128 | a Task 5 átírja a `tervezett_hivasszam` jelentését → a 128-as hívás-plafon ÚJRANÉZENDŐ a Task5 tervénél (L4 backstopként MOST ráépült — a plafon hard-abortot okoz) | Ph4 (új) | REKORD/MEGKÖTÉS | MÉRT | igen | — | TASK5, L4 |
 | MASODLAGOS-PLAFON | a plafon a másodlagos ágban (utolsó ág) is üthet → propagál + exit 2, DE a napló 'kihagyva'-t ír (nem 'plafon'), és a másodlagos-propagáció+címke NINCS külön tesztelve; külön 'plafon'-jelölő + teszt = külön TDD-kör | Ph4 (új) | NYITOTT (kis) | MÉRT (08-15) | nem (napló-címke) | S | L4 |
+| LEGFRISSEBB-RESZLEGES | RÉSZLEGES adatnál a legfrissebb_ir a jó TELJES fájlt hiányossal írja felül (pl. kulcsszó-ág 429 → kulcsszavak üresen kiíródik, van_adat=True → a total-empty guard NEM szól). IGAZOLT: ReszlegesKliens kod=0, de a payload mind 0. Külön kör: komponens-szintű merge/guard + partial-FIGYELEM. Testvér: SUCCESS-VAK (bemenet) / LEGFRISSEBB-GUARD (total) | Ph3/4 (új) | NYITOTT | MÉRT (08-15) | igen (kimenet) | M | — |
 | NEVER-COLL | never-collected nem-ora szavak láthatósága | Ph4 (új) | NYITOTT (Task5 után) | MÉRT | igen | S-M | TASK5 |
 | ADD-SWAP | „hozzáadás vs csere" rács-váltásnál (előbb mérünk) | Ph4 (új) | NYITOTT | BECS | igen (config) | M | több nap mérés |
 | §8.2-INV | „a lezárt szakasz sem invariáns" csúcs-váltásnál (csak órás lánc) | Ph4/spec (új) | NYITOTT | MÉRT (§1.4.1) | nem | M-L | LANC-ORAS |

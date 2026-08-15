@@ -282,9 +282,18 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
 
     # ---------- JSON-export ----------
     top_trendek = top_trend_struktura(api_trendek, trend_idosorok, rss_trendek, config)
-    json_export.legfrissebb_ir(docs_data_mappa, top_trendek, trend_idosorok,
-                               kulcsszo_pontok, letoltve, config.geo,
-                               valtas_datum=config.modszertan_valtas)
+    # legfrissebb: az EGYETLEN feltétel nélküli kanonikus felülíró (a tortenet/napi/nyers guardolt).
+    # Ha a payload MIND üres (nulla-adatos futás: teljes 429-blokk / hálózati hiba / üres válaszok),
+    # NE írjuk felül üressel a jó fájlt — HANGOS FIGYELEM (nem néma skip = success-vakság).
+    _lf_reszek = {"top_trendek": top_trendek, "trend_idosorok": trend_idosorok, "kulcsszavak": kulcsszo_pontok}
+    _lf_ures = [nev for nev, ertek in _lf_reszek.items() if not ertek]
+    if len(_lf_ures) == len(_lf_reszek):
+        print(f"FIGYELEM: legfrissebb.json kiírása KIHAGYVA — a futás nulla érdemi adatot termelt "
+              f"(üres: {', '.join(_lf_ures)}); a meglévő fájl érintetlen.")
+    else:
+        json_export.legfrissebb_ir(docs_data_mappa, top_trendek, trend_idosorok,
+                                   kulcsszo_pontok, letoltve, config.geo,
+                                   valtas_datum=config.modszertan_valtas)
 
     van_adat = bool(api_trendek or rss_trendek or trend_idosorok or kulcsszo_pontok)
     # független feltételek: üres kulcsszó-napi adat NE írja felül a meglévő

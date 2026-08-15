@@ -175,9 +175,10 @@ def test_teljes_blokkolas_egyetlen_hivas_utan_leall(tmp_path):
     sorok = _naplo_soronkent(tmp_path / "adatok")
     eredmenyek = {s["ag"]: s["eredmeny"] for s in sorok}
     assert eredmenyek["felkapott_api"] == "blokkolva"
-    # a részleges adat és a napló ekkor is kiíródik
+    # a napló ekkor is kiíródik, DE a legfrissebb.json NEM (nulla payload → a guard nem írja
+    # felül üressel a jó fájlt; itt nincs meglévő fájl → nem is jön létre)
     assert (tmp_path / "adatok" / "naplo.csv").exists()
-    assert (tmp_path / "docs" / "data" / "legfrissebb.json").exists()
+    assert not (tmp_path / "docs" / "data" / "legfrissebb.json").exists()
 
 
 class UresKulcsszoKliens:
@@ -259,6 +260,56 @@ def test_reszleges_siker_nulla_kilepesi_kod(tmp_path):
     assert eredmenyek["felkapott_rss"] == "siker"
     assert eredmenyek["idosor"] == "siker"
     assert eredmenyek["kulcsszo"] == "siker"
+
+
+# --- legfrissebb-guard: egy NULLA érdemi adatot termelő futás (429-blokk, hálózati hiba,
+# üres válaszok) NE írja felül üressel a jó legfrissebb.json-t (az EGYETLEN feltétel nélküli
+# kanonikus felülíró). Feltétel: not (top_trendek or trend_idosorok or kulcsszo_pontok).
+class AdatKliens:
+    """felkapott_api ad egy trendet → top_trendek nem üres (a legfrissebb payload nem üres)."""
+    def __init__(self):
+        self.tr = _dummy_tr()
+    def hivas(self, ag, fn, *a, **k):
+        if ag == "felkapott_api":
+            return [SimpleNamespace(keyword="infláció", volume=50000, volume_growth_pct=120,
+                                    trend_keywords=[], started=None, picture="",
+                                    picture_source="", news=[])]
+        return []
+    def hivasszam(self, ag):
+        return 1
+    def osszes_hivas(self):
+        return 1
+
+
+def test_nulla_adat_nem_uriti_a_legfrissebbet(tmp_path):
+    # 429-blokk → nulla payload; a MEGLÉVŐ jó legfrissebb.json maradjon ÉRINTETLEN.
+    most = datetime(2021, 1, 1, 12, 0, tzinfo=timezone.utc)
+    ddir = tmp_path / "docs" / "data"
+    ddir.mkdir(parents=True)
+    jo = '{"top_trendek": [{"kifejezes": "régi"}]}'
+    (ddir / "legfrissebb.json").write_text(jo, encoding="utf-8")
+    futtato.futtat(_config(), Szamlalo429Kliens(), tmp_path / "adatok", ddir, most=most)
+    assert (ddir / "legfrissebb.json").read_text(encoding="utf-8") == jo   # nem íródott felül
+
+
+def test_nulla_adat_legfrissebb_kihagyva_hangos(tmp_path, capsys):
+    # NEM néma: FIGYELEM a run.log-ba, a kihagyás okával + MELYIK komponens üres.
+    most = datetime(2021, 1, 1, 12, 0, tzinfo=timezone.utc)
+    futtato.futtat(_config(), Szamlalo429Kliens(), tmp_path / "adatok",
+                   tmp_path / "docs" / "data", most=most)
+    ki = capsys.readouterr().out
+    assert "legfrissebb.json" in ki and "KIHAGYVA" in ki
+    assert "top_trendek" in ki and "kulcsszavak" in ki                     # megnevezi az üreseket
+
+
+def test_van_adat_ir_legfrissebbet_SZANDEKOS_ZOLD(tmp_path):
+    # SZÁNDÉKOS-ZÖLD: van érdemi adat (top_trendek) → a legfrissebb KIÍRÓDIK (normál út).
+    most = datetime(2021, 1, 1, 12, 0, tzinfo=timezone.utc)
+    ddir = tmp_path / "docs" / "data"
+    futtato.futtat(_config(), AdatKliens(), tmp_path / "adatok", ddir, most=most)
+    assert (ddir / "legfrissebb.json").exists()
+    lf = json.loads((ddir / "legfrissebb.json").read_text(encoding="utf-8"))
+    assert len(lf["top_trendek"]) > 0
 
 
 def test_tervezett_hivasszam_szolo():
