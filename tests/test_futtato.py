@@ -64,6 +64,76 @@ def test_teljes_blokkolas_nem_nulla_kilepesi_kod(tmp_path):
     assert (tmp_path / "adatok" / "naplo.csv").exists()
 
 
+# --- L4: hívás-plafon túllépés → propagáló, HANGOS, NEM-NULLA exit (nem success-vak) ---
+# Kikényszerítés: valódi Kliens plafon=0-val → az ELSŐ hívás azonnal dob, a hálózat ELŐTT
+# (0 valódi hívás, nem 128 szimulálva). A teszt-config szavai racs="ora" → masodlagos üres.
+def _plafon_futtat(tmp_path):
+    most = datetime(2021, 1, 1, 12, 0, tzinfo=timezone.utc)
+    cfg = _config()
+    # _dummy_tr: megvannak a metódusnevek (None) → a plafon-check tüzel a None hívása ELŐTT.
+    # (object() itt VAK RED-et adna: a kliens.tr.trending_now attribútum-hozzáférés a plafon
+    # ELŐTT dobna AttributeError-t, a plafon meg sem hívódna.)
+    k = kliens.Kliens(cfg, trends=_dummy_tr(), plafon=0)
+    kod = futtato.futtat(cfg, k, tmp_path / "adatok", tmp_path / "docs" / "data", most=most)
+    eredmenyek = {s["ag"]: s["eredmeny"] for s in _naplo_soronkent(tmp_path / "adatok")}
+    return kod, eredmenyek
+
+
+def test_plafon_tullepes_nem_nulla_exit(tmp_path):
+    # L4: a plafon-túllépés KILEPES_PLAFON=2 (nem a van_adat→0/1 csapda).
+    kod, _ = _plafon_futtat(tmp_path)
+    assert kod == 2
+
+
+def test_plafon_tullepes_hangos_naplo(tmp_path):
+    # NEM néma: külön 'plafon' jelölt ágsor a naplóban (nem generikus 'hiba').
+    _, eredmenyek = _plafon_futtat(tmp_path)
+    assert "plafon" in eredmenyek.values()
+
+
+def test_plafon_tullepes_utan_agak_kihagyva(tmp_path):
+    # Hard-abort: a túllépés UTÁNI ágak 'kihagyva' (mint 429-blokknál), nem futnak tovább.
+    _, eredmenyek = _plafon_futtat(tmp_path)
+    assert eredmenyek["kulcsszo"] == "kihagyva"
+
+
+# --- PLAFON_OVERRIDE: a (c) CI-piros-út dispatch előfeltétele. A szelepet CSAK CSÖKKENTHETI
+# (min), sosem emelheti — hogy egy bent felejtett env NE kapcsolhassa ki csendben. HANGOS napló.
+def test_plafon_override_csokkent():
+    cfg = _config()
+    assert futtato._plafon(cfg, 1) == 1                       # 1 < számított → csökkent
+
+
+def test_plafon_override_sosem_emel_SZANDEKOS_ZOLD():
+    # SZÁNDÉKOS-ZÖLD: a min sosem emel — egy irreálisan magas override NO-OP (a számított marad).
+    cfg = _config()
+    assert futtato._plafon(cfg, 10 ** 9) == futtato._szamitott_plafon(cfg)
+
+
+def test_plafon_override_hangos_naplo(capsys):
+    cfg = _config()
+    futtato._plafon(cfg, 1)
+    assert "PLAFON_OVERRIDE" in capsys.readouterr().out       # nem lehet csendben bent felejteni
+
+
+def test_plafon_override_env_int(monkeypatch):
+    monkeypatch.setenv("PLAFON_OVERRIDE", "5")
+    assert futtato._plafon_override_env() == 5
+
+
+def test_main_bekoti_a_plafon_override_ot(monkeypatch):
+    # ÁTFŰZÉS-ŐR: a main() TÉNYLEG beköti-e az override-ot a Kliens plafonjába (különben a hook
+    # némán hatástalan — a szelep hibaosztálya). Kliens/futtat/betolt dublőrözve (nincs hálózat).
+    monkeypatch.setenv("PLAFON_OVERRIDE", "1")
+    rogzitett = {}
+    monkeypatch.setattr(futtato, "betolt", _config)
+    monkeypatch.setattr(futtato, "Kliens",
+                        lambda config, plafon=None: rogzitett.update(plafon=plafon) or object())
+    monkeypatch.setattr(futtato, "futtat", lambda *a, **k: 0)
+    futtato.main()
+    assert rogzitett["plafon"] == 1
+
+
 class Szamlalo429Kliens:
     """Az ELSŐ hívás AgFeladva-t dob; számolja a hívásokat."""
     def __init__(self):

@@ -13,6 +13,22 @@ class AgFeladva(Exception):
         self.hibakodok = hibakodok
 
 
+class PlafonTullepve(RuntimeError):
+    """A hívás-plafon (call-multiplying bug elleni védőkorlát) túllépve — HARD ABORT.
+
+    RuntimeError-ALOSZTÁLY, hogy a meglévő plafon-hívók/tesztek (amelyek RuntimeError-t
+    várnak) VÁLTOZATLANUL elkapják; a DEDIKÁLT típus viszont lehetővé teszi, hogy a
+    kulcsszavak/idosorok/_ag `except Exception` NE nyelje el (L4): a szelep propagál,
+    az addigi adat mentődik, a futtato NEM-NULLA (KILEPES_PLAFON) exittel áll le."""
+
+    def __init__(self, ag, osszes, plafon):
+        super().__init__(f"hívás-plafon túllépve a(z) '{ag}' ágon: "
+                         f"osszes_hivas={osszes} >= plafon={plafon}")
+        self.ag = ag
+        self.osszes = osszes
+        self.plafon = plafon
+
+
 def rate_limit_hiba(exc: Exception) -> bool:
     """Igaz, ha a kivétel HTTP 429 / rate limit."""
     kod = getattr(exc, "status_code", None)
@@ -74,9 +90,7 @@ class Kliens:
             if self.plafon is not None:
                 osszes = self.osszes_hivas()
                 if osszes >= self.plafon:
-                    raise RuntimeError(
-                        f"hívás-plafon túllépve a(z) '{ag}' ágon: "
-                        f"osszes_hivas={osszes} >= plafon={self.plafon}")
+                    raise PlafonTullepve(ag, osszes, self.plafon)
             self._var()
             self._szamlalok[ag] += 1
             try:

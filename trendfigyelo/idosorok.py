@@ -3,7 +3,7 @@
 from pathlib import Path
 
 from . import seged
-from .kliens import AgFeladva
+from .kliens import AgFeladva, PlafonTullepve
 
 
 def df_idosor(df, kifejezes: str, forras: str) -> list:
@@ -55,6 +55,8 @@ def gyujt(kliens, config, top_kifejezesek) -> list:
             )
         except AgFeladva:  # 429-kimerülés → az egész ág feladva
             print(f"FIGYELEM: az idősor-ág feladva (429) a(z) '{kif}' kifejezésnél.")
+            raise
+        except PlafonTullepve:  # hívás-plafon → HARD ABORT, propagál (nem néma skip)
             raise
         except Exception as e:  # egyetlen trend egyéb hibája nem dönti a többit
             print(f"FIGYELEM: '{kif}' idősora kimaradt ({e}).")

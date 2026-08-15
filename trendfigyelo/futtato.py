@@ -7,16 +7,20 @@ gyűlt, különben 1.
 """
 
 import json
+import os
 import sys
 from pathlib import Path
 
 from . import (felkapott, idosorok, json_export, kategoriak, kulcsszavak, naplo,
                nyers_kimenet, regresszio, seged)
 from .config import betolt
-from .kliens import AgFeladva, Kliens
+from .kliens import AgFeladva, Kliens, PlafonTullepve
 
 # az ágak logolási sorrendje (block-stop kihagyás jelöléséhez) = a valós végrehajtási sorrend
 AGAK = ["felkapott_api", "felkapott_rss", "kulcsszo", "idosor", "kulcsszo_masodlagos"]
+# kilépési kód szerződés: 0 = van adat / 1 = nincs adat / 2 = HÍVÁS-PLAFON túllépés
+# (call-multiplying bug elleni védőkorlát tüzelt — HANGOS, hogy ne legyen success-vak).
+KILEPES_PLAFON = 2
 
 
 def tervezett_hivasszam(config) -> int:
@@ -66,6 +70,10 @@ def _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most):
     except AgFeladva as e:
         bejegyzesek.append({"ag": ag, "eredmeny": "blokkolva",
                             "hivasok_szama": kliens.hivasszam(ag), "hibakodok": ",".join(e.hibakodok)})
+    # MEGJEGYZÉS (MASODLAGOS-PLAFON, leltár): a PlafonTullepve itt NINCS külön elkapva → a
+    # futtato felső elkapójáig propagál (exit=KILEPES_PLAFON), a per-szavas írás miatt az addigi
+    # szavak a lemezen. A napló ilyenkor 'kihagyva'-t ír (nem 'plafon') — ritka él (utolsó ág),
+    # az exit-2 a fő hangos jel. Külön 'plafon'-jelölő + teszt = külön TDD-kör (leltár).
 
 
 def _jelez_elavult_masodlagos(docs_data_mappa, most):
@@ -194,6 +202,11 @@ def _ag(bejegyzesek, kliens, ag, fn):
                             "hivasok_szama": kliens.hivasszam(ag), "hibakodok": hibakodok})
         print(f"FIGYELEM: a(z) '{ag}' ág BLOKKOLVA (429) — a hátralévő ágak kimaradnak.")
         raise
+    except PlafonTullepve as e:  # hívás-plafon → HARD ABORT: hangos jel + propagál (nem néma 'hiba')
+        bejegyzesek.append({"ag": ag, "eredmeny": "plafon",
+                            "hivasok_szama": kliens.hivasszam(ag), "hibakodok": type(e).__name__})
+        print(f"FIGYELEM: a(z) '{ag}' ág HÍVÁS-PLAFONT lépett túl ({e}) — a futás leáll (exit {KILEPES_PLAFON}).")
+        raise
     except Exception as e:
         hibakodok = ",".join(getattr(e, "hibakodok", []) or [type(e).__name__])
         bejegyzesek.append({"ag": ag, "eredmeny": "hiba",
@@ -215,6 +228,7 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
     nap_iso = most.astimezone(seged.BUDAPEST).date().isoformat()
 
     bejegyzesek = []
+    plafon_tullepes = False           # L4: a hívás-plafon tüzelt-e (→ KILEPES_PLAFON exit)
     # négy külön lista, hogy block-stop után is a részleges adat legyen kéznél
     api_trendek = []
     rss_trendek = []
@@ -242,10 +256,12 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
         # NEM block-stop). Ha egy korábbi ág block-stopol, ide nem jutunk → a lenti except
         # az AGAK-ban "kulcsszo_masodlagos"-t "kihagyva"-ra teszi.
         _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most)
-    except AgFeladva as e:
-        # a kulcsszó-ág block-stopja a blokk ELŐTT lemért szavakat MENTI (spec 7.4).
-        # HATÓKÖR (szándékos szűkítés): csak az AgFeladva-ra akasztott részleg jön vissza;
-        # más kivétel esetén nincs e.reszleges → a részleg elveszik, mint a régi viselkedésben.
+    except (AgFeladva, PlafonTullepve) as e:
+        # KÖZÖS MENTŐ-ÚT: a block-stop (429) ÉS a plafon-túllépés (L4) is a blokk ELŐTT lemért
+        # szavakat MENTI (a kivételre akasztott e.reszleges-ből; a másodlagos ág per-szavas írása
+        # eleve a lemezen). A plafon-túllépés viszont KILEPES_PLAFON (2) exittel jár, nem 0/1.
+        plafon_tullepes = isinstance(e, PlafonTullepve)
+        # HATÓKÖR: csak a kivételre akasztott részleg jön vissza; más esetben nincs e.reszleges.
         resz = getattr(e, "reszleges", None)
         if resz:
             kulcsszo_pontok, kulcsszo_napi_pontok, kulcsszo_nyers = resz
@@ -396,15 +412,48 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
     naplo.naplo_ir(adatok_mappa, letoltve, bejegyzesek, config.naplo_max_sor)
 
     print(f"Összes Google-hívás: {kliens.osszes_hivas()}")
+    if plafon_tullepes:               # L4: a védőkorlát tüzelt → HANGOS, nem-nulla (nem van_adat→0)
+        return KILEPES_PLAFON
     return 0 if van_adat else 1
+
+
+def _szamitott_plafon(config):
+    """A strukturális maximum: minden logikai hívás mind a max_probak próbát kimeríti."""
+    return (tervezett_hivasszam(config) + MAX_MASODLAGOS_NAPI) * config.max_probak
+
+
+def _plafon_override_env():
+    """A PLAFON_OVERRIDE env-változó int-ként (a (c) CI-piros-út dispatch-hez), vagy None
+    (hiány/érvénytelen → figyelmen kívül; érvénytelenre hangos FIGYELEM)."""
+    ny = os.environ.get("PLAFON_OVERRIDE")
+    if ny is None:
+        return None
+    try:
+        return int(ny)
+    except ValueError:
+        print(f"FIGYELEM: PLAFON_OVERRIDE értéke érvénytelen ({ny!r}) — figyelmen kívül hagyva.")
+        return None
+
+
+def _plafon(config, override=None):
+    """A tényleges hívás-plafon. Az override CSAK CSÖKKENTHET (min) — a biztonsági szelepet
+    egy bent felejtett/magas env NE kapcsolhassa ki csendben. Ha az env be van állítva, HANGOS
+    FIGYELEM (akkor is, ha no-op), hogy ne lehessen véletlenül bent felejteni."""
+    szamitott = _szamitott_plafon(config)
+    if override is None:
+        return szamitott
+    eff = min(szamitott, override)                            # sosem emel
+    jelzo = "CSÖKKENTVE" if eff < szamitott else f"NO-OP (a számított {szamitott} marad)"
+    print(f"FIGYELEM: PLAFON_OVERRIDE={override} beállítva — effektív hívás-plafon {eff} ({jelzo}).")
+    return eff
 
 
 def main() -> int:
     """Belépő: config betöltése, Kliens felépítése, teljes futás."""
     config = betolt()
-    # hívás-plafon = a strukturális maximum (minden logikai hívás mind a max_probak
-    # próbát kimeríti); efölött már csak call-multiplying bug lehet → azonnali leállás
-    kliens = Kliens(config, plafon=(tervezett_hivasszam(config) + MAX_MASODLAGOS_NAPI) * config.max_probak)
+    # hívás-plafon = a strukturális maximum (efölött már csak call-multiplying bug lehet →
+    # azonnali leállás). A PLAFON_OVERRIDE env CSAK CSÖKKENTHETI (a (c) CI-igazoláshoz).
+    kliens = Kliens(config, plafon=_plafon(config, _plafon_override_env()))
     print(f"Várható Google-hívásszám (429 nélkül): ~{tervezett_hivasszam(config)}")
     return futtat(config, kliens, Path("adatok"), Path("docs") / "data")
 

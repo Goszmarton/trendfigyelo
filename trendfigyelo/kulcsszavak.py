@@ -9,7 +9,7 @@ from datetime import timezone
 from pathlib import Path
 
 from . import seged
-from .kliens import AgFeladva
+from .kliens import AgFeladva, PlafonTullepve
 
 
 def _szam(x) -> bool:
@@ -130,6 +130,9 @@ def gyujt(kliens, config, most=None):
             # a blokk ELŐTT lemért szavakat a kivételre akasztjuk → a futtato menti (spec 7.4).
             # HATÓKÖR (szándékos): CSAK az AgFeladva viszi a részleget; más kivétel nem.
             e.reszleges = (pontok, napi_pontok, nyers_sorozatok)
+            raise
+        except PlafonTullepve as e:  # hívás-plafon → HARD ABORT, de az addigi szavak mentése
+            e.reszleges = (pontok, napi_pontok, nyers_sorozatok)  # (mint AgFeladva-nál)
             raise
         except Exception as e:
             print(f"FIGYELEM: a(z) {tetel.kifejezes!r} kulcsszó kimaradt ({e}).")
