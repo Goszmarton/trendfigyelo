@@ -16,7 +16,7 @@ Utolsó frissítés: 2026-08-15.
   új ID. Lezárt tétel a **LEZÁRT / ELAVULT** szakaszba kerül, **nem törlődik**.
 - **c) INVARIÁNS (frissítéskor ellenőrizd):**
   `aktív + kész + nem-task rekord + félretett = törzs-sorszám`.
-  Most: **34 + 9 + 7 + 1 = 51**. A **LEZÁRT / ELAVULT** külön számolódik: most **10**.
+  Most: **34 + 11 + 7 + 1 = 53**. A **LEZÁRT / ELAVULT** külön számolódik: most **10**.
   Ha ez az egyenlőség nem áll, a leltár driftel.
 - **d)** **Önhivatkozó hash TILOS:** a leltár nem tartalmazhatja a SAJÁT lezáró commitja
   hash-ét (nincs „(ez a commit)" placeholder sem, ami bent ragad). A lezáró sor állapota
@@ -28,12 +28,14 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 
 ---
 
-## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (9)
+## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (11)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
-| LEGFRISSEBB-GUARD | nulla-adatos futás NE írja felül üressel a jó legfrissebb.json-t (az EGYETLEN feltétel nélküli kanonikus felülíró; tortenet/napi/nyers már guardolt); feltétel: not(top_trendek or trend_idosorok or kulcsszavak); hangos FIGYELEM + megnevezi az üreseket; kapcsolódik: SUCCESS-VAK (bemeneti testvér) | Ph3 | LESZÁLLÍTVA (lásd git log) | MÉRT | igen (kimenet) | S | — |
-| L4 | Kliens-plafon HANGOS szelep: PlafonTullepve(RuntimeError) propagál (3 elnyelő hely szűrve) + részleg-mentés (.reszleges / másodlagos per-szavas upsert) + KILEPES_PLAFON=2 exit; PLAFON_OVERRIDE env CSAK csökkenthet (min, hangos); a pipefail-függés FELOLDVA (504103c); a KUDARC-VAK plafon-tagját zárja (SUCCESS-VAK/FOLYT NYITVA) | Ph3 | LESZÁLLÍTVA (lásd git log) | MÉRT | igen (viselkedés) | M | — |
+| LEGFRISSEBB-GUARD | nulla-adatos futás NE írja felül üressel a jó legfrissebb.json-t (az EGYETLEN feltétel nélküli kanonikus felülíró; tortenet/napi/nyers már guardolt); feltétel: not(top_trendek or trend_idosorok or kulcsszavak); hangos FIGYELEM + megnevezi az üreseket; kapcsolódik: SUCCESS-VAK (bemeneti testvér); ÉLESBEN IGAZOLVA (run 31888919931) | Ph3 | LESZÁLLÍTVA (lásd git log) | MÉRT | igen (kimenet) | S | — |
+| L4 | Kliens-plafon HANGOS szelep: PlafonTullepve(RuntimeError) propagál (3 elnyelő hely szűrve) + részleg-mentés (.reszleges / másodlagos per-szavas upsert) + KILEPES_PLAFON=2 exit; PLAFON_OVERRIDE env CSAK csökkenthet (min, hangos); a KUDARC-VAK plafon-tagját zárja (SUCCESS-VAK/FOLYT NYITVA). **CI-piros-út MÉRT IGAZOLVA** (run 31888919931, bot-commit e73299e: job PIROS + always()-adat-commit + legfrissebb védve, 0 valódi hívás) | Ph3 | LESZÁLLÍTVA (lásd git log) | MÉRT | igen (viselkedés) | M | — |
+| PIPEFAIL | napi.yml explicit `set -o pipefail` — az L4 exit 2 NE vesszen el a `| tee run.log` mögött (helyben igazolva: pipefail nélkül exit=0, vele 2; élesben: exit code 2 → job PIROS) | Ph3 | LESZÁLLÍTVA (504103c) | MÉRT | igen (CI-jelzés) | S | — |
+| PLAFON-OVERRIDE | PLAFON_OVERRIDE env (CSAK csökkent, min; hangos) + napi.yml dispatch-input (cron-BIZTOS: schedule → '' → némán None) — a (c) CI-piros-út igazolás előfeltétele; env-hook c60ae76, plumbing 7fab4db | Ph3 | LESZÁLLÍTVA (7fab4db) | MÉRT | igen (CI-teszt) | S | — |
 | LEDGER-HIG | állapot-leltár követett fájlba + a 6 hash rögzítése | fázis-függ. | LESZÁLLÍTVA (6f4091d) | MÉRT | nem | S-M | — |
 | PH4-T1 | config racs-mező (viselkedés-változás nélkül) | Ph4 | LESZÁLLÍTVA (486b3c7) | MÉRT | nem | — | — |
 | PH4-T2 | másodlagos nyers kimenet (N=3 adat-relatív retenció) | Ph4 | LESZÁLLÍTVA (9279f35) | MÉRT | igen | — | — |
@@ -90,7 +92,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
 | IRANY-KUSZOB | irány-küszöb rács-tudatossá: a nap/het ág ABLAK-RELATÍV (\|meredekseg×span\| < 7 pont = a skála %-a), az órás per-nap 1.0 VÁLTOZATLAN (0 címke-eltérés valós nyers adaton); a másodlagos metaadat is javítva (elmozdulas_kuszob a félrevezető irany_kuszob helyett). A 7,0 az órás kalibráció átvitele, ELSŐ közelítés (5 intervallum mintája). LEZÁRHATÓ, ha ≥15 nap/het intervallumon újramérve a 7,0 továbbra is TERMÉSZETES HÉZAGBA esik ÉS elválasztja a stagnal/nem-stagnal halmazt (most a 2,89↔13,10 közti ~10 pontos hézagban ül); ha a tömeg a küszöb köré csúszik → újrakalibrálás | Ph4 | RÉSZBEN | MÉRT (08-15) | igen (címke) | M | ADD-SWAP |
-| KUDARC-VAK | SUCCESS-VAK + FOLYT + L4 UGYANAZ A HIBAOSZTÁLY: minden kudarc-út zöldre fut (van_adat→exit0 / él-trigger / `except Exception`) → a rendszer nem tud kudarcot jelezni. **L4 LESZÁLLT** (a plafon-tag hangos, propagál); SUCCESS-VAK/FOLYT NYITVA | Ph3/4 | REKORD (lelet) | MÉRT (08-14) | igen (diagnoszt.) | — | SUCCESS-VAK, FOLYT |
+| KUDARC-VAK | „nem tud kudarcot jelezni" hibaosztály — ma NÉGY tag került elő: **L4** (plafon, LESZÁLLT + élesben igazolt) + **SUCCESS-VAK** (bemenet: néma üres-sorozat skip) + **FOLYT** (él-trigger) + **LEGFRISSEBB-RESZLEGES** (kimenet: részleges felülírás). Közös minta: van_adat=True / exit0 / néma skip elfedi a rossz állapotot. SUCCESS-VAK/FOLYT/LEGFRISSEBB-RESZLEGES NYITVA | Ph3/4 | REKORD (lelet) | MÉRT (08-14..15) | igen (diagnoszt.) | — | SUCCESS-VAK, FOLYT, LEGFRISSEBB-RESZLEGES |
 | PLAFON-128 | a Task 5 átírja a `tervezett_hivasszam` jelentését → a 128-as hívás-plafon ÚJRANÉZENDŐ a Task5 tervénél (L4 backstopként MOST ráépült — a plafon hard-abortot okoz) | Ph4 (új) | REKORD/MEGKÖTÉS | MÉRT | igen | — | TASK5, L4 |
 | MASODLAGOS-PLAFON | a plafon a másodlagos ágban (utolsó ág) is üthet → propagál + exit 2, DE a napló 'kihagyva'-t ír (nem 'plafon'), és a másodlagos-propagáció+címke NINCS külön tesztelve; külön 'plafon'-jelölő + teszt = külön TDD-kör | Ph4 (új) | NYITOTT (kis) | MÉRT (08-15) | nem (napló-címke) | S | L4 |
 | LEGFRISSEBB-RESZLEGES | RÉSZLEGES adatnál a legfrissebb_ir a jó TELJES fájlt hiányossal írja felül (pl. kulcsszó-ág 429 → kulcsszavak üresen kiíródik, van_adat=True → a total-empty guard NEM szól). IGAZOLT: ReszlegesKliens kod=0, de a payload mind 0. Külön kör: komponens-szintű merge/guard + partial-FIGYELEM. Testvér: SUCCESS-VAK (bemenet) / LEGFRISSEBB-GUARD (total) | Ph3/4 (új) | NYITOTT | MÉRT (08-15) | igen (kimenet) | M | — |
