@@ -1,7 +1,7 @@
 {
-  "szamitva_utc": "2026-08-14T19:51:38+00:00",
+  "szamitva_utc": "2026-08-15T14:04:45+00:00",
   "meredekseg_egyseg": "relatív pont / nap",
-  "irany_kuszob": 1.0,
+  "elmozdulas_kuszob": 7.0,
   "megjegyzes": "Az R² autokorrelált órás soron számolt — MÁSODLAGOS; az elsődleges a meredekség és az irány (spec 4.1). Az r2_masodlagos_autokorrelacio ezt jelzi. A se_meredekseg (OLS standard hiba) UGYANEZEN autokorreláció miatt szintén MÁSODLAGOS és torzított (lefelé) — a se_masodlagos_autokorrelacio jelzi; a felület NEM írja ki konfidencia-sávként.",
   "kulcsszavak": {
     "albérlet": {
@@ -72,7 +72,7 @@
           "meredekseg_nap": 0.147,
           "se_meredekseg": 0.0455,
           "se_masodlagos_autokorrelacio": true,
-          "irany": "stagnal",
+          "irany": "novekszik",
           "r2": 0.106,
           "r2_masodlagos_autokorrelacio": true,
           "ablak_kezdet_utc": "2026-05-15T00:00:00+00:00",
@@ -185,7 +185,7 @@
           "meredekseg_nap": -0.04,
           "se_meredekseg": 0.0109,
           "se_masodlagos_autokorrelacio": true,
-          "irany": "stagnal",
+          "irany": "csokken",
           "r2": 0.209,
           "r2_masodlagos_autokorrelacio": true,
           "ablak_kezdet_utc": "2025-08-10T00:00:00+00:00",
