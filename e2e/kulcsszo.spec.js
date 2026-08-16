@@ -296,15 +296,17 @@ test("2h. másodlagos nélküli hosszú intervallum → 'napi/heti adatot' (NEM 
   await expect(v).not.toContainText("összefűzött nap");   // az órás-láncolás felirat NEM szivárog
 });
 
-// ── 2i. Szelet 2 integráció: másodlagos szó alapból a hosszú intervallumon → "nap nem-nulla" ────
-test("2i. másodlagos szó (leghosszabb érvényes = 1_ho) → kártya drawable, 'nap nem-nulla'", async ({ page }) => {
+// ── 2i. Szelet 2 integráció: másodlagos szó a hosszú intervallumon → "nap nem-nulla" ────────────
+test("2i. másodlagos szó 1_ho-ra váltva → kártya drawable, 'nap nem-nulla'", async ({ page }) => {
   await mock(page, {
     regObj: reg({ "albérlet": regSzo({ domen: "lakhatas" }) }),   // 1_het órás valid
     nyersObj: nyers({ "albérlet": [nyersRekord("albérlet")] }),
-    mpRegObj: mpReg({ "albérlet": mpSzo("nap", { "1_ho": racs_iv(30, 1) }) }),  // leghosszabb érvényes = 1_ho
+    mpRegObj: mpReg({ "albérlet": mpSzo("nap", { "1_ho": racs_iv(30, 1) }) }),
     mpNyersObj: mpNyers({ "albérlet": [racs_nyersRekord("albérlet", 30, 1)] }),
   });
   await page.goto("/");
+  // ALAPNEZET (Szelet 3): a default 1_het → a másodlagos 1_ho nézethez kattintani kell
+  await page.click('#intervallum-vezerlo button[data-intervallum="1_ho"]');
   const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="albérlet"]`);
   await expect(c).toHaveAttribute("data-drawable", "true");
   await expect(c.locator(".merteszamok")).toContainText("nap nem-nulla");   // a másodlagos napi adat rajzol
@@ -322,6 +324,47 @@ test("2j. 1_het órás marad másodlagos jelenlétében is → 'óra nem-nulla' 
   await page.click('#intervallum-vezerlo button[data-intervallum="1_het"]');   // váltás az órás nézetre
   const m = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="albérlet"] .merteszamok`);
   await expect(m).toContainText("166/168 óra nem-nulla");   // 1_het = órás, a másodlagos nem írja felül
+});
+
+// ── 2k. Szelet 3 / HIBA 1: nap-szó 1_ev másodlagos nincs_lancolas → NEM "összefűzött nap" ──────
+test("2k. nap-szó másodlagos 1_ev nincs_lancolas → 'A napi/heti sorozat rövidebb…' (nem 'összefűzött')", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "nyaralás": regSzo({ domen: "fogyasztas" }) }),   // órás 1_het valid, 1_ev nincs_lancolas
+    nyersObj: nyers({ "nyaralás": [nyersRekord("nyaralás")] }),
+    mpRegObj: mpReg({ "nyaralás": mpSzo("nap", { "2_het": racs_iv(14, 1), "1_ev": ivHibas("nincs_lancolas") }, { domen: "fogyasztas" }) }),
+    mpNyersObj: mpNyers({ "nyaralás": [racs_nyersRekord("nyaralás", 14, 1)] }),
+  });
+  await page.goto("/");
+  const v = page.locator("#intervallum-vezerlo");
+  await expect(v).toContainText("A napi/heti sorozat rövidebb ennél az ablaknál");   // rovid_masodlagos (1_ev)
+  await expect(v).not.toContainText("összefűzött");                                    // a félrevezető órás-láncolás felirat NEM
+});
+
+// ── 2l. Szelet 3 / HIBA 2: het-szó 2_het keves_pont → "heti rácson…túl rövid" (nem adathiány) ──
+test("2l. het-szó 2_het keves_pont → 'A heti rácson ez az ablak túl rövid' (nem 'Túl kevés mért pont')", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "akciós újság": regSzo({ domen: "fogyasztas" }) }),
+    nyersObj: nyers({ "akciós újság": [nyersRekord("akciós újság")] }),
+    mpRegObj: mpReg({ "akciós újság": mpSzo("het", { "3_ho": racs_iv(12, 7), "2_het": ivHibas("keves_pont") }, { domen: "fogyasztas" }) }),
+    mpNyersObj: mpNyers({ "akciós újság": [racs_nyersRekord("akciós újság", 12, 7)] }),
+  });
+  await page.goto("/");
+  const v = page.locator("#intervallum-vezerlo");
+  await expect(v).toContainText("A heti rácson ez az ablak túl rövid");   // rovid_het_ablak (2_het)
+  await expect(v).not.toContainText("Túl kevés mért pont");               // az adathiányt sugalló felirat NEM
+});
+
+// ── 2m. Szelet 3 / ALAPNEZET: 1_het + hosszú érvényes → az ALAP az 1_het (nem a leghosszabb) ───
+test("2m. 1_het órás + 3_ho másodlagos érvényes → az alap-intervallum 1_het (nem 3_ho)", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "albérlet": regSzo({ domen: "lakhatas" }) }),   // 1_het órás valid
+    nyersObj: nyers({ "albérlet": [nyersRekord("albérlet")] }),
+    mpRegObj: mpReg({ "albérlet": mpSzo("nap", { "3_ho": racs_iv(90, 1) }) }),   // 3_ho másodlagos valid
+    mpNyersObj: mpNyers({ "albérlet": [racs_nyersRekord("albérlet", 90, 1)] }),
+  });
+  await page.goto("/");
+  await expect(page.locator('#intervallum-vezerlo button[aria-pressed="true"]'))
+    .toHaveAttribute("data-intervallum", "1_het");   // a legtöbb szót rajzoló alap, nem a leghosszabb (3_ho)
 });
 
 // ── 3. ablak-választás ablak_veg-egyezéssel (mod 2) ──────────────────────────────────────────
@@ -452,7 +495,7 @@ test("9. minden lezárt pont 0 → .csupa-nulla + chart renderel; nem-nulla szó
 });
 
 // ── 10. alapértelmezett = leghosszabb + váltás + aria-szinkron (mod 3, 4. pont) ──────────────
-test("10. default a leghosszabb érvényes; kattintásra data-ablak-veg + data-pontok VÁLTOZIK; pontosan 1 aria-pressed", async ({ page }) => {
+test("10. default = 1_het (ALAPNEZET); kattintásra 1_ho-ra data-ablak-veg + data-pontok VÁLTOZIK; pontosan 1 aria-pressed", async ({ page }) => {
   const veg1het = VEG, pont1het = 168;
   const veg1ho = iso(720), pont1ho = 720;   // fiktív, mock-vezérelt (1_ho ma csak mockkal drawable)
   await mock(page, {
@@ -467,14 +510,15 @@ test("10. default a leghosszabb érvényes; kattintásra data-ablak-veg + data-p
     ] }),
   });
   await page.goto("/");
-  await expect(page.locator(K)).toHaveAttribute("data-aktiv-intervallum", "1_ho");   // leghosszabb érvényes
-  await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`)).toHaveAttribute("data-ablak-veg", veg1ho);
-  await page.locator('#intervallum-vezerlo button[data-intervallum="1_het"]').click();
+  // ALAPNEZET (Szelet 3): a default 1_het (legtöbb kártya), NEM a leghosszabb érvényes (1_ho)
   await expect(page.locator(K)).toHaveAttribute("data-aktiv-intervallum", "1_het");
   await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`)).toHaveAttribute("data-ablak-veg", veg1het);
-  await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`)).toHaveAttribute("data-pontok", String(pont1het));
+  await page.locator('#intervallum-vezerlo button[data-intervallum="1_ho"]').click();   // váltás a hosszabb nézetre
+  await expect(page.locator(K)).toHaveAttribute("data-aktiv-intervallum", "1_ho");
+  await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`)).toHaveAttribute("data-ablak-veg", veg1ho);
+  await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`)).toHaveAttribute("data-pontok", String(pont1ho));
   await expect(page.locator('#intervallum-vezerlo button[aria-pressed="true"]')).toHaveCount(1);
-  await expect(page.locator('#intervallum-vezerlo button[aria-pressed="true"]')).toHaveAttribute("data-intervallum", "1_het");
+  await expect(page.locator('#intervallum-vezerlo button[aria-pressed="true"]')).toHaveAttribute("data-intervallum", "1_ho");
 });
 
 // ── 11. lusta renderelés (mod 3) ─────────────────────────────────────────────────────────────
@@ -525,11 +569,12 @@ test("13. .frissesseg: cimke + dátum az aktív intervallumból (nem a szamitva_
   });
   await page.goto("/");
   const f = page.locator(`${K} .frissesseg`);
-  await expect(f).toContainText("(1 hó)");                                           // default = leghosszabb
-  await expect(f).toContainText(veg1ho.slice(0, 10).replace(/-/g, ". ") + ".");      // az ablak_veg napja, NEM 08-06
-  await page.locator('#intervallum-vezerlo button[data-intervallum="1_het"]').click();
+  // ALAPNEZET (Szelet 3): default 1_het; a frissesseg az AKTÍV intervallum ablak_veg-jét mutatja (NEM 08-06 szamitva)
   await expect(f).toContainText("(1 hét)");
-  await expect(f).toContainText("2026. 08. 05.");
+  await expect(f).toContainText("2026. 08. 05.");                                    // veg1het napja, NEM 08-06
+  await page.locator('#intervallum-vezerlo button[data-intervallum="1_ho"]').click();
+  await expect(f).toContainText("(1 hó)");
+  await expect(f).toContainText(veg1ho.slice(0, 10).replace(/-/g, ". ") + ".");      // váltás után az 1_ho ablak_veg napja
 });
 
 // ── 14. nincs illeszkedő nyers ablak → .ures, NINCS .merteszamok, NINCS canvas (2. pont, bináris) ─

@@ -105,11 +105,14 @@ test("1_het ervenyes, többi false → az 1_het KIVÁLASZTVA; a 2_het tiltott, m
   await expect(page.locator("#intervallum-vezerlo")).not.toContainText("összefűzött"); // a félrevezető órás-láncolás felirat NEM
 });
 
-test("1_het és 1_ho ervenyes → a LEGHOSSZABB (1_ho) van kiválasztva", async ({ page }) => {
+test("1_het és 1_ho ervenyes → az ALAP az 1_het (ALAPNEZET Szelet 3, NEM a leghosszabb)", async ({ page }) => {
+  // Szelet 3 / ALAPNEZET: a default a legtöbb kártyát rajzoló 1_het, nem a leghosszabb érvényes (1_ho).
+  // A régi „leghosszabb érvényes" szabály feltevése (érvényesség monoton nő ÉS leghosszabb = minden-szó-
+  // érvényes) a másodlagos nap/het adattal megtört (1_ev: 1/13 rajzol) → 1_het-pin.
   await mock_regresszio(page, { "1_het": erv(), "2_het": NL, "1_ho": erv(), "3_ho": NL, "1_ev": NL });
   await page.goto("/");
   await expect(page.locator('#intervallum-vezerlo button[aria-pressed="true"]'))
-    .toHaveAttribute("data-intervallum", "1_ho");
+    .toHaveAttribute("data-intervallum", "1_het");
 });
 
 // ── dátumválasztó ────────────────────────────────────────────────────────────

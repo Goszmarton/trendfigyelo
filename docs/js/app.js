@@ -108,6 +108,10 @@ const OK_MAGYAR = {
   // (másodlagos) futást (rotáció); esemenyjelzo = van adat, de eseményjelzőként nincs trendvonal (6c szint-vonal).
   nincs_masodlagos: "Ehhez még nem gyűjtöttünk napi/heti adatot",
   esemenyjelzo: "Eseményjelző — szint-nézet készül (nem trendvonal)",
+  // Szelet 3: a másodlagos MAGA adhat nincs_lancolas/keves_pont-ot nap/het ágon → rács-tudatos, NEM órás/adathiány
+  // szemantikájú felirat. rovid_masodlagos = SEMLEGES tényközlés (nem ígér automatikus feltöltődést).
+  rovid_masodlagos: "A napi/heti sorozat rövidebb ennél az ablaknál",
+  rovid_het_ablak: "A heti rácson ez az ablak túl rövid",
   rovid_span: "Túl rövid mért időszak",
   degeneralt: "Nem illeszthető",
 };
@@ -173,8 +177,21 @@ function egyesitett_reg() {
       } else if (miv && miv.ervenyes) {
         ivk[X] = Object.assign({}, miv, { _racs: m.racs, _forras: "kulcsszo_masodlagos_nyers.json" });
       } else {
-        const hosszu = X !== "1_het";
-        const ok = hosszu ? (miv ? miv.ok : "nincs_masodlagos") : (oiv ? oiv.ok : "nincs_adat");
+        // ÜRES: rács-tudatos ok. A hosszú intervallum SOHA nem "nincs_lancolas" (órás-láncolás, §8.2 szerint
+        // a nap/het ágon irreleváns) — a másodlagos MAGA is adhat nincs_lancolas-t (a sorozat rövidebb az
+        // ablaknál), ezt LEFORDÍTJUK, nem engedjük át nyersen.
+        let ok;
+        if (X === "1_het") {
+          ok = oiv ? oiv.ok : "nincs_adat";
+        } else if (!miv) {
+          ok = "nincs_masodlagos";                                   // nincs másodlagos entry → a szó nem kapott napi/heti futást
+        } else if (miv.ok === "nincs_lancolas") {
+          ok = "rovid_masodlagos";                                   // van másodlagos, de a sorozat rövidebb az ablaknál (nem órás-láncolás)
+        } else if (miv.ok === "keves_pont" && m.racs === "het") {
+          ok = "rovid_het_ablak";                                    // heti rácson a rövid ablak strukturálisan kevés pont, nem adathiány
+        } else {
+          ok = miv.ok;                                               // keves_pont (nap), esemenyjelzo — már rács-megfelelő
+        }
         ivk[X] = { ervenyes: false, ok: ok };
       }
     });
@@ -210,8 +227,13 @@ function intervallum_vezerlo_render() {
     return { kulcs: iv.kulcs, cimke: iv.cimke, hossz: iv.hossz, ervenyes: a.ervenyes, ok: a.ok };
   });
   const ervenyesek = allapotok.filter(function (a) { return a.ervenyes; });
+  // Szelet 3 / ALAPNEZET: a default a legtöbb kártyát rajzoló intervallum = 1_het (13/13 órás), NEM a
+  // leghosszabb érvényes. A spec 7.2 „magától tolódik kifelé" feltevése (érvényesség monoton nő ÉS a
+  // leghosszabb = minden-szó-érvényes) a másodlagossal MEGTÖRT (1_ev: 1/13 rajzol). 1_het hiányában a
+  // leghosszabb érvényesre esünk vissza. A hosszabb nézetek kattintásra maradnak.
   const kivalasztott = ervenyesek.length
-    ? ervenyesek.reduce(function (a, b) { return b.hossz > a.hossz ? b : a; })
+    ? (ervenyesek.find(function (a) { return a.kulcs === "1_het"; })
+       || ervenyesek.reduce(function (a, b) { return b.hossz > a.hossz ? b : a; }))
     : null;
   el.textContent = "";
   // (b) VAN adat, de EGYIK intervallum sem érvényes: NEM egy mondat — mind az 5 letiltott gomb
