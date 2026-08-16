@@ -345,14 +345,24 @@ a Task 10 hatóköre (§11.6) — az asztali sticky itt épül, a reszponzív ö
     (a szó a felvétele előtt) ≠ „mértük, de aznap kiesett" (7.5 néma skip) ≠
     „már nem mérjük" (eltávolított szó). A felület a hármat **ne mossa össze**;
     az eldöntésükhöz szükséges mezőket a 8.3 exportja adja.
-- **Alapértelmezett nézet: a leghosszabb érvényes időszak.** Betöltéskor a
-  kulcsszó-chartok az elérhető legtágabb intervallumot mutassák — a legelső
-  mért ponttól a legutolsó mért pontig. Ez **nem beégetett érték**: az előre
-  kiválasztott intervallum-gomb a `kulcsszo_regresszio.json` `ervenyes: true`
-  intervallumai közül a leghosszabb (8.3). Ma ez az „1 hét" (a többi letiltva,
-  7.4); ahogy gyűlik a láncolt adat és újabb gombok nyílnak, az alapértelmezés
-  **magától tolódik kifelé, kódmódosítás nélkül**. Ha egyetlen intervallum sem
+- **Alapértelmezett nézet: „1 hét" (a legtöbb kártyát rajzoló intervallum).**
+  Betöltéskor a kulcsszó-chartok az „1 hét" (órás) nézeten nyílnak, ahol
+  jelenleg mind a 13 szó rajzol; a hosszabb (nap/het) nézetek kattintásra
+  érhetők el. Az előre kiválasztott gomb az „1 hét", ha `ervenyes: true`;
+  különben a leghosszabb érvényesre esik vissza. Ha egyetlen intervallum sem
   érvényes, a 7.5 üres állapota jön.
+  - **REVÍZIÓ (2026-08-16, 6b Szelet 3).** Az eredeti szabály „a leghosszabb
+    érvényes időszak" volt (nem beégetett; magától tolódik kifelé). Ez arra a
+    FELTEVÉSRE épült, hogy az érvényesség MONOTON nő ÉS a leghosszabb egyben
+    minden-szó-érvényes — az órás-csak világban az „1 hét" mindkettő volt. A
+    nap/het másodlagos adat ezt MEGTÖRTE: a hosszú intervallumokon az
+    érvényesség RITKA (pl. 1_ev: 1/13 szó), így a „leghosszabb érvényes
+    globálisan" 13-ból 1 rajzoló kártyás nézetet adott (rossz első benyomás).
+    A default innentől a legtöbb kártyát rajzoló intervallum = „1 hét". A
+    hosszabb nézetek kattintásra tágulnak. (A jelenlegi „1 hét = 13/13" azért
+    áll, mert csak 4 szónak van másodlagos adata — a Task 5 utáni lefedettségnél
+    a „legtöbb kártya" intervallum ÚJRAMÉRENDŐ; ma beégetett „1 hét", lásd a
+    leltár ALAPNEZET-VEGYES-lezárását és a re-mérési feltételt.)
 
 ### 7.3 Trend-blokk
 
@@ -502,9 +512,10 @@ a Task 10 hatóköre (§11.6) — az asztali sticky itt épül, a reszponzív ö
 dátumaritmetika, csak renderelés. Így a „mikor nyílik ki egy gomb" kérdés
 egyetlen, pytesttel őrzött helyen dől el.
 
-**Előre kiválasztott gomb.** Belépéskor a leghosszabb `ervenyes: true`
-intervallum az aktív (7.2), nem az „1 hét" beégetve — így a nézet magától tágul,
-ahogy a gombok nyílnak. A kiválasztás is a fenti egyetlen forrásból dől el, a
+**Előre kiválasztott gomb.** Belépéskor az „1 hét" az aktív, ha `ervenyes: true`
+(a legtöbb kártyát rajzolja); különben a leghosszabb érvényes (7.2 REVÍZIÓ,
+2026-08-16 — az eredeti „leghosszabb érvényes" a nap/het másodlagossal 1/13
+rajzoló nézetet adott). A kiválasztás is a fenti egyetlen forrásból dől el, a
 frontend itt sem számol.
 
 A letiltott gomb **magyarázatot adjon** (pl. „ehhez még nincs elég mért nap"),
