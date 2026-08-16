@@ -16,7 +16,7 @@ Utolsó frissítés: 2026-08-16.
   új ID. Lezárt tétel a **LEZÁRT / ELAVULT** szakaszba kerül, **nem törlődik**.
 - **c) INVARIÁNS (frissítéskor ellenőrizd):**
   `aktív + kész + nem-task rekord + félretett = törzs-sorszám`.
-  Most: **33 + 12 + 11 + 1 = 57**. A **LEZÁRT / ELAVULT** külön számolódik: most **11**.
+  Most: **32 + 13 + 11 + 1 = 57**. A **LEZÁRT / ELAVULT** külön számolódik: most **11**.
   Ha ez az egyenlőség nem áll, a leltár driftel.
 - **d)** **Önhivatkozó hash TILOS:** a leltár nem tartalmazhatja a SAJÁT lezáró commitja
   hash-ét (nincs „(ez a commit)" placeholder sem, ami bent ragad). A lezáró sor állapota
@@ -28,7 +28,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 
 ---
 
-## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (12)
+## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (13)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
@@ -43,6 +43,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | PH4-T4 | elavultság-jelzés (A — backend + run.log) | Ph4 | LESZÁLLÍTVA (a16e5e9) | MÉRT | igen | — | — |
 | PH4-SPEC | phase4-spec + phase3 §1.4.1/§8.2 bővítés | Ph4 | LESZÁLLÍTVA (d2fe35b) | MÉRT | nem | — | — |
 | PH4-T6a | rács-tudatos regresszió (nap/het + esemenyjelzo szint) | Ph4 | LESZÁLLÍTVA (75839d0) | MÉRT | igen (ma este 1. éles) | — | — |
+| 6b | nem-órás (nap/het) megjelenítés a felületen — NÉGY szelet: RACS-EGYSEG felirat + Szelet1 (racs_epit slot-index, óra bájt-azonos) + Szelet2 (másodlagos JSON fogyasztás + egyesitett_reg per-intervallum routing + rács-tudatos üres-állapot + részleges-betöltés/elavultság-guardok, subagent-review) + Szelet3 (SZEMLE-JAVÍTÁS: a másodlagos MAGA adta nincs_lancolas/keves_pont rács-tudatosan fordítva → rovid_masodlagos/rovid_het_ablak, hosszú intervallum SOHA nem 'összefűzött nap'; default→1_het). **MEGISMÉTELT VIZUÁLIS SZEMLE 6/6 TISZTA (2026-08-16):** nyaralás 1_ev felirat + akciós újság 2_het felirat + alapnézet 1_het 13/13 GÖRBÉVEL + órás út változatlan + keskeny ablak + kézi intervallum-váltás. HÁTRA külön tétel: 6c szint-vonal | Ph4 | LESZÁLLÍTVA (lásd git log) | MÉRT (08-16) | igen (megjel.) | L | — |
 | RACS-EGYSEG | rács-tudatos jel-erősség felirat (a 6b ELSŐ szelet): a merteszamok_szoveg rács-SZAVA (óra/nap/hét) a szó `racs`-ából, `"ora"` default (az órás JSON nem hordoz racs-ot → órás felirat bájt-azonos, nulla séma-változás); ismeretlen rács → LÁTHATÓ `"? <érték>"` (nem undefined, nem néma „óra" — KUDARC-VAK-elhárítás); a mértékegység („/nap") mérve rács-INVARIÁNS, kimarad; a RAJZOLÁS (racs_epit/ora_index/x-tengely/tooltip) a KÖVETKEZŐ, nagyobb 6b-szelet (lásd 6b sor) | Ph4 | LESZÁLLÍTVA (lásd git log) | MÉRT | nem (frontend felirat) | S | — |
 
 ## META / FOLYAMATBAN (0)
@@ -78,12 +79,11 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | KAT-TABLA | kategória heti táblázat | Ph3/4-jelölt | NYITOTT (felvetés) | BECS | igen | M-L | — |
 | KULCS-LISTA | kulcsszó-lista bővítés (nincs diszkrét repó-nyom, csak ambient) | Ph3 | NYITOTT (ambient) | BECS | igen (config) | S-M | — |
 
-## (C) Phase 4 hátralévő (4)
+## (C) Phase 4 hátralévő (3)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
 | TASK5 | staleness-vezérelt ütemező (tie-break=config-index) | Ph4 | NYITOTT | BECS (terv kész) | igen | L | 6a megfigyelés (1-2 futás) |
-| 6b | nem-órás (nap/het) megjelenítés a felületen | Ph4 | RÉSZBEN (LESZÁLLT: RACS-EGYSEG felirat + Szelet1 [racs_epit slot-index] + Szelet2 [másodlagos fogyasztás + egyesitett_reg routing + rács-tudatos üres-állapot + guardok] + Szelet3 [SZEMLE-JAVÍTÁS: a másodlagos MAGA adta nincs_lancolas/keves_pont rács-tudatosan fordítva → rovid_masodlagos/rovid_het_ablak, hosszú intervallum SOHA nem 'összefűzött nap'; default→1_het — ALAPNEZET-VEGYES lezárva]; kód-kész és tesztelt [78 e2e], Szelet2 subagent-review; a ZÁRÓ KAPU a MEGISMÉTELT VIZUÁLIS SZEMLE — utána LESZÁLLÍTVA; HÁTRA külön tétel: 6c szint-vonal) | BECS | nem (frontend) | L | 6a valós adat |
 | 6c | tüntetés szint-vonal (medián, „stabil szint", nincs trendvonal) | Ph4 | NYITOTT (döntés kész) | MÉRT | nem | M | 6b |
 | LANC-ORAS | órás láncolás (2_het+; kumulált skálázó tartós tárolása) | Ph4 §8.2 | NYITOTT | BECS | igen (új kimenet) | XL | §8.2-INV |
 
@@ -93,7 +93,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 |---|---|---|---|---|---|---|---|
 | IRANY-KUSZOB | irány-küszöb rács-tudatossá: a nap/het ág ABLAK-RELATÍV (\|meredekseg×span\| < 7 pont = a skála %-a), az órás per-nap 1.0 VÁLTOZATLAN (0 címke-eltérés valós nyers adaton); a másodlagos metaadat is javítva (elmozdulas_kuszob a félrevezető irany_kuszob helyett). A 7,0 az órás kalibráció átvitele, ELSŐ közelítés (5 intervallum mintája). LEZÁRHATÓ, ha ≥15 nap/het intervallumon újramérve a 7,0 továbbra is TERMÉSZETES HÉZAGBA esik ÉS elválasztja a stagnal/nem-stagnal halmazt (most a 2,89↔13,10 közti ~10 pontos hézagban ül); ha a tömeg a küszöb köré csúszik → újrakalibrálás | Ph4 | RÉSZBEN | MÉRT (08-15) | igen (címke) | M | ADD-SWAP |
 | KUDARC-VAK | „nem tud kudarcot jelezni" hibaosztály — ma NÉGY tag került elő: **L4** (plafon, LESZÁLLT + élesben igazolt) + **SUCCESS-VAK** (bemenet: néma üres-sorozat skip) + **FOLYT** (él-trigger) + **LEGFRISSEBB-RESZLEGES** (kimenet: részleges felülírás). Közös minta: van_adat=True / exit0 / néma skip elfedi a rossz állapotot. SUCCESS-VAK/FOLYT/LEGFRISSEBB-RESZLEGES NYITVA | Ph3/4 | REKORD (lelet) | MÉRT (08-14..15) | igen (diagnoszt.) | — | SUCCESS-VAK, FOLYT, LEGFRISSEBB-RESZLEGES |
-| VEZERLO-MAGAS | a rács-tudatos üres-feliratok (Szelet 2) 234px-re növelik az intervallum-vezérlőt, ha egy szónak SINCS másodlagos adata (mind a 4 hosszú gomb tiltott, hosszú felirattal) → mobilon az első kártyát a hajtás alá tolja (MÉRT: vezérlő 234px, első kártya top=787px 380×320-on). MA nem jelentkezik (4 szónak van másodlagosa → az aggregált hosszú gombok ENGEDÉLYEZETTEK → nincs feliratszöveg → rövid vezérlő), DE friss telepítésen (0 másodlagos) vagy a kulcsszó-lista bővülésekor a szintetikus eset lesz a valóság | Ph4 | REKORD (megfigyelés) | MÉRT (08-16) | nem (megjel.) | S | KULCS-LISTA |
+| VEZERLO-MAGAS | a rács-tudatos üres-feliratok (Szelet 2) 234px-re növelik az intervallum-vezérlőt, ha egy szónak SINCS másodlagos adata (mind a 4 hosszú gomb tiltott, hosszú felirattal) → mobilon az első kártyát a hajtás alá tolja (MÉRT: vezérlő 234px, első kártya top=787px 380×320-on). MA nem jelentkezik (4 szónak van másodlagosa → az aggregált hosszú gombok ENGEDÉLYEZETTEK → nincs feliratszöveg → rövid vezérlő), DE friss telepítésen (0 másodlagos) vagy a kulcsszó-lista bővülésekor a szintetikus eset lesz a valóság. NYITOTT — a 2026-08-16 szemle EZT NEM ZÁRTA LE (a 4 másodlagos szó miatt a kockázatos eset elő sem állt). LEZÁRÁSI FELTÉTEL: olyan állapoton mérve, ahol egy szónak SINCS másodlagos adata (friss telepítés / üres másodlagos fájl), keskeny ablakon | Ph4 | REKORD (megfigyelés, NYITOTT) | MÉRT (08-16) | nem (megjel.) | S | KULCS-LISTA |
 | MASODLAGOS-RACS-HIANY | ELMÉLETI (subagent-review 08-16): ha egy másodlagos szó `racs` NÉLKÜL érkezne (generátor-hiba), az egyesitett_reg `_racs=undefined`-et adna → slot_index az „ora" ágra esik (napi pontok 24-slotos ritka rácson = megszakadozó görbe) + „óra nem-nulla" címke napi adatra. Nem hamis ÉRTÉK, csak félrevezető címke+rács; kivétel nincs. VALÓS adaton nem fordul elő (a backend minden másodlagos szóhoz ír racs-ot — mérve 4/4). Aszimmetria: az órás ág védekező `o.racs || "ora"`-t használ, a másodlagos ág nyers `m.racs`-ot. Keményítés opcionális (explicit hiány-jelzés, NEM néma default) | Ph4 | REKORD (ELMÉLETI) | ELMÉLETI | nem (megjel.) | S | — |
 | ALAPNEZET-KONSTANS | a default `1_het` BEÉGETETT konstans (nem futásidőben számított „legtöbb-kártya" intervallum). Ma helyes (13/13 rajzol), mert csak 4 szónak van másodlagos adata. ÚJRAMÉRENDŐ a Task 5 utáni lefedettségnél: ha több szó kap másodlagost, a legtöbb kártyát rajzoló intervallum eltolódhat → a beégetett 1_het rács-vakká válhat (a MIN_PONT és irany_kuszob után a HARMADIK ilyen konstans). Spec: phase3 §7.2 REVÍZIÓ (c1cd784) | Ph4 | REKORD (megfigyelés) | MÉRT (n=4, 08-16) | nem (megjel.) | S | TASK5 |
 | MASODLAGOS-OK-NEV | a másodlagos regresszió `nincs_lancolas`/`keves_pont` ok-ot ad nap/het rácson (§9: a nap/het ágon nincs láncolás), a frontend STRING-ILLESZTÉSSEL fordítja (egyesitett_reg: nincs_lancolas→rovid_masodlagos; keves_pont+het→rovid_het_ablak). Egy backend ok-ÁTNEVEZÉS NÉMÁN elrontaná (a régi „összefűzött nap" visszatérne). Diszkriminátor: a másodlagos ENTRY (miv) léte + miv.ok + m.racs az ÜRES-ágon (az üres iv NEM hordoz _racs-ot → miv/m.racs a helyes kulcs, nem _racs). A het-szűkítés STRUKTURÁLIS (nem n=4): het 2_het/1_ho = 2/4 hét < RACS_MIN_PONT[het]=7 → mindig keves_pont (rács-durva a rövid ablakhoz); nap keves_pont ellenben valódi ritkulás (14 nap ≥ MIN_PONT 12, csak lyukaknál). Backend-javítás (nap/het saját ok-kód) külön kör | Ph4/backend | REKORD (megfigyelés) | MÉRT+STRUKT (08-16) | nem (megjel.) | S-M | — |
