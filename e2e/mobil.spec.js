@@ -18,6 +18,11 @@ const REG = { szamitva_utc: "2026-08-05T20:37:39+00:00", meredekseg_egyseg: "rel
 const NYERS = { kulcsszavak: { "állás": [{ kulcsszo: "állás", ablak_kezdet_utc: iso(0), ablak_veg_utc: iso(168), pontok: pontok(168) }], "albérlet": [{ kulcsszo: "albérlet", ablak_kezdet_utc: iso(0), ablak_veg_utc: iso(168), pontok: pontok(168) }], "hitel": [{ kulcsszo: "hitel", ablak_kezdet_utc: iso(0), ablak_veg_utc: iso(168), pontok: pontok(168) }] } };
 
 async function mock_kulcsszo(page) {
+  // 6b Szelet 2: a másodlagos fájlok a kulcsszo-blokk BLOKK-jában vannak → izoláljuk (üres), különben a
+  // teszt-szerver VALÓS másodlagosa (pl. albérlet) beszivárog → a default a leghosszabb érvényesre ugrik →
+  // az első kártya (állás, nincs másodlagosa) üres → nem renderel. (Rejtett valós-adat-függés volt.)
+  await page.route(/kulcsszo_masodlagos_regresszio\.json/, (r) => r.fulfill({ contentType: "application/json", body: JSON.stringify({ kulcsszavak: {} }) }));
+  await page.route(/kulcsszo_masodlagos_nyers\.json/, (r) => r.fulfill({ contentType: "application/json", body: JSON.stringify({ kulcsszavak: {} }) }));
   await page.route(/kulcsszo_regresszio\.json/, (r) => r.fulfill({ contentType: "application/json", body: JSON.stringify(REG) }));
   await page.route(/kulcsszo_nyers\.json/, (r) => r.fulfill({ contentType: "application/json", body: JSON.stringify(NYERS) }));
 }

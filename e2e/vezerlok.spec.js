@@ -31,6 +31,14 @@ function regresszio(intervallumok) {
 }
 
 async function mock_regresszio(page, intervallumok) {
+  // 6b Szelet 2: a másodlagos fájlok most a kulcsszo-blokk BLOKK-jában vannak → izolálni kell (üres),
+  // különben a teszt-szerver VALÓS másodlagos adata szivárogna be (rejtett valós-adat-függés).
+  await page.route(/kulcsszo_masodlagos_regresszio\.json/, function (route) {
+    route.fulfill({ contentType: "application/json", body: JSON.stringify({ kulcsszavak: {} }) });
+  });
+  await page.route(/kulcsszo_masodlagos_nyers\.json/, function (route) {
+    route.fulfill({ contentType: "application/json", body: JSON.stringify({ kulcsszavak: {} }) });
+  });
   await page.route(/kulcsszo_regresszio\.json/, function (route) {
     route.fulfill({ contentType: "application/json", body: JSON.stringify(regresszio(intervallumok)) });
   });
@@ -89,7 +97,12 @@ test("1_het ervenyes, többi false → az 1_het KIVÁLASZTVA; a 2_het tiltott, m
   await expect(page.locator('#intervallum-vezerlo button[aria-pressed="true"]'))
     .toHaveAttribute("data-intervallum", "1_het");
   await expect(page.locator('#intervallum-vezerlo button[data-intervallum="2_het"]')).toBeDisabled();
-  await expect(page.locator("#intervallum-vezerlo")).toContainText("összefűzött"); // nincs_lancolas magyar oka
+  // 6b Szelet 2 SZERZŐDÉS-JAVÍTÁS: a régi assert „összefűzött"-öt várt (órás-láncolás felirat), de a hosszú
+  // intervallum forrása a nap/het másodlagos (§8.2: NEM láncolás) → a helyes üres-ok „nincs_masodlagos".
+  // Ez a MÁSODIK teszt két nap alatt, ami a régi, HIBÁS szerződést kódolta (az első a test_teljes_blokkolas
+  // volt, ami zöld-blokknál felülírást várt). Itt a szó nem kapott másodlagost → „napi/heti adatot", nem láncolás.
+  await expect(page.locator("#intervallum-vezerlo")).toContainText("Ehhez még nem gyűjtöttünk napi/heti adatot");
+  await expect(page.locator("#intervallum-vezerlo")).not.toContainText("összefűzött"); // a félrevezető órás-láncolás felirat NEM
 });
 
 test("1_het és 1_ho ervenyes → a LEGHOSSZABB (1_ho) van kiválasztva", async ({ page }) => {

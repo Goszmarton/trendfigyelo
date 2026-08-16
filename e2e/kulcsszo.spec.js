@@ -131,12 +131,29 @@ function reg(kulcsszavak, over = {}) {
   };
 }
 
-async function mock(page, { regObj, nyersObj }) {
+// A másodlagos fájlokat MINDIG route-oljuk (default üres), különben a teszt-szerver VALÓS
+// másodlagos adata szivárogna be és eltolná a nem-másodlagos teszteket (routing/alap-intervallum).
+async function mock(page, { regObj, nyersObj, mpRegObj, mpNyersObj }) {
+  await page.route(/kulcsszo_masodlagos_regresszio\.json/, (r) =>
+    r.fulfill({ contentType: "application/json", body: JSON.stringify(mpRegObj || { kulcsszavak: {} }) }));
+  await page.route(/kulcsszo_masodlagos_nyers\.json/, (r) =>
+    r.fulfill({ contentType: "application/json", body: JSON.stringify(mpNyersObj || { kulcsszavak: {} }) }));
   await page.route(/kulcsszo_regresszio\.json/, (r) =>
     r.fulfill({ contentType: "application/json", body: JSON.stringify(regObj) }));
   await page.route(/kulcsszo_nyers\.json/, (r) =>
     r.fulfill({ contentType: "application/json", body: JSON.stringify(nyersObj) }));
 }
+
+// másodlagos regresszió-fixture (szó-szintű racs; az intervallumok racs_iv/ivHibas alakúak)
+function mpReg(kulcsszavak) {
+  return { szamitva_utc: "2026-08-15T19:29:00+00:00", meredekseg_egyseg: "relatív pont / nap",
+    elmozdulas_kuszob: 7.0, megjegyzes: "teszt", kulcsszavak };
+}
+function mpSzo(racs, intervallumok, over = {}) {
+  return { racs, aktiv: over.aktiv ?? true, domen: over.domen ?? "lakhatas", tipus: over.tipus ?? "szintmero",
+    meres_kezdete: over.meres_kezdete ?? null, meres_vege: over.meres_vege ?? null, intervallumok };
+}
+function mpNyers(map) { return { kulcsszavak: map }; }
 
 const K = "#kulcsszo-blokk";
 
@@ -252,6 +269,59 @@ test("2f. órás szó teljes ablakkal → data-szakadas=0 (óra ág változatlan
   const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`);
   await expect(c).toHaveAttribute("data-drawable", "true");
   await expect(c).toHaveAttribute("data-szakadas", "0");   // órás rács folytonos, most is és a szelet után is
+});
+
+// ── 2g. Szelet 2 routing: másodlagos 1_ho érvényes → az 1_ho gomb ENGEDÉLYEZETT ────────────────
+test("2g. másodlagos 1_ho érvényes → az 1_ho intervallum-gomb engedélyezett", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "albérlet": regSzo({ domen: "lakhatas" }) }),   // órás: 1_het valid, 1_ho nincs_lancolas
+    nyersObj: nyers({ "albérlet": [nyersRekord("albérlet")] }),
+    mpRegObj: mpReg({ "albérlet": mpSzo("nap", { "1_ho": racs_iv(30, 1) }) }),
+    mpNyersObj: mpNyers({ "albérlet": [racs_nyersRekord("albérlet", 30, 1)] }),
+  });
+  await page.goto("/");
+  await expect(page.locator('#intervallum-vezerlo button[data-intervallum="1_ho"]')).toBeEnabled();
+});
+
+// ── 2h. Szelet 2 üres-állapot: másodlagos NÉLKÜLI hosszú intervallum → "napi/heti adatot" ───────
+test("2h. másodlagos nélküli hosszú intervallum → 'napi/heti adatot' (NEM 'összefűzött nap')", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "benzin": regSzo({ domen: "fogyasztas" }) }),   // csak órás, NINCS másodlagos
+    nyersObj: nyers({ "benzin": [nyersRekord("benzin")] }),
+    // mpRegObj/mpNyersObj: default üres → benzinnek nincs másodlagosa
+  });
+  await page.goto("/");
+  const v = page.locator("#intervallum-vezerlo");
+  await expect(v).toContainText("Ehhez még nem gyűjtöttünk napi/heti adatot");
+  await expect(v).not.toContainText("összefűzött nap");   // az órás-láncolás felirat NEM szivárog
+});
+
+// ── 2i. Szelet 2 integráció: másodlagos szó alapból a hosszú intervallumon → "nap nem-nulla" ────
+test("2i. másodlagos szó (leghosszabb érvényes = 1_ho) → kártya drawable, 'nap nem-nulla'", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "albérlet": regSzo({ domen: "lakhatas" }) }),   // 1_het órás valid
+    nyersObj: nyers({ "albérlet": [nyersRekord("albérlet")] }),
+    mpRegObj: mpReg({ "albérlet": mpSzo("nap", { "1_ho": racs_iv(30, 1) }) }),  // leghosszabb érvényes = 1_ho
+    mpNyersObj: mpNyers({ "albérlet": [racs_nyersRekord("albérlet", 30, 1)] }),
+  });
+  await page.goto("/");
+  const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="albérlet"]`);
+  await expect(c).toHaveAttribute("data-drawable", "true");
+  await expect(c.locator(".merteszamok")).toContainText("nap nem-nulla");   // a másodlagos napi adat rajzol
+});
+
+// ── 2j. Szelet 2 szándékos-zöld: 1_het MINDIG órás, akkor is ha van másodlagos ─────────────────
+test("2j. 1_het órás marad másodlagos jelenlétében is → 'óra nem-nulla' — SZANDEKOS_ZOLD", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "albérlet": regSzo({ domen: "lakhatas" }) }),
+    nyersObj: nyers({ "albérlet": [nyersRekord("albérlet")] }),
+    mpRegObj: mpReg({ "albérlet": mpSzo("nap", { "1_ho": racs_iv(30, 1) }) }),
+    mpNyersObj: mpNyers({ "albérlet": [racs_nyersRekord("albérlet", 30, 1)] }),
+  });
+  await page.goto("/");
+  await page.click('#intervallum-vezerlo button[data-intervallum="1_het"]');   // váltás az órás nézetre
+  const m = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="albérlet"] .merteszamok`);
+  await expect(m).toContainText("166/168 óra nem-nulla");   // 1_het = órás, a másodlagos nem írja felül
 });
 
 // ── 3. ablak-választás ablak_veg-egyezéssel (mod 2) ──────────────────────────────────────────
@@ -412,7 +482,14 @@ test("11. kis viewport → csak az első kártyák data-rendered; scroll → a l
   const szavak = {}; const nyersMap = {};
   for (let i = 0; i < 8; i++) { szavak["szo" + i] = regSzo(); nyersMap["szo" + i] = [nyersRekord("szo" + i)]; }
   await mock(page, { regObj: reg(szavak), nyersObj: nyers(nyersMap) });
-  await page.setViewportSize({ width: 380, height: 320 });
+  // 6b Szelet 2: itt EGYETLEN szónak sincs másodlagos adata → mind a 4 hosszú intervallum-gomb TILTOTT,
+  // az új, HOSSZABB „napi/heti adatot" üres-felirattal → a vezérlő ~234px (mérve), az első kártya top≈787px.
+  // A viewport 320→480 (zóna alja 400+480=880 > 787), hogy az első kártya a zónába essen — a near-vs-far
+  // szándék marad (első renderel, szo7 nem). MIÉRT nem prod-hatás MA: éles adaton 4 szónak VAN másodlagosa →
+  // az aggregált gombok ENGEDÉLYEZETTEK → nincs feliratszöveg → a vezérlő rövid. DE ez a feltétel VÁLTOZHAT:
+  // friss telepítésen (0 másodlagos) vagy a kulcsszó-lista bővülésekor (KULCS-LISTA) a szintetikus eset lesz a
+  // valóság → lásd a VEZERLO-MAGAS leltár-megfigyelést.
+  await page.setViewportSize({ width: 380, height: 480 });
   await page.goto("/");
   const rendered = page.locator(`${K} .kulcsszo-chart[data-rendered="true"]`);
   await expect(rendered).not.toHaveCount(0);                                         // auto-retry: várd meg az IO-callbacket

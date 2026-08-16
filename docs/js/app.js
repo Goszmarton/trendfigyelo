@@ -32,7 +32,8 @@ function hiba_kiir(blokk_id, reszletek, bevezeto) {
 
 // blokk -> a hozzá tartozó init-fájlok
 const BLOKKOK = [
-  { id: "kulcsszo-blokk", fajlok: ["kulcsszo_regresszio.json", "kulcsszo_nyers.json"] },
+  { id: "kulcsszo-blokk", fajlok: ["kulcsszo_regresszio.json", "kulcsszo_nyers.json",
+    "kulcsszo_masodlagos_regresszio.json", "kulcsszo_masodlagos_nyers.json"] },
   { id: "trend-blokk", fajlok: ["legfrissebb.json", "napok/index.json"] },
 ];
 
@@ -103,6 +104,10 @@ const OK_MAGYAR = {
   nincs_lancolas: "Ehhez több összefűzött nap kell",
   nincs_adat: "Nincs mért adat",
   keves_pont: "Túl kevés mért pont",
+  // 6b Szelet 2: rács-tudatos üres-állapot. nincs_masodlagos = a szó még nem kapott napi/heti
+  // (másodlagos) futást (rotáció); esemenyjelzo = van adat, de eseményjelzőként nincs trendvonal (6c szint-vonal).
+  nincs_masodlagos: "Ehhez még nem gyűjtöttünk napi/heti adatot",
+  esemenyjelzo: "Eseményjelző — szint-nézet készül (nem trendvonal)",
   rovid_span: "Túl rövid mért időszak",
   degeneralt: "Nem illeszthető",
 };
@@ -144,6 +149,40 @@ function intervallum_allapot(kulcsszavak, kulcs) {
   return { ervenyes: ervenyes, ok: ervenyes ? null : dominans_ok(okok) };
 }
 
+// 6b Szelet 2: az órás + másodlagos regresszió EGYESÍTÉSE per (szó, intervallum). A meglévő
+// renderelők (intervallum_vezerlo_render, kulcsszo_blokk_render) ezt fogyasztják, nem a nyers órás fájlt.
+//   órás[X].ervenyes → órás (racs "ora"); különben másodlagos[X].ervenyes → másodlagos (a szó racs-a);
+//   különben üres, az ELSŐDLEGES forrás ok-jával (hosszú X → másodlagos ok / nincs_masodlagos; 1_het → órás).
+// A _racs/_forras az iv-en (per-INTERVALLUM), mert egy szó 1_het-je órás, 1_ho-ja másodlagos lehet.
+// (Az órás ág _racs = o.racs || "ora": prodban az órás JSON nem hordoz racs-ot → "ora".)
+function egyesitett_reg() {
+  const oras = adat["kulcsszo_regresszio.json"];
+  if (!oras || !oras.kulcsszavak) return oras || null;
+  const mpk = (adat["kulcsszo_masodlagos_regresszio.json"] || {}).kulcsszavak || {};
+  const ki = {};
+  Object.keys(oras.kulcsszavak).forEach(function (szo) {
+    const o = oras.kulcsszavak[szo];
+    const m = mpk[szo];
+    const ivk = {};
+    INTERVALLUMOK.forEach(function (it) {
+      const X = it.kulcs;
+      const oiv = o.intervallumok && o.intervallumok[X];
+      const miv = m && m.intervallumok && m.intervallumok[X];
+      if (oiv && oiv.ervenyes) {
+        ivk[X] = Object.assign({}, oiv, { _racs: o.racs || "ora", _forras: "kulcsszo_nyers.json" });
+      } else if (miv && miv.ervenyes) {
+        ivk[X] = Object.assign({}, miv, { _racs: m.racs, _forras: "kulcsszo_masodlagos_nyers.json" });
+      } else {
+        const hosszu = X !== "1_het";
+        const ok = hosszu ? (miv ? miv.ok : "nincs_masodlagos") : (oiv ? oiv.ok : "nincs_adat");
+        ivk[X] = { ervenyes: false, ok: ok };
+      }
+    });
+    ki[szo] = Object.assign({}, o, { intervallumok: ivk });
+  });
+  return { kulcsszavak: ki };
+}
+
 function ures_allapot(el, uzenet) {
   el.textContent = "";
   const p = document.createElement("p");
@@ -160,7 +199,7 @@ function intervallum_vezerlo_render() {
   const el = document.getElementById("intervallum-vezerlo");
   const blokk = document.getElementById("kulcsszo-blokk");
   if (!el) return;
-  const reg = adat["kulcsszo_regresszio.json"];
+  const reg = egyesitett_reg();
   if (!reg || !reg.kulcsszavak || !Object.keys(reg.kulcsszavak).length) {
     if (blokk) blokk.removeAttribute(ATTR.aktiv);        // (a) nincs adat → NINCS aktív intervallum (9b korai kilépés)
     ures_allapot(el, URES_NINCS_ADAT);
@@ -369,8 +408,8 @@ function elettartam_szoveg(szoreg, iv, ablak) {
 
 // a rajzolt nyers ablak kiválasztása: a regresszió intervallumának ablak_veg_utc-jével való EGYEZÉS
 // (spec 8.3/mod 8) — NEM "utolsó rekord" és NEM max(ablak_veg); egyezés hiánya → null (kirajzolhatatlan)
-function nyers_ablak(szo, veg) {
-  const kw = (adat["kulcsszo_nyers.json"] || {}).kulcsszavak || {};
+function nyers_ablak(szo, veg, forras) {
+  const kw = (adat[forras || "kulcsszo_nyers.json"] || {}).kulcsszavak || {};
   const ablakok = kw[szo] || [];
   for (let i = 0; i < ablakok.length; i++) {
     if (ablakok[i].ablak_veg_utc !== veg) continue;
@@ -447,7 +486,7 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs) {
   cimke.textContent = szo;
   kartya.appendChild(cimke);
   const iv = szoreg.intervallumok ? szoreg.intervallumok[aktiv_kulcs] : null;
-  const ablak = (iv && iv.ervenyes) ? nyers_ablak(szo, iv.ablak_veg_utc) : null;
+  const ablak = (iv && iv.ervenyes) ? nyers_ablak(szo, iv.ablak_veg_utc, iv._forras) : null;
 
   if (!iv || !iv.ervenyes || !ablak) {
     kartya.setAttribute(ATTR.drawable, "false");
@@ -459,7 +498,7 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs) {
     return kartya;
   }
 
-  const racs = racs_epit(ablak, iv, szoreg.racs);
+  const racs = racs_epit(ablak, iv, iv._racs);
   kartya.setAttribute(ATTR.drawable, "true");
   kartya.setAttribute(ATTR.ablak_veg, ablak.ablak_veg_utc);   // a kiválasztott nyers ablak KULCSA (regresszió ablak_veg_utc-vel egyező); részleges záró slot
   kartya.setAttribute(ATTR.adat_veg, racs.adat_veg);          // B1: a felirat „adat vége"-je — az utolsó KIRAJZOLT LEZÁRT pont (nem az ablak_veg)
@@ -481,7 +520,7 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs) {
 
   const m = document.createElement("p");
   m.className = OSZT.merteszamok;
-  m.textContent = merteszamok_szoveg(iv, szoreg.racs);
+  m.textContent = merteszamok_szoveg(iv, iv._racs);
   kartya.appendChild(m);
 
   const tf = document.createElement("p");
@@ -565,7 +604,7 @@ function kulcsszo_blokk_render() {
   blokk.querySelectorAll("." + OSZT.frissesseg + ", ." + OSZT.csoport).forEach(function (e) { e.remove(); });
 
   const aktiv = blokk.getAttribute(ATTR.aktiv);
-  const reg = adat["kulcsszo_regresszio.json"];
+  const reg = egyesitett_reg();
   // KORAI KILÉPÉS (spec 7.4 (a)/(b)): nincs aktív intervallum → nincs chart, nincs frissesseg, NINCS kivétel
   if (!aktiv || !reg || !reg.kulcsszavak) return;
 
