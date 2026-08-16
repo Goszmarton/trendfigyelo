@@ -40,6 +40,40 @@ function nyers(map) {
   return { kulcsszavak: map };
 }
 
+// ── napi/heti rács-fixture (6b rajzolás Szelet 1) — lepes_nap=1 (nap) vagy 7 (het) ──────────────
+const NAP_MS = Date.parse("2026-08-01T00:00:00Z");
+function racs_iso(i, lepes_nap) {
+  return new Date(NAP_MS + i * lepes_nap * 86400000).toISOString().replace(".000Z", "+00:00");
+}
+// n lezart pont lepes_nap közönként (folytonos, nem-nulla) + 1 részleges záró
+function racs_pontok(n, lepes_nap) {
+  const pts = [];
+  for (let i = 0; i < n; i++) pts.push({ idopont_utc: racs_iso(i, lepes_nap), ertek: 50, reszleges: false });
+  pts.push({ idopont_utc: racs_iso(n, lepes_nap), ertek: 0, reszleges: true });
+  return pts;
+}
+function racs_nyersRekord(kulcsszo, n, lepes_nap) {
+  return { kulcsszo, ablak_kezdet_utc: racs_iso(0, lepes_nap), ablak_veg_utc: racs_iso(n, lepes_nap),
+    pontok: racs_pontok(n, lepes_nap) };
+}
+// érvényes regresszió-intervallum ehhez a rács-ablakhoz (végpontok az első/utolsó LEZÁRT ponton)
+function racs_iv(n, lepes_nap) {
+  return { ervenyes: true, meredekseg_nap: 1.0, se_meredekseg: 0.4, se_masodlagos_autokorrelacio: true,
+    irany: "novekszik", r2: 0.3, r2_masodlagos_autokorrelacio: true,
+    ablak_kezdet_utc: racs_iso(0, lepes_nap), ablak_veg_utc: racs_iso(n, lepes_nap),
+    pontok_hasznalt: n, pontok_nem_nulla: n, pontok_kihagyva_reszleges: 1, pontok_hianyzo: 0,
+    illesztes_vonal: [{ idopont_utc: racs_iso(0, lepes_nap), ertek: 40 },
+      { idopont_utc: racs_iso(n - 1, lepes_nap), ertek: 55 }] };
+}
+// egy rács-szó teljes regresszió-bejegyzése (aktív 1_het = a rács-ablak, a többi nincs_lancolas)
+function racs_regSzo(racs, n, lepes_nap) {
+  return regSzo({ racs, intervallumok: {
+    "1_het": racs_iv(n, lepes_nap),
+    "2_het": ivHibas("nincs_lancolas"), "1_ho": ivHibas("nincs_lancolas"),
+    "3_ho": ivHibas("nincs_lancolas"), "1_ev": ivHibas("nincs_lancolas"),
+  } });
+}
+
 // érvényes intervallum (a mini-9a horgonnyal); a végpontok az első/utolsó LEZÁRT pontnál
 function ivErvenyes(over = {}) {
   return {
@@ -182,6 +216,42 @@ test("2c. racs nélküli szó → 'óra nem-nulla' (default) — SZANDEKOS_ZOLD 
   await page.goto("/");
   const m = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"] .merteszamok`);
   await expect(m).toContainText("166/168 óra nem-nulla");
+});
+
+// ── 2d. RACS rajzolás (Szelet 1): nap-rácsú szó → napi slot-rács, FOLYTONOS (data-szakadas=0) ──
+test("2d. nap-rácsú szó napi pontokkal → data-szakadas=0 (nem órás-slotokra szórva)", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "albérlet": racs_regSzo("nap", 14, 1) }),   // 14 napi lezárt pont, 1-nap köz
+    nyersObj: nyers({ "albérlet": [racs_nyersRekord("albérlet", 14, 1)] }),
+  });
+  await page.goto("/");
+  const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="albérlet"]`);
+  await expect(c).toHaveAttribute("data-drawable", "true");
+  await expect(c).toHaveAttribute("data-szakadas", "0");   // napi rács folytonos, NEM 24-óránként szórt
+});
+
+// ── 2e. RACS rajzolás (Szelet 1): het-rácsú szó → heti slot-rács, FOLYTONOS (data-szakadas=0) ──
+test("2e. het-rácsú szó heti pontokkal → data-szakadas=0 (heti slot, nem órás)", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "akciós újság": racs_regSzo("het", 8, 7) }),   // 8 heti lezárt pont, 7-nap köz
+    nyersObj: nyers({ "akciós újság": [racs_nyersRekord("akciós újság", 8, 7)] }),
+  });
+  await page.goto("/");
+  const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="akciós újság"]`);
+  await expect(c).toHaveAttribute("data-drawable", "true");
+  await expect(c).toHaveAttribute("data-szakadas", "0");
+});
+
+// ── 2f. RACS rajzolás szándékos-zöld: órás szó (racs nélkül) → data-szakadas VÁLTOZATLAN ───────
+test("2f. órás szó teljes ablakkal → data-szakadas=0 (óra ág változatlan) — SZANDEKOS_ZOLD", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "állás": regSzo() }),                      // NINCS racs → órás ág, 168 óránkénti pont
+    nyersObj: nyers({ "állás": [nyersRekord("állás")] }),    // teljes órás ablak, lyuk nélkül
+  });
+  await page.goto("/");
+  const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`);
+  await expect(c).toHaveAttribute("data-drawable", "true");
+  await expect(c).toHaveAttribute("data-szakadas", "0");   // órás rács folytonos, most is és a szelet után is
 });
 
 // ── 3. ablak-választás ablak_veg-egyezéssel (mod 2) ──────────────────────────────────────────

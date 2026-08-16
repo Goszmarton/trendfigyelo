@@ -83,7 +83,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
 | TASK5 | staleness-vezérelt ütemező (tie-break=config-index) | Ph4 | NYITOTT | BECS (terv kész) | igen | L | 6a megfigyelés (1-2 futás) |
-| 6b | nem-órás (nap/het) megjelenítés a felületen | Ph4 | RÉSZBEN (RACS-EGYSEG felirat-szelet LESZÁLLT; a RAJZOLÁS — racs_epit/ora_index/x-tengely/tooltip + a másodlagos JSON fogyasztása — hátravan) | BECS | nem (frontend) | L | 6a valós adat |
+| 6b | nem-órás (nap/het) megjelenítés a felületen | Ph4 | RÉSZBEN (LESZÁLLT: RACS-EGYSEG felirat + RAJZOLÁS-Szelet1 = racs_epit slot-index rács-tudatos [óra=ora_index bájt-azonos, nap=nap-index, het=floor/7; label óra="HH:MM", nap/het dátum-only], mérve órás-biztos; HÁTRA: Szelet 2 = a másodlagos JSON tényleges FOGYASZTÁSA + per-intervallum routing [1_het órás, 2_het+ másodlagos] + hiány/elavultság-guard) | BECS | nem (frontend) | L | 6a valós adat |
 | 6c | tüntetés szint-vonal (medián, „stabil szint", nincs trendvonal) | Ph4 | NYITOTT (döntés kész) | MÉRT | nem | M | 6b |
 | LANC-ORAS | órás láncolás (2_het+; kumulált skálázó tartós tárolása) | Ph4 §8.2 | NYITOTT | BECS | igen (új kimenet) | XL | §8.2-INV |
 

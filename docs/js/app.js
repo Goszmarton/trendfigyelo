@@ -302,6 +302,15 @@ function napok_civil(y, m, d) {
 function ora_index(iso) {   // "YYYY-MM-DDTHH:..." -> egész óra-index (UTC)
   return napok_civil(+iso.slice(0, 4), +iso.slice(5, 7), +iso.slice(8, 10)) * 24 + (+iso.slice(11, 13));
 }
+// rács-tudatos slot-index (6b rajzolás Szelet 1): óra = az ora_index KARAKTERRE (nap*24 + óra),
+// nap = nap-index, het = floor(nap-index/7). A nap/het pont 00:00:00-kor van; a het floor-ja
+// fázis-invariáns a pontosan 7-naponkénti pontokra (mérve: 53 pont → 53 distinct slot, 0 collision).
+function slot_index(iso, racs) {
+  const nap = napok_civil(+iso.slice(0, 4), +iso.slice(5, 7), +iso.slice(8, 10));
+  if (racs === "nap") return nap;
+  if (racs === "het") return Math.floor(nap / 7);
+  return nap * 24 + (+iso.slice(11, 13));   // "ora" / default — az ora_index-szel azonos
+}
 
 function tizedes2(x) { return x.toFixed(2).replace(".", ","); }   // magyar tizedesvessző
 function mered_szoveg(x) { return (x < 0 ? "-" : "+") + tizedes2(Math.abs(x)); }   // explicit előjel
@@ -375,19 +384,21 @@ function nyers_ablak(szo, veg) {
 
 // órarács a rajzoláshoz: az ELSŐ lezárt ponttól a részleges záró slotig (kizárva); a hiányzó órák
 // NULL-ok (spec 7.5: nincs interpoláció, a vonal megszakad). Visszaad: labels/ertekek/vonal/szakadas/csupa_nulla.
-function racs_epit(ablak, iv) {
+function racs_epit(ablak, iv, racs) {
   const pontok = ablak.pontok.slice().sort(function (a, b) { return a.idopont_utc < b.idopont_utc ? -1 : 1; });
   const lezart = pontok.filter(function (p) { return !p.reszleges; });
-  const elso_idx = ora_index(lezart[0].idopont_utc);
-  const veg_idx = ora_index(ablak.ablak_veg_utc);        // a részleges slot; a lezárt rács [elso_idx, veg_idx)
+  const elso_idx = slot_index(lezart[0].idopont_utc, racs);
+  const veg_idx = slot_index(ablak.ablak_veg_utc, racs);  // a részleges slot; a lezárt rács [elso_idx, veg_idx)
   const ertek_map = {}, cimke_map = {};
-  lezart.forEach(function (p) { const i = ora_index(p.idopont_utc); ertek_map[i] = p.ertek; cimke_map[i] = p.idopont_utc; });
+  lezart.forEach(function (p) { const i = slot_index(p.idopont_utc, racs); ertek_map[i] = p.ertek; cimke_map[i] = p.idopont_utc; });
   const labels = [], ertekek = [];
   let van_nemnulla = false;
   for (let i = elso_idx; i < veg_idx; i++) {
     if (Object.prototype.hasOwnProperty.call(ertek_map, i)) {
-      // J3: a label a dátumot ÉS az ÓRÁT is hordozza (a tooltip ezt mutatja); a tengely-tick csak a dátumot (chart_letrehoz)
-      labels.push(datum_formaz(cimke_map[i].slice(0, 10)) + " " + cimke_map[i].slice(11, 16));
+      // J3: az órás label a dátumot ÉS az ÓRÁT hordozza (a tooltip ezt mutatja); a tengely-tick csak a dátumot
+      // (chart_letrehoz). Nap/het rácson NINCS óra-rész → csak a dátum (a tick-regex dátum-only labelnél nem vág).
+      const cimke_datum = datum_formaz(cimke_map[i].slice(0, 10));
+      labels.push(racs === "nap" || racs === "het" ? cimke_datum : cimke_datum + " " + cimke_map[i].slice(11, 16));
       ertekek.push(ertek_map[i]);
       if (ertek_map[i] !== 0) van_nemnulla = true;
     } else {
@@ -402,8 +413,8 @@ function racs_epit(ablak, iv) {
   let vonal = null, vonal_van = false;
   const v = iv.illesztes_vonal;
   if (v && v.length === 2) {
-    const i0 = ora_index(v[0].idopont_utc) - elso_idx;
-    const i1 = ora_index(v[1].idopont_utc) - elso_idx;
+    const i0 = slot_index(v[0].idopont_utc, racs) - elso_idx;
+    const i1 = slot_index(v[1].idopont_utc, racs) - elso_idx;
     const rajta = function (i) { return i >= 0 && i < ertekek.length && ertekek[i] !== null; };
     if (rajta(i0) && rajta(i1)) {
       vonal_van = true;
@@ -448,7 +459,7 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs) {
     return kartya;
   }
 
-  const racs = racs_epit(ablak, iv);
+  const racs = racs_epit(ablak, iv, szoreg.racs);
   kartya.setAttribute(ATTR.drawable, "true");
   kartya.setAttribute(ATTR.ablak_veg, ablak.ablak_veg_utc);   // a kiválasztott nyers ablak KULCSA (regresszió ablak_veg_utc-vel egyező); részleges záró slot
   kartya.setAttribute(ATTR.adat_veg, racs.adat_veg);          // B1: a felirat „adat vége"-je — az utolsó KIRAJZOLT LEZÁRT pont (nem az ablak_veg)
