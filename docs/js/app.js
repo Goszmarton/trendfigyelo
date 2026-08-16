@@ -276,6 +276,15 @@ const DOMEN_SORREND = ["munkaeropiac", "kozigazgatas", "lakhatas", "fogyasztas",
   "energia", "jovedelem", "haztartasi_penzugy", "kozelet", null];
 const EGYEB_KULCS = "__egyeb__";
 const IRANY_MAGYAR = { novekszik: "iránya növekvő", csokken: "iránya csökkenő", stagnal: "iránya stagnáló" };
+// RACS_EGYSEG (6b első szelet): a jel-erősség feliratban a rács-SZÓ (óra/nap/hét). A mértékegység
+// ("relatív pont/nap") rács-INVARIÁNS (mindkét JSON meredekseg_egyseg-e per-nap), NEM itt dől el.
+// Az órás JSON nem hordoz racs-ot → default "ora" → az órás felirat bájt-azonos. Ismeretlen rács
+// (config-elgépelés / jövőbeli negyedik rács) → LÁTHATÓ "? <érték>", NEM undefined, NEM néma "óra".
+const RACS_SZO = { ora: "óra", nap: "nap", het: "hét" };
+function racs_szo(racs) {
+  const r = racs || "ora";
+  return RACS_SZO[r] || ("? " + r);
+}
 
 const chart_peldanyok = {};   // szo -> Chart-példány (a destroy()-hoz, spec 8b: nem halmozódhatnak)
 let megfigyelo = null;        // IntersectionObserver a lusta canvas-rajzoláshoz (mobil-görgetés, spec 6)
@@ -304,13 +313,13 @@ function mered_szoveg(x) { return (x < 0 ? "-" : "+") + tizedes2(Math.abs(x)); }
 // az első szám a jel erőssége (pontok_nem_nulla/lezárt), nem a puszta fedettség; a régi "M/M óra" teljes mérést sugallt.
 // A se_meredekseg NEM jelenik meg (autokorreláció-torzított, mint az R², de a ± hamis szignifikanciát
 // sugallna — spec 6:599, a se-döntés). NEVEZŐ = pontok_hasznalt + pontok_hianyzo (= a lezárt órarács, robusztus).
-function merteszamok_szoveg(iv) {
+function merteszamok_szoveg(iv, racs) {
   const nevezo = iv.pontok_hasznalt + iv.pontok_hianyzo;
   return [
     IRANY_MAGYAR[iv.irany] || iv.irany,
     mered_szoveg(iv.meredekseg_nap) + " relatív pont/nap",
     "R² = " + tizedes2(iv.r2) + " (illeszkedés-jóság 0–1; a magasabb érték erősebb irányt jelent)",
-    iv.pontok_nem_nulla + "/" + iv.pontok_hasznalt + " óra nem-nulla (" + iv.pontok_hasznalt + "/" + nevezo + " lezárt, " + iv.pontok_kihagyva_reszleges + " részleges kihagyva)",
+    iv.pontok_nem_nulla + "/" + iv.pontok_hasznalt + " " + racs_szo(racs) + " nem-nulla (" + iv.pontok_hasznalt + "/" + nevezo + " lezárt, " + iv.pontok_kihagyva_reszleges + " részleges kihagyva)",
   ].join(" · ");
 }
 
@@ -461,7 +470,7 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs) {
 
   const m = document.createElement("p");
   m.className = OSZT.merteszamok;
-  m.textContent = merteszamok_szoveg(iv);
+  m.textContent = merteszamok_szoveg(iv, szoreg.racs);
   kartya.appendChild(m);
 
   const tf = document.createElement("p");

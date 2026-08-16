@@ -82,6 +82,7 @@ function regSzo(over = {}) {
     aktiv: over.aktiv ?? true,
     domen: over.domen ?? "munkaeropiac",
     tipus: over.tipus ?? "szintmero",
+    racs: over.racs,   // RACS_EGYSEG: szó-szintű rács (óra/nap/hét); hiány → undefined (nem szerializálódik, mint az órás JSON)
     intervallumok: iv,
   };
 }
@@ -145,6 +146,42 @@ test("2. mérőszám-sor: irány LEÍRÓ tendencia, 2 tizedes vessző, előjel, 
   await expect(m).toContainText("168/168 lezárt");                                   // nevező = hasznalt + hianyzo, zárójelben
   await expect(m).toContainText("1 részleges kihagyva");
   await expect(m).not.toContainText("±");                                            // se SEHOL
+});
+
+// ── 2a. RACS_EGYSEG: nap-rácsú szó → a rács-SZÓ "nap" (nem hardkódolt "óra") ───────────────────
+test("2a. nap-rácsú szó → 'nap nem-nulla' felirat (nem 'óra')", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "albérlet": regSzo({ racs: "nap", domen: "lakhatas" }) }),
+    nyersObj: nyers({ "albérlet": [nyersRekord("albérlet")] }),
+  });
+  await page.goto("/");
+  const m = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="albérlet"] .merteszamok`);
+  await expect(m).toContainText("166/168 nap nem-nulla");   // a rács-szó a szó racs-ából
+  await expect(m).not.toContainText("óra nem-nulla");       // az "óra" nem szivárog át
+});
+
+// ── 2b. RACS_EGYSEG: ismeretlen rács → LÁTHATÓ fallback, nem néma "óra", nem undefined ─────────
+test("2b. ismeretlen rács → látható '? <érték>' fallback (nem 'óra', nem 'undefined')", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "állás": regSzo({ racs: "negyedev" }) }),
+    nyersObj: nyers({ "állás": [nyersRekord("állás")] }),
+  });
+  await page.goto("/");
+  const m = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"] .merteszamok`);
+  await expect(m).toContainText("? negyedev nem-nulla");    // a nyers érték LÁTHATÓ
+  await expect(m).not.toContainText("óra nem-nulla");       // NEM néma "óra"
+  await expect(m).not.toContainText("undefined");           // NEM undefined
+});
+
+// ── 2c. RACS_EGYSEG szándékos-zöld: racs hiánya → "óra" (órás út bájt-azonos) ──────────────────
+test("2c. racs nélküli szó → 'óra nem-nulla' (default) — SZANDEKOS_ZOLD regresszió-őr", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "állás": regSzo() }),                     // NINCS racs → default "ora"
+    nyersObj: nyers({ "állás": [nyersRekord("állás")] }),
+  });
+  await page.goto("/");
+  const m = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"] .merteszamok`);
+  await expect(m).toContainText("166/168 óra nem-nulla");
 });
 
 // ── 3. ablak-választás ablak_veg-egyezéssel (mod 2) ──────────────────────────────────────────

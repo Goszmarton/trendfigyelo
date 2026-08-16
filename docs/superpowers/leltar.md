@@ -6,7 +6,7 @@ marad; ez a leltár a követett (commitolt) állapot-nézet, ami túléli a chat
 Ezzel oldjuk fel a §3-ban rögzített ledger↔repó ellentmondást (a ledger a
 döntéseket rögzítette, az állapotot nem).
 
-Utolsó frissítés: 2026-08-15.
+Utolsó frissítés: 2026-08-16.
 
 ## Hogyan frissítsd
 
@@ -16,7 +16,7 @@ Utolsó frissítés: 2026-08-15.
   új ID. Lezárt tétel a **LEZÁRT / ELAVULT** szakaszba kerül, **nem törlődik**.
 - **c) INVARIÁNS (frissítéskor ellenőrizd):**
   `aktív + kész + nem-task rekord + félretett = törzs-sorszám`.
-  Most: **34 + 11 + 7 + 1 = 53**. A **LEZÁRT / ELAVULT** külön számolódik: most **10**.
+  Most: **33 + 12 + 7 + 1 = 53**. A **LEZÁRT / ELAVULT** külön számolódik: most **10**.
   Ha ez az egyenlőség nem áll, a leltár driftel.
 - **d)** **Önhivatkozó hash TILOS:** a leltár nem tartalmazhatja a SAJÁT lezáró commitja
   hash-ét (nincs „(ez a commit)" placeholder sem, ami bent ragad). A lezáró sor állapota
@@ -28,7 +28,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 
 ---
 
-## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (11)
+## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (12)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
@@ -43,6 +43,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | PH4-T4 | elavultság-jelzés (A — backend + run.log) | Ph4 | LESZÁLLÍTVA (a16e5e9) | MÉRT | igen | — | — |
 | PH4-SPEC | phase4-spec + phase3 §1.4.1/§8.2 bővítés | Ph4 | LESZÁLLÍTVA (d2fe35b) | MÉRT | nem | — | — |
 | PH4-T6a | rács-tudatos regresszió (nap/het + esemenyjelzo szint) | Ph4 | LESZÁLLÍTVA (75839d0) | MÉRT | igen (ma este 1. éles) | — | — |
+| RACS-EGYSEG | rács-tudatos jel-erősség felirat (a 6b ELSŐ szelet): a merteszamok_szoveg rács-SZAVA (óra/nap/hét) a szó `racs`-ából, `"ora"` default (az órás JSON nem hordoz racs-ot → órás felirat bájt-azonos, nulla séma-változás); ismeretlen rács → LÁTHATÓ `"? <érték>"` (nem undefined, nem néma „óra" — KUDARC-VAK-elhárítás); a mértékegység („/nap") mérve rács-INVARIÁNS, kimarad; a RAJZOLÁS (racs_epit/ora_index/x-tengely/tooltip) a KÖVETKEZŐ, nagyobb 6b-szelet (lásd 6b sor) | Ph4 | LESZÁLLÍTVA (lásd git log) | MÉRT | nem (frontend felirat) | S | — |
 
 ## META / FOLYAMATBAN (0)
 
@@ -77,15 +78,14 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | KAT-TABLA | kategória heti táblázat | Ph3/4-jelölt | NYITOTT (felvetés) | BECS | igen | M-L | — |
 | KULCS-LISTA | kulcsszó-lista bővítés (nincs diszkrét repó-nyom, csak ambient) | Ph3 | NYITOTT (ambient) | BECS | igen (config) | S-M | — |
 
-## (C) Phase 4 hátralévő (5)
+## (C) Phase 4 hátralévő (4)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
 | TASK5 | staleness-vezérelt ütemező (tie-break=config-index) | Ph4 | NYITOTT | BECS (terv kész) | igen | L | 6a megfigyelés (1-2 futás) |
-| 6b | nem-órás (nap/het) megjelenítés a felületen | Ph4 | NYITOTT (terv kész) | BECS | nem (frontend) | L | 6a valós adat; RACS-EGYSEG |
+| 6b | nem-órás (nap/het) megjelenítés a felületen | Ph4 | RÉSZBEN (RACS-EGYSEG felirat-szelet LESZÁLLT; a RAJZOLÁS — racs_epit/ora_index/x-tengely/tooltip + a másodlagos JSON fogyasztása — hátravan) | BECS | nem (frontend) | L | 6a valós adat |
 | 6c | tüntetés szint-vonal (medián, „stabil szint", nincs trendvonal) | Ph4 | NYITOTT (döntés kész) | MÉRT | nem | M | 6b |
 | LANC-ORAS | órás láncolás (2_het+; kumulált skálázó tartós tárolása) | Ph4 §8.2 | NYITOTT | BECS | igen (új kimenet) | XL | §8.2-INV |
-| RACS-EGYSEG | felirat-konstans kiemelés (a 6b első RED-szelete) | Ph4 | NYITOTT | BECS | nem (frontend) | S | — |
 
 ## (D) Ma (2026-08-13..15) nyitott új tételek (13 — 6 nyitott + 7 rekord)
 
