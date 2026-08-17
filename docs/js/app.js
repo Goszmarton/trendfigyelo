@@ -81,6 +81,7 @@ const ATTR = {
   hianyzo: "data-hianyzo", vonal: "data-vonal", szakadas: "data-szakadas",
   ymax: "data-y-max", rendered: "data-rendered", ok: "data-ok", intervallum: "data-intervallum",
   szint: "data-szint",   // 6c: esemenyjelzo szint-vonal értéke (heti medián) a kártyán
+  rajzolt_pont: "data-rajzolt-pont",   // 6c javító-szelet: a RAJZOLT slotok száma (szeletelt ablak) — DOM-őr a szeletelési hibára
 };
 const TENGELY_FELIRAT = "relatív keresési szint (0–100)";   // EN DASH
 const CSUPA_NULLA_SZOVEG = "Ezen az időszakon nincs érdemi keresési aktivitás (a mért értékek végig nulla körül).";
@@ -464,11 +465,16 @@ function racs_epit(ablak, iv, racs, szint) {
   const lezart = pontok.filter(function (p) { return !p.reszleges; });
   const elso_idx = slot_index(lezart[0].idopont_utc, racs);
   const veg_idx = slot_index(ablak.ablak_veg_utc, racs);  // a részleges slot; a lezárt rács [elso_idx, veg_idx)
+  // 6c javító-szelet (latens 6b-hiba): a RAJZOLT tartomány az INTERVALLUM ablakára szeletelt, NEM a teljes rekord.
+  // A kezdet az iv.ablak_kezdet_utc slotja (a BACKEND számolta, NEM a mai dátumból — a kettő eltér, ha az adat
+  // régebbi), de SOSEM a rekord első lezárt pontja elé (max). Enélkül a 3_ho a teljes 52 hetet rajzolta, a felirat
+  // hazudott (kórház/akciós újság 3_ho = 1_ev = 52 hét). Az órás 1_het változatlan: ott iv.ablak_kezdet <= elso pont.
+  const rajz_kezd = Math.max(elso_idx, iv.ablak_kezdet_utc ? slot_index(iv.ablak_kezdet_utc, racs) : elso_idx);
   const ertek_map = {}, cimke_map = {};
   lezart.forEach(function (p) { const i = slot_index(p.idopont_utc, racs); ertek_map[i] = p.ertek; cimke_map[i] = p.idopont_utc; });
   const labels = [], ertekek = [];
   let van_nemnulla = false;
-  for (let i = elso_idx; i < veg_idx; i++) {
+  for (let i = rajz_kezd; i < veg_idx; i++) {
     if (Object.prototype.hasOwnProperty.call(ertek_map, i)) {
       // J3: az órás label a dátumot ÉS az ÓRÁT hordozza (a tooltip ezt mutatja); a tengely-tick csak a dátumot
       // (chart_letrehoz). Nap/het rácson NINCS óra-rész → csak a dátum (a tick-regex dátum-only labelnél nem vág).
@@ -488,8 +494,8 @@ function racs_epit(ablak, iv, racs, szint) {
   let vonal = null, vonal_van = false;
   const v = iv.illesztes_vonal;
   if (v && v.length === 2) {
-    const i0 = slot_index(v[0].idopont_utc, racs) - elso_idx;
-    const i1 = slot_index(v[1].idopont_utc, racs) - elso_idx;
+    const i0 = slot_index(v[0].idopont_utc, racs) - rajz_kezd;
+    const i1 = slot_index(v[1].idopont_utc, racs) - rajz_kezd;
     const rajta = function (i) { return i >= 0 && i < ertekek.length && ertekek[i] !== null; };
     if (rajta(i0) && rajta(i1)) {
       vonal_van = true;
@@ -547,6 +553,7 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs) {
   kartya.setAttribute(ATTR.reszleges, String(iv.pontok_kihagyva_reszleges));
   kartya.setAttribute(ATTR.hianyzo, String(iv.pontok_hianyzo));
   kartya.setAttribute(ATTR.szakadas, String(racs.szakadas));
+  kartya.setAttribute(ATTR.rajzolt_pont, String(racs.ertekek.length));   // 6c javító-szelet: a szeletelt ablak rajzolt slot-száma
   kartya.setAttribute(ATTR.vonal, racs.vonal_van ? "true" : "false");
   kartya.setAttribute(ATTR.ymax, "100");
 

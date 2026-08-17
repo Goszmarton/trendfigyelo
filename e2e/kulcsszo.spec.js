@@ -414,6 +414,73 @@ test("2o. esemenyjelzo tüntetés 3_ho/1_ev → data-szint='8' + 'szint: 8 (heti
   await expect(kartya).toContainText("szint: 8 (heti medián, 52 hét)");
 });
 
+// ── 6c JAVÍTÓ-SZELET: a racs_epit az iv.ablak_kezdet_utc-re szeleteljen (latens 6b-hiba) ─────────
+// het iv [kezdHet, vegHet) hetekben; ervenyes, trendvonallal (kontroll szintmero szó)
+function hetIvErv(kezdHet, vegHet) {
+  return { ervenyes: true, meredekseg_nap: 0.5, se_meredekseg: 0.3, se_masodlagos_autokorrelacio: true,
+    irany: "novekszik", r2: 0.4, r2_masodlagos_autokorrelacio: true,
+    ablak_kezdet_utc: racs_iso(kezdHet, 7), ablak_veg_utc: racs_iso(vegHet, 7),
+    pontok_hasznalt: vegHet - kezdHet, pontok_nem_nulla: vegHet - kezdHet, pontok_kihagyva_reszleges: 1, pontok_hianyzo: 0,
+    illesztes_vonal: [{ idopont_utc: racs_iso(kezdHet, 7), ertek: 40 }, { idopont_utc: racs_iso(vegHet - 1, 7), ertek: 55 }] };
+}
+// het iv esemenyjelzo-alakban: ervenyes, TREND-mezők NÉLKÜL (Szelet 1 strip)
+function hetIvSzint(kezdHet, vegHet) {
+  return { ervenyes: true, ablak_kezdet_utc: racs_iso(kezdHet, 7), ablak_veg_utc: racs_iso(vegHet, 7),
+    pontok_hasznalt: vegHet - kezdHet, pontok_nem_nulla: vegHet - kezdHet, pontok_kihagyva_reszleges: 1, pontok_hianyzo: 0 };
+}
+async function valt_es_olvas(page, szo, interv) {
+  await page.locator(`button[data-intervallum="${interv}"]`).click();
+  const k = page.locator(`#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="${szo}"]`);
+  await k.waitFor();
+  const rp = await k.getAttribute("data-rajzolt-pont");
+  const belso = await page.evaluate((s) => {
+    const el = document.querySelector(`#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="${s}"]`);
+    const r = el && el._racs;
+    return r ? { ert: r.ertekek.length, szintv: r.szint_vonal ? r.szint_vonal.length : null } : null;
+  }, szo);
+  return { rp, belso };
+}
+
+// 2p. KONTROLL (nem-esemenyjelzo): 3_ho RAJZOLT pont != 1_ev — a szeletelés az ablak_kezdet_utc-re megy
+test("2p. kontroll het-szó (akciós újság): 3_ho rajzolt=13, 1_ev rajzolt=52 (nem azonos görbe)", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "akciós újság": regSzo({ domen: "fogyasztas" }) }),   // órás 1_het ervenyes
+    nyersObj: nyers({ "akciós újság": [nyersRekord("akciós újság")] }),
+    mpRegObj: mpReg({ "akciós újság": mpSzo("het", { "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"),
+      "1_ho": ivHibas("keves_pont"), "3_ho": hetIvErv(39, 52), "1_ev": hetIvErv(0, 52) }, { domen: "fogyasztas" }) }),
+    mpNyersObj: mpNyers({ "akciós újság": [racs_nyersRekord("akciós újság", 52, 7)] }),
+  });
+  await page.goto("/");
+  const h3 = await valt_es_olvas(page, "akciós újság", "3_ho");
+  const ev = await valt_es_olvas(page, "akciós újság", "1_ev");
+  expect(h3.rp).toBe("13");                       // 3_ho: 52-39 = 13 heti slot (a szeletelt ablak)
+  expect(ev.rp).toBe("52");                       // 1_ev: a teljes 52 hét
+  expect(h3.belso.ert).toBe(13);                  // a _racs.ertekek is szeletelt
+  expect(ev.belso.ert).toBe(52);
+});
+
+// 2q. TÜNTETÉS szint-ág: 3_ho=12 / 1_ev=52 RAJZOLT pont, ÉS a szint-vonal hossza EGYÜTT MOZOG a szeletelt sorozattal
+test("2q. tüntetés szint-ág: 3_ho rajzolt=12, 1_ev=52, és szint_vonal.length == ertekek.length", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "tüntetés": regSzo({ domen: "kozelet", tipus: "esemenyjelzo", intervallumok: {
+      "1_het": ivHibas("esemenyjelzo"), "2_het": ivHibas("esemenyjelzo"), "1_ho": ivHibas("esemenyjelzo"),
+      "3_ho": ivHibas("esemenyjelzo"), "1_ev": ivHibas("esemenyjelzo") } }) }),
+    nyersObj: nyers({ "tüntetés": [nyersRekord("tüntetés")] }),
+    mpRegObj: mpReg({ "tüntetés": mpSzo("het", { "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"),
+      "1_ho": ivHibas("keves_pont"), "3_ho": hetIvSzint(40, 52), "1_ev": hetIvSzint(0, 52) },
+      { domen: "kozelet", tipus: "esemenyjelzo", szint: 8 }) }),
+    mpNyersObj: mpNyers({ "tüntetés": [racs_nyersRekord("tüntetés", 52, 7)] }),
+  });
+  await page.goto("/");
+  const h3 = await valt_es_olvas(page, "tüntetés", "3_ho");
+  const ev = await valt_es_olvas(page, "tüntetés", "1_ev");
+  expect(h3.rp).toBe("12");                        // 3_ho: 52-40 = 12
+  expect(ev.rp).toBe("52");
+  expect(h3.belso.szintv).toBe(12);                // a szint-vonal EGYÜTT MOZOG a szeletelt sorozattal
+  expect(h3.belso.szintv).toBe(h3.belso.ert);      // Array.fill(szint) hossza == ertekek hossza
+  expect(ev.belso.szintv).toBe(52);
+});
+
 // ── 2m. Szelet 3 / ALAPNEZET: 1_het + hosszú érvényes → az ALAP az 1_het (nem a leghosszabb) ───
 test("2m. 1_het órás + 3_ho másodlagos érvényes → az alap-intervallum 1_het (nem 3_ho)", async ({ page }) => {
   await mock(page, {
