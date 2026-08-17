@@ -248,8 +248,14 @@ def test_valos_adatbol():
     assert len(kk) == len(cfg.osszes_kulcsszo())
     for szo, v in kk.items():
         assert v["meres_kezdete"] == "2026-07-30" and v["aktiv"] is True
-        assert v["intervallumok"]["1_het"]["ervenyes"] is True
-        assert v["intervallumok"]["2_het"]["ok"] == "nincs_lancolas"
+        if v["tipus"] == "esemenyjelzo":
+            # 6c: az esemenyjelzo (tüntetés) ÓRÁS ága NEM ad trendvonalat — minden órás
+            # intervallum ervenyes:False, ok:"esemenyjelzo" (a szint-nézet a másodlagos ágon).
+            assert all(iv["ervenyes"] is False and iv["ok"] == "esemenyjelzo"
+                       for iv in v["intervallumok"].values())
+        else:
+            assert v["intervallumok"]["1_het"]["ervenyes"] is True
+            assert v["intervallumok"]["2_het"]["ok"] == "nincs_lancolas"
 
 
 # ── Task 6a-1: _hianyzo_pontok(grid_step) ─────────────────────────────────────
@@ -330,26 +336,41 @@ def test_masodlagos_szamit_racs_es_intervallumok():
     assert w["intervallumok"]["1_ev"]["ok"] == "nincs_lancolas"
 
 
-# ── Task 6a-4: esemenyjelzo → nincs illesztés, van szint (medián) ─────────────
-def test_esemenyjelzo_skip_ok_es_szint():
-    # tüntetés-szerű: tipus=esemenyjelzo → minden intervallum ok:"esemenyjelzo",
-    # a szint a MEGJELENÍTETT sor nem-részleges értékeinek MEDIÁNJA (a backendben).
+# ── 6c: esemenyjelzo → órás elnyomás + másodlagos szeletelt szint-nézet ────────
+def _esemenyjelzo_cfg():
+    return SimpleNamespace(modszertan_valtas="2026-07-30",
+                           osszes_kulcsszo=lambda: [SimpleNamespace(
+                               kifejezes="tüntetés", domen="kz", tipus="esemenyjelzo")])
+
+
+def test_esemenyjelzo_oras_intervallum_nem_ervenyes():
+    # 6c/Szelet 1: az ÓRÁS ág esemenyjelzo szóra NEM számol trendvonalat — minden órás
+    # intervallum ervenyes:False, ok:"esemenyjelzo". (Ma az 1_het stagnal-trendet ad → §8-sértő.)
+    veg = KEZD + timedelta(hours=168)
+    nyers = {"kulcsszavak": {"tüntetés": [_rekord(KEZD, veg, _oras(168, partial=True))]}}
+    out = regresszio.regresszio_szamit(nyers, _tortenet({}), _esemenyjelzo_cfg(), "T")
+    iv = out["kulcsszavak"]["tüntetés"]["intervallumok"]
+    assert all(v["ervenyes"] is False and v.get("ok") == "esemenyjelzo" for v in iv.values())
+
+
+def test_esemenyjelzo_masodlagos_nincs_trend_mezo():
+    # 6c/Szelet 1: a MÁSODLAGOS esemenyjelzo ág SZELETEL (nem felülír): a het _intervallumok
+    # adja az ablakonkénti rekordot, DE a trend-mezők (illesztes_vonal/irany/meredekseg/r2)
+    # STRIPPELVE, hogy a frontend ne rajzoljon második trendvonalat. A szint szó-szinten marad (medián).
     veg = KEZD + timedelta(days=365)
-    vals = [2, 4, 6, 8, 10]                                    # medián 6; a 99-es részleges kizárva
-    pontok = [_pont(KEZD + timedelta(days=7 * i), vals[i]) for i in range(5)]
+    pontok = [_pont(KEZD + timedelta(days=7 * i), 20 + 0.3 * i) for i in range(53)]   # 53 heti pont
     pontok.append(_pont(veg, 99, reszleges=True))
     masodlagos = {"kulcsszavak": {"tüntetés": [{
         "racs": "het", "lekerdezes_utc": veg.isoformat(),
         "ablak_kezdet_utc": KEZD.isoformat(), "ablak_veg_utc": veg.isoformat(), "pontok": pontok}]}}
-    cfg = SimpleNamespace(modszertan_valtas="2026-07-30",
-                          osszes_kulcsszo=lambda: [SimpleNamespace(
-                              kifejezes="tüntetés", domen="kz", tipus="esemenyjelzo")])
-    out = regresszio.regresszio_masodlagos_szamit(masodlagos, _tortenet({}), cfg, "T")
+    out = regresszio.regresszio_masodlagos_szamit(masodlagos, _tortenet({}), _esemenyjelzo_cfg(), "T")
     w = out["kulcsszavak"]["tüntetés"]
-    assert w["szint"] == 6 and w["szint_modszer"] == "median"   # backend számolja
-    assert w["intervallumok"]["1_ev"]["ok"] == "esemenyjelzo"   # nincs illesztés
-    assert w["intervallumok"]["3_ho"]["ok"] == "esemenyjelzo"
-    assert all(iv["ok"] == "esemenyjelzo" for iv in w["intervallumok"].values())
+    assert w["szint_modszer"] == "median" and w["szint"] is not None       # szint szó-szinten marad
+    ev = w["intervallumok"]["1_ev"]
+    assert ev["ervenyes"] is True                                           # 52 heti pt → szeletelt sorozat
+    for tiltott in ("illesztes_vonal", "irany", "meredekseg_nap", "r2"):
+        assert tiltott not in ev                                            # trend-mezők strippelve
+    assert w["intervallumok"]["1_het"]["ok"] == "keves_pont"               # het rövid ablak (NEM "esemenyjelzo")
 
 
 # ── IRANY-KUSZOB: rács-tudatos (ablak-relatív) iránycímke a nap/het ágon ───────

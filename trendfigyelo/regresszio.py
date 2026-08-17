@@ -219,6 +219,23 @@ def _intervallumok(nyers_rekordok, racs="ora"):
     return ki
 
 
+_ESEMENYJELZO_TREND_MEZOK = (
+    "meredekseg_nap", "se_meredekseg", "se_masodlagos_autokorrelacio",
+    "irany", "r2", "r2_masodlagos_autokorrelacio", "illesztes_vonal",
+)
+
+
+def _szint_intervallum(iv):
+    """esemenyjelzo szeletelt intervallum: a TREND-mezők (illesztés/irány/meredekség/R²)
+    strippelve. A het sorozat rács-tudatosan szeletelve marad (ablak-/pont-mezők), de a
+    frontend a szint-VONALAT a szó-szintű szint-ből rajzolja, NEM ebből az intervallumból
+    (különben egy második, trend-jellegű vonal jelenne meg). Hibás ág (keves_pont/…) változatlan.
+    """
+    if not iv.get("ervenyes"):
+        return iv
+    return {k: v for k, v in iv.items() if k not in _ESEMENYJELZO_TREND_MEZOK}
+
+
 def regresszio_szamit(nyers, tortenet, config, szamitva_utc):
     """A teljes kulcsszo_regresszio.json szerkezet. Nulla extra Google-hívás.
 
@@ -240,13 +257,21 @@ def regresszio_szamit(nyers, tortenet, config, szamitva_utc):
         napok = sorted(napok_szonkent.get(szo, []), key=lambda x: x[0])
         aktiv = szo in aktivak
         domen, tipus = _domen_tipus(szo, aktivak, napok)
+        # esemenyjelzo (pl. tüntetés): az ÓRÁS ág NEM számol trendvonalat (§8 + 6c) — a friss
+        # szakasz kerekítési zaja nem trend; a helyette rajzolt szint-nézet a másodlagos (het)
+        # ágon dől el. Minden órás intervallum ervenyes:False, ok:"esemenyjelzo" (nincs halott
+        # irany/meredekseg/R² — a korábbi stagnal-illesztés §8-sértő volt).
+        if tipus == "esemenyjelzo":
+            intervallumok = {k: {"ervenyes": False, "ok": "esemenyjelzo"} for k in INTERVALLUMOK}
+        else:
+            intervallumok = _intervallumok(nyers.get("kulcsszavak", {}).get(szo))
         ki[szo] = {
             "meres_kezdete": napok[0][0] if napok else None,
             "meres_vege": None if aktiv else (napok[-1][0] if napok else None),
             "aktiv": aktiv,
             "domen": domen,
             "tipus": tipus,
-            "intervallumok": _intervallumok(nyers.get("kulcsszavak", {}).get(szo)),
+            "intervallumok": intervallumok,
         }
     return {
         "szamitva_utc": szamitva_utc,
@@ -293,12 +318,15 @@ def regresszio_masodlagos_szamit(masodlagos_nyers, tortenet, config, szamitva_ut
         if tipus == "esemenyjelzo":
             # esemény-jelző (pl. tüntetés): NINCS trendvonal — a friss szakasz kerekítési
             # padló-zaja nem trend (§4). HELYETTE szint = a nem-részleges értékek MEDIÁNJA
-            # (robusztus az esemény-csúcsokra, ellentétben az átlaggal). A frontend csak rajzol.
+            # (robusztus az esemény-csúcsokra, ellentétben az átlaggal). A het sorozatot a
+            # _intervallumok UGYANÚGY szeleteli (rács-tudatos ablak; rövidnél keves_pont →
+            # a frontend rovid_het_ablak), de a TREND-mezők strippelve — a felülírás minden
+            # ablakot ugyanarra a görbére húzna (no-op intervallum-választó), a szeletelés nem.
             lezart = [p["ertek"] for p in rek["pontok"] if not p.get("reszleges")] if rek else []
             ki[szo]["szint"] = statistics.median(lezart) if lezart else None
             ki[szo]["szint_modszer"] = "median"
-            ki[szo]["intervallumok"] = {k: {"ervenyes": False, "ok": "esemenyjelzo"}
-                                        for k in INTERVALLUMOK}
+            ki[szo]["intervallumok"] = {k: _szint_intervallum(iv)
+                                        for k, iv in _intervallumok(rekordok, racs or "het").items()}
         else:
             ki[szo]["intervallumok"] = _intervallumok(rekordok, racs or "ora")
     return {

@@ -105,9 +105,9 @@ const OK_MAGYAR = {
   nincs_adat: "Nincs mért adat",
   keves_pont: "Túl kevés mért pont",
   // 6b Szelet 2: rács-tudatos üres-állapot. nincs_masodlagos = a szó még nem kapott napi/heti
-  // (másodlagos) futást (rotáció); esemenyjelzo = van adat, de eseményjelzőként nincs trendvonal (6c szint-vonal).
+  // (másodlagos) futást (rotáció). 6c: az "esemenyjelzo" ok-ot az egyesitett_reg MÁR NEM ad tovább
+  // (az órás esemenyjelzo 1_het a het rovid_het_ablak-ra fordul) → a "szint-nézet készül" felirat NYUGDÍJAZVA.
   nincs_masodlagos: "Ehhez még nem gyűjtöttünk napi/heti adatot",
-  esemenyjelzo: "Eseményjelző — szint-nézet készül (nem trendvonal)",
   // Szelet 3: a másodlagos MAGA adhat nincs_lancolas/keves_pont-ot nap/het ágon → rács-tudatos, NEM órás/adathiány
   // szemantikájú felirat. rovid_masodlagos = SEMLEGES tényközlés (nem ígér automatikus feltöltődést).
   rovid_masodlagos: "A napi/heti sorozat rövidebb ennél az ablaknál",
@@ -181,9 +181,9 @@ function egyesitett_reg() {
         // a nap/het ágon irreleváns) — a másodlagos MAGA is adhat nincs_lancolas-t (a sorozat rövidebb az
         // ablaknál), ezt LEFORDÍTJUK, nem engedjük át nyersen.
         let ok;
-        if (X === "1_het") {
-          ok = oiv ? oiv.ok : "nincs_adat";
-        } else if (!miv) {
+        if (X === "1_het" && !(oiv && oiv.ok === "esemenyjelzo")) {
+          ok = oiv ? oiv.ok : "nincs_adat";                          // 1_het = az órás ok — KIVÉVE esemenyjelzo
+        } else if (!miv) {                                           // (6c: az órás esemenyjelzo 1_het a het-ágra fordul → rovid_het_ablak)
           ok = "nincs_masodlagos";                                   // nincs másodlagos entry → a szó nem kapott napi/heti futást
         } else if (miv.ok === "nincs_lancolas") {
           ok = "rovid_masodlagos";                                   // van másodlagos, de a sorozat rövidebb az ablaknál (nem órás-láncolás)

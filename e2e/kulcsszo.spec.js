@@ -354,6 +354,28 @@ test("2l. het-szó 2_het keves_pont → 'A heti rácson ez az ablak túl rövid'
   await expect(v).not.toContainText("Túl kevés mért pont");               // az adathiányt sugalló felirat NEM
 });
 
+// ── 2n. 6c/Szelet 1: esemenyjelzo (tüntetés) 1_het → rovid_het_ablak, NEM a nyugdíjazott felirat ──
+test("2n. esemenyjelzo het-szó 1_het → 'A heti rácson ez az ablak túl rövid' (nem 'Eseményjelző — szint-nézet készül')", async ({ page }) => {
+  await mock(page, {
+    // Szelet 1 UTÁNI backend-alak: az órás ág esemenyjelzo → MINDEN intervallum ervenyes:false, ok:"esemenyjelzo"
+    regObj: reg({ "tüntetés": regSzo({ domen: "kozelet", tipus: "esemenyjelzo", intervallumok: {
+      "1_het": ivHibas("esemenyjelzo"), "2_het": ivHibas("esemenyjelzo"), "1_ho": ivHibas("esemenyjelzo"),
+      "3_ho": ivHibas("esemenyjelzo"), "1_ev": ivHibas("esemenyjelzo"),
+    } }) }),
+    nyersObj: nyers({ "tüntetés": [nyersRekord("tüntetés")] }),
+    // másodlagos het szeletelve: 1_het/2_het/1_ho keves_pont (rövid heti ablak); 3_ho/1_ev érvényes (rajzol)
+    mpRegObj: mpReg({ "tüntetés": mpSzo("het",
+      { "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"), "1_ho": ivHibas("keves_pont"),
+        "3_ho": racs_iv(12, 7), "1_ev": racs_iv(52, 7) },
+      { domen: "kozelet", tipus: "esemenyjelzo" }) }),
+    mpNyersObj: mpNyers({ "tüntetés": [racs_nyersRekord("tüntetés", 52, 7)] }),
+  });
+  await page.goto("/");
+  const v = page.locator("#intervallum-vezerlo");
+  await expect(v).toContainText("A heti rácson ez az ablak túl rövid");    // 1_het esemenyjelzo → rovid_het_ablak
+  await expect(v).not.toContainText("Eseményjelző — szint-nézet készül");  // a nyugdíjazott felirat NEM
+});
+
 // ── 2m. Szelet 3 / ALAPNEZET: 1_het + hosszú érvényes → az ALAP az 1_het (nem a leghosszabb) ───
 test("2m. 1_het órás + 3_ho másodlagos érvényes → az alap-intervallum 1_het (nem 3_ho)", async ({ page }) => {
   await mock(page, {
