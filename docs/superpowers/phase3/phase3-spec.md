@@ -387,9 +387,16 @@ a Task 10 hatóköre (§11.6) — az asztali sticky itt épül, a reszponzív ö
   volumen-rekesz KÖZEPÉRE eshet, és azonos keresettségű trendek közül önkényesen
   dob ki (2026-07-23: 65 trend; a 15-ös vágás a 2000-es rekesz közepén — 7
   jelölt 4 helyre). Ezért a két lista SZÉTVÁLIK:
-  - **idősor-lista** (hálózati költség): változatlanul a top `trend_idosor_max`.
-    Itt van a hívásköltség; a `Kliens` plafonja (`tervezett_hivasszam`) tisztán
-    configból, a futás ELŐTT számol — ezt a kiterjesztés nem érintheti.
+  - **idősor-lista** (hálózati költség): a top `trend_idosor_max`, **REVÍZIÓ
+    (2026-08-17, GORBE-B): FORWARD-ONLY kiterjesztve a rekeszre** — a top-N UTÁN
+    egy LEGUTOLSÓ, csendes-feladású ág (`_masodlagos_ag`-minta) legfeljebb
+    `trend_idosor_rekesz_max` (=5) rekesz-trendhez is kér idősort, hogy a
+    megjelenített rekesznek is legyen sparkline-ja. A `Kliens` plafonja
+    (`tervezett_hivasszam`) EMELT: `2 + trend_idosor_max + trend_idosor_rekesz_max
+    + len(kulcsszavak)` (a rekesz-ág 429/korlát esetén CSENDESEN elmarad, nem
+    job-piros; a napló kétállapotú FIGYELEM-et ír: nincs-rekesz vs elmaradt-N).
+    A régi napok forward-only NEM telnek fel (üres-felirat marad). Terv:
+    `plans/2026-08-17-gorbe-b-rekesz-idosor.md`.
   - **megjelenített lista**: a top `trend_idosor_max`, KIBŐVÍTVE mindazon
     trendekkel, amelyek `volumen`-e MEGEGYEZIK a küszöb-trendével (az utolsó
     bekerülőével) — a TELJES holtverseny-rekesz, nem csak a véletlenül „befért"
