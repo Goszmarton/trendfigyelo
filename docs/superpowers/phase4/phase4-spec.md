@@ -168,8 +168,17 @@ nyíljon újra (a részletes terv külön készül):
   `app.js` „óra"-feliratai és órarács-rajzolása). Ezek a nem-órás rácsokra
   általánosítandók — a `MIN_PONT = 24` a napi/heti soron a KÖTŐ korlát, nem az
   órás 168-pont.
-- A `tüntetés`-nél (esemény-jelző) **trendvonal NEM készül** — a döntés helye és a
-  helyette rajzolt tartalom Task 6-ban dől el.
+- A `tüntetés`-nél (esemény-jelző) **trendvonal NEM készül** — a helyette rajzolt
+  tartalom Task **6c**-ben eldőlt (terv: `plans/2026-08-17-task6c-szint-vonal.md`):
+  a heti sorozat + egy **konstans szint-vonal** a szó-szintű, futásidejű **heti
+  medián**-on (`regresszio_masodlagos_szamit`: `szint = median(lezart heti pont)`;
+  mérve: `tüntetés` = 8,0). A het-rekordot a `_intervallumok` rács-tudatosan
+  SZELETELI a választott ablakra (NEM felülírás); ahol a heti ablak
+  < RACS_MIN_PONT[het]=7 (1_het/2_het/1_ho), a `rovid_het_ablak` felirat áll.
+  Az **órás** ág az `esemenyjelzo` szóra `ervenyes:false, ok:"esemenyjelzo"`
+  (nincs trendvonal, nincs irany/meredekseg/R² — a korábbi stagnal-illesztés
+  megszűnik); a szeletelt másodlagos intervallumok NEM hordoznak trend-mezőt
+  (irany/meredekseg/r2/illesztes_vonal strippelve), csak a `szint`-et.
 - A **Task 5** (elavultság-vezérelt ütemezés) a `%7`-et váltja fel; a tie-break ott
   **config-index** (NEM ábécé, mint a §7 láthatóságnál), mert az ütemezőben azt
   dönti el, MELYIK szó kerül lekérdezésre azonos `lekerdezes_utc` esetén.
