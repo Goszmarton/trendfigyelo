@@ -80,6 +80,7 @@ const ATTR = {
   ablak_veg: "data-ablak-veg", adat_veg: "data-adat-veg", pontok: "data-pontok", reszleges: "data-reszleges",
   hianyzo: "data-hianyzo", vonal: "data-vonal", szakadas: "data-szakadas",
   ymax: "data-y-max", rendered: "data-rendered", ok: "data-ok", intervallum: "data-intervallum",
+  szint: "data-szint",   // 6c: esemenyjelzo szint-vonal értéke (heti medián) a kártyán
 };
 const TENGELY_FELIRAT = "relatív keresési szint (0–100)";   // EN DASH
 const CSUPA_NULLA_SZOVEG = "Ezen az időszakon nincs érdemi keresési aktivitás (a mért értékek végig nulla körül).";
@@ -195,7 +196,10 @@ function egyesitett_reg() {
         ivk[X] = { ervenyes: false, ok: ok };
       }
     });
-    ki[szo] = Object.assign({}, o, { intervallumok: ivk });
+    // 6c: az esemenyjelzo szint (heti medián) a MÁSODLAGOS entryn él (m), az órás o-n nincs → átvezetjük,
+    // hogy a kártya-render (merteszamok_szoveg / szint-vonal / data-szint) elérje. Nem-esemenyjelzo: undefined.
+    const tobb = (m && m.szint != null) ? { szint: m.szint, szint_modszer: m.szint_modszer } : null;
+    ki[szo] = Object.assign({}, o, { intervallumok: ivk }, tobb || {});
   });
   return { kulcsszavak: ki };
 }
@@ -383,15 +387,25 @@ function mered_szoveg(x) { return (x < 0 ? "-" : "+") + tizedes2(Math.abs(x)); }
 // az első szám a jel erőssége (pontok_nem_nulla/lezárt), nem a puszta fedettség; a régi "M/M óra" teljes mérést sugallt.
 // A se_meredekseg NEM jelenik meg (autokorreláció-torzított, mint az R², de a ± hamis szignifikanciát
 // sugallna — spec 6:599, a se-döntés). NEVEZŐ = pontok_hasznalt + pontok_hianyzo (= a lezárt órarács, robusztus).
-function merteszamok_szoveg(iv, racs) {
+function merteszamok_szoveg(iv, racs, szint) {
   const nevezo = iv.pontok_hasznalt + iv.pontok_hianyzo;
+  const jelerosseg = iv.pontok_nem_nulla + "/" + iv.pontok_hasznalt + " " + racs_szo(racs) + " nem-nulla (" + iv.pontok_hasznalt + "/" + nevezo + " lezárt, " + iv.pontok_kihagyva_reszleges + " részleges kihagyva)";
+  if (szint != null) {
+    // 6c esemenyjelzo (pl. tüntetés): NINCS irány/meredekség/R² (a backend strippeli) → a mérőszám-sor a
+    // SZINT-nézet. A rács ("heti") ÉS a bázis ("52 hét") KIMONDVA: a szint a szó-szintű 52 hetes heti medián,
+    // MINDEN rajzoló nézeten UGYANEZ (a 3_ho-n is — nem a 13 hetes ablaké), (a) döntés. + a jel erőssége.
+    return "szint: " + szint_formaz(szint) + " (heti medián, 52 hét) · " + jelerosseg;
+  }
   return [
     IRANY_MAGYAR[iv.irany] || iv.irany,
     mered_szoveg(iv.meredekseg_nap) + " relatív pont/nap",
     "R² = " + tizedes2(iv.r2) + " (illeszkedés-jóság 0–1; a magasabb érték erősebb irányt jelent)",
-    iv.pontok_nem_nulla + "/" + iv.pontok_hasznalt + " " + racs_szo(racs) + " nem-nulla (" + iv.pontok_hasznalt + "/" + nevezo + " lezárt, " + iv.pontok_kihagyva_reszleges + " részleges kihagyva)",
+    jelerosseg,
   ].join(" · ");
 }
+
+// a szint magyar megjelenítése: egész → "8"; tört → "8,5" (a data-szint attribútum a String(szint), gépnek)
+function szint_formaz(x) { return Number.isInteger(x) ? String(x) : String(x).replace(".", ","); }
 
 // §7.4 frissesség-felirat: NEM késésről (a nyers órás ablak a futásig ér, mint a trendlista) — két tény:
 // (1) meddig tart az adat: az utolsó KIRAJZOLT LEZÁRT pont napja (B1: NEM az ablak_veg részleges slotja, ami
@@ -445,7 +459,7 @@ function nyers_ablak(szo, veg, forras) {
 
 // órarács a rajzoláshoz: az ELSŐ lezárt ponttól a részleges záró slotig (kizárva); a hiányzó órák
 // NULL-ok (spec 7.5: nincs interpoláció, a vonal megszakad). Visszaad: labels/ertekek/vonal/szakadas/csupa_nulla.
-function racs_epit(ablak, iv, racs) {
+function racs_epit(ablak, iv, racs, szint) {
   const pontok = ablak.pontok.slice().sort(function (a, b) { return a.idopont_utc < b.idopont_utc ? -1 : 1; });
   const lezart = pontok.filter(function (p) { return !p.reszleges; });
   const elso_idx = slot_index(lezart[0].idopont_utc, racs);
@@ -489,7 +503,11 @@ function racs_epit(ablak, iv, racs) {
   // B1: az „adat vége" az utolsó KIRAJZOLT LEZÁRT pont (a lezart növekvő; az utolsó a legkésőbbi) — NEM az
   // ablak_veg_utc (részleges záró slot). A ~00:43-futásnál a kettő KÜLÖN napra esik → a felirat egyébként
   // egy nappal többet állítana, mint amennyi ki van rajzolva (ugyanaz a tautológia-osztály, mint a data-ablak-veg).
-  return { labels: labels, ertekek: ertekek, vonal: vonal, vonal_van: vonal_van,
+  // 6c: esemenyjelzo szint-VONAL — konstans vízszintes a szó-szintű heti mediánon (NEM illesztes_vonal:
+  // az két végpontból trend-jellegű; ez minden slotra ugyanaz). A rajzolt hossz a sorozaté (a null-oknál is
+  // fut — spanGaps:true a datasetjén), így a csúcsok fölé/alá nyúlhat, referencia-szintként.
+  const szint_vonal = (szint != null) ? new Array(ertekek.length).fill(szint) : null;
+  return { labels: labels, ertekek: ertekek, vonal: vonal, vonal_van: vonal_van, szint_vonal: szint_vonal,
            adat_veg: lezart[lezart.length - 1].idopont_utc,
            szakadas: ertekek.filter(function (v) { return v === null; }).length,
            csupa_nulla: lezart.length > 0 && !van_nemnulla };
@@ -520,8 +538,9 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs) {
     return kartya;
   }
 
-  const racs = racs_epit(ablak, iv, iv._racs);
+  const racs = racs_epit(ablak, iv, iv._racs, szoreg.szint);
   kartya.setAttribute(ATTR.drawable, "true");
+  if (szoreg.szint != null) kartya.setAttribute(ATTR.szint, String(szoreg.szint));   // 6c: a szint-vonal értéke (heti medián)
   kartya.setAttribute(ATTR.ablak_veg, ablak.ablak_veg_utc);   // a kiválasztott nyers ablak KULCSA (regresszió ablak_veg_utc-vel egyező); részleges záró slot
   kartya.setAttribute(ATTR.adat_veg, racs.adat_veg);          // B1: a felirat „adat vége"-je — az utolsó KIRAJZOLT LEZÁRT pont (nem az ablak_veg)
   kartya.setAttribute(ATTR.pontok, String(iv.pontok_hasznalt));
@@ -542,7 +561,7 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs) {
 
   const m = document.createElement("p");
   m.className = OSZT.merteszamok;
-  m.textContent = merteszamok_szoveg(iv, iv._racs);
+  m.textContent = merteszamok_szoveg(iv, iv._racs, szoreg.szint);
   kartya.appendChild(m);
 
   const tf = document.createElement("p");
@@ -575,6 +594,9 @@ function chart_letrehoz(kartya) {
   if (!racs || !canvas || typeof Chart === "undefined") return;
   const datasetek = [{ data: racs.ertekek, spanGaps: false, borderColor: "#3366cc", borderWidth: 1.5, pointRadius: 0 }];
   if (racs.vonal) datasetek.push({ data: racs.vonal, spanGaps: true, borderColor: "#cc3333", borderWidth: 1.5, borderDash: [4, 3], pointRadius: 0 });
+  // 6c: esemenyjelzo szint-vonal — konstans vízszintes referencia (narancs, a kék adattól ÉS a piros trendtől
+  // is elkülönül); NEM trendvonal (data-vonal marad "false"), a bázist a merteszamok-felirat mondja ki.
+  if (racs.szint_vonal) datasetek.push({ data: racs.szint_vonal, spanGaps: true, borderColor: "#e69138", borderWidth: 1.5, borderDash: [6, 4], pointRadius: 0 });
   chart_peldanyok[kartya.getAttribute(ATTR.kulcsszo)] = new Chart(canvas, {
     type: "line",
     data: { labels: racs.labels, datasets: datasetek },

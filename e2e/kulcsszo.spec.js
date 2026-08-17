@@ -65,6 +65,14 @@ function racs_iv(n, lepes_nap) {
     illesztes_vonal: [{ idopont_utc: racs_iso(0, lepes_nap), ertek: 40 },
       { idopont_utc: racs_iso(n - 1, lepes_nap), ertek: 55 }] };
 }
+// 6c: esemenyjelzo szeletelt intervallum — a backend a TREND-mezőket strippeli (nincs illesztes_vonal/
+// irany/meredekseg/r2/se) → a frontend NEM rajzol trendvonalat, csak a konstans szint-vonalat (data-szint-ből)
+function racs_iv_szint(n, lepes_nap) {
+  const iv = racs_iv(n, lepes_nap);
+  ["illesztes_vonal", "irany", "meredekseg_nap", "r2", "se_meredekseg",
+   "se_masodlagos_autokorrelacio", "r2_masodlagos_autokorrelacio"].forEach(function (k) { delete iv[k]; });
+  return iv;
+}
 // egy rács-szó teljes regresszió-bejegyzése (aktív 1_het = a rács-ablak, a többi nincs_lancolas)
 function racs_regSzo(racs, n, lepes_nap) {
   return regSzo({ racs, intervallumok: {
@@ -150,8 +158,10 @@ function mpReg(kulcsszavak) {
     elmozdulas_kuszob: 7.0, megjegyzes: "teszt", kulcsszavak };
 }
 function mpSzo(racs, intervallumok, over = {}) {
-  return { racs, aktiv: over.aktiv ?? true, domen: over.domen ?? "lakhatas", tipus: over.tipus ?? "szintmero",
+  const o = { racs, aktiv: over.aktiv ?? true, domen: over.domen ?? "lakhatas", tipus: over.tipus ?? "szintmero",
     meres_kezdete: over.meres_kezdete ?? null, meres_vege: over.meres_vege ?? null, intervallumok };
+  if (over.szint != null) { o.szint = over.szint; o.szint_modszer = over.szint_modszer ?? "median"; }   // 6c esemenyjelzo
+  return o;
 }
 function mpNyers(map) { return { kulcsszavak: map }; }
 
@@ -374,6 +384,34 @@ test("2n. esemenyjelzo het-szó 1_het → 'A heti rácson ez az ablak túl rövi
   const v = page.locator("#intervallum-vezerlo");
   await expect(v).toContainText("A heti rácson ez az ablak túl rövid");    // 1_het esemenyjelzo → rovid_het_ablak
   await expect(v).not.toContainText("Eseményjelző — szint-nézet készül");  // a nyugdíjazott felirat NEM
+});
+
+// ── 2o. 6c/Szelet 2: esemenyjelzo szint-vonal rendering — data-szint + felirat (rács ÉS bázis KIMONDVA) ──
+test("2o. esemenyjelzo tüntetés 3_ho/1_ev → data-szint='8' + 'szint: 8 (heti medián, 52 hét)' + NINCS trendvonal", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "tüntetés": regSzo({ domen: "kozelet", tipus: "esemenyjelzo", intervallumok: {
+      "1_het": ivHibas("esemenyjelzo"), "2_het": ivHibas("esemenyjelzo"), "1_ho": ivHibas("esemenyjelzo"),
+      "3_ho": ivHibas("esemenyjelzo"), "1_ev": ivHibas("esemenyjelzo"),
+    } }) }),
+    nyersObj: nyers({ "tüntetés": [nyersRekord("tüntetés")] }),
+    // szint=8 szó-szinten; 3_ho/1_ev ervenyes, TREND-mezők NÉLKÜL (Szelet 1 strip); 1_het/2_het/1_ho keves_pont.
+    // A szeletelt 3_ho/1_ev a rekord TELJES ablak_veg-jét örökli (a nyers_ablak erre illeszt) → mindkettő 52,7.
+    mpRegObj: mpReg({ "tüntetés": mpSzo("het",
+      { "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"), "1_ho": ivHibas("keves_pont"),
+        "3_ho": racs_iv_szint(52, 7), "1_ev": racs_iv_szint(52, 7) },
+      { domen: "kozelet", tipus: "esemenyjelzo", szint: 8 }) }),
+    mpNyersObj: mpNyers({ "tüntetés": [racs_nyersRekord("tüntetés", 52, 7)] }),
+  });
+  await page.goto("/");
+  await expect(page.locator(`${K} .hiba`)).toHaveCount(0);                       // a strippelt esemenyjelzo rajzolása NEM dob (merteszamok szint-ág)
+  const kartya = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="tüntetés"]`);
+  await expect(kartya).toHaveAttribute("data-szint", "8");                       // az érték a kártyán
+  await expect(kartya).toContainText("szint: 8 (heti medián, 52 hét)");          // rács (heti) + bázis (52 hét) KIMONDVA
+  await expect(kartya).toHaveAttribute("data-drawable", "true");                 // 1_ev (alapnézet) rajzol
+  await expect(kartya).toHaveAttribute("data-vonal", "false");                   // NINCS második (trend)vonal a szint mellett
+  // váltás 3_ho-ra: a felirat UGYANAZ (52 hetes szó-szintű bázis, (a) döntés — nem a 13 hetes ablak mediánja)
+  await page.locator('button[data-intervallum="3_ho"]').click();
+  await expect(kartya).toContainText("szint: 8 (heti medián, 52 hét)");
 });
 
 // ── 2m. Szelet 3 / ALAPNEZET: 1_het + hosszú érvényes → az ALAP az 1_het (nem a leghosszabb) ───
