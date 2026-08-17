@@ -6,7 +6,7 @@ marad; ez a leltár a követett (commitolt) állapot-nézet, ami túléli a chat
 Ezzel oldjuk fel a §3-ban rögzített ledger↔repó ellentmondást (a ledger a
 döntéseket rögzítette, az állapotot nem).
 
-Utolsó frissítés: 2026-08-16.
+Utolsó frissítés: 2026-08-17.
 
 ## Hogyan frissítsd
 
@@ -16,7 +16,8 @@ Utolsó frissítés: 2026-08-16.
   új ID. Lezárt tétel a **LEZÁRT / ELAVULT** szakaszba kerül, **nem törlődik**.
 - **c) INVARIÁNS (frissítéskor ellenőrizd):**
   `aktív + kész + nem-task rekord + félretett = törzs-sorszám`.
-  Most: **32 + 13 + 11 + 1 = 57**. A **LEZÁRT / ELAVULT** külön számolódik: most **11**.
+  Most: **33 + 13 + 12 + 1 = 59**. A **LEZÁRT / ELAVULT** külön számolódik: most **11**.
+  (08-17: +TELJES-NEZET [aktív] és +SZEMLE-SZABÁLY [rekord] — a 6b latens rajzolási hiba utóéletéből.)
   Ha ez az egyenlőség nem áll, a leltár driftel.
 - **d)** **Önhivatkozó hash TILOS:** a leltár nem tartalmazhatja a SAJÁT lezáró commitja
   hash-ét (nincs „(ez a commit)" placeholder sem, ami bent ragad). A lezáró sor állapota
@@ -43,7 +44,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | PH4-T4 | elavultság-jelzés (A — backend + run.log) | Ph4 | LESZÁLLÍTVA (a16e5e9) | MÉRT | igen | — | — |
 | PH4-SPEC | phase4-spec + phase3 §1.4.1/§8.2 bővítés | Ph4 | LESZÁLLÍTVA (d2fe35b) | MÉRT | nem | — | — |
 | PH4-T6a | rács-tudatos regresszió (nap/het + esemenyjelzo szint) | Ph4 | LESZÁLLÍTVA (75839d0) | MÉRT | igen (ma este 1. éles) | — | — |
-| 6b | nem-órás (nap/het) megjelenítés a felületen — NÉGY szelet: RACS-EGYSEG felirat + Szelet1 (racs_epit slot-index, óra bájt-azonos) + Szelet2 (másodlagos JSON fogyasztás + egyesitett_reg per-intervallum routing + rács-tudatos üres-állapot + részleges-betöltés/elavultság-guardok, subagent-review) + Szelet3 (SZEMLE-JAVÍTÁS: a másodlagos MAGA adta nincs_lancolas/keves_pont rács-tudatosan fordítva → rovid_masodlagos/rovid_het_ablak, hosszú intervallum SOHA nem 'összefűzött nap'; default→1_het). **MEGISMÉTELT VIZUÁLIS SZEMLE 6/6 TISZTA (2026-08-16):** nyaralás 1_ev felirat + akciós újság 2_het felirat + alapnézet 1_het 13/13 GÖRBÉVEL + órás út változatlan + keskeny ablak + kézi intervallum-váltás. HÁTRA külön tétel: 6c szint-vonal | Ph4 | LESZÁLLÍTVA (lásd git log) | MÉRT (08-16) | igen (megjel.) | L | — |
+| 6b | nem-órás (nap/het) megjelenítés a felületen — NÉGY szelet: RACS-EGYSEG felirat + Szelet1 (racs_epit slot-index, óra bájt-azonos) + Szelet2 (másodlagos JSON fogyasztás + egyesitett_reg per-intervallum routing + rács-tudatos üres-állapot + részleges-betöltés/elavultság-guardok, subagent-review) + Szelet3 (SZEMLE-JAVÍTÁS: a másodlagos MAGA adta nincs_lancolas/keves_pont rács-tudatosan fordítva → rovid_masodlagos/rovid_het_ablak, hosszú intervallum SOHA nem 'összefűzött nap'; default→1_het). **MEGISMÉTELT VIZUÁLIS SZEMLE 6/6 TISZTA (2026-08-16):** nyaralás 1_ev felirat + akciós újság 2_het felirat + alapnézet 1_het 13/13 GÖRBÉVEL + órás út változatlan + keskeny ablak + kézi intervallum-váltás. HÁTRA külön tétel: 6c szint-vonal. **UTÓÉLET (08-17):** latens RAJZOLÁSI hiba derült ki — a `racs_epit` NEM szeletelt az `iv.ablak_kezdet_utc`-re (`elso_idx = slot_index(lezart[0])` a rekord elejéről), így MINDEN nap/het szó MINDEN nézete a TELJES rekordot rajzolta (kontroll: kórház/akciós újság 3_ho = 1_ev = teljes 52 hét). A backend helyesen szeletelt (pontok_hasznalt 3_ho=12/1_ev=52), csak a rajzolás nem. Javítva: 6c javító-szelet (lásd git log). A megismételt 6b-szemle NEM fogta meg, mert két nézetet nem hasonlítottunk össze egymással (→ SZEMLE-SZABÁLY). NEM visszaminősítés (a 6b leszállt), utóélet. | Ph4 | LESZÁLLÍTVA (lásd git log) | MÉRT (08-16; utóélet 08-17) | igen (megjel.) | L | — |
 | RACS-EGYSEG | rács-tudatos jel-erősség felirat (a 6b ELSŐ szelet): a merteszamok_szoveg rács-SZAVA (óra/nap/hét) a szó `racs`-ából, `"ora"` default (az órás JSON nem hordoz racs-ot → órás felirat bájt-azonos, nulla séma-változás); ismeretlen rács → LÁTHATÓ `"? <érték>"` (nem undefined, nem néma „óra" — KUDARC-VAK-elhárítás); a mértékegység („/nap") mérve rács-INVARIÁNS, kimarad; a RAJZOLÁS (racs_epit/ora_index/x-tengely/tooltip) a KÖVETKEZŐ, nagyobb 6b-szelet (lásd 6b sor) | Ph4 | LESZÁLLÍTVA (lásd git log) | MÉRT | nem (frontend felirat) | S | — |
 
 ## META / FOLYAMATBAN (0)
@@ -79,15 +80,16 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | KAT-TABLA | kategória heti táblázat | Ph3/4-jelölt | NYITOTT (felvetés) | BECS | igen | M-L | — |
 | KULCS-LISTA | kulcsszó-lista bővítés (nincs diszkrét repó-nyom, csak ambient) | Ph3 | NYITOTT (ambient) | BECS | igen (config) | S-M | — |
 
-## (C) Phase 4 hátralévő (3)
+## (C) Phase 4 hátralévő (4)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
 | TASK5 | staleness-vezérelt ütemező (tie-break=config-index) | Ph4 | NYITOTT | BECS (terv kész) | igen | L | 6a megfigyelés (1-2 futás) |
 | 6c | tüntetés szint-vonal (medián, „stabil szint", nincs trendvonal) | Ph4 | NYITOTT (döntés kész) | MÉRT | nem | M | 6b |
 | LANC-ORAS | órás láncolás (2_het+; kumulált skálázó tartós tárolása) | Ph4 §8.2 | NYITOTT | BECS | igen (új kimenet) | XL | §8.2-INV |
+| TELJES-NEZET | „jó adat kezdete" hosszú nézet: egy NEVESÍTETT config-konstans dátumtól rajzol. A kezdő-dátum **USER-DÖNTÉS** (NEM mérés, NEM visszamenőleges lekérdezés). Hatókör+granularitás a user döntése; MÉRT bemenetek (08-17): (b) GLOBÁLIS vágás @2026-08 TARTHATATLAN — het-szó 0 érvényes nézet, a szint-medián 52-hetes bázisa 1 pontra esik (het ~52 pontból csak 1-2 esik 08-01 utánra; nap ~12-14, épp MIN_PONT körül) → ezt NE vessük fel újra. Az első másodlagos gyűjtés SZÓRT (rotáció ≤2/nap): albérlet/tüntetés 08-13, akciós újság 08-14, nyaralás 08-15, kórház 08-16 → közös dátum a később gyűjtött szónak „jó adatot" hazudna. A „régi rossz rács belekeveredik" kockázat NEM a másodlagosnál áll (mind 08-13+, egyetlen today-12m, egységes normalizálás — nincs pre-marker pont), hanem a `modszertan_valtas` (07-30) markert átívelő órás/napi láncnál (kumulatív skálázó); az órás lánc (LANC-ORAS) még nem épült, a napi tortenet marker-vágott. | Ph4 | NYITOTT | USER-DÖNTÉS (bemenet MÉRT) | igen (új kimenet) | L | LANC-ORAS |
 
-## (D) Ma (2026-08-13..16) nyitott új tételek (17 — 6 nyitott + 11 rekord)
+## (D) Ma (2026-08-13..17) nyitott új tételek (18 — 6 nyitott + 12 rekord)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
@@ -108,6 +110,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | API-CSV | API vs webes CSV: napi 93 vs 90 pont (webes export 3 nappal rövidebb) | Ph4 (új) | REKORD (lelet) | MÉRT | nem | — | — |
 | §1.4.1 | ablak-relatív újranormálás (69/71 bájt-azonos, harmadik mechanizmus) | Ph4/spec | REKORD (megfigyelés) | MÉRT | nem | — | táplálja §8.2-INV |
 | HET-MINPONT | het MIN_PONT=7 önmagában gyenge; a védelmet a rács-szűrés adja | Ph4 (új) | REKORD/MEGKÖTÉS | MÉRT | nem | — | — |
+| SZEMLE-SZABÁLY | rács-tudatos nézetnél a VIZUÁLIS SZEMLE MINDIG hasonlítson össze KÉT intervallumot UGYANAZON a szón (rövid vs hosszú, pl. 3_ho vs 1_ev). Azonos görbe = szeletelési hiba. Egyetlen nézet átnézése NEM elég. A 6b latens `racs_epit`-hibája pontosan ezért maradt rejtve (→ 6b UTÓÉLET). Erősíti az L9/§8.3-at (a canvas-belső rész egyetlen őre a szemle), NEM olvad bele. ATADAS-ba is. | Ph4/folyamat | REKORD/MEGKÖTÉS | MÉRT (08-17) | nem (szemle) | — | L9 |
 
 ## LEZÁRT / ELAVULT (11 — külön, nem a törzsben)
 
