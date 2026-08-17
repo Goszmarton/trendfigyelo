@@ -16,7 +16,7 @@ Utolsó frissítés: 2026-08-17.
   új ID. Lezárt tétel a **LEZÁRT / ELAVULT** szakaszba kerül, **nem törlődik**.
 - **c) INVARIÁNS (frissítéskor ellenőrizd):**
   `aktív + kész + nem-task rekord + félretett = törzs-sorszám`.
-  Most: **32 + 14 + 15 + 1 = 62**. A **LEZÁRT / ELAVULT** külön számolódik: most **11**.
+  Most: **33 + 14 + 15 + 0 = 62**. A **LEZÁRT / ELAVULT** külön számolódik: most **11**.
   (08-17: +TELJES-NEZET [aktív] és +SZEMLE-SZABÁLY [rekord] — a 6b latens rajzolási hiba utóéletéből;
   majd 6c LESZÁLLÍTVA [aktív→kész] + 3 REKORD [SZINT-VONAL-VAK, ZOLD-NEM-SZALLIT, RESZLEGES-RAJZOL].)
   Ha ez az egyenlőség nem áll, a leltár driftel.
@@ -53,7 +53,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 
 — (üres — a LEDGER-HIG leszállt: 6f4091d, lásd LESZÁLLÍTVA)
 
-## (B) Phase 3 / korábbról örökölt (24 — 23 nyitott + 1 félretett)
+## (B) Phase 3 / korábbról örökölt (24 — 24 nyitott + 0 félretett)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
@@ -74,7 +74,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | MIN-CSS | CSS-sorrend app.css:40-41 (date-select szabály a vezérlő közé ékelődött) | Ph3 (T10) | NYITOTT (minor, csak ATADAS-08-11:184) | MÉRT | nem | S | — |
 | SUCCESS-VAK | success-vakság — elveszett kulcsszó-nap = ZÖLD workflow (exit 0) | Ph3 §10 | NYITOTT | MÉRT (08-11) | igen (diagnoszt.) | M | — |
 | 429-RATA | 429-ráta jellemzése (n=1, több nap napló kell) | Ph3 | NYITOTT (mérés) | MÉRT | nem | S / folyamatos | több nap napló |
-| GORBE-B | „minden kártyán legyen görbe" (B) | Ph3 | FÉLRETETT | MÉRT | igen (megjel.) | L | 429-RATA |
+| GORBE-B | a napi TREND-blokk holtverseny-rekesz trendjei (a top-`trend_idosor_max` idősor-lista utáni azonos-volumenű tie-bucket, pl. ufc 330/lionel messi vol 2000) is kapjanak sparkline-t. Döntés: (a) FORWARD-ONLY. **Szelet 1 (BACKEND) LESZÁLLT+PUSHOLVA (a2e6526):** `_rekesz_idosor_ag` LEGUTOLSÓ ág (`gyujt_rekesz` csendes 429-feladás, PlafonTullepve HARD), `trend_idosor_rekesz_max=5`, kétállapotú FIGYELEM. Szelet 2 (frontend) = **0 sor** (a `trend_kartya_epit` a sparkline-t `t.idosor.length>0`-ból dönti — a rekesz feltöltött idősorral automatikusan rajzol). **ZÁRÓ KAPU: vizuális szemle a rekesz-sparkline-ra a KÖVETKEZŐ esti regen után** (a committolt JSON még nem tartalmazza). Terv: plans/2026-08-17-gorbe-b-rekesz-idosor.md | Ph3 | RÉSZBEN | MÉRT (08-17) | igen (megjel.) | L | vizuális szemle |
 | FOLYT | folytonossag él-trigger vs állapot-check | Ph3 | NYITOTT (eldöntendő) | MÉRT | nem (napló) | S-M | SUCCESS-VAK |
 | NAPLO-MENTETT | naplo.csv „mentett-szám" 6. oszlop (a részleges-mentés fixből) | Ph3 | NYITOTT | MÉRT | igen (napló-séma) | S-M | — |
 | NAPTAR | naptáras (tól–ig) intervallumválasztó (elég-e az 5 fix ablak) | Ph3 | NYITOTT (9b után) | BECS | nem | M-L | — |
