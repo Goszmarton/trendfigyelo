@@ -228,3 +228,37 @@ def test_nyers_sorozat_nan_ispartial_nem_reszleges():
         return pd.DataFrame({kif: [30], "isPartial": [float("nan")]}, index=idx)
     _, _, nyers = kulcsszavak.gyujt(KemKliens(df_gyar=nan_ip_df), _config_egy(), most=FIX_MOST)
     assert nyers["állás"]["pontok"][0]["reszleges"] is False
+
+
+# ── SUCCESS-VAK: a néma üres-skip hangos a VÁRATLAN (nem-esemenyjelzo) esetben ────
+def _ures_ket_skiput(kif, mi):
+    """Teszt-df: 'mi'='ures' → üres df (Google semmit); 'mi'='nincs_oszlop' → csak isPartial (nincs érték-oszlop)."""
+    if mi == "ures":
+        return pd.DataFrame()
+    idx = pd.to_datetime([datetime(2021, 1, 1, 10, tzinfo=timezone.utc),
+                          datetime(2021, 1, 2, 10, tzinfo=timezone.utc)])
+    return pd.DataFrame({"isPartial": [False, True]}, index=idx)
+
+
+def test_ures_df_szintmero_FIGYELEM(capsys):
+    # SUCCESS-VAK: szintmero szó ÜRES df-je (Google semmit) = VÁRATLAN → FIGYELEM, NEM néma
+    gyar = lambda kif: _ures_ket_skiput(kif, "ures") if kif == "állás" else egy_szo_df(kif)
+    kulcsszavak.gyujt(KemKliens(df_gyar=gyar), _config(), most=FIX_MOST)
+    ki = capsys.readouterr().out
+    assert "állás" in ki and "üres" in ki.lower()   # a váratlan üres df HANGOS
+
+
+def test_hianyzo_oszlop_szintmero_FIGYELEM(capsys):
+    # SUCCESS-VAK: szintmero szó df-jében NINCS érték-oszlop (query/parse-gyanú) = MÁSIK skip-út → FIGYELEM
+    gyar = lambda kif: _ures_ket_skiput(kif, "nincs_oszlop") if kif == "hitel" else egy_szo_df(kif)
+    kulcsszavak.gyujt(KemKliens(df_gyar=gyar), _config(), most=FIX_MOST)
+    ki = capsys.readouterr().out
+    assert "hitel" in ki and "oszlop" in ki.lower()   # a hiányzó oszlop KÜLÖN hibaosztály
+
+
+def test_ures_esemenyjelzo_NEM_pirosit(capsys):
+    # SZÁNDÉKOS-ZÖLD (előre): esemenyjelzo (tüntetés) üres = VÁRT (sparse-by-design, spec 6.2) → TELJESEN NÉMA
+    gyar = lambda kif: _ures_ket_skiput(kif, "ures") if kif == "tüntetés" else egy_szo_df(kif)
+    kulcsszavak.gyujt(KemKliens(df_gyar=gyar), _config(), most=FIX_MOST)
+    ki = capsys.readouterr().out
+    assert "tüntetés" not in ki   # NINCS FIGYELEM az esemenyjelzo üresre

@@ -137,10 +137,22 @@ def gyujt(kliens, config, most=None):
         except Exception as e:
             print(f"FIGYELEM: a(z) {tetel.kifejezes!r} kulcsszó kimaradt ({e}).")
             continue
+        # SUCCESS-VAK: a néma üres-skip a VÁRATLAN esetben HANGOS. A tipus a megkülönböztető:
+        # esemenyjelzo üres = VÁRT (sparse-by-design, spec 6.2 védett) → TELJESEN NÉMA; szintmero/hibrid
+        # üres = VÁRATLAN (szint-szónak mindig lenne adata) → FIGYELEM. Exit-kód SOHA (részleges veszteség;
+        # a TELJES-üres a LEGFRISSEBB-GUARD dolga). A két skip-út KÜLÖN hibaosztály (GORBE-B/MASODLAGOS-PLAFON
+        # tanulság): üres df = hálózati/adathiány; hiányzó oszlop = query/parse-gyanú.
+        varatlan = tetel.tipus != "esemenyjelzo"
         if df is None or len(df) == 0:
+            if varatlan:
+                print(f"FIGYELEM: a(z) {tetel.kifejezes!r} ({tetel.tipus}) szó ÜRES sorozatot adott "
+                      f"(Google semmit — hálózati/adathiány); kimarad a napból.")
             continue
         oszlop = _ertek_oszlop(df, tetel.kifejezes)
         if oszlop is None:
+            if varatlan:
+                print(f"FIGYELEM: a(z) {tetel.kifejezes!r} ({tetel.tipus}) szó válaszában NINCS érték-OSZLOP "
+                      f"(adat jött, de nem a szó oszlopa — query/parse-gyanú); kimarad a napból.")
             continue
         ip = _ispartial_oszlop(df)
         utolso = utolso_teljes_nap(df, mai_datum)

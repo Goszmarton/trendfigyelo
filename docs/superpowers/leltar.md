@@ -16,7 +16,7 @@ Utolsó frissítés: 2026-08-17.
   új ID. Lezárt tétel a **LEZÁRT / ELAVULT** szakaszba kerül, **nem törlődik**.
 - **c) INVARIÁNS (frissítéskor ellenőrizd):**
   `aktív + kész + nem-task rekord + félretett = törzs-sorszám`.
-  Most: **33 + 14 + 15 + 0 = 62**. A **LEZÁRT / ELAVULT** külön számolódik: most **11**.
+  Most: **32 + 15 + 15 + 0 = 62**. A **LEZÁRT / ELAVULT** külön számolódik: most **11**.
   (08-17: +TELJES-NEZET [aktív] és +SZEMLE-SZABÁLY [rekord] — a 6b latens rajzolási hiba utóéletéből;
   majd 6c LESZÁLLÍTVA [aktív→kész] + 3 REKORD [SZINT-VONAL-VAK, ZOLD-NEM-SZALLIT, RESZLEGES-RAJZOL].)
   Ha ez az egyenlőség nem áll, a leltár driftel.
@@ -30,7 +30,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 
 ---
 
-## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (14)
+## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (15)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
@@ -49,11 +49,13 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | 6c | tüntetés esemenyjelzo szint-vonal (heti medián szint-nézet, NINCS trendvonal) — NÉGY szelet: Szelet 1 (BACKEND routing: órás ervenyes:false/ok:esemenyjelzo a stagnal-trend helyett + másodlagos het-szeletelt, trend-mezők strippelve; frontend ok-réteg, „szint-nézet készül" nyugdíjazva) + Szelet 2 (RENDERING: konstans szint-vonal a heti mediánon [Array.fill, NEM illesztes_vonal], data-szint, felirat „szint: N (heti medián, 52 hét)"; a Szelet 1 utáni LATENS crash is javítva) + JAVÍTÓ-SZELET (racs_epit az iv.ablak_kezdet_utc-re szeletel — latens 6b-hiba, MINDEN nap/het szót érintett; data-rajzolt-pont DOM-őr) + Szelet 4 (szemle+leltár). **VIZUÁLIS SZEMLE 8/8 TISZTA (2026-08-17):** 3_ho vs 1_ev KÜLÖNBÖZŐ hosszú mindhárom érintett szón (tüntetés/kórház/akciós újság), szint-vonal a 8-nál, nincs második vonal, órás út változatlan, alapnézet 12/13, konzol tiszta. | Ph4 | LESZÁLLÍTVA (lásd git log) | MÉRT (08-17) | igen (megjel.) | M | 6b |
 | RACS-EGYSEG | rács-tudatos jel-erősség felirat (a 6b ELSŐ szelet): a merteszamok_szoveg rács-SZAVA (óra/nap/hét) a szó `racs`-ából, `"ora"` default (az órás JSON nem hordoz racs-ot → órás felirat bájt-azonos, nulla séma-változás); ismeretlen rács → LÁTHATÓ `"? <érték>"` (nem undefined, nem néma „óra" — KUDARC-VAK-elhárítás); a mértékegység („/nap") mérve rács-INVARIÁNS, kimarad; a RAJZOLÁS (racs_epit/ora_index/x-tengely/tooltip) a KÖVETKEZŐ, nagyobb 6b-szelet (lásd 6b sor) | Ph4 | LESZÁLLÍTVA (lásd git log) | MÉRT | nem (frontend felirat) | S | — |
 
+| SUCCESS-VAK | success-vakság (a KUDARC-VAK per-szó tagja): a `kulcsszavak.gyujt` néma üres-skipje (df üres/None VAGY hiányzó érték-oszlop) most HANGOS a VÁRATLAN esetben. **tipus-kapu:** esemenyjelzo üres = VÁRT (sparse-by-design, spec 6.2 védett) → TELJESEN NÉMA; szintmero/hibrid üres = VÁRATLAN → FIGYELEM. Exit-kód SOHA (részleges veszteség; a TELJES-üres a LEGFRISSEBB-GUARD dolga). A KÉT skip-út KÜLÖN hibaosztály (üres df = hálózati/adathiány; hiányzó oszlop = query/parse-gyanú — mint a GORBE-B kétállapotú FIGYELEM / MASODLAGOS-PLAFON tanulság). **ELMÉLETI:** a váratlan ág 14 napon (08-02..08-15) NEM fordult elő (2 skip, MINDKETTŐ tüntetés/esemenyjelzo = várt) → élesben NEM verifikálható, csak TDD-vel (mock üres df); élesben akkor igazolódik, ha egy szint-szó ténylegesen kiesik (mint a 08-15-i L4 szelep — elméletiként készült, utólag igazolódott). NEM-MÉRT-nek jelölni HIBA lenne (a bug valós, a fix helyes). | Ph3 §10 | LESZÁLLÍTVA (lásd git log) | ELMÉLETI (fix) + MÉRT (mérés 08-17) | igen (diagnoszt.) | S | — |
+
 ## META / FOLYAMATBAN (0)
 
 — (üres — a LEDGER-HIG leszállt: 6f4091d, lásd LESZÁLLÍTVA)
 
-## (B) Phase 3 / korábbról örökölt (24 — 24 nyitott + 0 félretett)
+## (B) Phase 3 / korábbról örökölt (23 — 23 nyitott + 0 félretett)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
@@ -72,10 +74,9 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | MIN-TCP | trend_chart_peldanyok kulcs-kollízió (árva Chart, memória) | Ph3 (8a) | NYITOTT (minor) | MÉRT | nem (memória) | S | — |
 | T21 | kategória-chart jelenlétének explicit assert-erősítése | Ph3 (8a) | NYITOTT (minor) | MÉRT | nem (teszt) | S | — |
 | MIN-CSS | CSS-sorrend app.css:40-41 (date-select szabály a vezérlő közé ékelődött) | Ph3 (T10) | NYITOTT (minor, csak ATADAS-08-11:184) | MÉRT | nem | S | — |
-| SUCCESS-VAK | success-vakság — elveszett kulcsszó-nap = ZÖLD workflow (exit 0) | Ph3 §10 | NYITOTT | MÉRT (08-11) | igen (diagnoszt.) | M | — |
 | 429-RATA | 429-ráta jellemzése (n=1, több nap napló kell) | Ph3 | NYITOTT (mérés) | MÉRT | nem | S / folyamatos | több nap napló |
 | GORBE-B | a napi TREND-blokk holtverseny-rekesz trendjei (a top-`trend_idosor_max` idősor-lista utáni azonos-volumenű tie-bucket, pl. ufc 330/lionel messi vol 2000) is kapjanak sparkline-t. Döntés: (a) FORWARD-ONLY. **Szelet 1 (BACKEND) LESZÁLLT+PUSHOLVA (a2e6526):** `_rekesz_idosor_ag` LEGUTOLSÓ ág (`gyujt_rekesz` csendes 429-feladás, PlafonTullepve HARD), `trend_idosor_rekesz_max=5`, kétállapotú FIGYELEM. Szelet 2 (frontend) = **0 sor** (a `trend_kartya_epit` a sparkline-t `t.idosor.length>0`-ból dönti — a rekesz feltöltött idősorral automatikusan rajzol). **ZÁRÓ KAPU: vizuális szemle a rekesz-sparkline-ra a KÖVETKEZŐ esti regen után** (a committolt JSON még nem tartalmazza). Terv: plans/2026-08-17-gorbe-b-rekesz-idosor.md | Ph3 | RÉSZBEN | MÉRT (08-17) | igen (megjel.) | L | vizuális szemle |
-| FOLYT | folytonossag él-trigger vs állapot-check | Ph3 | NYITOTT (eldöntendő) | MÉRT | nem (napló) | S-M | SUCCESS-VAK |
+| FOLYT | folytonossag él-trigger vs állapot-check. **SUCCESS-VAK KÉSZ → a függés OLDÓDIK, FOLYT önállóan eldönthető.** A folytonossag (futtato.py:424, `seged.utolso_res`) a rést a PERZISZTENS `naplo.csv`-be írja (minden rés PONTOSAN egyszer, ~333 nap retenció) → az él-trigger valószínűleg ELÉG (a rés nem vész el, auditálható). **DÖNTÉS-tétel (nem feladat, valószínűleg 0 kód):** egy körben lezárandó indoklással — él-trigger elég-e, vagy állapot-check kell. | Ph3 | NYITOTT (DÖNTÉS) | MÉRT | nem (napló) | S | — |
 | NAPLO-MENTETT | naplo.csv „mentett-szám" 6. oszlop (a részleges-mentés fixből) | Ph3 | NYITOTT | MÉRT | igen (napló-séma) | S-M | — |
 | NAPTAR | naptáras (tól–ig) intervallumválasztó (elég-e az 5 fix ablak) | Ph3 | NYITOTT (9b után) | BECS | nem | M-L | — |
 | KAT-GORBE | kategória heti/havi görbe | Ph3/4-jelölt | NYITOTT (felvetés, nincs terv) | BECS | igen (új kimenet) | L | — |
