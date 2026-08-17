@@ -16,7 +16,7 @@ Utolsó frissítés: 2026-08-17.
   új ID. Lezárt tétel a **LEZÁRT / ELAVULT** szakaszba kerül, **nem törlődik**.
 - **c) INVARIÁNS (frissítéskor ellenőrizd):**
   `aktív + kész + nem-task rekord + félretett = törzs-sorszám`.
-  Most: **31 + 16 + 15 + 0 = 62**. A **LEZÁRT / ELAVULT** külön számolódik: most **11**.
+  Most: **30 + 17 + 15 + 0 = 62**. A **LEZÁRT / ELAVULT** külön számolódik: most **11**.
   (08-17: +TELJES-NEZET [aktív] és +SZEMLE-SZABÁLY [rekord] — a 6b latens rajzolási hiba utóéletéből;
   majd 6c LESZÁLLÍTVA [aktív→kész] + 3 REKORD [SZINT-VONAL-VAK, ZOLD-NEM-SZALLIT, RESZLEGES-RAJZOL].)
   Ha ez az egyenlőség nem áll, a leltár driftel.
@@ -30,7 +30,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 
 ---
 
-## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (16)
+## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (17)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
@@ -53,11 +53,13 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 
 | MASODLAGOS-PLAFON | a plafon a másodlagos ÉS a rekesz (idosor_rekesz) ágban is üthet → HARD (exit 2), de a napló EDDIG 'kihagyva'-t írt (a felső mentő-út), nem 'plafon'. JAVÍTVA: mindkét ág (`_masodlagos_ag`, `_rekesz_idosor_ag`) külön `except PlafonTullepve` → eredmeny='plafon' + PROPAGÁL. A rekesz napló-kódjai KIMERÍTŐK és megkülönböztetők: `korlat:N` (by-design cap → siker) vs `429:M` (soft-fail → reszleges) — NEM mosódnak össze (a KUDARC-VAK ma kétszer látott 'kihagyva'-vs-'plafon' hibaosztálya EGYSZER, jól rendezve). 3 RED→GREEN. | Ph4 | LESZÁLLÍTVA (lásd git log) | MÉRT | nem (napló-címke) | S | — |
 
+| SEMA | `sema_legfrissebb` (test-oldali szerződés-validátor) topics/temak szigorítás MEGENGEDŐ→KÖTELEZŐ: a két mező MOST kötelező jelen + típusos (list[int]/list[str], egyező hossz), de ÜRES [] ENGEDETT (spec „üres esetben []"; a futtato 214 legit üres-kategóriájú trendet ad — non-empty pirosítana). ELŐZETES MÉRÉS: a valós legfrissebb.json 17/17 hordozza (present+typed) → a valós-fájl szerződés-teszt (test_szerzodes:451) zöld marad, holnap nem pirosít. Test-only (nincs production). 1 RED (a régi „hiányzó megengedett" blokk megfordítva) + 1 SZÁNDÉKOS-ZÖLD (üres engedett). | Ph3 (3a) | LESZÁLLÍTVA (lásd git log) | MÉRT | nem | S | — |
+
 ## META / FOLYAMATBAN (0)
 
 — (üres — a LEDGER-HIG leszállt: 6f4091d, lásd LESZÁLLÍTVA)
 
-## (B) Phase 3 / korábbról örökölt (23 — 23 nyitott + 0 félretett)
+## (B) Phase 3 / korábbról örökölt (22 — 22 nyitott + 0 félretett)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
@@ -71,7 +73,6 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | MINOR-2 | retenció-horgony robusztusság (befagyás / jövőbeli ablak_veg kivág) | Ph2.5 §11.7 | NYITOTT | BECS | igen (adatvesztés) | M | láncolás tervezés |
 | §11.8 | betegség/kórház éves átfedés | Ph2.5 | NYITOTT (kutatás) | BECS | nem (felület nem) | S-M | — |
 | VENV | venv 3.14 vs CI/átadó 3.12 | Ph2.5 | NYITOTT (nem blokkoló) | MÉRT | nem | S | — |
-| SEMA | sema_legfrissebb topics/temak szigorítás (megengedő→kötelező) | Ph3 (3a) | RÉSZBEN (indítható, nem lezárt) | MÉRT | nem | S | — |
 | MIN-BC | borderColor #3366cc magic literal (app.js) | Ph3 (8a) | NYITOTT (minor) | MÉRT | nem | S | — |
 | MIN-TCP | trend_chart_peldanyok kulcs-kollízió (árva Chart, memória) | Ph3 (8a) | NYITOTT (minor) | MÉRT | nem (memória) | S | — |
 | T21 | kategória-chart jelenlétének explicit assert-erősítése | Ph3 (8a) | NYITOTT (minor) | MÉRT | nem (teszt) | S | — |

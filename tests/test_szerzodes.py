@@ -132,7 +132,7 @@ def sema_legfrissebb(obj) -> list[str]:
         if not isinstance(tr, dict):
             hibak.append(f"top_trendek[{i}]: dict kell")
             continue
-        for m in ("kifejezes", "volumen", "novekedes_pct", "idosor", "hirek"):
+        for m in ("kifejezes", "volumen", "novekedes_pct", "idosor", "hirek", "topics", "temak"):
             if m not in tr:
                 hibak.append(f"top_trendek[{i}]: hiányzó '{m}'")
         for j, pt in enumerate(tr.get("idosor", []) if isinstance(tr.get("idosor"), list) else []):
@@ -145,9 +145,11 @@ def sema_legfrissebb(obj) -> list[str]:
             for m in _HIR_MEZOK:
                 if m not in hr:
                     hibak.append(f"top_trendek[{i}].hirek[{j}]: hiányzó '{m}'")
-        # Task 3a — kategória JELEN-ESETÉN-típusos (a mai legfrissebb.json még nem hordozza;
-        # ledger nyitott elem a szigorításról). Ha jelen: topics list[int], temak list[str],
-        # és len(topics) == len(temak) (a temak a topics-ból derivált, trendspy garantálja).
+        # Task 3a / SEMA (2026-08-17): a kategória-mezők MOST KÖTELEZŐK (present, lásd a fenti required
+        # hurkot) — a valós legfrissebb.json 17/17 hordozza (mérve). Típus: topics list[int], temak
+        # list[str], len(topics) == len(temak) (a temak a topics-ból derivált, trendspy garantálja).
+        # ÜRES [] ENGEDETT (spec: „üres esetben []"; a futtato 214 legit üres-kategóriájú trendet ad) —
+        # a szigorítás present+typed, NEM non-empty (különben egy üres-kategóriájú trend pirosítana).
         if "topics" in tr or "temak" in tr:
             topics, temak = tr.get("topics"), tr.get("temak")
             if not (isinstance(topics, list) and all(isinstance(x, int) and not isinstance(x, bool) for x in topics)):
@@ -406,10 +408,11 @@ def test_sema_legfrissebb_topics_es_temak():
     assert any("temak" in h for h in sema_legfrissebb(rossz_te))
     rossz_len = _valid_legfrissebb(); rossz_len["top_trendek"][0]["topics"] = [1, 2]  # len eltér a temak-tól
     assert any("hossz" in h for h in sema_legfrissebb(rossz_len))
-    # hiányzó mezők MEGENGEDETTEK (mai legfrissebb.json még nem hordozza) — ledger nyitott elem
+    # SEMA (2026-08-17): hiányzó topics/temak MOST HIBA (megengedő→kötelező) — a valós fájl 17/17 hordozza (mérve)
     hiany = _valid_legfrissebb()
     hiany["top_trendek"][0].pop("topics"); hiany["top_trendek"][0].pop("temak")
-    assert sema_legfrissebb(hiany) == []
+    hibak = sema_legfrissebb(hiany)
+    assert any("topics" in h for h in hibak) and any("temak" in h for h in hibak)
 
 
 def test_sema_tortenet_valid_es_hibas():
@@ -557,3 +560,13 @@ def test_i9_napok_index_szinkron(tmp_path):
 
 def test_i9_valos_napok_szinkron():
     assert napok_index_szinkron(DATA / "napok") == []
+
+
+# ── SEMA: topics/temak KÖTELEZŐ (a fő RED a test_sema_legfrissebb_topics_es_temak-ban); üres [] ENGEDETT ──
+def test_sema_legfrissebb_ures_topics_engedett():
+    # SZÁNDÉKOS-ZÖLD (előre): a topics/temak = [] (üres) VALID (spec: „üres esetben []"; a kód 214
+    # legit üres-kategóriájú trendet ad) — a szigorítás present+typed, NEM non-empty.
+    obj = _valid_legfrissebb()
+    obj["top_trendek"][0]["topics"] = []
+    obj["top_trendek"][0]["temak"] = []
+    assert sema_legfrissebb(obj) == []
