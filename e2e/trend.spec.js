@@ -376,6 +376,10 @@ test("21. mind-üres nap → egyetlen blokk-jelzés, N kártya data-idosor-allap
   await expect(page.locator(`${T} .trend-idosor-ures-blokk`)).toHaveText("Ezen a napon egyetlen felkapott trendhez sincs idősor.");
   await expect(page.locator(`${T} .trend-kartya[data-idosor-allapot="nincs"]`)).toHaveCount(3);
   await expect(page.locator(`${T} .trend-idosor-ures`)).toHaveCount(0);   // az elemenkénti szöveg ÖSSZEVONÓDOTT
+  // T21-ERŐSÍTÉS: a kategória-chart+szűrő IDŐSOR-FÜGGETLEN → a blokk-üres (idősor-bukás) jelzés MELLETT is
+  // JELEN, mert a MIND_URES trendek kategóriásak (temak). A kód-út eddig is futott; most EXPLICIT assertálva.
+  await expect(page.locator(`${T} canvas.kategoria-chart`)).toHaveCount(1);
+  await expect(page.locator(`${T} .kategoria-szuro`)).toHaveCount(1);
 });
 
 // ── T22 — archív nap (temak nélkül, idosor-ral): sparkline MEGVAN, de kategória-chart + szűrő NINCS ──
