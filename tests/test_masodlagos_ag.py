@@ -13,7 +13,9 @@ import pandas as pd
 
 from trendfigyelo import futtato, kulcsszavak, nyers_kimenet
 from trendfigyelo.config import Config, KulcsszoTetel
-from trendfigyelo.kliens import AgFeladva
+import pytest
+
+from trendfigyelo.kliens import AgFeladva, PlafonTullepve
 
 
 def _config(kulcsszavak_lista):
@@ -140,3 +142,25 @@ def test_masodlagos_ag_szavankent_ir_a_blokk_elott(tmp_path):
     assert "szo7" not in adat["kulcsszavak"]     # a blokkolt szó nincs
     naplo = {b["ag"]: b["eredmeny"] for b in bejegyzesek}
     assert naplo["kulcsszo_masodlagos"] == "blokkolva"    # külön napló-címke, csendes blokk
+
+
+# ── MASODLAGOS-PLAFON: a plafon HARD (exit 2), de a napló EXPLICIT 'plafon'-t írjon (nem 'kihagyva') ──
+class _MasodlagosPlafonKliens:
+    """Minden másodlagos hívás PlafonTullepve (a hívás-plafon)."""
+    def __init__(self):
+        self.tr = type("T", (), {"interest_over_time": None})()
+        self.n = 0
+    def hivas(self, ag, fn, szavak, geo=None, timeframe=None):
+        self.n += 1
+        raise PlafonTullepve(ag, 121, 120)
+    def hivasszam(self, ag):
+        return self.n
+
+
+def test_masodlagos_ag_plafon_naploz_plafont_es_propagal(tmp_path):
+    c = _config([KulcsszoTetel(f"szo{i}", "d", "szintmero", "nap") for i in range(8)])
+    bejegyzesek = []
+    with pytest.raises(PlafonTullepve):                       # a plafon HARD marad (propagál → exit 2)
+        futtato._masodlagos_ag(bejegyzesek, _MasodlagosPlafonKliens(), c, tmp_path, _nap(0))
+    naplo = {b["ag"]: b["eredmeny"] for b in bejegyzesek}
+    assert naplo.get("kulcsszo_masodlagos") == "plafon"       # NEM 'kihagyva' — külön 'plafon'-címke

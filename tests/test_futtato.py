@@ -1,5 +1,7 @@
 import csv
 import json
+
+import pytest
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 
@@ -1264,3 +1266,54 @@ def test_rekesz_idosor_ag_figyelem_ketallapotu(capsys):
     futtato._rekesz_idosor_ag(bejegyzesek, _RekeszOkKliens(), _config(), api)
     b = capsys.readouterr().out
     assert "elmaradt" in b and "korlát" in b and "1" in b
+
+
+# ── MASODLAGOS-PLAFON + rekesz-Minor: a napló-címkék KIMERÍTŐK (plafon / 429 / korlat, nem összemosva) ──
+class _RekeszPlafonKliens:
+    """A rekesz-hívás PlafonTullepve (HARD) — a naplónak 'plafon'-t kell írnia, nem 'kihagyva'."""
+    def __init__(self):
+        self.tr = _dummy_tr()
+        self.n = 0
+    def hivas(self, ag, fn, *a, **k):
+        self.n += 1
+        raise kliens.PlafonTullepve(ag, 121, 120)
+    def hivasszam(self, ag):
+        return self.n
+    def osszes_hivas(self):
+        return self.n
+
+
+class _RekeszReszleges429Kliens:
+    """Az első `bukas_utan` hívás df=None; utána AgFeladva (429) → best-effort részleges."""
+    def __init__(self, bukas_utan):
+        self.tr = _dummy_tr()
+        self.n = 0
+        self.bukas_utan = bukas_utan
+    def hivas(self, ag, fn, *a, **k):
+        self.n += 1
+        if self.n > self.bukas_utan:
+            raise kliens.AgFeladva(ag, ["429", "429"])
+        return None
+    def hivasszam(self, ag):
+        return self.n
+    def osszes_hivas(self):
+        return self.n
+
+
+def test_rekesz_ag_plafon_naploz_plafont_es_propagal():
+    api = [_trend("t0", 50000)] + [_trend(f"t{i}", 2000) for i in range(1, 9)]  # rekesz-farok van (top_idosor_max=2)
+    bejegyzesek = []
+    with pytest.raises(kliens.PlafonTullepve):                      # a plafon HARD marad (propagál → exit 2)
+        futtato._rekesz_idosor_ag(bejegyzesek, _RekeszPlafonKliens(), _config(), api)
+    naplo = {b["ag"]: b["eredmeny"] for b in bejegyzesek}
+    assert naplo.get("idosor_rekesz") == "plafon"                   # NEM 'kihagyva'
+
+
+def test_rekesz_naplo_korlat_es_429_kulon():
+    # rekesz-farok 7, korlát 5 → korlat_elmaradt=2; a fetch a 3. hívásnál 429 → elmaradt_429=3
+    api = [_trend("t0", 50000)] + [_trend(f"t{i}", 2000) for i in range(1, 9)]
+    bejegyzesek = []
+    futtato._rekesz_idosor_ag(bejegyzesek, _RekeszReszleges429Kliens(bukas_utan=2), _config(), api)
+    b = [x for x in bejegyzesek if x["ag"] == "idosor_rekesz"][0]
+    assert "korlat:2" in b["hibakodok"] and "429:3" in b["hibakodok"]   # KÜLÖN kód+szám, NEM összemosva
+    assert b["eredmeny"] == "reszleges"                                 # 429 → részleges (a puszta korlát = siker)

@@ -72,10 +72,13 @@ def _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most):
     except AgFeladva as e:
         bejegyzesek.append({"ag": ag, "eredmeny": "blokkolva",
                             "hivasok_szama": kliens.hivasszam(ag), "hibakodok": ",".join(e.hibakodok)})
-    # MEGJEGYZÉS (MASODLAGOS-PLAFON, leltár): a PlafonTullepve itt NINCS külön elkapva → a
-    # futtato felső elkapójáig propagál (exit=KILEPES_PLAFON), a per-szavas írás miatt az addigi
-    # szavak a lemezen. A napló ilyenkor 'kihagyva'-t ír (nem 'plafon') — ritka él (utolsó ág),
-    # az exit-2 a fő hangos jel. Külön 'plafon'-jelölő + teszt = külön TDD-kör (leltár).
+    except PlafonTullepve:
+        # MASODLAGOS-PLAFON: a hívás-plafon HARD (exit 2), de a napló EXPLICIT 'plafon'-t ír (NEM a
+        # felső mentő-út 'kihagyva'-ját → nincs összemosás a nem-futott ágakkal), majd PROPAGÁL.
+        # A per-szavas írás miatt az addigi szavak a lemezen.
+        bejegyzesek.append({"ag": ag, "eredmeny": "plafon",
+                            "hivasok_szama": kliens.hivasszam(ag), "hibakodok": "PlafonTullepve"})
+        raise
 
 
 def _rekesz_idosor_ag(bejegyzesek, kliens, config, api_trendek) -> list:
@@ -93,16 +96,28 @@ def _rekesz_idosor_ag(bejegyzesek, kliens, config, api_trendek) -> list:
         print("FIGYELEM: rekesz-idősor — nincs rekesz (üres tie-bucket), nincs mit gyűjteni.")
         bejegyzesek.append({"ag": ag, "eredmeny": "siker", "hivasok_szama": 0, "hibakodok": ""})
         return []
-    pontok, elmaradt_429 = idosorok.gyujt_rekesz(kliens, config, kerendo)
-    # (b) elmaradás KÜLÖNVÁLASZTVA: HÁNY szó és MIÉRT (korlát vs 429)
+    try:
+        pontok, elmaradt_429 = idosorok.gyujt_rekesz(kliens, config, kerendo)
+    except PlafonTullepve:
+        # a hívás-plafon HARD (exit 2) — a napló EXPLICIT 'plafon' (NEM 'kihagyva'), majd PROPAGÁL
+        bejegyzesek.append({"ag": ag, "eredmeny": "plafon",
+                            "hivasok_szama": kliens.hivasszam(ag), "hibakodok": "PlafonTullepve"})
+        raise
+    # (b) elmaradás KÜLÖNVÁLASZTVA a FIGYELEM-ben ÉS a naplóban is: a napló-kódok KIMERÍTŐK és
+    # megkülönböztetők — 'korlat:N' (by-design cap, NEM hiba) vs '429:M' (soft-fail). Nem mosódnak össze.
     if korlat_elmaradt:
         print(f"FIGYELEM: rekesz-idősor — {korlat_elmaradt} rekesz-szó elmaradt "
               f"(korlát: trend_idosor_rekesz_max={config.trend_idosor_rekesz_max}).")
     if elmaradt_429:
         print(f"FIGYELEM: rekesz-idősor — {elmaradt_429} rekesz-szó elmaradt (429).")
-    bejegyzesek.append({"ag": ag, "eredmeny": "siker" if not elmaradt_429 else "reszleges",
-                        "hivasok_szama": kliens.hivasszam(ag),
-                        "hibakodok": "429" if elmaradt_429 else ""})
+    kodok = []
+    if korlat_elmaradt:
+        kodok.append(f"korlat:{korlat_elmaradt}")
+    if elmaradt_429:
+        kodok.append(f"429:{elmaradt_429}")
+    # eredmeny: 429 = 'reszleges' (soft-fail); a PUSZTA korlát 'siker' (a cap by-design, nem hiba)
+    bejegyzesek.append({"ag": ag, "eredmeny": "reszleges" if elmaradt_429 else "siker",
+                        "hivasok_szama": kliens.hivasszam(ag), "hibakodok": ",".join(kodok)})
     return pontok
 
 

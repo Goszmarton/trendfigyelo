@@ -16,7 +16,7 @@ Utolsó frissítés: 2026-08-17.
   új ID. Lezárt tétel a **LEZÁRT / ELAVULT** szakaszba kerül, **nem törlődik**.
 - **c) INVARIÁNS (frissítéskor ellenőrizd):**
   `aktív + kész + nem-task rekord + félretett = törzs-sorszám`.
-  Most: **32 + 15 + 15 + 0 = 62**. A **LEZÁRT / ELAVULT** külön számolódik: most **11**.
+  Most: **31 + 16 + 15 + 0 = 62**. A **LEZÁRT / ELAVULT** külön számolódik: most **11**.
   (08-17: +TELJES-NEZET [aktív] és +SZEMLE-SZABÁLY [rekord] — a 6b latens rajzolási hiba utóéletéből;
   majd 6c LESZÁLLÍTVA [aktív→kész] + 3 REKORD [SZINT-VONAL-VAK, ZOLD-NEM-SZALLIT, RESZLEGES-RAJZOL].)
   Ha ez az egyenlőség nem áll, a leltár driftel.
@@ -30,7 +30,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 
 ---
 
-## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (15)
+## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (16)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
@@ -50,6 +50,8 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | RACS-EGYSEG | rács-tudatos jel-erősség felirat (a 6b ELSŐ szelet): a merteszamok_szoveg rács-SZAVA (óra/nap/hét) a szó `racs`-ából, `"ora"` default (az órás JSON nem hordoz racs-ot → órás felirat bájt-azonos, nulla séma-változás); ismeretlen rács → LÁTHATÓ `"? <érték>"` (nem undefined, nem néma „óra" — KUDARC-VAK-elhárítás); a mértékegység („/nap") mérve rács-INVARIÁNS, kimarad; a RAJZOLÁS (racs_epit/ora_index/x-tengely/tooltip) a KÖVETKEZŐ, nagyobb 6b-szelet (lásd 6b sor) | Ph4 | LESZÁLLÍTVA (lásd git log) | MÉRT | nem (frontend felirat) | S | — |
 
 | SUCCESS-VAK | success-vakság (a KUDARC-VAK per-szó tagja): a `kulcsszavak.gyujt` néma üres-skipje (df üres/None VAGY hiányzó érték-oszlop) most HANGOS a VÁRATLAN esetben. **tipus-kapu:** esemenyjelzo üres = VÁRT (sparse-by-design, spec 6.2 védett) → TELJESEN NÉMA; szintmero/hibrid üres = VÁRATLAN → FIGYELEM. Exit-kód SOHA (részleges veszteség; a TELJES-üres a LEGFRISSEBB-GUARD dolga). A KÉT skip-út KÜLÖN hibaosztály (üres df = hálózati/adathiány; hiányzó oszlop = query/parse-gyanú — mint a GORBE-B kétállapotú FIGYELEM / MASODLAGOS-PLAFON tanulság). **ELMÉLETI:** a váratlan ág 14 napon (08-02..08-15) NEM fordult elő (2 skip, MINDKETTŐ tüntetés/esemenyjelzo = várt) → élesben NEM verifikálható, csak TDD-vel (mock üres df); élesben akkor igazolódik, ha egy szint-szó ténylegesen kiesik (mint a 08-15-i L4 szelep — elméletiként készült, utólag igazolódott). NEM-MÉRT-nek jelölni HIBA lenne (a bug valós, a fix helyes). | Ph3 §10 | LESZÁLLÍTVA (lásd git log) | ELMÉLETI (fix) + MÉRT (mérés 08-17) | igen (diagnoszt.) | S | — |
+
+| MASODLAGOS-PLAFON | a plafon a másodlagos ÉS a rekesz (idosor_rekesz) ágban is üthet → HARD (exit 2), de a napló EDDIG 'kihagyva'-t írt (a felső mentő-út), nem 'plafon'. JAVÍTVA: mindkét ág (`_masodlagos_ag`, `_rekesz_idosor_ag`) külön `except PlafonTullepve` → eredmeny='plafon' + PROPAGÁL. A rekesz napló-kódjai KIMERÍTŐK és megkülönböztetők: `korlat:N` (by-design cap → siker) vs `429:M` (soft-fail → reszleges) — NEM mosódnak össze (a KUDARC-VAK ma kétszer látott 'kihagyva'-vs-'plafon' hibaosztálya EGYSZER, jól rendezve). 3 RED→GREEN. | Ph4 | LESZÁLLÍTVA (lásd git log) | MÉRT | nem (napló-címke) | S | — |
 
 ## META / FOLYAMATBAN (0)
 
@@ -91,7 +93,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | LANC-ORAS | órás láncolás (2_het+; kumulált skálázó tartós tárolása) | Ph4 §8.2 | NYITOTT | BECS | igen (új kimenet) | XL | §8.2-INV |
 | TELJES-NEZET | „jó adat kezdete" hosszú nézet: egy NEVESÍTETT config-konstans dátumtól rajzol. A kezdő-dátum **USER-DÖNTÉS** (NEM mérés, NEM visszamenőleges lekérdezés). Hatókör+granularitás a user döntése; MÉRT bemenetek (08-17): (b) GLOBÁLIS vágás @2026-08 TARTHATATLAN — het-szó 0 érvényes nézet, a szint-medián 52-hetes bázisa 1 pontra esik (het ~52 pontból csak 1-2 esik 08-01 utánra; nap ~12-14, épp MIN_PONT körül) → ezt NE vessük fel újra. Az első másodlagos gyűjtés SZÓRT (rotáció ≤2/nap): albérlet/tüntetés 08-13, akciós újság 08-14, nyaralás 08-15, kórház 08-16 → közös dátum a később gyűjtött szónak „jó adatot" hazudna. A „régi rossz rács belekeveredik" kockázat NEM a másodlagosnál áll (mind 08-13+, egyetlen today-12m, egységes normalizálás — nincs pre-marker pont), hanem a `modszertan_valtas` (07-30) markert átívelő órás/napi láncnál (kumulatív skálázó); az órás lánc (LANC-ORAS) még nem épült, a napi tortenet marker-vágott. | Ph4 | NYITOTT | USER-DÖNTÉS (bemenet MÉRT) | igen (új kimenet) | L | LANC-ORAS |
 
-## (D) Ma (2026-08-13..17) nyitott új tételek (21 — 6 nyitott + 15 rekord)
+## (D) Ma (2026-08-13..17) nyitott új tételek (20 — 5 nyitott + 15 rekord)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
@@ -102,7 +104,6 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | ALAPNEZET-KONSTANS | a default `1_het` BEÉGETETT konstans (nem futásidőben számított „legtöbb-kártya" intervallum). Ma helyes (13/13 rajzol), mert csak 4 szónak van másodlagos adata. ÚJRAMÉRENDŐ a Task 5 utáni lefedettségnél: ha több szó kap másodlagost, a legtöbb kártyát rajzoló intervallum eltolódhat → a beégetett 1_het rács-vakká válhat (a MIN_PONT és irany_kuszob után a HARMADIK ilyen konstans). Spec: phase3 §7.2 REVÍZIÓ (c1cd784) | Ph4 | REKORD (megfigyelés) | MÉRT (n=4, 08-16) | nem (megjel.) | S | TASK5 |
 | MASODLAGOS-OK-NEV | a másodlagos regresszió `nincs_lancolas`/`keves_pont` ok-ot ad nap/het rácson (§9: a nap/het ágon nincs láncolás), a frontend STRING-ILLESZTÉSSEL fordítja (egyesitett_reg: nincs_lancolas→rovid_masodlagos; keves_pont+het→rovid_het_ablak). Egy backend ok-ÁTNEVEZÉS NÉMÁN elrontaná (a régi „összefűzött nap" visszatérne). Diszkriminátor: a másodlagos ENTRY (miv) léte + miv.ok + m.racs az ÜRES-ágon (az üres iv NEM hordoz _racs-ot → miv/m.racs a helyes kulcs, nem _racs). A het-szűkítés STRUKTURÁLIS (nem n=4): het 2_het/1_ho = 2/4 hét < RACS_MIN_PONT[het]=7 → mindig keves_pont (rács-durva a rövid ablakhoz); nap keves_pont ellenben valódi ritkulás (14 nap ≥ MIN_PONT 12, csak lyukaknál). Backend-javítás (nap/het saját ok-kód) külön kör | Ph4/backend | REKORD (megfigyelés) | MÉRT+STRUKT (08-16) | nem (megjel.) | S-M | — |
 | PLAFON-128 | a Task 5 átírja a `tervezett_hivasszam` jelentését → a 128-as hívás-plafon ÚJRANÉZENDŐ a Task5 tervénél (L4 backstopként MOST ráépült — a plafon hard-abortot okoz) | Ph4 (új) | REKORD/MEGKÖTÉS | MÉRT | igen | — | TASK5, L4 |
-| MASODLAGOS-PLAFON | a plafon a másodlagos ágban (utolsó ág) is üthet → propagál + exit 2, DE a napló 'kihagyva'-t ír (nem 'plafon'), és a másodlagos-propagáció+címke NINCS külön tesztelve; külön 'plafon'-jelölő + teszt = külön TDD-kör | Ph4 (új) | NYITOTT (kis) | MÉRT (08-15) | nem (napló-címke) | S | L4 |
 | LEGFRISSEBB-RESZLEGES | RÉSZLEGES adatnál a legfrissebb_ir a jó TELJES fájlt hiányossal írja felül (pl. kulcsszó-ág 429 → kulcsszavak üresen kiíródik, van_adat=True → a total-empty guard NEM szól). IGAZOLT: ReszlegesKliens kod=0, de a payload mind 0. Külön kör: komponens-szintű merge/guard + partial-FIGYELEM. Testvér: SUCCESS-VAK (bemenet) / LEGFRISSEBB-GUARD (total) | Ph3/4 (új) | NYITOTT | MÉRT (08-15) | igen (kimenet) | M | — |
 | NEVER-COLL | never-collected nem-ora szavak láthatósága | Ph4 (új) | NYITOTT (Task5 után) | MÉRT | igen | S-M | TASK5 |
 | ADD-SWAP | „hozzáadás vs csere" rács-váltásnál (előbb mérünk) | Ph4 (új) | NYITOTT | BECS | igen (config) | M | több nap mérés |
