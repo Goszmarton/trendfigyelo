@@ -159,9 +159,10 @@ futás újra kiírja) → nincs szükség tartós nyomra.
 
 ## 8. Nyitott — a megjelenítés és a regresszió (Task 6+, NEM leszállítva)
 
-A felület **MÉG NEM fogyasztja** a `kulcsszo_masodlagos_nyers.json`-t. Ez a fázis
-valódi következő lépése és a legnagyobb ismeretlen. Röviden, hogy a szerkezet ne
-nyíljon újra (a részletes terv külön készül):
+A felület a `kulcsszo_masodlagos_nyers.json`-t a **6b** (nap/het megjelenítés) óta
+FOGYASZTJA, az esemény-jelző szint-nézetet a **6c** óta (lásd lent). NYITVA maradt
+a Task 5 (ütemezés), a LANC-ORAS (órás láncolás) és a TELJES-NEZET (lásd leltár).
+Röviden, hogy a szerkezet ne nyíljon újra:
 
 - A regressziós számítás ma **kizárólag órás rácsot feltételez** (`_hianyzo_orak`
   a 3600 mp-es slotra, a `MIN_PONT = 24` padló, az `INTERVALLUMOK` nap-készlet, az
@@ -179,6 +180,11 @@ nyíljon újra (a részletes terv külön készül):
   (nincs trendvonal, nincs irany/meredekseg/R² — a korábbi stagnal-illesztés
   megszűnik); a szeletelt másodlagos intervallumok NEM hordoznak trend-mezőt
   (irany/meredekseg/r2/illesztes_vonal strippelve), csak a `szint`-et.
+  **LESZÁLLÍTVA 6c** (Szelet 1–4, VIZUÁLIS SZEMLE 8/8 — 2026-08-17). A rajzolás a
+  szeletelt ablakot az `iv.ablak_kezdet_utc`-től húzza (javító-szelet: egy latens
+  6b `racs_epit`-hiba minden nap/het szót a TELJES rekordra rajzolt; a `data-rajzolt-pont`
+  attribútum DOM-őrzi a szeletet). Nyitott megfigyelés: RESZLEGES-RAJZOL (a rajzolt
+  hossz a heti slot-perem miatt +1 legitim héttel több lehet a mérőszám pontszámánál).
 - A **Task 5** (elavultság-vezérelt ütemezés) a `%7`-et váltja fel; a tie-break ott
   **config-index** (NEM ábécé, mint a §7 láthatóságnál), mert az ütemezőben azt
   dönti el, MELYIK szó kerül lekérdezésre azonos `lekerdezes_utc` esetén.
