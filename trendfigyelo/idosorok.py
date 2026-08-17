@@ -65,6 +65,33 @@ def gyujt(kliens, config, top_kifejezesek) -> list:
     return pontok
 
 
+def gyujt_rekesz(kliens, config, rekesz_kifejezesek) -> tuple:
+    """A holtverseny-rekesz trendjeinek idősora — BEST-EFFORT, másodrendű ág (GORBE-B).
+
+    A top-N idősor UTÁN fut. 429-kimerülésnél a MARADÉK CSENDESEN elmarad (NEM raise:
+    a rekesz pótolható, nem ránthatja magával a garantált top-N-t). A hívás-plafon
+    (PlafonTullepve) viszont HARD marad — az L4 szelep az emelt plafon alatt nem üt,
+    fölötte valódi call-multiplying bug jelzése. Külön napló-kulcs: "idosor_rekesz".
+    Visszaad: (pontok, elmaradt_429) — az elmaradt_429 a 429 miatt le NEM kért szavak száma.
+    """
+    pontok = []
+    for i, kif in enumerate(rekesz_kifejezesek):
+        try:
+            df = kliens.hivas(
+                "idosor_rekesz", kliens.tr.interest_over_time,
+                [kif], geo=config.geo, timeframe=config.idosor_idokeret,
+            )
+        except AgFeladva:  # 429-kimerülés → a maradék CSENDESEN elmarad (nem raise)
+            return pontok, len(rekesz_kifejezesek) - i
+        except PlafonTullepve:  # hívás-plafon → HARD marad (propagál)
+            raise
+        except Exception as e:  # egyetlen rekesz-trend egyéb hibája nem dönti a többit
+            print(f"FIGYELEM: rekesz '{kif}' idősora kimaradt ({e}).")
+            continue
+        pontok.extend(df_idosor(df, kif, "interest_over_time"))
+    return pontok, 0
+
+
 def csv_ir(mappa, idobelyeg, letoltve, geo, pontok):
     if not pontok:
         return None

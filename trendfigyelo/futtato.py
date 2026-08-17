@@ -17,7 +17,7 @@ from .config import betolt
 from .kliens import AgFeladva, Kliens, PlafonTullepve
 
 # az ágak logolási sorrendje (block-stop kihagyás jelöléséhez) = a valós végrehajtási sorrend
-AGAK = ["felkapott_api", "felkapott_rss", "kulcsszo", "idosor", "kulcsszo_masodlagos"]
+AGAK = ["felkapott_api", "felkapott_rss", "kulcsszo", "idosor", "kulcsszo_masodlagos", "idosor_rekesz"]
 # kilépési kód szerződés: 0 = van adat / 1 = nincs adat / 2 = HÍVÁS-PLAFON túllépés
 # (call-multiplying bug elleni védőkorlát tüzelt — HANGOS, hogy ne legyen success-vak).
 KILEPES_PLAFON = 2
@@ -27,9 +27,11 @@ def tervezett_hivasszam(config) -> int:
     """A hibamentes (429 nélküli) futás várható Google-hívásszáma az ágstruktúrából.
 
     felkapott_api (1) + felkapott_rss (1) + idosor (≤ trend_idosor_max, trendenként)
-    + kulcsszo (SZÓLÓ: szavankénti egy hívás = len(kulcsszavak)).
+    + idosor_rekesz (≤ trend_idosor_rekesz_max, GORBE-B forward-only) + kulcsszo (SZÓLÓ:
+    szavankénti egy hívás = len(kulcsszavak)).
     """
-    return 2 + config.trend_idosor_max + len(config.osszes_kulcsszo())
+    return (2 + config.trend_idosor_max + config.trend_idosor_rekesz_max
+            + len(config.osszes_kulcsszo()))
 
 
 # a másodlagos (nap/het) ág napi maximuma — szerkezeti konstans (a 2-2-2-2-1-1-1
@@ -74,6 +76,34 @@ def _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most):
     # futtato felső elkapójáig propagál (exit=KILEPES_PLAFON), a per-szavas írás miatt az addigi
     # szavak a lemezen. A napló ilyenkor 'kihagyva'-t ír (nem 'plafon') — ritka él (utolsó ág),
     # az exit-2 a fő hangos jel. Külön 'plafon'-jelölő + teszt = külön TDD-kör (leltár).
+
+
+def _rekesz_idosor_ag(bejegyzesek, kliens, config, api_trendek) -> list:
+    """LEGUTOLSÓ ág (GORBE-B, forward-only): a holtverseny-rekesz trendjeinek idősora.
+
+    A `_masodlagos_ag`-mintát követi: CSENDES feladás (a `gyujt_rekesz` a 429-et
+    elnyeli, nem block-stop, nem exit; a PlafonTullepve HARD marad). KÉTÁLLAPOTÚ
+    FIGYELEM (a MASODLAGOS-PLAFON 'kihagyva'-összemosás tanulsága): (a) nincs rekesz
+    vs (b) elmaradt N szó, KÜLÖNVÁLASZTVA korlát vs 429. Visszaad: a rekesz-idősor pontjai.
+    """
+    ag = "idosor_rekesz"
+    kerendo, korlat_elmaradt = rekesz_kifejezesek(api_trendek, config)
+    if not kerendo:
+        # (a) nincs rekesz (üres tie-bucket / D4 0-küszöb) — nincs mit gyűjteni (NEM elmaradás)
+        print("FIGYELEM: rekesz-idősor — nincs rekesz (üres tie-bucket), nincs mit gyűjteni.")
+        bejegyzesek.append({"ag": ag, "eredmeny": "siker", "hivasok_szama": 0, "hibakodok": ""})
+        return []
+    pontok, elmaradt_429 = idosorok.gyujt_rekesz(kliens, config, kerendo)
+    # (b) elmaradás KÜLÖNVÁLASZTVA: HÁNY szó és MIÉRT (korlát vs 429)
+    if korlat_elmaradt:
+        print(f"FIGYELEM: rekesz-idősor — {korlat_elmaradt} rekesz-szó elmaradt "
+              f"(korlát: trend_idosor_rekesz_max={config.trend_idosor_rekesz_max}).")
+    if elmaradt_429:
+        print(f"FIGYELEM: rekesz-idősor — {elmaradt_429} rekesz-szó elmaradt (429).")
+    bejegyzesek.append({"ag": ag, "eredmeny": "siker" if not elmaradt_429 else "reszleges",
+                        "hivasok_szama": kliens.hivasszam(ag),
+                        "hibakodok": "429" if elmaradt_429 else ""})
+    return pontok
 
 
 def _jelez_elavult_masodlagos(docs_data_mappa, most):
@@ -123,6 +153,18 @@ def megjelenitendo_trendek(api_trendek, config) -> list:
     korlat = max(config.trend_megjelenites_max, config.trend_idosor_max)
     bovitett = [t for t in rangsor if felkapott.volumen_szam(t) >= kuszob]
     return bovitett[:korlat]                             # D3: felső korlát, a rangsor (tie-break) szerint vágva
+
+
+def rekesz_kifejezesek(api_trendek, config) -> tuple:
+    """A holtverseny-rekesz kifejezései (GORBE-B): a MEGJELENÍTETT lista top-N feletti
+    farka, a `trend_idosor_rekesz_max` korlátra vágva. A megjelenitendo_trendek KÖZÖS
+    forrás (prefix-invariáns) → a rekesz PONTOSAN a megjelenített, de idősor nélküli szavak.
+    Visszaad: (kerendo, korlat_elmaradt) — a korlat_elmaradt a korlát miatt le NEM kért szavak.
+    """
+    megj = megjelenitendo_trendek(api_trendek, config)
+    farok = [getattr(t, "keyword", "") for t in megj[config.trend_idosor_max:]]
+    kerendo = farok[: config.trend_idosor_rekesz_max]
+    return kerendo, len(farok) - len(kerendo)
 
 
 def top_trend_struktura(api_trendek, trend_idosorok, rss_trendek, config) -> list:
@@ -256,6 +298,10 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
         # NEM block-stop). Ha egy korábbi ág block-stopol, ide nem jutunk → a lenti except
         # az AGAK-ban "kulcsszo_masodlagos"-t "kihagyva"-ra teszi.
         _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most)
+        # rekesz-idősor ág — LEGUTOLSÓ (GORBE-B, forward-only): a holtverseny-rekesz
+        # trendjei is kapjanak sparkline-t; másodrendű, csendes feladás (nem block-stop/exit).
+        # A pontokat a trend_idosorok-hoz fűzzük → a top_trend_struktura idosor_map-je fedi őket.
+        trend_idosorok = trend_idosorok + _rekesz_idosor_ag(bejegyzesek, kliens, config, api_trendek)
     except (AgFeladva, PlafonTullepve) as e:
         # KÖZÖS MENTŐ-ÚT: a block-stop (429) ÉS a plafon-túllépés (L4) is a blokk ELŐTT lemért
         # szavakat MENTI (a kivételre akasztott e.reszleges-ből; a másodlagos ág per-szavas írása

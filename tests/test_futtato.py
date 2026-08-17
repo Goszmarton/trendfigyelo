@@ -313,8 +313,8 @@ def test_van_adat_ir_legfrissebbet_SZANDEKOS_ZOLD(tmp_path):
 
 
 def test_tervezett_hivasszam_szolo():
-    c = _config()  # trend_idosor_max=2, 1 kulcsszó → SZÓLÓ: 1 hívás
-    assert futtato.tervezett_hivasszam(c) == 2 + 2 + 1  # api+rss + idosor + 1 szó = 5
+    c = _config()  # trend_idosor_max=2, rekesz_max=5, 1 kulcsszó → SZÓLÓ: 1 hívás
+    assert futtato.tervezett_hivasszam(c) == 2 + 2 + 5 + 1  # api+rss + idosor + rekesz + 1 szó = 10 (GORBE-B)
 
 
 def test_tervezett_hivasszam_teljes_config():
@@ -325,8 +325,9 @@ def test_tervezett_hivasszam_teljes_config():
         kulcsszavak=[KulcsszoTetel(f"szo{i}", "d", "szintmero") for i in range(13)],
     )
     # szóló: szavankénti egy hívás → CONFIGBÓL származó elvárás (a lista változásakor nem törik)
-    assert futtato.tervezett_hivasszam(c) == 2 + c.trend_idosor_max + len(c.osszes_kulcsszo())
-    assert futtato.tervezett_hivasszam(c) == 2 + 15 + 13  # konkrét pin: 30
+    assert futtato.tervezett_hivasszam(c) == (2 + c.trend_idosor_max
+                                              + c.trend_idosor_rekesz_max + len(c.osszes_kulcsszo()))
+    assert futtato.tervezett_hivasszam(c) == 2 + 15 + 5 + 13  # konkrét pin: 35 (GORBE-B rekesz-tag)
 
 
 def _egy_szo_df(oszlop, ertekek, idopontok, reszleges):
@@ -426,7 +427,8 @@ def test_kulcsszo_az_idosor_elott_fut(tmp_path):
 
 def test_agak_konstans_a_vegrehajtasi_sorrenddel_egyezik():
     """Az AGAK block-stop kihagyás-jelölő sorrendje = a valós végrehajtási sorrend."""
-    assert futtato.AGAK == ["felkapott_api", "felkapott_rss", "kulcsszo", "idosor", "kulcsszo_masodlagos"]
+    assert futtato.AGAK == ["felkapott_api", "felkapott_rss", "kulcsszo", "idosor",
+                            "kulcsszo_masodlagos", "idosor_rekesz"]   # GORBE-B: rekesz LEGUTOLSÓ
 
 
 class IdosorBlokkolKliens:
@@ -1197,3 +1199,68 @@ def test_futtat_ir_masodlagos_regressziot(tmp_path):
     p = docs_data / "kulcsszo_masodlagos_regresszio.json"
     assert p.exists()                                          # a bekötés hiánya nélkül nem jön létre
     assert json.loads(p.read_text(encoding="utf-8"))["kulcsszavak"]["albérlet"]["racs"] == "nap"
+
+
+# ── GORBE-B: rekesz-idősor ág (forward-only, LEGUTOLSÓ) — RED-ek ──────────────
+def _trend(kw, vol):
+    return SimpleNamespace(keyword=kw, volume=vol, volume_growth_pct=0)
+
+
+class _RekeszOkKliens:
+    """A rekesz-hívások hiba nélkül futnak (df=None → üres idősor, de nincs kivétel)."""
+    def __init__(self):
+        self.tr = _dummy_tr()
+        self.n = 0
+    def hivas(self, ag, fn, *a, **k):
+        self.n += 1
+        return None
+    def hivasszam(self, ag):
+        return self.n
+    def osszes_hivas(self):
+        return self.n
+
+
+class _Rekesz429Kliens:
+    """Az első rekesz-hívásnál AgFeladva (429) — a best-effort gyűjtő NEM raise-el."""
+    def __init__(self):
+        self.tr = _dummy_tr()
+        self.n = 0
+    def hivas(self, ag, fn, *a, **k):
+        self.n += 1
+        raise kliens.AgFeladva(ag, ["429", "429"])
+    def hivasszam(self, ag):
+        return self.n
+    def osszes_hivas(self):
+        return self.n
+
+
+def test_rekesz_kifejezesek_tie_bucket_5re_korlatozva():
+    # trend_idosor_max=2, rekesz_max=5; 1 magas + 7×2000 → megjelenített=8, rekesz=megj[2:]=6, korlát 5
+    api = [_trend("t0", 50000)] + [_trend(f"t{i}", 2000) for i in range(1, 8)]
+    kerendo, korlat_elmaradt = futtato.rekesz_kifejezesek(api, _config())
+    assert kerendo == ["t2", "t3", "t4", "t5", "t6"]   # a top-2 UTÁN, 5-re vágva
+    assert korlat_elmaradt == 1                          # t7 a korlát miatt kimaradt
+
+
+def test_tervezett_hivasszam_rekesszel():
+    # 2 (api+rss) + trend_idosor_max(2) + trend_idosor_rekesz_max(5) + 1 szó = 10
+    assert futtato.tervezett_hivasszam(_config()) == 2 + 2 + 5 + 1
+
+
+def test_gyujt_rekesz_429_csendes_nem_raise():
+    from trendfigyelo import idosorok
+    pontok, elmaradt = idosorok.gyujt_rekesz(_Rekesz429Kliens(), _config(), ["a", "b", "c"])
+    assert pontok == [] and elmaradt == 3   # 429 az 1. hívásnál → mind a 3 elmaradt, NINCS kivétel
+
+
+def test_rekesz_idosor_ag_figyelem_ketallapotu(capsys):
+    bejegyzesek = []
+    # (a) nincs rekesz (üres api → nincs tie-bucket)
+    futtato._rekesz_idosor_ag(bejegyzesek, _RekeszOkKliens(), _config(), [])
+    a = capsys.readouterr().out
+    assert "nincs rekesz" in a and "nincs mit gyűjteni" in a
+    # (b) korlát-elmaradás: 1 magas + 7×2000 → rekesz 6, korlát 5 → 1 elmaradt (korlát)
+    api = [_trend("t0", 50000)] + [_trend(f"t{i}", 2000) for i in range(1, 8)]
+    futtato._rekesz_idosor_ag(bejegyzesek, _RekeszOkKliens(), _config(), api)
+    b = capsys.readouterr().out
+    assert "elmaradt" in b and "korlát" in b and "1" in b

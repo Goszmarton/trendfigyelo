@@ -9,6 +9,7 @@ kerespont:                   # anti-block (IP-blokkolás elleni) paraméterek
   max_probak: 4              # 429 esetén max ennyi próba, utána az ág feladva
   backoff_mp: [30, 120, 480] # exponenciális visszavárakozás (mp)
 trend_idosor_max: 15         # hány top trend kapjon idősort (sparkline)
+trend_idosor_rekesz_max: 5   # GORBE-B: hány holtverseny-rekesz trend kapjon idősort (forward-only, LEGUTOLSÓ ág); NEM-MÉRT, 14-nap újramérés
 kulcsszo_idokeret: "now 7-d"   # kulcsszó-idősorok: 7 napos ablak, órás felbontás (szóló lekérdezés)
 naplo_max_sor: 2000            # a naplo.csv görgő sor-cap-je (~500 nap napi ~4 sornál)
 tortenet_visszapotlas_nap: 3   # a kulcsszó-tortenet utolsó N teljes napjának upsertje (429-önjavítás)
