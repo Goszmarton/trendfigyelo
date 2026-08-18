@@ -17,11 +17,11 @@ Utolsó frissítés: 2026-08-18.
 - **c) INVARIÁNS (frissítéskor ellenőrizd):**
   `aktív + kész + nem-task rekord + félretett = törzs-sorszám`.
   Most (VÖDRÖNKÉNT NEVESÍTVE, hogy kívülről ellenőrizhető legyen):
-  **aktív 25** [(B)-nyitott 17 + (C) 3 + (D)-blokk NYITOTT-állapotú sorai 5]
+  **aktív 24** [(B)-nyitott 16 + (C) 3 + (D)-blokk NYITOTT-állapotú sorai 5]
   + **kész 23** [a LESZÁLLÍTVA szekció]
   + **nem-task rekord 19** [a (D)-blokk REKORD-állapotú sorai]
   + **félretett 0** [4. vödör „shelved"; jelenleg ÜRES, de ÉLŐ — a GORBE-B átmenetileg itt állt (FÉLRETETT→RÉSZBEN), nem halott]
-  = **67**. A **LEZÁRT / ELAVULT** KÜLÖN számolódik (NEM a törzs): most **12**.
+  = **66**. A **LEZÁRT / ELAVULT** KÜLÖN számolódik (NEM a törzs): most **13**.
   FONTOS: a (D)-blokk fizikailag EGY tábla, de KÉT vödörbe oszlik az Állapot szerint (NYITOTT→aktív, REKORD→rekord);
   a „(D)" betű önmagában NEM azonosít vödröt.
   (08-17: +TELJES-NEZET [aktív] és +SZEMLE-SZABÁLY [rekord] — a 6b latens rajzolási hiba utóéletéből;
@@ -35,7 +35,9 @@ Utolsó frissítés: 2026-08-18.
   08-18 (3. kör, user-átvizsgálás): +FRISS-RESZLEGES-URES [új D-rekord, rekord 17→18] → törzs 64→65;
   RESZBEN-TELT-BLOKK élesítve (config-elérhető), A) LESZÁLLÍTVA≠LEZÁRT definíció (rule e). LEZÁRT tart 12.
   08-18 (4. kör): +SZANDEKOS-ZOLD-VAK [új D-rekord, rekord 18→19] + KONFIG-VALIDALATLAN [új D-nyitott kis tétel,
-  aktív 24→25] → törzs 65→**67** (2 új tétel); LEZÁRT tart 12.)
+  aktív 24→25] → törzs 65→67 (2 új tétel); LEZÁRT tart 12.
+  08-18 (5. kör): FOLYT [(B)-nyitott→LEZÁRT/ELAVULT, döntés-zárás 0 kód: aktív 25→24, B 17→16] → törzs 67→**66**;
+  LEZÁRT 12→**13**. A KUDARC-VAK mind a 4 tagja rendezve (tanulság-szinten marad).)
   Ha ez az egyenlőség nem áll, a leltár driftel.
 - **d)** **Önhivatkozó hash TILOS:** a leltár nem tartalmazhatja a SAJÁT lezáró commitja
   hash-ét (nincs „(ez a commit)" placeholder sem, ami bent ragad). A lezáró sor állapota
@@ -94,7 +96,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 
 — (üres — a LEDGER-HIG leszállt: 6f4091d, lásd LESZÁLLÍTVA)
 
-## (B) Phase 3 / korábbról örökölt (17 — 17 nyitott + 0 félretett)
+## (B) Phase 3 / korábbról örökölt (16 — 16 nyitott + 0 félretett)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
@@ -109,7 +111,6 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | §11.8 | betegség/kórház éves átfedés | Ph2.5 | NYITOTT (kutatás) | BECS | nem (felület nem) | S-M | — |
 | VENV | venv 3.14 vs CI/átadó 3.12 | Ph2.5 | NYITOTT (nem blokkoló) | MÉRT | nem | S | — |
 | 429-RATA | 429-ráta jellemzése (n=1, több nap napló kell) | Ph3 | NYITOTT (mérés) | MÉRT | nem | S / folyamatos | több nap napló |
-| FOLYT | folytonossag él-trigger vs állapot-check. **SUCCESS-VAK KÉSZ → a függés OLDÓDIK, FOLYT önállóan eldönthető.** A folytonossag (futtato.py:424, `seged.utolso_res`) a rést a PERZISZTENS `naplo.csv`-be írja (minden rés PONTOSAN egyszer, ~333 nap retenció) → az él-trigger valószínűleg ELÉG (a rés nem vész el, auditálható). **DÖNTÉS-tétel (nem feladat, valószínűleg 0 kód):** egy körben lezárandó indoklással — él-trigger elég-e, vagy állapot-check kell. | Ph3 | NYITOTT (DÖNTÉS) | MÉRT | nem (napló) | S | — |
 | NAPLO-MENTETT | naplo.csv „mentett-szám" 6. oszlop (a részleges-mentés fixből) | Ph3 | NYITOTT | MÉRT | igen (napló-séma) | S-M | — |
 | NAPTAR | naptáras (tól–ig) intervallumválasztó (elég-e az 5 fix ablak) | Ph3 | NYITOTT (9b után) | BECS | nem | M-L | — |
 | KAT-GORBE | kategória heti/havi görbe | Ph3/4-jelölt | NYITOTT (felvetés, nincs terv) | BECS | igen (új kimenet) | L | — |
@@ -129,7 +130,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
 | IRANY-KUSZOB | irány-küszöb rács-tudatossá: a nap/het ág ABLAK-RELATÍV (\|meredekseg×span\| < 7 pont = a skála %-a), az órás per-nap 1.0 VÁLTOZATLAN (0 címke-eltérés valós nyers adaton); a másodlagos metaadat is javítva (elmozdulas_kuszob a félrevezető irany_kuszob helyett). A 7,0 az órás kalibráció átvitele, ELSŐ közelítés (5 intervallum mintája). LEZÁRHATÓ, ha ≥15 nap/het intervallumon újramérve a 7,0 továbbra is TERMÉSZETES HÉZAGBA esik ÉS elválasztja a stagnal/nem-stagnal halmazt (most a 2,89↔13,10 közti ~10 pontos hézagban ül); ha a tömeg a küszöb köré csúszik → újrakalibrálás | Ph4 | RÉSZBEN | MÉRT (08-15) | igen (címke) | M | ADD-SWAP |
-| KUDARC-VAK | „nem tud kudarcot jelezni" hibaosztály — NÉGY tag: **L4** (plafon) + **SUCCESS-VAK** (bemenet: néma üres-sorozat skip) + **FOLYT** (él-trigger) + **LEGFRISSEBB-RESZLEGES** (kimenet: részleges felülírás). Közös minta: van_adat=True / exit0 / néma skip elfedi a rossz állapotot. **A rekord a HIBÁK oldalán TELJESEN ZÁR (08-18): L4 / SUCCESS-VAK / LEGFRISSEBB-RESZLEGES mind LESZÁLLÍTVA.** A **FOLYT** nyitva marad, DE az NEM bug — külön, egy körben zárandó DÖNTÉS-tétel (él-trigger elég-e); nem tartozik a „kudarc-jelzés" javításokhoz. (NEM „0 nyitott".) | Ph3/4 | REKORD (lelet) | MÉRT (08-14..18) | igen (diagnoszt.) | — | FOLYT (DÖNTÉS, nyitva) |
+| KUDARC-VAK | „nem tud kudarcot jelezni" hibaosztály — NÉGY tag: **L4** (plafon) + **SUCCESS-VAK** (bemenet: néma üres-sorozat skip) + **FOLYT** (él-trigger) + **LEGFRISSEBB-RESZLEGES** (kimenet: részleges felülírás). Közös minta: van_adat=True / exit0 / néma skip elfedi a rossz állapotot. **MIND A 4 TAG RENDEZVE (08-18):** L4 / SUCCESS-VAK / LEGFRISSEBB-RESZLEGES a HIBÁK oldalán LESZÁLLÍTVA; **FOLYT ELDÖNTVE → LEZÁRT** (él-trigger elég, 0 kód). A rekord maga **TANULSÁG-SZINTEN MARAD** (a „nem tud kudarcot jelezni" hibaosztály mint lelet/minta — van_adat=True/exit0/néma skip; ehhez mérendő minden jövőbeli ág). NINCS több nyitott tag. | Ph3/4 | REKORD (lelet) | MÉRT (08-14..18) | igen (diagnoszt.) | — | — |
 | MERET-ALABECSLES | a MIN-TCP a leltárban S / „kis nyitott"-ként szerepelt, valójában VALÓS memóriaszivárgás-javítás volt (árva Chart detached canvason) saját RED-del (T28). A „kis nyitott" / S címke NEM garantálja a triviálisságot — a méret-becslés ELŐTT mérni kell (a valódi hatókört, nem a címkét). Kockázat a maradék kis tételeknél: NAPLO-MENTETT, MASODLAGOS-OK-NEV — ugyanez az alábecslés állhat fenn, ott is mérni kell becslés előtt. | Ph3/4 | REKORD (lelet) | MÉRT (08-18) | nem (folyamat) | — | NAPLO-MENTETT, MASODLAGOS-OK-NEV |
 | MASODLAGOS-RACS-HIANY | ELMÉLETI (subagent-review 08-16): ha egy másodlagos szó `racs` NÉLKÜL érkezne (generátor-hiba), az egyesitett_reg `_racs=undefined`-et adna → slot_index az „ora" ágra esik (napi pontok 24-slotos ritka rácson = megszakadozó görbe) + „óra nem-nulla" címke napi adatra. Nem hamis ÉRTÉK, csak félrevezető címke+rács; kivétel nincs. VALÓS adaton nem fordul elő (a backend minden másodlagos szóhoz ír racs-ot — mérve 4/4). Aszimmetria: az órás ág védekező `o.racs || "ora"`-t használ, a másodlagos ág nyers `m.racs`-ot. Keményítés opcionális (explicit hiány-jelzés, NEM néma default) | Ph4 | REKORD (ELMÉLETI) | ELMÉLETI | nem (megjel.) | S | — |
 | ALAPNEZET-KONSTANS | a default `1_het` BEÉGETETT konstans (nem futásidőben számított „legtöbb-kártya" intervallum). Ma helyes (13/13 rajzol), mert csak 4 szónak van másodlagos adata. ÚJRAMÉRENDŐ a Task 5 utáni lefedettségnél: ha több szó kap másodlagost, a legtöbb kártyát rajzoló intervallum eltolódhat → a beégetett 1_het rács-vakká válhat (a MIN_PONT és irany_kuszob után a HARMADIK ilyen konstans). Spec: phase3 §7.2 REVÍZIÓ (c1cd784) | Ph4 | REKORD (megfigyelés) | MÉRT (n=4, 08-16) | nem (megjel.) | S | TASK5 |
@@ -153,10 +154,11 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | ZOLD-NEM-SZALLIT | a 6c Szelet 1 utáni állapot ZÖLD suite mellett LATENS crasht hordozott (`merteszamok_szoveg` `toFixed(undefined)` a strippelt esemenyjelzo intervallumon), mert rajzoló teszt nem fedte. Tanulság: „a szelet zöld" ≠ „a szelet szállítható"; canvas-érintő szeletnél a KÖZTES állapot NEM pusholható szemle nélkül. Erősíti az L9/§8.3-at és a SZEMLE-SZABÁLY-t, NEM olvad bele. | Ph4 | REKORD (lelet) | MÉRT (08-17) | nem (folyamat) | — | L9, SZEMLE-SZABÁLY |
 | RESZLEGES-RAJZOL | a `data-rajzolt-pont` (13) és a mérőszám-felirat pontszáma (12) eltér het-nézeten. **A hipotézis („a 13. a részleges hét, álcsökkenést okoz") MEGCÁFOLVA méréssel (08-17):** a részleges hét EGYIK nézeten SEM rajzolódik (a veg_idx sloton van, a loop `i < veg_idx` kizárja — utolsó==részleges? NEM mind a 6 mérésen; nincs csonka-hét-műtermék a végén, az utolsó pont mindig teljes hét). A VALÓDI ok a KEZDŐ perem: `rajz_kezd = slot_index(iv.ablak_kezdet_utc)` a heti slotra LEFELÉ kerekít, így egy TELJES hét (pl. tüntetés 05-10), ami a regresszió PONTOS vágása (05-11 = veg−90 nap) ELŐTT esik, RAJZOLÓDIK, de a mérőszámból kimarad → +1 legitim hét az ELEJÉN (nem a végén, nem részleges). Opciók HA zavaró: (a) rajz_kezd exact dátumra vágjon (ne slot-floor), (b) a felirat mondja a rajzolt hosszt is. Döntés nincs. | Ph4 | REKORD (megfigyelés) | MÉRT (08-17) | nem (megjel.) | S | — |
 
-## LEZÁRT / ELAVULT (12 — külön, nem a törzsben)
+## LEZÁRT / ELAVULT (13 — külön, nem a törzsben)
 
 | ID | Név | Fázis | Állapot / miért nincs a nyitottak közt |
 |---|---|---|---|
+| FOLYT | folytonossag él-trigger vs állapot-check (a KUDARC-VAK 4. tagja) | Ph3 | **LEZÁRVA — 2026-08-18, DÖNTÉS (0 kód): az él-trigger ELÉG.** A `seged.utolso_res` (seged.py:58) az index UTOLSÓ KÉT dátuma közti napokat naplózza → minden rés PONTOSAN EGYSZER (a resume-futáson). **MÉRVE (naplo.csv, nem elméleti):** 1 rés — `2026-08-07;folytonossag;hiany;2026-08-06` (a 08-06 nap kimaradt); a 08-08+ mind `siker` → az exactly-once ÉLESBEN igazolt. Indok: a B2 = DIAGNOSZTIKA (rögzítés), NEM riasztás; a rés auditálható (`grep folytonossag;hiany`), multi-rés-helyes (mindegyik a saját resume-án), index-alapú (üres/kimaradt nap = rés), és NEM néma (explicit `hiany` + a napok) — tehát NEM a KUDARC-VAK „néma" magja. **KORLÁT (kiírva, nem 'durable' önmagában):** exactly-once + a naplo.csv ~333 nap retenció = a rés-bejegyzés ELÉVÜL; diagnosztikának elfogadott, riasztásnak nem. **CÁFOLÓ (nevesítve):** ha valaha KÖTELEZŐ aktív riasztás kell (nem grep-elhető log, hanem élő flag/exit-kód), az ÚJ tétel = **FOLYT-ALERT**, NEM ennek újranyitása. Indoklás: progress.md ledger + ez a sor (önhivatkozó hash nélkül). |
 | VEZERLO-MAGAS | a rács-tudatos üres-feliratok 234px-re növelik az intervallum-vezérlőt 0-másodlagos állapotban (4 tiltott gomb + 4 ok-szöveg) | Ph4 | **LEZÁRVA — 2026-08-18, KÉTLÁBÚ indoklás, MINDKÉT láb MÉRVE (harness: `scripts/vezerlo_meres.js`).** (1) Az állapot ÉLESBEN NEM ÁLL ELŐ: a másodlagos gyűjtés 08-13 óta fut, monoton nő; a 0-másodlagos csak friss telepítésen / üres adatkönyvtárban (vagy több hetes teljes leállás után) áll elő. (2) MÉG HA előállna is, portré modern telefonon a hajtás FÖLÖTT van. **MÉRT SZÁMOK — viewport 390×844, hajtás=844:** vezérlő 155px (valós, 5 mp: 5 gomb engedélyezett, 0 ok-szöveg) → 234px (0 mp: 1 engedélyezett, 4 tiltott + 4 ok-szöveg), Δ=79px; első kártya top 708px → 787px, MINDKETTŐ a 844 FÖLÖTT (57px tartalék a 787-nél). **KIVÉTEL, NYÍLTAN — 375×667 (iPhone SE):** ott a hajtás=667, és az első kártya MÁR MA (5 mp, 708px) a hajtás ALATT van — de ez NEM VEZERLO-MAGAS, hanem a fej+vezérlő+domén-fejléc ÁLTALÁNOS halmozódása (L10-osztály, elfogadott); a 0-mp csak +79px-t (708→787) tesz rá. Ha az (1) valaha megdől (több hetes leállás), a (2) az SE-osztályon NEM véd → a tétel a mért számokkal ÚJRANYITHATÓ. **A régi lelet HIBÁJA MÉRVE (§3 „a régi MÉRT jelölés is elavulhat"):** a korábbi „hajtás alá tolja / top=787px 380×320-on" a 320px MAGAS viewporton készült (787≫320); portré 844-en 787<844 → fölötte. Nem volt hamis, csak SZŰK viewporton mért, és az általánosítás csúszott — pontosan úgy avulhatna el egy egylábú indoklás. A viewport-méret ezért itt is, a harness kimenetében is rögzítve. |
 | ALAPNEZET-VEGYES | vegyes kezdő-nézet (a leghosszabb-érvényes default miatt) | Ph4 | LEZÁRVA — 2026-08-16, 6b Szelet 3: a default 1_het-re állt (a legtöbb kártyát rajzolja), a vegyes kezdő-nézet megszűnt. A régi „leghosszabb érvényes" (spec 7.2) feltevése a másodlagossal megtört (1_ev: 1/13) |
 | L2 | trend_megjelenites_max nincs config.yaml-ban (csak config.py default 25) | Ph3 | LEZÁRVA — 2026-08-15 user-döntés: a default (25) áll; kommentelt config.yaml-sor a következő érdemi commit mellékleteként |
