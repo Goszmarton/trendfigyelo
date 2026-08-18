@@ -70,7 +70,28 @@ const PIPE = [
   trend("kormanyzat", "5000", ["Government"]),
 ];
 
+// kategória-idősor fixture (kategoriak.json alakú), a shaper első-megjelenés / valós-0 szabályát célzó:
+//   08-05 {A:2,B:1} · [08-06 HIÁNYZIK — NEM kerül a tengelyre] · 08-07 {A:1,C:3} · 08-08 {B:2}
+//   → napok [08-05,08-07,08-08] (csak a mért napok); A [2,1,0] · B [1,0,2] · C [null,3,0]
+const KAT_IDOSOR = { napok: [
+  { nap: "2026-08-05", merve: true, lista_hossz: 3, lista_kategoriaval: 3, kategoria_nelkul: 0, kategoriak: { A: 2, B: 1 } },
+  { nap: "2026-08-07", merve: true, lista_hossz: 4, lista_kategoriaval: 4, kategoria_nelkul: 0, kategoriak: { A: 1, C: 3 } },
+  { nap: "2026-08-08", merve: true, lista_hossz: 2, lista_kategoriaval: 2, kategoria_nelkul: 0, kategoriak: { B: 2 } },
+] };
+
+// Szelet 2 top-5-szabály fixture: 7 nem-Other kategória EGYÉRTELMŰ kumulatív rangsorral + Other (a legnagyobb, hogy
+// a „top-5 az Other NÉLKÜL" tényleg kizárja). Egy nap elég (a rangsor a kumulatív összegből jön). P>Q>R>S>T (top5) > U>V.
+const KAT_TOP = { napok: [
+  { nap: "2026-08-10", merve: true, lista_hossz: 20, lista_kategoriaval: 20, kategoria_nelkul: 0,
+    kategoriak: { P: 20, Q: 16, R: 12, S: 8, T: 4, U: 2, V: 1, Other: 30 } },
+] };
+
 async function mock(page, opts) {
+  // a kategória-idősor forrást MINDIG route-oljuk (default üres), hogy a teszt-szerver VALÓS kategoriak.json-ja
+  // ne szivárogjon be (rejtett valós-adat-függés, a masodlagos-izoláció mintája a kulcsszo-suite-ból).
+  await page.route(/kategoriak\.json/, function (r) {
+    r.fulfill({ contentType: "application/json", body: JSON.stringify(opts.kategoriak || { napok: [] }) });
+  });
   if (opts.legfrissebb) {
     await page.route(/legfrissebb\.json/, function (r) {
       r.fulfill({ contentType: "application/json", body: JSON.stringify(opts.legfrissebb) });
@@ -509,4 +530,86 @@ test("28. két azonos kifejezésű trend → napváltás UTÁN nincs árva Chart
     return page.evaluate(function (c) { return !!(window.Chart && Chart.getChart(c)); }, h);
   }));
   expect(el_utana.filter(Boolean).length).toBe(0);
+});
+
+// ── KATEGÓRIA-IDŐSOR Szelet 1 — shaper + DOM-tükör (.idosor-adat). Canvast NEM érint, DOM-assertálható. ──
+// A tükör a null-rés / első-megjelenés / valós-0 szabályt hordozza (JSON-tömb data-ertekek, mint a data-kategoriak).
+test("idősor-adat: a tengely CSAK a mért napokat tartalmazza (08-06 hiányzó nap KIMARAD)", async ({ page }) => {
+  await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });
+  await page.goto("/");
+  const adat = page.locator(`${T} .idosor-adat`);
+  await expect(adat).toHaveCount(1);
+  await expect(adat).toHaveAttribute("data-napok",
+    JSON.stringify(["2026-08-05", "2026-08-07", "2026-08-08"]));   // 08-06 NINCS a tengelyen → folytonos vonal
+  await expect(adat.locator('.idosor-vonal[data-kategoria="A"]')).toHaveAttribute("data-ertekek", "[2,1,0]");
+  await expect(adat.locator('.idosor-vonal[data-kategoria="B"]')).toHaveAttribute("data-ertekek", "[1,0,2]");
+});
+
+test("idősor-adat: a kategória első megjelenése ELŐTT null (nem lapos nulla)", async ({ page }) => {
+  await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });
+  await page.goto("/");
+  const adat = page.locator(`${T} .idosor-adat`);
+  await expect(adat).toHaveCount(1);
+  // C csak 08-07-en tűnik fel → 08-05 null (a vonal a feltűnéskor kezdődik), 08-08-on valós 0
+  await expect(adat.locator('.idosor-vonal[data-kategoria="C"]')).toHaveAttribute("data-ertekek", "[null,3,0]");
+});
+
+test("idősor-adat: jelen-napon a 0-előfordulás VALÓS 0 (nem null)", async ({ page }) => {
+  await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });
+  await page.goto("/");
+  const adat = page.locator(`${T} .idosor-adat`);
+  await expect(adat).toHaveCount(1);
+  // A a 08-08-on hiányzik a kategoriak-mapből, DE már megjelent → VALÓS 0 (index 2); B a 08-07-en 0 (index 1)
+  await expect(adat.locator('.idosor-vonal[data-kategoria="A"]')).toHaveAttribute("data-ertekek", "[2,1,0]");
+  await expect(adat.locator('.idosor-vonal[data-kategoria="B"]')).toHaveAttribute("data-ertekek", "[1,0,2]");
+});
+
+test("idősor-adat: a vonalak száma == az előfordult kategóriák (a nem-látott NINCS)", async ({ page }) => {
+  await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });
+  await page.goto("/");
+  const adat = page.locator(`${T} .idosor-adat`);
+  await expect(adat).toHaveCount(1);
+  await expect(adat).toHaveAttribute("data-vonal-szam", "3");      // A, B, C — nem több
+  await expect(adat.locator(".idosor-vonal")).toHaveCount(3);
+});
+
+// ── KATEGÓRIA-IDŐSOR Szelet 2 — line-chart (canvas) + top-5-default + paletta + magyarázat. SZEMLE-KÖTELES. ──
+// A canvas-belső nem DOM-assertálható → a chart adat-modelljét a .idosor-vonal tükör data-alap-lathato/data-szin-je hordozza.
+test("idősor-chart: canvas jelen + data-idosor-chart-rendered=true", async ({ page }) => {
+  await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_TOP });
+  await page.goto("/");
+  await expect(page.locator(`${T} canvas.idosor-chart`)).toHaveCount(1);
+  await expect(page.locator(`${T} canvas.idosor-chart`)).toHaveAttribute("data-idosor-chart-rendered", "true");
+});
+
+// ÚJRATERVEZÉS (SZEMLE-visszajelzés): a szín/kiemelés modell szürke-alap + kék-kiemelés (canvas-belső → SZEMLE),
+// a korábbi top-5-default / per-kategória-szín SZABÁLY MEGSZŰNT. A DOM-assertálható: cím, elhelyezés, caption, tükör.
+test("idősor-chart: a cím »Napi keresési kategóriák idősora«", async ({ page }) => {
+  await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_TOP });
+  await page.goto("/");
+  await expect(page.locator(`${T} .idosor-cim`)).toHaveText("Napi keresési kategóriák idősora");
+});
+
+test("idősor-chart: az idősor-blokk a »Ma felkapott keresések« cím ELŐTT van (DOM-sorrend)", async ({ page }) => {
+  await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_TOP });
+  await page.goto("/");
+  await expect(page.locator(`${T} .idosor-blokk`)).toHaveCount(1);
+  const elotte = await page.evaluate(function () {
+    const b = document.querySelector("#trend-blokk");
+    const idos = b.querySelector(".idosor-blokk");
+    const felkapott = Array.from(b.querySelectorAll("h2")).find(function (h) {
+      return h.textContent.indexOf("Ma felkapott keresések") >= 0;
+    });
+    return !!(idos && felkapott && (idos.compareDocumentPosition(felkapott) & Node.DOCUMENT_POSITION_FOLLOWING));
+  });
+  expect(elotte).toBe(true);   // az idősor MEGELŐZI a napi oszlopdiagram címét
+});
+
+test("idősor: a caption (idosor-magyarazat) tartalmazza a legkorábbi napot + a Google-forrást (adatból)", async ({ page }) => {
+  await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });   // legkorábbi 2026-08-05
+  await page.goto("/");
+  const mag = page.locator(`${T} .idosor-magyarazat`);
+  await expect(mag).toContainText("2026-08-05");
+  await expect(mag).toContainText("Google Trends");
+  await expect(mag).toContainText("több kategóriába");   // multi-kategória megjegyzés
 });

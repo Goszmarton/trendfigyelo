@@ -75,6 +75,11 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 
 /* Task 7 trend-blokk — napi felkapott trendlista + kategória-eloszlás chart + kategória-szűrő.
    Az összefoglaló (chart+magyarázat+szűrő) a lista FÖLÖTT (áttekintés → részletek). Csak saját stílus. */
+#trend-blokk .idosor-adat { display: none; }   /* kategória-idősor Szelet 1: rejtett DOM-tükör (data-* assertálható, nem látszik) */
+#trend-blokk .idosor-blokk { margin: 0 0 2rem; }   /* Szelet 2: a történet-chart a „Ma felkapott keresések" cím FÖLÖTT */
+#trend-blokk .idosor-cim { font-size: 1.15rem; margin: .5rem 0 .75rem; }
+#trend-blokk .idosor-chart-doboz { position: relative; height: 440px; width: 100%; }   /* nagy: teljes szélesség + jobb oldali legend */
+#trend-blokk .idosor-magyarazat { color: #666; font-size: .85rem; margin: .6rem 0 0; max-width: 55rem; }
 #trend-blokk .trend-osszefoglalo { margin: 1rem 0 1.25rem; }
 /* a Chart.js kanonikus wrapper — fix magasság + position:relative, a canvas ezt tölti ki (mint a 9b chart-doboz) */
 #trend-blokk .kategoria-chart-doboz { position: relative; height: 200px; max-width: 40rem; }
