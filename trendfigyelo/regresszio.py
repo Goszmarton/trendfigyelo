@@ -181,7 +181,7 @@ def _domen_tipus(szo, aktivak, napok):
     return None, None
 
 
-def _intervallumok(nyers_rekordok, racs="ora"):
+def _intervallumok(nyers_rekordok, racs="ora", lanc=None):
     """A rács intervallumai a LEGFRISSEBB pillanatképből, farokszeleteléssel.
 
     A rács természetes ablakán (RACS_ABLAK_NAP) TÚLNYÚLÓ intervallum → nincs_lancolas
@@ -200,8 +200,17 @@ def _intervallumok(nyers_rekordok, racs="ora"):
         ablak_nap = round((veg_dt - _dt(rek["ablak_kezdet_utc"])).total_seconds() / 86400)
     ki = {}
     for kulcs, hossz in INTERVALLUMOK.items():
-        if hossz > nominal:                          # túlnyúlik a rács ablakán → láncolás kell
-            ki[kulcs] = {"ervenyes": False, "ok": "nincs_lancolas"}
+        if hossz > nominal:                          # túlnyúlik a rács ablakán → LÁNCOLÁS (LANC-ORAS, §8.2)
+            if lanc and lanc.get("pontok") and \
+                    (_dt(lanc["ablak_veg_utc"]) - _dt(lanc["ablak_kezdet_utc"])).days >= hossz:
+                lveg = _dt(lanc["ablak_veg_utc"])
+                lkezd = lveg - timedelta(days=hossz)   # a LÁNCOLT sorozat farkából `hossz` nap
+                szelet = [p for p in lanc["pontok"] if _dt(p["idopont_utc"]) >= lkezd]
+                ki[kulcs] = regresszio_egy_ablak(szelet, lkezd.isoformat(), lanc["ablak_veg_utc"], hossz,
+                                                 grid_step=grid_step, min_pont=min_pont,
+                                                 elmozdulas_kuszob=elmozdulas_kuszob)
+            else:                                      # nincs lánc VAGY túl rövid → nincs_lancolas
+                ki[kulcs] = {"ervenyes": False, "ok": "nincs_lancolas"}
         elif rek is None:
             ki[kulcs] = {"ervenyes": False, "ok": "nincs_adat"}
         elif hossz >= ablak_nap:                      # a teljes pillanatkép — eredeti határok
@@ -236,7 +245,7 @@ def _szint_intervallum(iv):
     return {k: v for k, v in iv.items() if k not in _ESEMENYJELZO_TREND_MEZOK}
 
 
-def regresszio_szamit(nyers, tortenet, config, szamitva_utc):
+def regresszio_szamit(nyers, tortenet, config, szamitva_utc, lanc_map=None):
     """A teljes kulcsszo_regresszio.json szerkezet. Nulla extra Google-hívás.
 
     Szóhalmaz: a tortenet marker-utáni (>= modszertan_valtas) szavai ∪ a config szavai.
@@ -264,7 +273,8 @@ def regresszio_szamit(nyers, tortenet, config, szamitva_utc):
         if tipus == "esemenyjelzo":
             intervallumok = {k: {"ervenyes": False, "ok": "esemenyjelzo"} for k in INTERVALLUMOK}
         else:
-            intervallumok = _intervallumok(nyers.get("kulcsszavak", {}).get(szo))
+            intervallumok = _intervallumok(nyers.get("kulcsszavak", {}).get(szo),
+                                           lanc=(lanc_map or {}).get(szo))
         ki[szo] = {
             "meres_kezdete": napok[0][0] if napok else None,
             "meres_vege": None if aktiv else (napok[-1][0] if napok else None),

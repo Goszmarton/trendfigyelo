@@ -11,7 +11,7 @@ import os
 import sys
 from pathlib import Path
 
-from . import (felkapott, idosorok, json_export, kategoriak, kulcsszavak, naplo,
+from . import (felkapott, idosorok, json_export, kategoriak, kulcsszavak, lanc, naplo,
                nyers_kimenet, regresszio, seged)
 from .config import betolt
 from .kliens import AgFeladva, Kliens, PlafonTullepve
@@ -399,6 +399,13 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
     # nyers órás sorozat verziókövetett gördülő kimenete (üres sorozat NE írjon fájlt)
     if kulcsszo_nyers:
         nyers_kimenet.ir_gordulo(docs_data_mappa, kulcsszo_nyers)
+        # LANC-ORAS (§8.2): a perzisztens órás lánc frissítése a RETENÁLT ablakokból (a most kiírt fájlból);
+        # bootstrap vagy napi bővítés + POTÓLHATATLANSÁG-guard. Származtatott, VÉDETT (hiba nem viszi el az adatmentést).
+        try:
+            _retenalt = json.loads((docs_data_mappa / "kulcsszo_nyers.json").read_text(encoding="utf-8")).get("kulcsszavak", {})
+            lanc.frissit_lanc(docs_data_mappa, _retenalt, marker=config.modszertan_valtas)
+        except Exception as e:
+            print(f"FIGYELEM: az órás lánc frissítése kimaradt — nem blokkolja az adatmentést ({e}).")
 
     # ---------- kategória-aggregátum (származtatott, VÉDETTEN; CSAK naplóz) ----------
     # A napok/*.json determinisztikus tükre → kategoriak.json (spec 8.1). Nulla Google-hívás.
@@ -434,7 +441,8 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
                         if tortenet_fajl.exists() else {})
             regresszio.regresszio_ir(
                 docs_data_mappa,
-                regresszio.regresszio_szamit(nyers, tortenet, config, letoltve))
+                regresszio.regresszio_szamit(nyers, tortenet, config, letoltve,
+                                             lanc_map=lanc.betolt_lanc(docs_data_mappa)))
             bejegyzesek.append({"ag": "regresszio", "eredmeny": "siker",
                                 "hivasok_szama": 0, "hibakodok": ""})
         except Exception as e:
