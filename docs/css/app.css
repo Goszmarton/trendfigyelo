@@ -18,8 +18,24 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
    [d86af56] felülírva — a szürke rosszabb volt). A négy nagy blokk (2 vezerlo-sav + 2 tartalom) így KÜLÖNÜL. */
 .vezerlo-sav { flex: 0 0 14rem; position: sticky; top: 1rem; align-self: flex-start;
   background: #fff; border: 1px solid #e3e3e3; border-radius: 6px; padding: .75rem; box-sizing: border-box; }
-#kulcsszo-blokk, #trend-blokk, #heti-blokk { flex: 1; min-width: 0;
+#kulcsszo-blokk, #trend-blokk, #heti-blokk, #idosor-blokk { flex: 1; min-width: 0;
   background: #fff; border: 1px solid #e3e3e3; border-radius: 6px; padding: 1rem; box-sizing: border-box; }
+
+/* KATEGÓRIA-IDŐSOR kétdobozos: bal #idosor-legend (kattintható HTML-legend, a Chart.js belső legend reprodukciója),
+   jobb #idosor-blokk (h2 → chart → magyarázat). A pötty kerek szürke; aktív = kék pötty + kék szöveg. */
+#idosor-legend { display: flex; flex-direction: column; gap: .1rem; }
+#idosor-legend .idosor-legend-elem { display: flex; align-items: center; gap: .5rem; width: 100%;
+  padding: .25rem .3rem; background: none; border: none; border-radius: 4px; cursor: pointer;
+  font-size: .9rem; color: #444; text-align: left; }
+#idosor-legend .idosor-legend-elem:hover { background: #f2f2f2; }
+#idosor-legend .idosor-legend-pont { flex: 0 0 auto; width: 14px; height: 14px; border-radius: 50%;
+  background: #cccccc; }
+#idosor-legend .idosor-legend-elem.kiemelt { color: #3366cc; font-weight: 600; }
+#idosor-legend .idosor-legend-elem.kiemelt .idosor-legend-pont { background: #3366cc; }
+#idosor-legend .idosor-legend-elem:focus-visible { outline: 2px solid #3366cc; outline-offset: 2px; }
+#idosor-blokk .idosor-adat { display: none; }   /* rejtett DOM-tükör (data-* assertálható, nem látszik) */
+#idosor-blokk .idosor-chart-doboz { position: relative; height: 440px; width: 100%; }
+#idosor-blokk .idosor-magyarazat { color: #666; font-size: .85rem; margin: .6rem 0 0; max-width: 55rem; }
 #heti-blokk .heti-tabla { width: 100%; border-collapse: collapse; }
 #heti-blokk .heti-nap-sor { border-top: 1px solid #eee; }
 #heti-blokk .heti-nap { white-space: nowrap; vertical-align: top; padding: .4rem .8rem .4rem 0; color: #333; font-weight: 600; }
@@ -80,11 +96,6 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 
 /* Task 7 trend-blokk — napi felkapott trendlista + kategória-eloszlás chart + kategória-szűrő.
    Az összefoglaló (chart+magyarázat+szűrő) a lista FÖLÖTT (áttekintés → részletek). Csak saját stílus. */
-#trend-blokk .idosor-adat { display: none; }   /* kategória-idősor Szelet 1: rejtett DOM-tükör (data-* assertálható, nem látszik) */
-#trend-blokk .idosor-blokk { margin: 0 0 2rem; }   /* Szelet 2: a történet-chart a „Ma felkapott keresések" cím FÖLÖTT */
-#trend-blokk .idosor-cim { font-size: 1.15rem; margin: .5rem 0 .75rem; }
-#trend-blokk .idosor-chart-doboz { position: relative; height: 440px; width: 100%; }   /* nagy: teljes szélesség + jobb oldali legend */
-#trend-blokk .idosor-magyarazat { color: #666; font-size: .85rem; margin: .6rem 0 0; max-width: 55rem; }
 #trend-blokk .trend-osszefoglalo { margin: 1rem 0 1.25rem; }
 /* a Chart.js kanonikus wrapper — fix magasság + position:relative, a canvas ezt tölti ki (mint a 9b chart-doboz) */
 #trend-blokk .kategoria-chart-doboz { position: relative; height: 200px; max-width: 40rem; }

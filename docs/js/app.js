@@ -769,8 +769,9 @@ const OSZT_T = {
   sparkline_doboz: "trend-sparkline-doboz", idosor_ures: "trend-idosor-ures", idosor_ures_blokk: "trend-idosor-ures-blokk",
   normalizalas_magyarazat: "trend-normalizalas-magyarazat",   // 8b: a görbe-magasság félreolvasása ellen (LELET 2)
   idosor_adat: "idosor-adat", idosor_vonal: "idosor-vonal",   // kategória-idősor Szelet 1: rejtett DOM-tükör (nem canvas)
-  idosor_blokk: "idosor-blokk", idosor_chart_doboz: "idosor-chart-doboz", idosor_chart: "idosor-chart",  // Szelet 2: line-chart
-  idosor_cim: "idosor-cim", idosor_magyarazat: "idosor-magyarazat",   // Szelet 2: saját cím + caption (a bar-caption külön)
+  idosor_chart_doboz: "idosor-chart-doboz", idosor_chart: "idosor-chart",   // Szelet 2: line-chart (a jobb #idosor-blokk-ban)
+  idosor_magyarazat: "idosor-magyarazat",   // caption a jobb doboz alján (a bar-caption külön)
+  idosor_legend_elem: "idosor-legend-elem", idosor_legend_pont: "idosor-legend-pont", kiemelt: "kiemelt",  // kétdobozos: HTML-legend a bal dobozban
 };
 const ATTR_T = {
   aktiv_kategoria: "data-aktiv-kategoria", nap: "data-nap", kifejezes: "data-kifejezes",
@@ -901,15 +902,24 @@ function idosor_vonal_stilus(nev) {
 
 // az aktív kategória átszínezése (a count-ok/adatok VÁLTOZATLANOK — csak szín/vastagság/sorrend, mint a bar szinez).
 function idosor_szinez() {
-  if (!idosor_chart) return;
-  idosor_chart.data.datasets.forEach(function (ds) {
-    const st = idosor_vonal_stilus(ds.label);
-    ds.borderColor = st.szin; ds.backgroundColor = st.szin;
-    ds.borderWidth = st.vastag; ds.pointRadius = st.pont; ds.order = st.sorrend;
-  });
-  idosor_chart.update();
-  const blokk = document.getElementById("trend-blokk");
-  if (blokk) blokk.setAttribute(ATTR_T.idosor_aktiv, idosor_aktiv);   // DOM-tükör az aktív állapotról
+  if (idosor_chart) {
+    idosor_chart.data.datasets.forEach(function (ds) {
+      const st = idosor_vonal_stilus(ds.label);
+      ds.borderColor = st.szin; ds.backgroundColor = st.szin;
+      ds.borderWidth = st.vastag; ds.pointRadius = st.pont; ds.order = st.sorrend;
+    });
+    idosor_chart.update();
+  }
+  const blokk = document.getElementById("idosor-blokk");
+  if (blokk) blokk.setAttribute(ATTR_T.idosor_aktiv, idosor_aktiv);   // DOM-tükör az aktív állapotról (a SAJÁT szekción)
+  // a BAL HTML-legend aktív állapotának szinkronja: .kiemelt CSAK az aktív kategórián (kék pötty + kék szöveg)
+  const legendEl = document.getElementById("idosor-legend");
+  if (legendEl) {
+    Array.prototype.forEach.call(legendEl.querySelectorAll("." + OSZT_T.idosor_legend_elem), function (b) {
+      const akt = idosor_aktiv !== "" && b.getAttribute(ATTR_T.kategoria) === idosor_aktiv;
+      b.classList.toggle(OSZT_T.kiemelt, akt);
+    });
+  }
 }
 
 function idosor_aktiv_valt(nev) {
@@ -941,60 +951,76 @@ function trend_idosor_chart_epit(canvas, idosor) {
         if (elemek && elemek.length) idosor_aktiv_valt(idosor_chart.data.datasets[elemek[0].datasetIndex].label);
         else idosor_aktiv_valt("");
       },
-      scales: { y: { beginAtZero: true, ticks: { precision: 0 }, title: { display: true, text: "trendek száma" } } },
+      scales: {
+        x: { grid: { display: false } },   // függőleges rács KI — zaj (átlósan keresztezi a vonalakat), a dátum az x-tengelyen van
+        y: { beginAtZero: true, ticks: { precision: 0 }, title: { display: true, text: "trendek száma" },
+             grid: { color: "#f0f0f0" } },   // vízszintes rács HALVÁNY — az érték-leolvasáshoz, a kék kiemelt vonal fölé nem tolakszik
+      },
       plugins: {
-        legend: {
-          display: true, position: "right",   // JOBB oldali, kattintható jelmagyarázat
-          onClick: function (e, item) { idosor_aktiv_valt(idosor_chart.data.datasets[item.datasetIndex].label); },
-          labels: {
-            usePointStyle: true, boxWidth: 8,
-            // NINCS áthúzás (semmit nem rejtünk el — kiemelünk); az aktív felirat kékül/kiemelkedik
-            generateLabels: function (ch) {
-              return ch.data.datasets.map(function (ds, i) {
-                const akt = ds.label === idosor_aktiv;
-                return { text: ds.label, datasetIndex: i, hidden: false,
-                         fontColor: akt ? IDOSOR_KIEMELT : "#555",
-                         fillStyle: akt ? IDOSOR_KIEMELT : IDOSOR_SZURKE,
-                         strokeStyle: akt ? IDOSOR_KIEMELT : IDOSOR_SZURKE };
-              });
-            },
-          },
-        },
+        legend: { display: false },   // KÉTDOBOZOS: a Chart.js belső legendje KIKAPCSOLVA → a bal #idosor-legend HTML-legend
         tooltip: { enabled: true },   // nearest-pont: dátum + kategória + darabszám
       },
     },
   });
 }
 
-// a kategória-idősor teljes eleme: saját CÍM + chart-doboz (canvas) + rejtett data-tükör + CAPTION.
-// A „Ma felkapott keresések" cím ELÉ kerül (a trend-blokk élén), külön szekcióként.
-function trend_idosor_epit(idosor) {
-  const el = document.createElement("div");
-  el.className = OSZT_T.idosor_blokk;
+// a kategória-idősor kattintható HTML-legendje (a BAL #idosor-legend dobozba) — a Chart.js belső legend HELYETT.
+// Kerek pötty + kategórianév; aktív = .kiemelt (kék pötty + kék szöveg). Katt → idosor_aktiv_valt (chart-kiemelés).
+function idosor_legend_epit(idosor) {
+  const frag = document.createDocumentFragment();
+  idosor.vonalak.forEach(function (v) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = OSZT_T.idosor_legend_elem;
+    b.setAttribute(ATTR_T.kategoria, v.nev);
+    const pont = document.createElement("span");
+    pont.className = OSZT_T.idosor_legend_pont;
+    b.appendChild(pont);
+    b.appendChild(document.createTextNode(v.nev));
+    b.addEventListener("click", function () { idosor_aktiv_valt(v.nev); });
+    frag.appendChild(b);
+  });
+  return frag;
+}
 
-  const cim = document.createElement("h2");
-  cim.className = OSZT_T.idosor_cim;
-  cim.textContent = "Napi keresési kategóriák idősora";
-  el.appendChild(cim);
+// a kategória-idősor ÖNÁLLÓ szekciója (kétdobozos): JOBB #idosor-blokk (statikus h2 → chart-doboz+canvas → rejtett
+// tükör → magyarázat) + BAL #idosor-legend (kattintható legend). NAP-FÜGGETLEN (kategoriak.json) → egyszer épül (init).
+function idosor_blokk_render() {
+  const blokk = document.getElementById("idosor-blokk");
+  const legendEl = document.getElementById("idosor-legend");
+  if (!blokk || !legendEl) return;
+
+  // idempotencia / re-render biztonság: a korábbi chart + generált elemek törlése (a statikus h2 MARAD)
+  if (idosor_chart) { idosor_chart.destroy(); idosor_chart = null; }
+  idosor_aktiv = "";
+  blokk.querySelectorAll("." + OSZT_T.idosor_chart_doboz + ", ." + OSZT_T.idosor_adat + ", ." + OSZT_T.idosor_magyarazat)
+    .forEach(function (e) { e.remove(); });
+  legendEl.innerHTML = "";
+  blokk.removeAttribute(ATTR_T.idosor_aktiv);
+
+  const idosor = kategoria_idosor(adat["kategoriak.json"]);
+  if (!idosor.vonalak.length) return;   // nincs kategória-adat → csak a statikus cím marad
 
   const doboz = document.createElement("div");
   doboz.className = OSZT_T.idosor_chart_doboz;
   const canvas = document.createElement("canvas");
   canvas.className = OSZT_T.idosor_chart;
   doboz.appendChild(canvas);
-  el.appendChild(doboz);
+  blokk.appendChild(doboz);
 
-  el.appendChild(trend_idosor_tukor_epit(idosor));   // rejtett DOM-tükör (assertálható adat-modell)
+  blokk.appendChild(trend_idosor_tukor_epit(idosor));   // rejtett DOM-tükör (assertálható adat-modell)
 
   const mag = document.createElement("p");
   mag.className = OSZT_T.idosor_magyarazat;
   mag.textContent = "A vonalak a Google Trends napi kategória-osztályozását követik — nem a mi besorolásunk "
     + "(egy trend több kategóriába is eshet). A szürke vonalak közül kattintással emelhető ki egy kategória. "
     + "A kategória-idősor " + (idosor.napok[0] || "") + "-től érhető el — a korábbi napokon nincs kategória-adat.";
-  el.appendChild(mag);
+  blokk.appendChild(mag);
 
-  trend_idosor_chart_epit(canvas, idosor);   // a canvas már az elemben van
-  return el;
+  legendEl.appendChild(idosor_legend_epit(idosor));   // BAL doboz: HTML-legend
+  blokk.setAttribute(ATTR_T.idosor_aktiv, "");        // alap: semmi nem kiemelt (a legend-tükör kezdőállapota)
+
+  trend_idosor_chart_epit(canvas, idosor);   // a canvas már a jobb dobozban van
 }
 
 function trend_szin(kategoria, tompitott) {
@@ -1048,7 +1074,7 @@ function trend_sparkline_letrehoz(kartya) {
 
 function trend_chart_takarit() {
   if (kategoria_chart) { kategoria_chart.destroy(); kategoria_chart = null; }
-  if (idosor_chart) { idosor_chart.destroy(); idosor_chart = null; }   // Szelet 2: az idősor-chart is destroy (napváltáskor)
+  // MEGJEGYZÉS: az idősor-chart NEM itt takarodik — önálló #idosor-blokk szekció, NAP-FÜGGETLEN (nem napváltás-életciklus).
   trend_chart_peldanyok.forEach(function (c) { if (c) c.destroy(); });   // 8a: a sparkline-példányok is destroy (nem halmozódhatnak)
   trend_chart_peldanyok = [];                                           // MIN-TCP: teljes ürítés (index-független, kollízió-mentes)
 }
@@ -1228,16 +1254,10 @@ function trend_blokk_render() {
 
   trend_chart_takarit();
   blokk.querySelectorAll("." + OSZT_T.osszefoglalo + ", ." + OSZT_T.lista + ", ." + OSZT_T.ures
-    + ", ." + OSZT_T.idosor_ures_blokk + ", ." + OSZT_T.normalizalas_magyarazat + ", ." + OSZT_T.idosor_blokk)
+    + ", ." + OSZT_T.idosor_ures_blokk + ", ." + OSZT_T.normalizalas_magyarazat)
     .forEach(function (e) { e.remove(); });
 
-  // KATEGÓRIA-IDŐSOR (történet) — NAP-FÜGGETLEN (kategoriak.json), a „Ma felkapott keresések" cím ELÉ (a blokk élén),
-  // hogy napváltáskor/üres napon is meglegyen. Line-chart + saját cím/caption + rejtett DOM-tükör.
-  const idosor = kategoria_idosor(adat["kategoriak.json"]);
-  if (idosor.vonalak.length) {
-    const cim_h2 = blokk.querySelector("h2");
-    blokk.insertBefore(trend_idosor_epit(idosor), cim_h2 || blokk.firstChild);
-  }
+  // KATEGÓRIA-IDŐSOR: már NEM itt él — önálló #idosor-blokk szekció (idosor_blokk_render), NAP-FÜGGETLEN.
 
   const trendek = trend_adat_nap(nap);
   if (trendek === null) return;   // a régi nap még tölt (async) — a trend_nap_valt újrahív
@@ -1423,6 +1443,7 @@ const RENDEREK = [
   { id: "intervallum-vezerlo", fn: intervallum_vezerlo_render },
   { id: "kulcsszo-blokk", fn: kulcsszo_blokk_render },
   { id: "datum-valaszto", fn: datum_valaszto_render },
+  { id: "idosor-blokk", fn: idosor_blokk_render },   // kategória-idősor — önálló szekció, kategoriak.json-ból (NAP-FÜGGETLEN)
   { id: "trend-blokk", fn: trend_blokk_render },
   { id: "heti-blokk", fn: heti_blokk_render },   // heti felkapott — napok/index.json-ból (a trend-blokk már betöltötte)
 ];

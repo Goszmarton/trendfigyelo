@@ -26,6 +26,18 @@
 
     <div class="szekcio">
       <aside class="vezerlo-sav">
+        <div id="idosor-legend" aria-label="Kategória-idősor jelmagyarázat">
+          <!-- a kategória-idősor kattintható legendje (szürke→kék kiemelés) — a Chart.js belső legend helyett -->
+        </div>
+      </aside>
+      <section id="idosor-blokk" aria-label="Napi keresési kategóriák idősora">
+        <h2>Napi keresési kategóriák idősora</h2>
+        <!-- chart-doboz (canvas) + rejtett DOM-tükör + magyarázat — a JS tölti (kategoriak.json) -->
+      </section>
+    </div>
+
+    <div class="szekcio">
+      <aside class="vezerlo-sav">
         <div id="datum-valaszto" aria-label="Trend dátumválasztó">
           <!-- napok/index.json alapján; belépéskor a legfrissebb nap (Task 6) -->
         </div>

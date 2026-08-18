@@ -671,9 +671,10 @@ test("CSS: a kulcsszó- és trend-blokk lekerekített kerettel elválik; a vezé
     expect(parseFloat(st.bw)).toBeGreaterThan(0);
     expect(st.bg).toBe("rgb(255, 255, 255)");         // FEHÉR háttér marad (a szürkítés rosszabb volt → visszavonva)
   }
-  // két .vezerlo-sav (intervallum-vezérlő + dátum/egyéb) — MINDKETTŐ fehér, a d86af56 #fafafa szürkítés VISSZAVONVA
+  // négy .vezerlo-sav (intervallum-vezérlő + idősor-legend + dátum-választó + hét-választó) — MIND fehér,
+  // a d86af56 #fafafa szürkítés VISSZAVONVA. (A szám a szekciók számát tükrözi: kulcsszó, idősor, trend, heti.)
   const vezBgs = await page.locator(".vezerlo-sav").evaluateAll((els) => els.map((el) => getComputedStyle(el).backgroundColor));
-  expect(vezBgs).toHaveLength(2);
+  expect(vezBgs).toHaveLength(4);
   for (const bg of vezBgs) expect(bg).toBe("rgb(255, 255, 255)");
 });
 

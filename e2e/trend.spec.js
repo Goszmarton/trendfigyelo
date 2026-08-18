@@ -8,6 +8,7 @@ const { test, expect } = require("@playwright/test");
 // ne kattintás-timeout.
 
 const T = "#trend-blokk";
+const I = "#idosor-blokk";   // a kategória-idősor ÖNÁLLÓ szekciója (jobb doboz); a legend a bal #idosor-legend-ben
 
 // egy trend-elem; temak === undefined → a mező HIÁNYZIK (régi archív nap), [] → nincs besorolás, [...] → van
 // idosor: opcionális pont-tömb ({idopont_utc, ertek}); alap [] (üres — D1-kiterjesztett / mind-üres eset).
@@ -537,7 +538,7 @@ test("28. két azonos kifejezésű trend → napváltás UTÁN nincs árva Chart
 test("idősor-adat: a tengely CSAK a mért napokat tartalmazza (08-06 hiányzó nap KIMARAD)", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });
   await page.goto("/");
-  const adat = page.locator(`${T} .idosor-adat`);
+  const adat = page.locator(`${I} .idosor-adat`);
   await expect(adat).toHaveCount(1);
   await expect(adat).toHaveAttribute("data-napok",
     JSON.stringify(["2026-08-05", "2026-08-07", "2026-08-08"]));   // 08-06 NINCS a tengelyen → folytonos vonal
@@ -548,7 +549,7 @@ test("idősor-adat: a tengely CSAK a mért napokat tartalmazza (08-06 hiányzó 
 test("idősor-adat: a kategória első megjelenése ELŐTT null (nem lapos nulla)", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });
   await page.goto("/");
-  const adat = page.locator(`${T} .idosor-adat`);
+  const adat = page.locator(`${I} .idosor-adat`);
   await expect(adat).toHaveCount(1);
   // C csak 08-07-en tűnik fel → 08-05 null (a vonal a feltűnéskor kezdődik), 08-08-on valós 0
   await expect(adat.locator('.idosor-vonal[data-kategoria="C"]')).toHaveAttribute("data-ertekek", "[null,3,0]");
@@ -557,7 +558,7 @@ test("idősor-adat: a kategória első megjelenése ELŐTT null (nem lapos nulla
 test("idősor-adat: jelen-napon a 0-előfordulás VALÓS 0 (nem null)", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });
   await page.goto("/");
-  const adat = page.locator(`${T} .idosor-adat`);
+  const adat = page.locator(`${I} .idosor-adat`);
   await expect(adat).toHaveCount(1);
   // A a 08-08-on hiányzik a kategoriak-mapből, DE már megjelent → VALÓS 0 (index 2); B a 08-07-en 0 (index 1)
   await expect(adat.locator('.idosor-vonal[data-kategoria="A"]')).toHaveAttribute("data-ertekek", "[2,1,0]");
@@ -567,49 +568,91 @@ test("idősor-adat: jelen-napon a 0-előfordulás VALÓS 0 (nem null)", async ({
 test("idősor-adat: a vonalak száma == az előfordult kategóriák (a nem-látott NINCS)", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });
   await page.goto("/");
-  const adat = page.locator(`${T} .idosor-adat`);
+  const adat = page.locator(`${I} .idosor-adat`);
   await expect(adat).toHaveCount(1);
   await expect(adat).toHaveAttribute("data-vonal-szam", "3");      // A, B, C — nem több
   await expect(adat.locator(".idosor-vonal")).toHaveCount(3);
 });
 
-// ── KATEGÓRIA-IDŐSOR Szelet 2 — line-chart (canvas) + top-5-default + paletta + magyarázat. SZEMLE-KÖTELES. ──
-// A canvas-belső nem DOM-assertálható → a chart adat-modelljét a .idosor-vonal tükör data-alap-lathato/data-szin-je hordozza.
-test("idősor-chart: canvas jelen + data-idosor-chart-rendered=true", async ({ page }) => {
+// ── KATEGÓRIA-IDŐSOR Szelet 2 — line-chart (canvas), most KÉTDOBOZOS: legend a BAL #idosor-legend, chart a JOBB
+// #idosor-blokk. A canvas-belső (szürke→kék kiemelés) NEM DOM-assertálható → SZEMLE-köteles; a HTML-legend AKTÍV
+// állapota (.kiemelt) + a data-idosor-aktiv tükör DOM-assertálható. ──
+test("idősor-chart: canvas + data-idosor-chart-rendered a JOBB #idosor-blokk-ban", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_TOP });
   await page.goto("/");
-  await expect(page.locator(`${T} canvas.idosor-chart`)).toHaveCount(1);
-  await expect(page.locator(`${T} canvas.idosor-chart`)).toHaveAttribute("data-idosor-chart-rendered", "true");
+  await expect(page.locator(`${I} canvas.idosor-chart`)).toHaveCount(1);
+  await expect(page.locator(`${I} canvas.idosor-chart`)).toHaveAttribute("data-idosor-chart-rendered", "true");
+  await expect(page.locator(`${T} canvas.idosor-chart`)).toHaveCount(0);   // NEM a trend-blokkban (átköltözött)
 });
 
 // ÚJRATERVEZÉS (SZEMLE-visszajelzés): a szín/kiemelés modell szürke-alap + kék-kiemelés (canvas-belső → SZEMLE),
 // a korábbi top-5-default / per-kategória-szín SZABÁLY MEGSZŰNT. A DOM-assertálható: cím, elhelyezés, caption, tükör.
-test("idősor-chart: a cím »Napi keresési kategóriák idősora«", async ({ page }) => {
+test("idősor-chart: a jobb doboz h2 címe »Napi keresési kategóriák idősora«", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_TOP });
   await page.goto("/");
-  await expect(page.locator(`${T} .idosor-cim`)).toHaveText("Napi keresési kategóriák idősora");
+  await expect(page.locator(`${I} h2`)).toHaveText("Napi keresési kategóriák idősora");
 });
 
-test("idősor-chart: az idősor-blokk a »Ma felkapott keresések« cím ELŐTT van (DOM-sorrend)", async ({ page }) => {
+test("idősor-elrendezés: az idősor SAJÁT #idosor-blokk szekció, a DOM-ban a #trend-blokk ELŐTT", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_TOP });
   await page.goto("/");
-  await expect(page.locator(`${T} .idosor-blokk`)).toHaveCount(1);
+  await expect(page.locator(I)).toHaveCount(1);
   const elotte = await page.evaluate(function () {
-    const b = document.querySelector("#trend-blokk");
-    const idos = b.querySelector(".idosor-blokk");
-    const felkapott = Array.from(b.querySelectorAll("h2")).find(function (h) {
-      return h.textContent.indexOf("Ma felkapott keresések") >= 0;
-    });
-    return !!(idos && felkapott && (idos.compareDocumentPosition(felkapott) & Node.DOCUMENT_POSITION_FOLLOWING));
+    const idos = document.querySelector("#idosor-blokk");
+    const trend = document.querySelector("#trend-blokk");
+    // az idősor-szekció a trend-szekció ELŐTT áll (nem a trend-blokkon BELÜL)
+    return !!(idos && trend && !trend.contains(idos)
+      && (idos.compareDocumentPosition(trend) & Node.DOCUMENT_POSITION_FOLLOWING));
   });
-  expect(elotte).toBe(true);   // az idősor MEGELŐZI a napi oszlopdiagram címét
+  expect(elotte).toBe(true);   // az idősor MEGELŐZI a „Ma felkapott keresések" szekciót
 });
 
-test("idősor: a caption (idosor-magyarazat) tartalmazza a legkorábbi napot + a Google-forrást (adatból)", async ({ page }) => {
+test("idősor-chart: a cím a canvas ELŐTT, a magyarázat a canvas UTÁN (a jobb dobozban)", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });   // legkorábbi 2026-08-05
   await page.goto("/");
-  const mag = page.locator(`${T} .idosor-magyarazat`);
+  const mag = page.locator(`${I} .idosor-magyarazat`);
   await expect(mag).toContainText("2026-08-05");
   await expect(mag).toContainText("Google Trends");
   await expect(mag).toContainText("több kategóriába");   // multi-kategória megjegyzés
+  const sorrend = await page.evaluate(function () {
+    const b = document.querySelector("#idosor-blokk");
+    const cim = b.querySelector("h2");
+    const canvas = b.querySelector("canvas.idosor-chart");
+    const mag = b.querySelector(".idosor-magyarazat");
+    const cimElotte = cim.compareDocumentPosition(canvas) & Node.DOCUMENT_POSITION_FOLLOWING;   // cim < canvas
+    const magUtan = canvas.compareDocumentPosition(mag) & Node.DOCUMENT_POSITION_FOLLOWING;      // canvas < mag
+    return !!(cimElotte && magUtan);
+  });
+  expect(sorrend).toBe(true);
+});
+
+// ── HTML-legend a BAL #idosor-legend dobozban (a Chart.js belső legend kikapcsolva) — DOM-assertálható ──
+test("idősor-legend: a bal #idosor-legend N kattintható elemet tartalmaz (data-kategoria), a jobb dobozban NINCS legend", async ({ page }) => {
+  await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });   // A, B, C → 3 vonal
+  await page.goto("/");
+  const legend = page.locator("#idosor-legend .idosor-legend-elem");
+  await expect(legend).toHaveCount(3);
+  await expect(page.locator('#idosor-legend .idosor-legend-elem[data-kategoria="A"]')).toHaveCount(1);
+  await expect(page.locator('#idosor-legend .idosor-legend-elem[data-kategoria="B"]')).toHaveCount(1);
+  await expect(page.locator('#idosor-legend .idosor-legend-elem[data-kategoria="C"]')).toHaveCount(1);
+  await expect(page.locator(`${I} .idosor-legend-elem`)).toHaveCount(0);   // a legend NEM a jobb (chart) dobozban van
+});
+
+test("idősor-legend: kattintásra az elem .kiemelt lesz + data-idosor-aktiv tükör; újrakatt törli (toggle)", async ({ page }) => {
+  await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });
+  await page.goto("/");
+  const bE = page.locator('#idosor-legend .idosor-legend-elem[data-kategoria="B"]');
+  await expect(bE).toHaveCount(1);
+  // alap: semmi nem kiemelt
+  await expect(page.locator("#idosor-legend .idosor-legend-elem.kiemelt")).toHaveCount(0);
+  await expect(page.locator(I)).toHaveAttribute("data-idosor-aktiv", "");
+  // katt B-re → B kiemelt, más nem; a tükör B
+  await bE.click();
+  await expect(bE).toHaveClass(/kiemelt/);
+  await expect(page.locator("#idosor-legend .idosor-legend-elem.kiemelt")).toHaveCount(1);
+  await expect(page.locator(I)).toHaveAttribute("data-idosor-aktiv", "B");
+  // újra B → reset (toggle)
+  await bE.click();
+  await expect(page.locator("#idosor-legend .idosor-legend-elem.kiemelt")).toHaveCount(0);
+  await expect(page.locator(I)).toHaveAttribute("data-idosor-aktiv", "");
 });
