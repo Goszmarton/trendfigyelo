@@ -16,7 +16,7 @@ Utolsó frissítés: 2026-08-18.
   új ID. Lezárt tétel a **LEZÁRT / ELAVULT** szakaszba kerül, **nem törlődik**.
 - **c) INVARIÁNS (frissítéskor ellenőrizd):**
   `aktív + kész + nem-task rekord + félretett = törzs-sorszám`.
-  Most: **24 + 23 + 17 + 0 = 64**. A **LEZÁRT / ELAVULT** külön számolódik: most **12**.
+  Most: **24 + 23 + 18 + 0 = 65**. A **LEZÁRT / ELAVULT** külön számolódik: most **12**.
   (08-17: +TELJES-NEZET [aktív] és +SZEMLE-SZABÁLY [rekord] — a 6b latens rajzolási hiba utóéletéből;
   majd 6c LESZÁLLÍTVA [aktív→kész] + 3 REKORD [SZINT-VONAL-VAK, ZOLD-NEM-SZALLIT, RESZLEGES-RAJZOL].
   08-18: GORBE-B + MIN-BC + MIN-TCP [aktív→kész] — a szemle 2/2 tiszta után (három mozgás, total 62 tart:
@@ -24,12 +24,20 @@ Utolsó frissítés: 2026-08-18.
   +MERET-ALABECSLES [új D-rekord, törzs +1] → NETTÓ 0, a rekord marad 15, a törzs 62; a LEZÁRT 11→12.
   Végül MIN-CSS [aktív→kész, B 18→17, kész 21→22] → törzs 62 tart.
   08-18 (2. kör): LEGFRISSEBB-RESZLEGES [D-nyitott→LESZÁLLÍTVA: aktív 25→24, kész 22→23] + 2 ÚJ D-rekord
-  [ARCHIVUM-RESZLEGES, RESZBEN-TELT-BLOKK: rekord 15→17] → törzs 62→**64** (2 új tétel); LEZÁRT tart 12.)
+  [ARCHIVUM-RESZLEGES, RESZBEN-TELT-BLOKK: rekord 15→17] → törzs 62→64 (2 új tétel); LEZÁRT tart 12.
+  08-18 (3. kör, user-átvizsgálás): +FRISS-RESZLEGES-URES [új D-rekord, rekord 17→18] → törzs 64→**65**;
+  RESZBEN-TELT-BLOKK élesítve (config-elérhető), A) LESZÁLLÍTVA≠LEZÁRT definíció (rule e). LEZÁRT tart 12.)
   Ha ez az egyenlőség nem áll, a leltár driftel.
 - **d)** **Önhivatkozó hash TILOS:** a leltár nem tartalmazhatja a SAJÁT lezáró commitja
   hash-ét (nincs „(ez a commit)" placeholder sem, ami bent ragad). A lezáró sor állapota
   „LESZÁLLÍTVA (lásd git log)"; a tényleges hash-t a push után a KÖVETKEZŐ ATADAS pinneli
   (mint a hat eredeti LESZÁLLÍTVA-tételnél). MÁS, MÁR LÉTEZŐ commit hash-ére hivatkozni szabad.
+- **e) LESZÁLLÍTVA ≠ LEZÁRT/ELAVULT (két külön cél, ne mosódjon):**
+  **LESZÁLLÍTVA** = leszállított MUNKATERMÉK (kód/fix/doc shippelve) → a TÖRZSBEN (az invariáns kész-vödre).
+  **LEZÁRT/ELAVULT** = munkatermék NÉLKÜL lezárt tétel (döntés „nem javítjuk"; elavult/felülírt; érveléssel
+  megválaszolt kérdés) → KÜLÖN a törzstől (a saját számláló). Egy javított bug → LESZÁLLÍTVA; egy „nem áll
+  elő élesben, nem javítjuk" döntés → LEZÁRT (pl. VEZERLO-MAGAS). Ezért zárhat egy tétel úgy, hogy a LEZÁRT
+  szám NEM változik (LESZÁLLÍTVA-ba ment), és fordítva.
 
 Mezők: **ID | Név | Fázis | Állapot | MÉRT/BECS | Futásra hat | Méret | Függ**.
 Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
@@ -107,7 +115,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | LANC-ORAS | órás láncolás (2_het+; kumulált skálázó tartós tárolása) | Ph4 §8.2 | NYITOTT | BECS | igen (új kimenet) | XL | §8.2-INV |
 | TELJES-NEZET | „jó adat kezdete" hosszú nézet: egy NEVESÍTETT config-konstans dátumtól rajzol. A kezdő-dátum **USER-DÖNTÉS** (NEM mérés, NEM visszamenőleges lekérdezés). Hatókör+granularitás a user döntése; MÉRT bemenetek (08-17): (b) GLOBÁLIS vágás @2026-08 TARTHATATLAN — het-szó 0 érvényes nézet, a szint-medián 52-hetes bázisa 1 pontra esik (het ~52 pontból csak 1-2 esik 08-01 utánra; nap ~12-14, épp MIN_PONT körül) → ezt NE vessük fel újra. Az első másodlagos gyűjtés SZÓRT (rotáció ≤2/nap): albérlet/tüntetés 08-13, akciós újság 08-14, nyaralás 08-15, kórház 08-16 → közös dátum a később gyűjtött szónak „jó adatot" hazudna. A „régi rossz rács belekeveredik" kockázat NEM a másodlagosnál áll (mind 08-13+, egyetlen today-12m, egységes normalizálás — nincs pre-marker pont), hanem a `modszertan_valtas` (07-30) markert átívelő órás/napi láncnál (kumulatív skálázó); az órás lánc (LANC-ORAS) még nem épült, a napi tortenet marker-vágott. | Ph4 | NYITOTT | USER-DÖNTÉS (bemenet MÉRT) | igen (új kimenet) | L | LANC-ORAS |
 
-## (D) Ma (2026-08-13..18) nyitott új tételek (21 — 4 nyitott + 17 rekord)
+## (D) Ma (2026-08-13..18) nyitott új tételek (22 — 4 nyitott + 18 rekord)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
@@ -119,7 +127,8 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | MASODLAGOS-OK-NEV | a másodlagos regresszió `nincs_lancolas`/`keves_pont` ok-ot ad nap/het rácson (§9: a nap/het ágon nincs láncolás), a frontend STRING-ILLESZTÉSSEL fordítja (egyesitett_reg: nincs_lancolas→rovid_masodlagos; keves_pont+het→rovid_het_ablak). Egy backend ok-ÁTNEVEZÉS NÉMÁN elrontaná (a régi „összefűzött nap" visszatérne). Diszkriminátor: a másodlagos ENTRY (miv) léte + miv.ok + m.racs az ÜRES-ágon (az üres iv NEM hordoz _racs-ot → miv/m.racs a helyes kulcs, nem _racs). A het-szűkítés STRUKTURÁLIS (nem n=4): het 2_het/1_ho = 2/4 hét < RACS_MIN_PONT[het]=7 → mindig keves_pont (rács-durva a rövid ablakhoz); nap keves_pont ellenben valódi ritkulás (14 nap ≥ MIN_PONT 12, csak lyukaknál). Backend-javítás (nap/het saját ok-kód) külön kör | Ph4/backend | REKORD (megfigyelés) | MÉRT+STRUKT (08-16) | nem (megjel.) | S-M | — |
 | PLAFON-128 | a hívás-plafon **LEVEZETETT szám, NINCS beírt 128-as konstans**: `_szamitott_plafon = (tervezett_hivasszam + MAX_MASODLAGOS_NAPI) × max_probak` (futtato.py:490-492). **EXPLICIT levezetés (MÉRT 08-18):** `tervezett_hivasszam = 2 + trend_idosor_max(15) + trend_idosor_rekesz_max(5) + len(kulcsszavak)(13) = 35`; `MAX_MASODLAGOS_NAPI=2`, `max_probak=4` → **(35+2)×4 = 148**. A GORBE-B ELŐTT (rekesz-tag nélkül): `tervezett=30` → **(30+2)×4 = 128**. A GORBE-B a `trend_idosor_rekesz_max`(=5) idősor-tagot adta hozzá (128→148). A Task 5 a KULCSSZO-tagot írja majd át (rotáció) → ÚJRANÉZENDŐ a Task5 tervénél; a formulának MINDKÉT módosítást tartalmaznia kell. L4 backstopként ráépült (a plafon hard-abortot okoz, exit 2). FIGYELEM: a 148 sem beírt konstans, minden config-változásnál újraszámolódik. | Ph4 (új) | REKORD/MEGKÖTÉS | MÉRT (08-18) | igen | — | TASK5, L4, GORBE-B |
 | ARCHIVUM-RESZLEGES | a napi archívum (`napok/<nap>.json`, futtato.py:367) a RÉSZLEGES `top_trendek`-et KIÍRJA, MÍG a legfrissebb (LEGFRISSEBB-RESZLEGES óta) nem — SZÁNDÉKOS aszimmetria: archívum = mi TÖRTÉNT (a részleges nap is történés), legfrissebb = a legjobb ismert TELJES állapot. Ezért csúszhat el a napi index legutolsó napja (részleges) a legfrissebb megőrzött (teljes) napjától — VÁLLALT. Ha egységes skip kell, az KÜLÖN tétel/scope. | Ph3/4 | REKORD (megfigyelés) | MÉRT (08-18) | nem (aszimmetria) | S | — |
-| RESZBEN-TELT-BLOKK | a `kulcsszavak` blokk KÉPES részben telni egy BUKOTT (blokkolva) ágon: a `kulcsszavak.gyujt` a 429 előtti szavakat `e.reszleges`-re menti, a futtato kiírja (MÉRT képesség). A jelenlegi ágsorrendben (kulcsszo→idosor) ezt a `trend_idosorok` ürülése (idosor kihagyva → (B)) MINDIG elfogja → élesben NEM szivárog (ELMÉLETI leak). ÚJRANYÍLIK, ha az ágsorrend változik VAGY `trend_idosor_max=0`. A LEGFRISSEBB-RESZLEGES (d) hatóköre SZÁNDÉKOSAN nem terjed ki erre (üres ÉS bukott, nem részleges-ÉS-bukott). | Ph3/4 | REKORD (ELMÉLETI lelet) | MÉRT (képesség 08-18) | igen (kimenet, ha nyílik) | S | LEGFRISSEBB-RESZLEGES |
+| RESZBEN-TELT-BLOKK | a `kulcsszavak` blokk KÉPES részben telni egy BUKOTT (blokkolva) ágon: a `kulcsszavak.gyujt` a 429 előtti szavakat `e.reszleges`-re menti, a futtato kiírja (MÉRT képesség, `test_reszleges_kulcsszo_mentes` a nyers oldalon igazolja). A LEGFRISSEBB-RESZLEGES (d) guard helyessége az ÁG SORRENDJÉN áll (kulcsszo→idosor), amit **SEMMI nem rögzít**: a jelenlegi sorrendben a `trend_idosorok` ürülése MINDIG elfogja (idosor kihagyva → (B)). **A leak KÉT nyitó feltétele NÉV SZERINT:** (1) az ágsorrend megfordul / a `kulcsszo` NEM előzi az `idosor`-t; (2) `trend_idosor_max = 0` → az idosor siker-ágon üres, a (B) nem tüzel rá. **A (2) MÉRVE ELÉRHETŐ configból:** a `betolt` a `trend_idosor_max`-ot NEM validálja (`int`, nincs `≥1`), tehát `trend_idosor_max: 0` érvényes config → a leak NEM tisztán elméleti, hanem **config-feltételes** (a mai 15-ös configgal nem áll elő). PLAFON_OVERRIDE NEM érinti (csak a plafont). Ez a **NEGYEDIK rejtett kalibráció-függő feltevés** (MIN_PONT / IRANY-KUSZOB / ALAPNEZET-KONSTANS után): egy némán elmozdítható konstans/sorrend, ami a helyességet hordozza. A (d) hatóköre SZÁNDÉKOSAN nem terjed ki erre (üres ÉS bukott, nem részleges-ÉS-bukott); kód most NEM kell rá. | Ph3/4 | REKORD (lelet) | MÉRT (config-elérhető 08-18) | igen (kimenet, ha nyílik) | S | LEGFRISSEBB-RESZLEGES, ALAPNEZET-KONSTANS |
+| FRISS-RESZLEGES-URES | ha NINCS előző legfrissebb.json (friss telepítés / törölt fájl) ÉS egy RÉSZLEGES (bukott ágú) futás jön, a (d) skip **nem hoz létre** fájlt → a site-nak nincs „legfrissebb" adata a következő TELJES futásig; a FIGYELEM őszinte („marad a(z) ismeretlen (nincs korábbi teljes fájl) …"). MÉRVE 08-18 (E2). KONZISZTENS a total-guard friss-telepítés viselkedésével (az is skipel → nincs fájl), tehát NEM új kockázat-osztály, csak a (d) szélső esete. Kód most NEM kell rá; ha kellene: friss-telepítésen a részleges INKÁBB kiírandó-e (valamit>semmit) — külön döntés. | Ph3/4 | REKORD (megfigyelés) | MÉRT (08-18) | igen (kimenet, friss telep.) | S | LEGFRISSEBB-RESZLEGES |
 | NEVER-COLL | never-collected nem-ora szavak láthatósága | Ph4 (új) | NYITOTT (Task5 után) | MÉRT | igen | S-M | TASK5 |
 | ADD-SWAP | „hozzáadás vs csere" rács-váltásnál (előbb mérünk) | Ph4 (új) | NYITOTT | BECS | igen (config) | M | több nap mérés |
 | §8.2-INV | „a lezárt szakasz sem invariáns" csúcs-váltásnál (csak órás lánc) | Ph4/spec (új) | NYITOTT | MÉRT (§1.4.1) | nem | M-L | LANC-ORAS |

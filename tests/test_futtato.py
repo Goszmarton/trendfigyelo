@@ -339,14 +339,16 @@ class ApiOkKulcsszoBlokkKliens:
         return sum(self.szamlalok.values())
 
 
-def _jo_teljes_legfrissebb(ddir, frissitve="2026-08-10T19:57:53+00:00"):
-    """Egy JÓ, TELJES legfrissebb.json a lemezen (mindhárom blokk telt) — a részleges NEM írhatja felül."""
+def _jo_teljes_legfrissebb(ddir, frissitve="2026-08-10T19:57:53+00:00", n_regi_szo=13):
+    """Egy JÓ, TELJES legfrissebb.json a lemezen (mindhárom blokk telt) — a részleges NEM írhatja felül.
+    A `kulcsszavak` alapból 13 szó (a valós teljes fájl mérete) → az anti-freeze teszt új-darabjai (12, 3)
+    ehhez képest CSÖKKENÉSEK, így a monotonitás-mutációk (M1: uj<regi, M2: uj<0.5·regi) tényleg elkaphatók."""
     ddir.mkdir(parents=True, exist_ok=True)
     tartalom = json.dumps({
         "frissitve": frissitve,
         "top_trendek": [{"kifejezes": "régi-trend", "idosor": [{"idopont_utc": frissitve, "ertek": 5}]}],
         "trend_idosorok": [{"kifejezes": "régi-trend", "idopont_utc": frissitve, "ertek": 5}],
-        "kulcsszavak": {"régi-szó": [{"nap": "2026-08-10", "atlag": 50}]},
+        "kulcsszavak": {"régi-szó-%d" % i: [{"nap": "2026-08-10", "atlag": 50}] for i in range(n_regi_szo)},
     }, ensure_ascii=False)
     (ddir / "legfrissebb.json").write_text(tartalom, encoding="utf-8")
     return tartalom
@@ -377,11 +379,13 @@ def test_reszleges_agHiba_figyelem_megnevez(tmp_path, capsys):
 @pytest.mark.parametrize("n_szo", [12, 3])
 def test_legit_kisebb_blokk_siker_agon_FELULIR_SZANDEKOS_ZOLD(tmp_path, n_szo):
     # SZÁNDÉKOS-ZÖLD (anti-freeze — a user félelme, a HÁROM közül a legfontosabb): siker kulcsszo-ágon
-    # N szó (a blokk KISEBB, de NEM üres) → a legfrissebb FELÜLÍRÓDIK. Zöld a fix ELŐTT ÉS UTÁN.
-    # KÉT ÉRTÉK: 3<12 elfogja a naiv "új<régi → skip" mutációt; a 12 az ARÁNY-alapú (≥50%) téves fixet is.
+    # N szó (a blokk KISEBB — CSÖKKENÉS a 13-as baseline-hoz képest —, de NEM üres) → a legfrissebb
+    # FELÜLÍRÓDIK. Zöld a helyes (ág-státusz) fixszel, PIROS egy monotonitás-mutációval. KÉT ÉRTÉK (MÉRVE):
+    #   12: M1 (uj<regi: 12<13) elkapja, M2 (uj<0.5·regi: 12<6.5 HAMIS) NEM → 12 CSAK M1-et fedi.
+    #    3: M1 (3<13) ÉS M2 (3<6.5) is elkapja → 3 MINDKETTŐT fedi. A pár szétválasztja M1-et M2-től.
     most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)
     ddir = tmp_path / "docs" / "data"
-    _jo_teljes_legfrissebb(ddir)   # meglévő teljes fájl (1 régi-szó); a lényeg: siker → FELÜLÍR
+    _jo_teljes_legfrissebb(ddir, n_regi_szo=13)   # BASELINE 13 szó → 12/3 CSÖKKENÉS; siker → FELÜLÍR
     cfg = _config([KulcsszoTetel("szo%d" % i, "megelhetes", "szintmero") for i in range(n_szo)])
     futtato.futtat(cfg, KulcsszoAdatKliens(), tmp_path / "adatok", ddir, most=most)
     lf = json.loads((ddir / "legfrissebb.json").read_text(encoding="utf-8"))
