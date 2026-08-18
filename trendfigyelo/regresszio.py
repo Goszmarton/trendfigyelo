@@ -288,6 +288,9 @@ def regresszio_szamit(nyers, tortenet, config, szamitva_utc, lanc_map=None):
             "aktiv": aktiv,
             "domen": domen,
             "tipus": tipus,
+            # a szó config-RÁCSA (óra/nap/het) — a frontend felbontás-feliratához (item 3) és az órás-only
+            # szó (benzin/nyugdíj) megkülönböztetéséhez (item 5); a horgonyos-only (nem-config) szó → "ora".
+            "racs": getattr(aktivak.get(szo), "racs", "ora") or "ora",
             "intervallumok": intervallumok,
         }
     return {

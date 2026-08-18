@@ -14,9 +14,12 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 .szekcio { display: flex; gap: 1.5rem; align-items: flex-start; margin: 1.5rem 0; }
 /* A1: a két nagy blokk vizuális elválasztása (a margó önmagában nem látszott) */
 .szekcio + .szekcio { border-top: 1px solid #e3e3e3; padding-top: 1.5rem; }
+/* blokk-elkülönítés (2026-08-18): FEHÉR háttér + finom keret + lekerekített sarok (a #fafafa szürkézés
+   [d86af56] felülírva — a szürke rosszabb volt). A négy nagy blokk (2 vezerlo-sav + 2 tartalom) így KÜLÖNÜL. */
 .vezerlo-sav { flex: 0 0 14rem; position: sticky; top: 1rem; align-self: flex-start;
-  background: #fafafa; border: 1px solid #e3e3e3; border-radius: 6px; padding: .75rem; box-sizing: border-box; }
-#kulcsszo-blokk, #trend-blokk { flex: 1; min-width: 0; }
+  background: #fff; border: 1px solid #e3e3e3; border-radius: 6px; padding: .75rem; box-sizing: border-box; }
+#kulcsszo-blokk, #trend-blokk { flex: 1; min-width: 0;
+  background: #fff; border: 1px solid #e3e3e3; border-radius: 6px; padding: 1rem; box-sizing: border-box; }
 @media (max-width: 900px) {
   .szekcio { flex-direction: column; }
   /* column módban a fő tengely FÜGGŐLEGES → a flex:0 0 14rem MAGASSÁGOT fixálna (üresen 224px, az első
@@ -31,8 +34,11 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 /* Task 6 vezérlők + 8b-utáni layout-javítás: a gomb + ok-szöveg párok wrapper nélkül INLINE összefolytak
    (a „2 hét"/„1 hó" a szövegek KÖZÉ ékelődött). Fix: a konténer flex-column (intervallumok egymás alatt),
    minden .intervallum-tetel flex-row (a gomb + a saját .ok egy sorban). A gombköz margin-right → wrapper-gap. */
-#intervallum-vezerlo { display: flex; flex-direction: column; align-items: flex-start; gap: .35rem; }
-#intervallum-vezerlo .intervallum-tetel { display: flex; align-items: baseline; gap: .5rem; }
+#intervallum-vezerlo { display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; }
+/* item 2: a tétel OSZLOP (gomb-sor + magyarázat alatta); a gomb-sor a régi flex-row (gomb + .ok egy sorban) */
+#intervallum-vezerlo .intervallum-tetel { display: flex; flex-direction: column; align-items: flex-start; gap: .1rem; }
+#intervallum-vezerlo .intervallum-gomb-sor { display: flex; align-items: baseline; gap: .5rem; }
+#intervallum-vezerlo .gomb-magyarazat { font-size: .7rem; color: #888; line-height: 1.1; }
 #intervallum-vezerlo button { padding: .3rem .7rem; cursor: pointer;
   background: #fff; border: 1px solid #ccc; border-radius: 4px; color: #222;
   min-width: 3.5rem; box-sizing: border-box; white-space: nowrap; }
@@ -59,6 +65,8 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
   box-shadow: 0 1px 2px rgba(0,0,0,.06); }
 /* H1: látható kulcsszó-címke a canvas fölött (visszafogott: félkövér, kis alsó margó) */
 #kulcsszo-blokk .kulcsszo-cimke { font-size: .9rem; font-weight: 600; margin: 0 0 .3rem; }
+/* item 3: felbontás-felirat (óránkénti/napi/heti) — visszafogott, a címke alatt, minden kártyán */
+#kulcsszo-blokk .felbontas { font-size: .72rem; color: #888; margin: 0 0 .4rem; }
 /* H2b: a Chart.js kanonikus wrapper — fix magasság + position:relative, a canvas ezt tölti ki 100%-ban */
 #kulcsszo-blokk .chart-doboz { position: relative; height: 250px; }
 #kulcsszo-blokk .merteszamok { font-size: .8rem; margin: .4rem 0 0; }

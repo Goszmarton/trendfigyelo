@@ -5,7 +5,8 @@
 // magassága a LETILTOTT intervallum-gombok ok-szövegeitől nő (minden tiltott gomb egy .ok sort ad).
 //
 // MIÉRT MARAD A REPÓBAN: a CSS-t érintő változásoknál (pl. MIN-CSS, app.css vezérlő-szabályok) ez a
-// NO-OP igazolás eszköze — előtte/utána futtatva a JELENLEGI magasság (ma 155px @390×844) NEM változhat.
+// NO-OP igazolás eszköze — előtte/utána futtatva a JELENLEGI magasság (ma 235px @390×844; a CSS+MAGYARÁZÓ kör
+// gomb-magyarázat sub-szövegei 155→235px-re növelték, ez SZÁNDÉKOS, nem regresszió) NEM változhat.
 // Ha a szám elmozdul, az REGRESSZIÓ. FONTOS: a kiírt px-számok VIEWPORT-FÜGGŐK — a méret a kimenetben
 // szerepel, hogy egy szám NE avuljon el úgy, ahogy egy régi, kontextus nélküli mérés (lásd VEZERLO-MAGAS
 // leltár-tétel: a régi „hajtás alá tolja" 320px MAGAS viewporton készült, portré 390×844-en nem áll).

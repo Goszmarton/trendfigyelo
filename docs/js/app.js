@@ -73,7 +73,10 @@ const OSZT = {
   kartya: "kulcsszo-chart", cimke: "kulcsszo-cimke", chart_doboz: "chart-doboz", csoport: "domen-csoport", fejlec: "domen-fejlec",
   merteszamok: "merteszamok", tengely_felirat: "tengely-felirat", ures: "ures",
   csupa_nulla: "csupa-nulla", elettartam: "elettartam", frissesseg: "frissesseg",
-  intervallum_tetel: "intervallum-tetel",   // per-intervallum wrapper: a gomb + (ha van) a saját .ok EGY sorban
+  felbontas: "felbontas",   // item 3: a szó felbontása (óránkénti/napi/heti) minden kártyán
+  intervallum_tetel: "intervallum-tetel",   // per-intervallum wrapper (oszlop): gomb-sor + magyarázat alatta
+  intervallum_gomb_sor: "intervallum-gomb-sor",   // a gomb + (ha van) .ok EGY sorban
+  gomb_magyarazat: "gomb-magyarazat",   // item 2: a gomb időtartam-magyarázata (mit jelent)
 };
 const ATTR = {
   aktiv: "data-aktiv-intervallum", kulcsszo: "data-kulcsszo", drawable: "data-drawable",
@@ -82,6 +85,7 @@ const ATTR = {
   ymax: "data-y-max", rendered: "data-rendered", ok: "data-ok", intervallum: "data-intervallum",
   szint: "data-szint",   // 6c: esemenyjelzo szint-vonal értéke (heti medián) a kártyán
   rajzolt_pont: "data-rajzolt-pont",   // 6c javító-szelet: a RAJZOLT slotok száma (szeletelt ablak) — DOM-őr a szeletelési hibára
+  felbontas: "data-felbontas",   // item 3: a kártya felbontás-rácsa (ora/nap/het) — DOM-őr
 };
 const TENGELY_FELIRAT = "relatív keresési szint (0–100)";   // EN DASH
 const CSUPA_NULLA_SZOVEG = "Ezen az időszakon nincs érdemi keresési aktivitás (a mért értékek végig nulla körül).";
@@ -102,6 +106,14 @@ const KATEGORIA_ALAP_SZIN = "#3366cc";
 // TASK 9b ÁTALAKÍTÁS: az aktív intervallum EGYETLEN igazságforrása a #kulcsszo-blokk
 // data-aktiv-intervallum attribútuma; a gombok aria-pressed-je EBBŐL derivált (aria_szinkron).
 
+// item 2 (2026-08-18): a gombok időtartam-magyarázata (MIT jelent) — LÁTHATÓ sub-szöveg a gomb alatt.
+const GOMB_MAGYARAZAT = {
+  "1_het": "mától visszafelé 1 hét",
+  "2_het": "mától visszafelé 2 hét",
+  "1_ho": "mától visszafelé 1 hónap",
+  "3_ho": "mától visszafelé 3 hónap",
+  "1_ev": "mától visszafelé 1 év",
+};
 const INTERVALLUMOK = [
   { kulcs: "1_het", cimke: "1 hét", hossz: 7 },
   { kulcs: "2_het", cimke: "2 hét", hossz: 14 },
@@ -118,11 +130,14 @@ const OK_MAGYAR = {
   // 6b Szelet 2: rács-tudatos üres-állapot. nincs_masodlagos = a szó még nem kapott napi/heti
   // (másodlagos) futást (rotáció). 6c: az "esemenyjelzo" ok-ot az egyesitett_reg MÁR NEM ad tovább
   // (az órás esemenyjelzo 1_het a het rovid_het_ablak-ra fordul) → a "szint-nézet készül" felirat NYUGDÍJAZVA.
-  nincs_masodlagos: "Ehhez még nem gyűjtöttünk napi/heti adatot",
-  // Szelet 3: a másodlagos MAGA adhat nincs_lancolas/keves_pont-ot nap/het ágon → rács-tudatos, NEM órás/adathiány
-  // szemantikájú felirat. rovid_masodlagos = SEMLEGES tényközlés (nem ígér automatikus feltöltődést).
-  rovid_masodlagos: "A napi/heti sorozat rövidebb ennél az ablaknál",
-  rovid_het_ablak: "A heti rácson ez az ablak túl rövid",
+  // 2026-08-18: az ELVI (soha nem javul, a szó felbontása durva) vs IDŐBELI (magától feltöltődik) eset a
+  // SZÖVEGBEN különüljön el (ez volt a fő félreérthetőség). A benzin/nyugdíj (órás-only) NEM kap napi/heti
+  // adatot SOHA → külön ok-kód (JOGOSULATLAN-URES-UZENET feloldva), a lánc-hossz (dinamikus N) a LANC-ORAS
+  // Szelet 2-vel jön (a frontend akkor olvassa a láncot) — most TÉNY, se ígéret, se szám.
+  nincs_masodlagos: "Ehhez az ablakhoz még gyűlik a napi/heti adat. Magától feltöltődik.",   // IDŐBELI
+  oras_lanc_kell: "Órás felbontású szó — ehhez az ablakhoz az órás sorozat láncolása kell.",  // órás-only (benzin/nyugdíj)
+  rovid_masodlagos: "A napi/heti sorozat még rövidebb ennél az ablaknál. Magától feltöltődik.",  // IDŐBELI
+  rovid_het_ablak: "Heti felbontású szó — ez az ablak túl rövid a heti rácshoz. Ez nem fog feltöltődni.",  // ELVI
   rovid_span: "Túl rövid mért időszak",
   degeneralt: "Nem illeszthető",
 };
@@ -169,7 +184,8 @@ function intervallum_allapot(kulcsszavak, kulcs) {
 //   órás[X].ervenyes → órás (racs "ora"); különben másodlagos[X].ervenyes → másodlagos (a szó racs-a);
 //   különben üres, az ELSŐDLEGES forrás ok-jával (hosszú X → másodlagos ok / nincs_masodlagos; 1_het → órás).
 // A _racs/_forras az iv-en (per-INTERVALLUM), mert egy szó 1_het-je órás, 1_ho-ja másodlagos lehet.
-// (Az órás ág _racs = o.racs || "ora": prodban az órás JSON nem hordoz racs-ot → "ora".)
+// (Az órás ág _racs MINDIG "ora": a drawn órás intervallum az órás rácson rajzol, függetlenül a szó config-
+//  rácsától [o.racs]. Az o.racs [config-rács, 2026-08-18 óta a regresszióban] a felbontás-felirathoz/benzin-eset.)
 function egyesitett_reg() {
   const oras = adat["kulcsszo_regresszio.json"];
   if (!oras || !oras.kulcsszavak) return oras || null;
@@ -184,6 +200,9 @@ function egyesitett_reg() {
       const oiv = o.intervallumok && o.intervallumok[X];
       const miv = m && m.intervallumok && m.intervallumok[X];
       if (oiv && oiv.ervenyes) {
+        // _racs = a szó CONFIG-rácsa (o.racs): a kulcsszo_regresszio.json minden szót a SAJÁT rácsán számol
+        // (benzin/nyugdíj=óra, a többi nap/het) → ez hajtja a rajz-rácsot ÉS a „nap/óra nem-nulla" feliratot
+        // (RACS_EGYSEG). A hiánytalan órás-út bájt-azonos marad (racs hiánya → "ora"). A kártya-Felbontás is ezt olvassa.
         ivk[X] = Object.assign({}, oiv, { _racs: o.racs || "ora", _forras: "kulcsszo_nyers.json" });
       } else if (miv && miv.ervenyes) {
         ivk[X] = Object.assign({}, miv, { _racs: m.racs, _forras: "kulcsszo_masodlagos_nyers.json" });
@@ -195,7 +214,9 @@ function egyesitett_reg() {
         if (X === "1_het" && !(oiv && oiv.ok === "esemenyjelzo")) {
           ok = oiv ? oiv.ok : "nincs_adat";                          // 1_het = az órás ok — KIVÉVE esemenyjelzo
         } else if (!miv) {                                           // (6c: az órás esemenyjelzo 1_het a het-ágra fordul → rovid_het_ablak)
-          ok = "nincs_masodlagos";                                   // nincs másodlagos entry → a szó nem kapott napi/heti futást
+          // órás-only szó (benzin/nyugdíj, racs="ora") SOHA nem kap napi/heti adatot → a hosszú ablakhoz az órás
+          // LÁNC kell (oras_lanc_kell); a nap/het szó a rotációból még nem kapott → nincs_masodlagos (IDŐBELI).
+          ok = (o.racs === "ora") ? "oras_lanc_kell" : "nincs_masodlagos";
         } else if (miv.ok === "nincs_lancolas") {
           ok = "rovid_masodlagos";                                   // van másodlagos, de a sorozat rövidebb az ablaknál (nem órás-láncolás)
         } else if (miv.ok === "keves_pont" && m.racs === "het") {
@@ -269,21 +290,29 @@ function intervallum_vezerlo_render() {
     // (#intervallum-vezerlo button / .ok / .ures) → a wrapper nem töri őket.
     const tetel = document.createElement("div");
     tetel.className = OSZT.intervallum_tetel;
+    const sor = document.createElement("div");   // a gomb + (ha van) .ok EGY sorban; a magyarázat ez ALATT
+    sor.className = OSZT.intervallum_gomb_sor;
     const gomb = document.createElement("button");
     gomb.setAttribute(ATTR.intervallum, a.kulcs);
     gomb.textContent = a.cimke;
     if (a.ervenyes) {
       gomb.setAttribute("aria-pressed", "false");        // a tényleges értéket az aria_szinkron állítja be
       gomb.addEventListener("click", function () { aktiv_intervallum_valt(a.kulcs); });
-      tetel.appendChild(gomb);   // ÉRVÉNYES: CSAK a gomb — SZÁNDÉKOSAN NINCS üres .ok span (a .ok-szám szemantikája marad)
+      sor.appendChild(gomb);   // ÉRVÉNYES: CSAK a gomb — SZÁNDÉKOSAN NINCS üres .ok span (a .ok-szám szemantikája marad)
     } else {
       gomb.disabled = true;
-      tetel.appendChild(gomb);
+      sor.appendChild(gomb);
       const ok = document.createElement("span"); // LÁTHATÓ magyar ok a gomb mellé (nem csak title)
       ok.className = "ok";
       ok.textContent = OK_MAGYAR[a.ok] || a.ok;
-      tetel.appendChild(ok);
+      sor.appendChild(ok);
     }
+    tetel.appendChild(sor);
+    // item 2 (2026-08-18): a gomb időtartam-magyarázata (MIT jelent) — LÁTHATÓ sub-szöveg a gomb alatt (nem tooltip)
+    const magy = document.createElement("div");
+    magy.className = OSZT.gomb_magyarazat;
+    magy.textContent = GOMB_MAGYARAZAT[a.kulcs] || "";
+    tetel.appendChild(magy);
     el.appendChild(tetel);
   });
   aria_szinkron();
@@ -356,6 +385,11 @@ const IRANY_MAGYAR = { novekszik: "iránya növekvő", csokken: "iránya csökke
 // Az órás JSON nem hordoz racs-ot → default "ora" → az órás felirat bájt-azonos. Ismeretlen rács
 // (config-elgépelés / jövőbeli negyedik rács) → LÁTHATÓ "? <érték>", NEM undefined, NEM néma "óra".
 const RACS_SZO = { ora: "óra", nap: "nap", het: "hét" };
+// item 3 (2026-08-18): a KÁRTYA-felirat felbontás-szava (a jel-erősség rács-szavától eltérő, olvasóbarát alak).
+const FELBONTAS_SZO = { ora: "óránkénti", nap: "napi", het: "heti" };
+function felbontas_szo(racs) {
+  return FELBONTAS_SZO[racs] || ("? " + racs);   // ismeretlen rács → LÁTHATÓ, nem néma default
+}
 function racs_szo(racs) {
   const r = racs || "ora";
   return RACS_SZO[r] || ("? " + r);
@@ -542,6 +576,15 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs) {
   kartya.appendChild(cimke);
   const iv = szoreg.intervallumok ? szoreg.intervallumok[aktiv_kulcs] : null;
   const ablak = (iv && iv.ervenyes) ? nyers_ablak(szo, iv.ablak_veg_utc, iv._forras) : null;
+
+  // item 3 (2026-08-18): a szó FELBONTÁSA MINDEN kártyán (az ÜRES-en is) — rögtön látszik, miért nincs görbe
+  // egy adott ablakon. Forrás: az intervallum _racs-a; üresnél a szó config-rácsa (szoreg.racs). Mindkét ág ELŐTT.
+  const felbontas_racs = (iv && iv._racs) || szoreg.racs || "ora";
+  kartya.setAttribute(ATTR.felbontas, felbontas_racs);
+  const fb = document.createElement("p");
+  fb.className = OSZT.felbontas;
+  fb.textContent = "Felbontás: " + felbontas_szo(felbontas_racs);
+  kartya.appendChild(fb);
 
   if (!iv || !iv.ervenyes || !ablak) {
     kartya.setAttribute(ATTR.drawable, "false");

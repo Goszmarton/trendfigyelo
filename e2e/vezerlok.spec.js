@@ -101,7 +101,7 @@ test("1_het ervenyes, többi false → az 1_het KIVÁLASZTVA; a 2_het tiltott, m
   // intervallum forrása a nap/het másodlagos (§8.2: NEM láncolás) → a helyes üres-ok „nincs_masodlagos".
   // Ez a MÁSODIK teszt két nap alatt, ami a régi, HIBÁS szerződést kódolta (az első a test_teljes_blokkolas
   // volt, ami zöld-blokknál felülírást várt). Itt a szó nem kapott másodlagost → „napi/heti adatot", nem láncolás.
-  await expect(page.locator("#intervallum-vezerlo")).toContainText("Ehhez még nem gyűjtöttünk napi/heti adatot");
+  await expect(page.locator("#intervallum-vezerlo")).toContainText("Ehhez az ablakhoz még gyűlik a napi/heti adat. Magától feltöltődik.");
   await expect(page.locator("#intervallum-vezerlo")).not.toContainText("összefűzött"); // a félrevezető órás-láncolás felirat NEM
 });
 

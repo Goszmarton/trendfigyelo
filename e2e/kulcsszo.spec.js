@@ -294,16 +294,18 @@ test("2g. másodlagos 1_ho érvényes → az 1_ho intervallum-gomb engedélyezet
 });
 
 // ── 2h. Szelet 2 üres-állapot: másodlagos NÉLKÜLI hosszú intervallum → "napi/heti adatot" ───────
-test("2h. másodlagos nélküli hosszú intervallum → 'napi/heti adatot' (NEM 'összefűzött nap')", async ({ page }) => {
+test("2h. benzin (órás-only) hosszú intervallum → 'órás sorozat láncolása kell' (JOGOSULATLAN-URES-UZENET fix, item 5)", async ({ page }) => {
   await mock(page, {
-    regObj: reg({ "benzin": regSzo({ domen: "fogyasztas" }) }),   // csak órás, NINCS másodlagos
+    regObj: reg({ "benzin": regSzo({ domen: "fogyasztas", racs: "ora" }) }),   // csak órás, NINCS másodlagos
     nyersObj: nyers({ "benzin": [nyersRekord("benzin")] }),
     // mpRegObj/mpNyersObj: default üres → benzinnek nincs másodlagosa
   });
   await page.goto("/");
   const v = page.locator("#intervallum-vezerlo");
-  await expect(v).toContainText("Ehhez még nem gyűjtöttünk napi/heti adatot");
-  await expect(v).not.toContainText("összefűzött nap");   // az órás-láncolás felirat NEM szivárog
+  // benzin órás-only (racs="ora") → oras_lanc_kell, NEM a félrevezető "napi/heti adatot" (sosem lesz napi/heti)
+  await expect(v).toContainText("Órás felbontású szó — ehhez az ablakhoz az órás sorozat láncolása kell.");
+  await expect(v).not.toContainText("nem gyűjtöttünk napi/heti");   // a félrevezető üzenet NEM
+  await expect(v).not.toContainText("összefűzött nap");             // az órás-láncolás régi felirat NEM
 });
 
 // ── 2i. Szelet 2 integráció: másodlagos szó a hosszú intervallumon → "nap nem-nulla" ────────────
@@ -346,7 +348,7 @@ test("2k. nap-szó másodlagos 1_ev nincs_lancolas → 'A napi/heti sorozat röv
   });
   await page.goto("/");
   const v = page.locator("#intervallum-vezerlo");
-  await expect(v).toContainText("A napi/heti sorozat rövidebb ennél az ablaknál");   // rovid_masodlagos (1_ev)
+  await expect(v).toContainText("A napi/heti sorozat még rövidebb ennél az ablaknál. Magától feltöltődik.");   // rovid_masodlagos — IDŐBELI
   await expect(v).not.toContainText("összefűzött");                                    // a félrevezető órás-láncolás felirat NEM
 });
 
@@ -360,7 +362,7 @@ test("2l. het-szó 2_het keves_pont → 'A heti rácson ez az ablak túl rövid'
   });
   await page.goto("/");
   const v = page.locator("#intervallum-vezerlo");
-  await expect(v).toContainText("A heti rácson ez az ablak túl rövid");   // rovid_het_ablak (2_het)
+  await expect(v).toContainText("Heti felbontású szó — ez az ablak túl rövid a heti rácshoz. Ez nem fog feltöltődni.");   // rovid_het_ablak — ELVI
   await expect(v).not.toContainText("Túl kevés mért pont");               // az adathiányt sugalló felirat NEM
 });
 
@@ -382,7 +384,7 @@ test("2n. esemenyjelzo het-szó 1_het → 'A heti rácson ez az ablak túl rövi
   });
   await page.goto("/");
   const v = page.locator("#intervallum-vezerlo");
-  await expect(v).toContainText("A heti rácson ez az ablak túl rövid");    // 1_het esemenyjelzo → rovid_het_ablak
+  await expect(v).toContainText("Heti felbontású szó — ez az ablak túl rövid a heti rácshoz. Ez nem fog feltöltődni.");  // esemenyjelzo 1_het → rovid_het_ablak (ELVI)
   await expect(v).not.toContainText("Eseményjelző — szint-nézet készül");  // a nyugdíjazott felirat NEM
 });
 
@@ -648,19 +650,98 @@ test("10. default = 1_het (ALAPNEZET); kattintásra 1_ho-ra data-ablak-veg + dat
   await expect(page.locator('#intervallum-vezerlo button[aria-pressed="true"]')).toHaveAttribute("data-intervallum", "1_ho");
 });
 
+// ── CSS+MAGYARÁZÓ kör: blokk-elválasztás, kártya-felbontás, gomb-magyarázat ────────────────────
+
+// Item 1 — a nagy blokkok LÁTHATÓAN elválnak (lekerekített keret), a háttér FEHÉR (a szürkítés visszavonva).
+// getComputedStyle-lal DOM-assertálható. Diszkriminátor: a keret/rádiusz eltávolítására, ill. a .vezerlo-sav
+// #fafafa-ra visszaállítására ez a teszt bukik.
+test("CSS: a kulcsszó- és trend-blokk lekerekített kerettel elválik; a vezérlő-sáv háttere FEHÉR (nem szürke)", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "állás": regSzo({ domen: "munkaeropiac" }) }),
+    nyersObj: nyers({ "állás": [nyersRekord("állás")] }),
+  });
+  await page.goto("/");
+  for (const id of ["#kulcsszo-blokk", "#trend-blokk"]) {
+    const st = await page.locator(id).evaluate((el) => {
+      const s = getComputedStyle(el);
+      return { r: s.borderTopLeftRadius, bw: s.borderTopWidth, bs: s.borderTopStyle, bg: s.backgroundColor };
+    });
+    expect(st.r).not.toBe("0px");                     // lekerekített sarok
+    expect(st.bs).toBe("solid");                      // van keret (nem 'none')
+    expect(parseFloat(st.bw)).toBeGreaterThan(0);
+    expect(st.bg).toBe("rgb(255, 255, 255)");         // FEHÉR háttér marad (a szürkítés rosszabb volt → visszavonva)
+  }
+  // két .vezerlo-sav (intervallum-vezérlő + dátum/egyéb) — MINDKETTŐ fehér, a d86af56 #fafafa szürkítés VISSZAVONVA
+  const vezBgs = await page.locator(".vezerlo-sav").evaluateAll((els) => els.map((el) => getComputedStyle(el).backgroundColor));
+  expect(vezBgs).toHaveLength(2);
+  for (const bg of vezBgs) expect(bg).toBe("rgb(255, 255, 255)");
+});
+
+// Item 3 — MINDEN kártyán ott a szó felbontása (óránkénti/napi/heti), az ÜRESEN is → megszűnik a „miért nincs
+// görbe ezen az ablakon" zavar. Rajzolt kártya: az aktív intervallum tényleges rácsa (órás ablakon „óránkénti").
+// Üres kártya: nincs _racs → a szó config-rácsára esik vissza (nap/het) → a natív felbontást mutatja.
+test("Felbontás-sor MINDEN kártyán (rajzolton ÉS üresen): óránkénti/napi/heti + data-felbontas", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({
+      "benzin": regSzo({ domen: "fogyasztas", racs: "ora" }),                     // órás szó, 1_het rajzol → óránkénti
+      "hitel":  regSzo({ domen: "lakhatas", racs: "nap", intervallumok: {         // napi szó, ÜRES 1_het (nincs_adat)
+        "1_het": ivHibas("nincs_adat"), "2_het": ivHibas("nincs_lancolas"),
+        "1_ho": ivHibas("nincs_lancolas"), "3_ho": ivHibas("nincs_lancolas"), "1_ev": ivHibas("nincs_lancolas"),
+      } }),
+      "tüntetés": regSzo({ domen: "kozelet", racs: "het", intervallumok: {        // heti szó, ÜRES 1_het (ELVI: túl rövid)
+        "1_het": ivHibas("nincs_adat"), "2_het": ivHibas("nincs_lancolas"),
+        "1_ho": ivHibas("nincs_lancolas"), "3_ho": ivHibas("nincs_lancolas"), "1_ev": ivHibas("nincs_lancolas"),
+      } }),
+    }),
+    nyersObj: nyers({ "benzin": [nyersRekord("benzin")], "hitel": [nyersRekord("hitel")], "tüntetés": [nyersRekord("tüntetés")] }),
+  });
+  await page.goto("/");
+  await expect(page.locator(`${K} .kulcsszo-chart .felbontas`)).toHaveCount(3);   // MINDEN kártyán, az üreseken is
+  const b = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="benzin"]`);
+  await expect(b).toHaveAttribute("data-felbontas", "ora");
+  await expect(b.locator(".felbontas")).toHaveText("Felbontás: óránkénti");        // rajzolt órás
+  const h = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="hitel"]`);
+  await expect(h).toHaveAttribute("data-felbontas", "nap");
+  await expect(h.locator(".felbontas")).toHaveText("Felbontás: napi");             // ÜRES kártyán IS (config-rács)
+  const t = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="tüntetés"]`);
+  await expect(t).toHaveAttribute("data-felbontas", "het");
+  await expect(t.locator(".felbontas")).toHaveText("Felbontás: heti");             // ÜRES heti szó
+});
+
+// Item 2 — minden intervallum-gomb ALATT egy LÁTHATÓ idő-táv magyarázat (sub-szöveg, NEM title-tooltip: mobilon
+// a tooltip nem elérhető). A .gomb-magyarazat a .intervallum-tetel-en belül, a gomb-sor ALATT.
+test("Intervallum-gombok: minden gomb alatt LÁTHATÓ idő-táv magyarázat (sub-szöveg, nem tooltip)", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "állás": regSzo() }),
+    nyersObj: nyers({ "állás": [nyersRekord("állás")] }),
+  });
+  await page.goto("/");
+  const magy = page.locator("#intervallum-vezerlo .gomb-magyarazat");
+  await expect(magy).toHaveCount(5);                                               // mind az 5 gomb alatt
+  await expect(magy.first()).toBeVisible();                                        // LÁTHATÓ (nem néma title)
+  const parok = { "1_het": "mától visszafelé 1 hét", "2_het": "mától visszafelé 2 hét",
+    "1_ho": "mától visszafelé 1 hónap", "3_ho": "mától visszafelé 3 hónap", "1_ev": "mától visszafelé 1 év" };
+  for (const kulcs of Object.keys(parok)) {
+    await expect(page.locator(
+      `#intervallum-vezerlo .intervallum-tetel:has(button[data-intervallum="${kulcs}"]) .gomb-magyarazat`
+    )).toHaveText(parok[kulcs]);
+  }
+});
+
 // ── 11. lusta renderelés (mod 3) ─────────────────────────────────────────────────────────────
 test("11. kis viewport → csak az első kártyák data-rendered; scroll → a lejjebbi is megkapja", async ({ page }) => {
   const szavak = {}; const nyersMap = {};
   for (let i = 0; i < 8; i++) { szavak["szo" + i] = regSzo(); nyersMap["szo" + i] = [nyersRekord("szo" + i)]; }
   await mock(page, { regObj: reg(szavak), nyersObj: nyers(nyersMap) });
-  // 6b Szelet 2: itt EGYETLEN szónak sincs másodlagos adata → mind a 4 hosszú intervallum-gomb TILTOTT,
-  // az új, HOSSZABB „napi/heti adatot" üres-felirattal → a vezérlő ~234px (mérve), az első kártya top≈787px.
-  // A viewport 320→480 (zóna alja 400+480=880 > 787), hogy az első kártya a zónába essen — a near-vs-far
-  // szándék marad (első renderel, szo7 nem). MIÉRT nem prod-hatás MA: éles adaton 4 szónak VAN másodlagosa →
-  // az aggregált gombok ENGEDÉLYEZETTEK → nincs feliratszöveg → a vezérlő rövid. DE ez a feltétel VÁLTOZHAT:
-  // friss telepítésen (0 másodlagos) vagy a kulcsszó-lista bővülésekor (KULCS-LISTA) a szintetikus eset lesz a
-  // valóság → lásd a VEZERLO-MAGAS leltár-megfigyelést.
-  await page.setViewportSize({ width: 380, height: 480 });
+  // 6b Szelet 2: itt EGYETLEN szónak sincs másodlagos adata → mind a 4 hosszú intervallum-gomb TILTOTT.
+  // CSS+MAGYARÁZÓ kör: a gomb-magyarázat sub-szövegek + a kártyánkénti Felbontás-sor + a blokk-padding MÉRHETŐEN
+  // lejjebb tolta a layoutot. FRISS MÉRÉS (380 széles, 8 szintetikus szó, 0 másodlagos): első kártya top=906px,
+  // kártyánkénti magasság=428px, szo7 top=4017px. Az IO zóna-alja = VH + rootMargin(400). VH=560 → zóna-alja 960:
+  // az első kártya (906) BELEESIK, a szo7 (4017) NEM → a near-vs-far szándék marad (első renderel, szo7 csak scrollra).
+  // MIÉRT nem prod-hatás MA: éles adaton 4 szónak VAN másodlagosa → az aggregált gombok ENGEDÉLYEZETTEK → nincs
+  // ok-feliratszöveg → a vezérlő rövidebb. DE ez VÁLTOZHAT: friss telepítésen (0 másodlagos) vagy a kulcsszó-lista
+  // bővülésekor (KULCS-LISTA) a szintetikus eset lesz a valóság → lásd a VEZERLO-MAGAS leltár-megfigyelést.
+  await page.setViewportSize({ width: 380, height: 560 });
   await page.goto("/");
   const rendered = page.locator(`${K} .kulcsszo-chart[data-rendered="true"]`);
   await expect(rendered).not.toHaveCount(0);                                         // auto-retry: várd meg az IO-callbacket
