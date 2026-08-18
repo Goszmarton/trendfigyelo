@@ -314,6 +314,80 @@ def test_van_adat_ir_legfrissebbet_SZANDEKOS_ZOLD(tmp_path):
     assert len(lf["top_trendek"]) > 0
 
 
+# --- LEGFRISSEBB-RESZLEGES: egy RÉSZLEGES futás (API ad top_trendeket, de a kulcsszo/idosor mag-ág
+# 429-blokkot kap → a mag-blokkok ÜRESEK) NE írja felül a jó TELJES legfrissebb.json-t. A diszkriminátor
+# az ÁG-STÁTUSZ (blokkolva/kihagyva), NEM a darabszám (a legit csökkenés siker ágon nem nullázza a blokkot).
+class ApiOkKulcsszoBlokkKliens:
+    """A 08-11 (e660f2ee) reprodukciója: felkapott_api ad egy trendet (top_trendek nem üres), a kulcsszo
+    ág AZONNAL 429-blokkot kap (AgFeladva, 0 szó gyűlt) → block-stop → idosor 'kihagyva'. Eredmény:
+    top_trendek nem üres, kulcsszavak ÜRES (kulcsszo blokkolva), trend_idosorok ÜRES (idosor kihagyva).
+    (Külön a meglévő ReszlegesBlokkKliens-től, ami 1 szót MENT a blokk előtt = részben-telt blokk.)"""
+    def __init__(self):
+        self.tr = _dummy_tr()
+        self.szamlalok = {}
+    def hivas(self, ag, fn, *a, **k):
+        self.szamlalok[ag] = self.szamlalok.get(ag, 0) + 1
+        if ag == "felkapott_api":
+            return [SimpleNamespace(keyword="infláció", volume=50000, volume_growth_pct=120,
+                                    trend_keywords=[], started=None, picture="", picture_source="", news=[])]
+        if ag == "kulcsszo":
+            raise kliens.AgFeladva("kulcsszo", ["429", "429", "429", "429"])
+        return []
+    def hivasszam(self, ag):
+        return self.szamlalok.get(ag, 0)
+    def osszes_hivas(self):
+        return sum(self.szamlalok.values())
+
+
+def _jo_teljes_legfrissebb(ddir, frissitve="2026-08-10T19:57:53+00:00"):
+    """Egy JÓ, TELJES legfrissebb.json a lemezen (mindhárom blokk telt) — a részleges NEM írhatja felül."""
+    ddir.mkdir(parents=True, exist_ok=True)
+    tartalom = json.dumps({
+        "frissitve": frissitve,
+        "top_trendek": [{"kifejezes": "régi-trend", "idosor": [{"idopont_utc": frissitve, "ertek": 5}]}],
+        "trend_idosorok": [{"kifejezes": "régi-trend", "idopont_utc": frissitve, "ertek": 5}],
+        "kulcsszavak": {"régi-szó": [{"nap": "2026-08-10", "atlag": 50}]},
+    }, ensure_ascii=False)
+    (ddir / "legfrissebb.json").write_text(tartalom, encoding="utf-8")
+    return tartalom
+
+
+def test_reszleges_agHiba_nem_uriti_a_legfrissebbet(tmp_path):
+    # RED (fix előtt): top_trendek van, de kulcsszavak/trend_idosorok ÜRES a 429 miatt → a régi guard
+    # (csak MIND-üresre) NEM tüzel → a részleges FELÜLÍR. A (d) után: a jó teljes fájl VÁLTOZATLAN.
+    most = datetime(2021, 1, 1, 12, 0, tzinfo=timezone.utc)
+    ddir = tmp_path / "docs" / "data"
+    jo = _jo_teljes_legfrissebb(ddir)
+    futtato.futtat(_config(), ApiOkKulcsszoBlokkKliens(), tmp_path / "adatok", ddir, most=most)
+    assert (ddir / "legfrissebb.json").read_text(encoding="utf-8") == jo   # VÁLTOZATLAN
+
+
+def test_reszleges_agHiba_figyelem_megnevez(tmp_path, capsys):
+    # RED (fix előtt): némán ír. Kell HANGOS FIGYELEM — KONJUNKCIÓ: megnevezi a blokkot, az ágat+okot,
+    # és a megőrzött nap KONKRÉT DÁTUMÁT (nem címkét).
+    most = datetime(2021, 1, 1, 12, 0, tzinfo=timezone.utc)
+    ddir = tmp_path / "docs" / "data"
+    _jo_teljes_legfrissebb(ddir, frissitve="2026-08-10T19:57:53+00:00")
+    futtato.futtat(_config(), ApiOkKulcsszoBlokkKliens(), tmp_path / "adatok", ddir, most=most)
+    ki = capsys.readouterr().out
+    for kell in ("KIHAGYVA", "RÉSZLEGES", "kulcsszavak", "kulcsszo", "blokkolva", "2026-08-10"):
+        assert kell in ki, f"hiányzik a FIGYELEM-ből: {kell!r}"
+
+
+@pytest.mark.parametrize("n_szo", [12, 3])
+def test_legit_kisebb_blokk_siker_agon_FELULIR_SZANDEKOS_ZOLD(tmp_path, n_szo):
+    # SZÁNDÉKOS-ZÖLD (anti-freeze — a user félelme, a HÁROM közül a legfontosabb): siker kulcsszo-ágon
+    # N szó (a blokk KISEBB, de NEM üres) → a legfrissebb FELÜLÍRÓDIK. Zöld a fix ELŐTT ÉS UTÁN.
+    # KÉT ÉRTÉK: 3<12 elfogja a naiv "új<régi → skip" mutációt; a 12 az ARÁNY-alapú (≥50%) téves fixet is.
+    most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)
+    ddir = tmp_path / "docs" / "data"
+    _jo_teljes_legfrissebb(ddir)   # meglévő teljes fájl (1 régi-szó); a lényeg: siker → FELÜLÍR
+    cfg = _config([KulcsszoTetel("szo%d" % i, "megelhetes", "szintmero") for i in range(n_szo)])
+    futtato.futtat(cfg, KulcsszoAdatKliens(), tmp_path / "adatok", ddir, most=most)
+    lf = json.loads((ddir / "legfrissebb.json").read_text(encoding="utf-8"))
+    assert len(lf["kulcsszavak"]) == n_szo   # FELÜLÍRVA az N friss szóval, NEM befagyva a régin
+
+
 def test_tervezett_hivasszam_szolo():
     c = _config()  # trend_idosor_max=2, rekesz_max=5, 1 kulcsszó → SZÓLÓ: 1 hívás
     assert futtato.tervezett_hivasszam(c) == 2 + 2 + 5 + 1  # api+rss + idosor + rekesz + 1 szó = 10 (GORBE-B)

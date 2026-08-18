@@ -83,6 +83,29 @@ A `napi_ir` (napok/<nap>.json, futtato.py:367) a részleges `top_trendek`-et KI�
 archívum = mi TÖRTÉNT (a részleges nap is történés), legfrissebb = a legjobb ismert TELJES állapot.
 Ha egységes skip kell, az KÜLÖN tétel/scope. → új leltár-REKORD: **ARCHIVUM-RESZLEGES**.
 
+## 5b. A DISZKRIMINÁTOR TELJESSÉGE (#1) — MÉRVE, kódból
+
+**Kérdés:** tud-e egy BUKOTT ág RÉSZBEN TELT blokkot kiírni (pl. kulcsszo 7/13 szó után 429 → blokk=7, ág=blokkolva)?
+- **idosor ág** (`idosorok.gyujt:56-58`): AgFeladva-ra `raise` **részleg-mentés NÉLKÜL** (nincs `.reszleges`) →
+  trend_idosorok MINDIG üres a 429-nél → (B) elfogja. Részleges idosor-blokk NEM lehetséges.
+- **kulcsszo ág** (`kulcsszavak.gyujt:132` + `futtato.py:326-328`): AgFeladva-ra a MÁR LEMÉRT részleget
+  RÁAKASZTJA (`e.reszleges`), a futtato menti → a kulcsszavak-blokk **KÉPES** részben telni. **DE** a sorrend
+  (kulcsszo→idosor): kulcsszo-blokkolás → block-stop → idosor „kihagyva" → trend_idosorok ÜRES → **(B) a
+  trend_idosorok-on tüzel** → a részleges kulcsszavak-ot a skip MEGVÉDI.
+- **Következtetés:** a jelenlegi sorrendben (B) MINDIG elfogja a 429-blokkot (az utolsó mag-ág, idosor, nem
+  ment részleget → trend_idosorok mindig ürül). A részleges kulcsszavak-szivárgás **ELMÉLETI** (csak
+  sorrend-váltásnál VAGY `trend_idosor_max=0`-nál nyílna). **A (d) hatóköre NEM bővül erre** → leltár:
+  **RESZBEN-TELT-BLOKK** (ELMÉLETI lelet, a képesség MÉRT, a szivárgás sorrend-maszkolt).
+
+## 2b. MAG-BLOKK DEFINÍCIÓ (#2) — explicit
+
+A 3 blokkból a **mag** (a (B)-t kiváltó): **`kulcsszavak`** (↔`kulcsszo` ág) és **`trend_idosorok`** (↔`idosor` ág).
+A **`top_trendek` NEM mag**: a `felkapott_api` bukása block-stopol → MINDENT kiürít → az (A) total-guard fedi
+(nincs olyan eset, hogy top_trendek üres, de a másik kettő telt). **Elfogadott következmény:** a teljes-fájl
+skip egy nem-mag blokk (top_trendek) MELLETT eldobhat FRISS jó blokkokat is (pl. idosor-429 esetén a friss
+top_trendek-nevek + a teljes kulcsszavak is eldobódik) — a snapshot INKÁBB maradjon utolsó-teljes; a nap
+adata a napi archívumban (napok/<nap>.json) és a tortenet-ben megvan (ARCHIVUM-RESZLEGES).
+
 ## 6. Méret + spec
 
 - **Production:** ~20-30 sor a `futtato.py` guard-blokkjában (blokk↔ág térkép + „üres ÉS ága bukott?" +

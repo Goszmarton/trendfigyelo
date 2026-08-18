@@ -344,13 +344,28 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
     # ---------- JSON-export ----------
     top_trendek = top_trend_struktura(api_trendek, trend_idosorok, rss_trendek, config)
     # legfrissebb: az EGYETLEN feltétel nélküli kanonikus felülíró (a tortenet/napi/nyers guardolt).
-    # Ha a payload MIND üres (nulla-adatos futás: teljes 429-blokk / hálózati hiba / üres válaszok),
-    # NE írjuk felül üressel a jó fájlt — HANGOS FIGYELEM (nem néma skip = success-vakság).
+    # Két guard-réteg, a diszkriminátor az ÁG-STÁTUSZ (NEM a darabszám — a legit csökkenés siker ágon
+    # nem nullázza a blokkot, tehát nem fagyaszt; LEGFRISSEBB-RESZLEGES):
+    #  (A) RÉGI total-guard (a (B) RÉSZHALMAZA): MIND a 3 blokk üres (bármely okból) → skip.
+    #  (B) RÉSZLEGES-hiba: egy MAG-blokk ÜRES, MERT az ága BUKOTT → a részleges NE írja felül a jó TELJES fájlt.
+    # A top_trendek NEM mag: bukása (felkapott_api) block-stopol → mindent kiürít → (A) fedi.
     _lf_reszek = {"top_trendek": top_trendek, "trend_idosorok": trend_idosorok, "kulcsszavak": kulcsszo_pontok}
     _lf_ures = [nev for nev, ertek in _lf_reszek.items() if not ertek]
+    _LF_MAG_AG = {"kulcsszavak": "kulcsszo", "trend_idosorok": "idosor"}
+    _LF_AG_BUKOTT = {"blokkolva", "kihagyva", "plafon", "hiba"}
+    _lf_ag = {b["ag"]: b for b in bejegyzesek}
+    _lf_reszleges = [(blokk, _lf_ag[ag]) for blokk, ag in _LF_MAG_AG.items()
+                     if not _lf_reszek[blokk] and _lf_ag.get(ag, {}).get("eredmeny") in _LF_AG_BUKOTT]
     if len(_lf_ures) == len(_lf_reszek):
         print(f"FIGYELEM: legfrissebb.json kiírása KIHAGYVA — a futás nulla érdemi adatot termelt "
               f"(üres: {', '.join(_lf_ures)}); a meglévő fájl érintetlen.")
+    elif _lf_reszleges:
+        _megorzott = _legfrissebb_frissitve_datum(docs_data_mappa)
+        print("FIGYELEM: legfrissebb.json felülírása KIHAGYVA — RÉSZLEGES futás (ág-hiba):")
+        for _blokk, _be in _lf_reszleges:
+            _kod = f" — {_be['hibakodok']}" if _be.get("hibakodok") else ""
+            print(f"  üres blokk: {_blokk!r} (a(z) {_be['ag']!r} ág: {_be['eredmeny']}{_kod})")
+        print(f"  a jó TELJES fájl ÉRINTETLEN — marad a(z) {_megorzott} teljes snapshotja.")
     else:
         json_export.legfrissebb_ir(docs_data_mappa, top_trendek, trend_idosorok,
                                    kulcsszo_pontok, letoltve, config.geo,
@@ -485,6 +500,17 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
     if plafon_tullepes:               # L4: a védőkorlát tüzelt → HANGOS, nem-nulla (nem van_adat→0)
         return KILEPES_PLAFON
     return 0 if van_adat else 1
+
+
+def _legfrissebb_frissitve_datum(docs_data):
+    """A meglévő legfrissebb.json 'frissitve' dátuma (a megőrzött TELJES snapshot napja) — a RÉSZLEGES-skip
+    FIGYELEM-je NEVEZZE MEG, MELYIK nap marad. Konkrét dátum, nem címke; hiányzó/olvashatatlan fájlnál jelzés."""
+    utvonal = Path(docs_data) / "legfrissebb.json"
+    try:
+        friss = json.loads(utvonal.read_text(encoding="utf-8")).get("frissitve", "")
+    except (OSError, ValueError):
+        return "ismeretlen (nincs korábbi teljes fájl)"
+    return friss[:10] if friss else "ismeretlen (nincs 'frissitve' a meglévő fájlban)"
 
 
 def _szamitott_plafon(config):
