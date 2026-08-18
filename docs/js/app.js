@@ -743,7 +743,9 @@ const TREND_NORMALIZALAS_SZOVEG = "ⓘ A görbék magassága nem összemérhető
   + "Amit a görbe megbízhatóan mutat: egy trend saját napi lefutásának alakját és a csúcs időzítését.";
 
 let kategoria_chart = null;        // az eloszlás-chart SAJÁT példánya (NEM a kulcsszó chart_peldanyok/chart_takarit)
-let trend_chart_peldanyok = {};    // 8a: kifejezes -> sparkline Chart — KÜLÖN a kulcsszó chart_peldanyok-tól
+let trend_chart_peldanyok = [];    // 8a: sparkline Chart-példányok TÖMBJE (MIN-TCP: NEM kifejezés-kulcsú — két
+                                   // azonos kifejezésű trend különben felülírta egymást → árva Chart). KÜLÖN a
+                                   // kulcsszó chart_peldanyok-tól. Csak destroy-all a rendeltetése (nincs kikeresés).
 let trend_esemeny_kotve = false;   // a dátumválasztó change-kötése egyszer
 
 // a rendezett nap-lista + a legfrissebb nap (a napok/index.json-ból)
@@ -808,7 +810,7 @@ function trend_sparkline_letrehoz(kartya) {
   const idosor = kartya._idosor;
   const canvas = kartya.querySelector("canvas");
   if (!idosor || !canvas || typeof Chart === "undefined") return;
-  trend_chart_peldanyok[kartya.getAttribute(ATTR_T.kifejezes)] = new Chart(canvas, {
+  trend_chart_peldanyok.push(new Chart(canvas, {
     type: "line",
     data: {
       labels: idosor.map(function (p) { return p.idopont_utc; }),   // időbélyeg-alapú (SOHA nem index-alapú)
@@ -835,16 +837,14 @@ function trend_sparkline_letrehoz(kartya) {
         },
       },
     },
-  });
+  }));
   kartya.setAttribute(ATTR_T.idosor_rendered, "true");
 }
 
 function trend_chart_takarit() {
   if (kategoria_chart) { kategoria_chart.destroy(); kategoria_chart = null; }
-  Object.keys(trend_chart_peldanyok).forEach(function (k) {   // 8a: a sparkline-példányok is destroy (nem halmozódhatnak)
-    if (trend_chart_peldanyok[k]) trend_chart_peldanyok[k].destroy();
-    delete trend_chart_peldanyok[k];
-  });
+  trend_chart_peldanyok.forEach(function (c) { if (c) c.destroy(); });   // 8a: a sparkline-példányok is destroy (nem halmozódhatnak)
+  trend_chart_peldanyok = [];                                           // MIN-TCP: teljes ürítés (index-független, kollízió-mentes)
 }
 
 function trend_chart_epit(canvas, eloszlas, blokk) {

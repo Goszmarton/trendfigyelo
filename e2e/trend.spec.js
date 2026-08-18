@@ -468,3 +468,45 @@ test("27. a trend-blokk h2 szövege »Ma felkapott keresések« (nem »Napi legf
   await expect(page.locator(`${T} h2`)).toHaveText("Ma felkapott keresések");
   await expect(page.locator(T)).toHaveAttribute("aria-label", "Ma felkapott keresések");
 });
+
+// ── T28 (MIN-TCP) — a trend-sparkline példány-nyilvántartás NE KULCSOLJON kifejezésre: két azonos
+// kifejezésű trend a régi map-ben felülírta egymást → napváltáskor az ELSŐ Chart ÁRVÁN maradt (a takarit
+// csak a map-ben lévő — utolsó — példányt destroy-olta). A rekesz-út (GORBE-B) leszemlézve, ez most mehet.
+test("28. két azonos kifejezésű trend → napváltás UTÁN nincs árva Chart (nem kifejezés-kulcsú nyilvántartás)", async ({ page }) => {
+  // A friss nap KÉT „dupla" nevű trendje (mindkettő idősorral → mindkettő sparkline-t rajzol).
+  const DUPLA = [
+    trend("dupla", "50000", ["Other"], idosor_sorozat(4, "2026-08-07T20:52:00+00:00")),
+    trend("dupla", "10000", ["Other"], idosor_sorozat(3, "2026-08-07T21:00:00+00:00")),
+  ];
+  const REGI = [ trend("archív", "5000", ["Other"], idosor_sorozat(4, "2026-07-29T20:52:00+00:00")) ];
+  await mock(page, {
+    legfrissebb: { top_trendek: DUPLA },                 // a friss (08-08) nap = a két dupla
+    index: { napok: ["2026-07-30", "2026-08-08"] },
+    napok: { "2026-07-30": REGI },
+  });
+  await page.goto("/");
+
+  // KÉT sparkline-canvas rajzolódik (a két azonos nevű kártyához külön canvas)
+  const canvasok = page.locator(`${T} .trend-sparkline-doboz canvas`);
+  await expect(canvasok).toHaveCount(2);
+  const fogantyuk = await canvasok.elementHandles();
+  // SANITY: mindkét Chart él a napváltás ELŐTT (a teszt-beállítás nem üres)
+  const el_elotte = await Promise.all(fogantyuk.map(function (h) {
+    return page.evaluate(function (c) { return !!(window.Chart && Chart.getChart(c)); }, h);
+  }));
+  expect(el_elotte.filter(Boolean).length).toBe(2);
+
+  // NAPVÁLTÁS a régi napra → trend_blokk_render → trend_chart_takarit() destroy-ol MINDENT, amit nyilvántart.
+  // A váltás ASZINKRON (napok/<nap>.json fetch) → determinisztikusan a data-nap attribútumra várunk (a
+  // .trend-kifejezes-re várni strict-mode-ot dobna az átmeneti két „dupla"-n).
+  await page.locator("#datum-valaszto select").selectOption("2026-07-30");
+  await expect(page.locator("#trend-blokk")).toHaveAttribute("data-nap", "2026-07-30");
+  await expect(page.locator(`${T} .trend-kifejezes`)).toHaveText("archív");   // egyetlen kártya → a régi nap kirajzolódott
+
+  // A napváltás után a KÉT régi-napi canvashoz kötött Chart EGYIKE SEM élhet. A bugos (kifejezés-kulcsú)
+  // map csak az utolsó „dupla" példányt destroy-olta → az első ÁRVÁN maradt (Chart.getChart még visszaadja).
+  const el_utana = await Promise.all(fogantyuk.map(function (h) {
+    return page.evaluate(function (c) { return !!(window.Chart && Chart.getChart(c)); }, h);
+  }));
+  expect(el_utana.filter(Boolean).length).toBe(0);
+});

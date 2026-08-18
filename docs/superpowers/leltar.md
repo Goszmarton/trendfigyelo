@@ -16,11 +16,11 @@ Utolsó frissítés: 2026-08-18.
   új ID. Lezárt tétel a **LEZÁRT / ELAVULT** szakaszba kerül, **nem törlődik**.
 - **c) INVARIÁNS (frissítéskor ellenőrizd):**
   `aktív + kész + nem-task rekord + félretett = törzs-sorszám`.
-  Most: **28 + 19 + 15 + 0 = 62**. A **LEZÁRT / ELAVULT** külön számolódik: most **11**.
+  Most: **26 + 21 + 15 + 0 = 62**. A **LEZÁRT / ELAVULT** külön számolódik: most **11**.
   (08-17: +TELJES-NEZET [aktív] és +SZEMLE-SZABÁLY [rekord] — a 6b latens rajzolási hiba utóéletéből;
   majd 6c LESZÁLLÍTVA [aktív→kész] + 3 REKORD [SZINT-VONAL-VAK, ZOLD-NEM-SZALLIT, RESZLEGES-RAJZOL].
-  08-18: GORBE-B [aktív→kész], a szemle 2/2 tiszta után — a total 62 VÁLTOZATLAN (mozgás, nem új tétel):
-  aktív 29→28 [B 21→20], kész 18→19.)
+  08-18: GORBE-B + MIN-BC + MIN-TCP [aktív→kész] — a szemle 2/2 tiszta után; a total 62 VÁLTOZATLAN
+  (három mozgás, nem új tétel): aktív 29→26 [B 21→18], kész 18→21.)
   Ha ez az egyenlőség nem áll, a leltár driftel.
 - **d)** **Önhivatkozó hash TILOS:** a leltár nem tartalmazhatja a SAJÁT lezáró commitja
   hash-ét (nincs „(ez a commit)" placeholder sem, ami bent ragad). A lezáró sor állapota
@@ -32,7 +32,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 
 ---
 
-## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (19)
+## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (21)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
@@ -61,11 +61,15 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 
 | GORBE-B | a napi TREND-blokk holtverseny-rekesz trendjei (a top-`trend_idosor_max`=15 idősor-lista utáni azonos-volumenű tie-bucket) is kapnak sparkline-t. Döntés: (a) FORWARD-ONLY. **Szelet 1 (BACKEND, a2e6526):** `_rekesz_idosor_ag` LEGUTOLSÓ ág (`idosorok.gyujt_rekesz` csendes 429-feladás, `PlafonTullepve` HARD), `rekesz_kifejezesek` a `megjelenitendo_trendek` top-N feletti farka `trend_idosor_rekesz_max`(=5)-re vágva, kétállapotú FIGYELEM. **Szelet 2 (FRONTEND) = 0 SOR** (`trend_kartya_epit` a sparkline-t `idosor.length>0`-ból dönti → a feltöltött rekesz-idősor automatikusan rajzol). **Szelet 3 (DOC záró):** leltár + spec §7.3 D1 revízió (elemenkénti üres-görbe forward-only szűkítés) + terv-doc plafon-korrekció. **VIZUÁLIS SZEMLE 2/2 TISZTA (MÉRT 2026-08-18), a forward-only MINDKÉT oldala igazolva:** (1) ÚJ nap (2026-08-17 regen): a „folyó" (vol 2000, a tie-bucket TÚLFOLYÁS szava, idx 15) 181 pontos idősort kapott → sparkline-t rajzol, mind a 16 kártya rajzol; (2) RÉGI nap (2026-08-16): a korábbi rekesz-szavak (ufc 330 / lionel messi) TOVÁBBRA IS „nincs idősor ezen a napon" — NEM töltődtek fel visszamenőleg (forward-only, ahogy kell). **ELSŐ ÉLES ADATPONT (naplo.csv 2026-08-17T19:35:39):** `idosor_rekesz;siker;1;` — 1 rekesz-szó, az 5-ös korlát NEM harapott (1<5, nincs `korlat:N`), 0×429 (nincs `429:M`), FIGYELEM egyik állapot sem; össz hívásszám a napon **33** (1+1+13+15+2+1; jóslat 33–36 — talált). `trend_idosor_rekesz_max=5` **NEM-MÉRT** konstans, **14 napos újramérési feltétel** (429-arány + hányszor harapott a korlát; a 08-17 az első adatpont). A rekesz-ág **nem-piros hibaosztálya** rögzítve: `korlat:N` (by-design cap → siker) és `429:M` (soft-fail → reszleges) EGYIK SEM pirosít; az EGYETLEN piros út a HARD `PlafonTullepve` (exit 2) — lásd MASODLAGOS-PLAFON. Plafon-fejtér: PLAFON-128 sor (128→148 levezetve). Terv: plans/2026-08-17-gorbe-b-rekesz-idosor.md | Ph3 | LESZÁLLÍTVA (lásd git log) | MÉRT (08-17 adat; szemle 08-18) | igen (megjel.) | L | vizuális szemle |
 
+| MIN-BC | a `#3366cc` kék magic literal konstansba (app.js). MÉRVE: HÁROM előfordulás, de KÉT szerep → **KÉT konstans** (nem egy, nem három): `ADAT_VONAL_SZIN` (a mért adatsor kék vonala — kulcsszó-chart 602 ÉS trend-sparkline 807, azonos szín azonos okért) és `KATEGORIA_ALAP_SZIN` (a kategória-akcentus 786, nem-tompított; testvérei a #aec4ef tompított + #9e9e9e/#d4d4d4 „Other" szürke). A szétválasztás megakadályozza, hogy az egyik szerep átszínezése némán elmozdítsa a másikat. Tiszta refaktor, **provably no-op** (mindkét konstans = „#3366cc", minden rajzolt szín bájt-azonos); NINCS RED (mesterséges teszt nélkül) — az őr a meglévő suite + a 08-18 rekesz-szemle. A testvér-színek MIN-BC hatókörén kívül, inline maradnak. | Ph3 (8a) | LESZÁLLÍTVA (lásd git log) | MÉRT | nem | S | — |
+
+| MIN-TCP | a `trend_chart_peldanyok` sparkline-nyilvántartás KIFEJEZÉS-KULCSÚ objektum volt → két azonos `kifejezes`-ű trend felülírta egymást a map-ben, és napváltáskor a `trend_chart_takarit` csak az UTOLSÓ példányt destroy-olta → az első Chart ÁRVÁN maradt (memória + detached canvasra kötött élő Chart). JAVÍTVA: a nyilvántartás **TÖMB** (`push` + `forEach destroy` + `= []`), kollízió-mentes (a map-nek nem volt kulcs-alapú kikeresése, csak destroy-all). Saját RED (T28: két „dupla" trend → napváltás UTÁN `Chart.getChart` egyik canvasra sem ad élő példányt; a rekesz-út a 08-18 szemlével felszabadult). Playwright 82→83. | Ph3 (8a) | LESZÁLLÍTVA (lásd git log) | MÉRT | igen (memória/életciklus) | S | — |
+
 ## META / FOLYAMATBAN (0)
 
 — (üres — a LEDGER-HIG leszállt: 6f4091d, lásd LESZÁLLÍTVA)
 
-## (B) Phase 3 / korábbról örökölt (20 — 20 nyitott + 0 félretett)
+## (B) Phase 3 / korábbról örökölt (18 — 18 nyitott + 0 félretett)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
@@ -79,8 +83,6 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | MINOR-2 | retenció-horgony robusztusság (befagyás / jövőbeli ablak_veg kivág) | Ph2.5 §11.7 | NYITOTT | BECS | igen (adatvesztés) | M | láncolás tervezés |
 | §11.8 | betegség/kórház éves átfedés | Ph2.5 | NYITOTT (kutatás) | BECS | nem (felület nem) | S-M | — |
 | VENV | venv 3.14 vs CI/átadó 3.12 | Ph2.5 | NYITOTT (nem blokkoló) | MÉRT | nem | S | — |
-| MIN-BC | borderColor #3366cc magic literal (app.js). **KÖTÉS OLDVA (08-18): a GORBE-B rekesz-sparkline szemléje 2/2 TISZTA → a 807-es rekesz-sor immár szemlézett, a konstans-kiemelés (provably no-op) SZABADON mehet.** A #3366cc mind a 3 helyen kiemelendő, a 807-es rekesz-sorral együtt. | Ph3 (8a) | NYITOTT (minor, SZABAD) | MÉRT | nem | S | — |
-| MIN-TCP | trend_chart_peldanyok kulcs-kollízió (árva Chart, memória). **KÖTÉS OLDVA (08-18): a rekesz-út leszemlézve (GORBE-B szemle 2/2) → a chart-életciklus kulcsolás/takarítás átírása SZABADON mehet, saját RED-del.** | Ph3 (8a) | NYITOTT (minor, SZABAD) | MÉRT | nem (memória) | S | — |
 | MIN-CSS | CSS-sorrend app.css:40-41 (date-select szabály a vezérlő közé ékelődött). **KÖTÉS (08-17): VÁR a VEZERLO-MAGAS mérésére** (0-másodlagos állapot, keskeny ablak) — egy CSS-rendezés némán elmozdíthatja a vezérlő magasságát a kiindulási állapot MÉRÉSE ELŐTT. | Ph3 (T10) | NYITOTT (minor, KÖTVE) | MÉRT | nem | S | VEZERLO-MAGAS |
 | 429-RATA | 429-ráta jellemzése (n=1, több nap napló kell) | Ph3 | NYITOTT (mérés) | MÉRT | nem | S / folyamatos | több nap napló |
 | FOLYT | folytonossag él-trigger vs állapot-check. **SUCCESS-VAK KÉSZ → a függés OLDÓDIK, FOLYT önállóan eldönthető.** A folytonossag (futtato.py:424, `seged.utolso_res`) a rést a PERZISZTENS `naplo.csv`-be írja (minden rés PONTOSAN egyszer, ~333 nap retenció) → az él-trigger valószínűleg ELÉG (a rés nem vész el, auditálható). **DÖNTÉS-tétel (nem feladat, valószínűleg 0 kód):** egy körben lezárandó indoklással — él-trigger elég-e, vagy állapot-check kell. | Ph3 | NYITOTT (DÖNTÉS) | MÉRT | nem (napló) | S | — |
