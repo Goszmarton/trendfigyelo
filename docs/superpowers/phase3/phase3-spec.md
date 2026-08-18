@@ -468,15 +468,26 @@ a Task 10 hatóköre (§11.6) — az asztali sticky itt épül, a reszponzív ö
   `2026-07-30` mind 180, a `2026-08-08` mind 181). **TILOS** fix pontszámot vagy
   közös kezdetet feltételezni; a teszt-fixture ELTÉRŐ hosszú/kezdetű sorozatokat
   tartalmazzon (0.2/13).
-- **Elemenkénti üres görbe (a D1-kiterjesztés következménye).** A
+- **Elemenkénti üres görbe (a D1-kiterjesztés következménye) — REVÍZIÓ
+  (2026-08-18, GORBE-B FORWARD-ONLY, MÉRT).** EREDETILEG: a
   holtverseny-kiterjesztéssel bekerülő elemek NINCSENEK az idősor-listában (az
   idősor a top `trend_idosor_max`-ra fut), ezért az `idosor`-uk ÜRES (a
-  `top_trend_struktura` `idosor_map.get(kif, [])` fallbackja). Lesz tehát
-  trendkártya GÖRBE NÉLKÜL. Ez **elemenkénti** üres-állapot, KÜLÖNBÖZŐ a §7.5
-  lista-szintű üres-állapotától (az az egész listára szól). A felületnek kezelnie
-  kell: az ilyen kártya a `volumen`/kategória/`hirek` alapján megjelenik, de
-  görbe helyett elemenkénti „nincs idősor ezen a napon" jelölést kap — ne törje
-  meg az elrendezést, és ne keveredjen a lista-szintű üres állapottal.
+  `top_trend_struktura` `idosor_map.get(kif, [])` fallbackja) → trendkártya
+  GÖRBE NÉLKÜL. A GORBE-B (forward-only) ezt **innentől** szűkíti: a
+  megjelenített rekesz első `trend_idosor_rekesz_max` (=5) eleme MOST idősort
+  kap (`idosor_rekesz` ág) → sparkline-t rajzol. Az elemenkénti üres-állapot
+  ezért **innentől CSAK** ezekre áll: (a) a GORBE-B ELŐTT regenerált **RÉGI
+  napok** rekesz-szavai (visszamenőleg NEM töltődnek fel — forward-only); (b) a
+  `trend_idosor_rekesz_max`-on TÚLi rekesz-elemek, ha a tie-bucket a korlátnál
+  nagyobb (a vágás a korlátnál, ott is holtverseny közepén lehet, §7.3). MÉRVE
+  (2026-08-17 regen): ÚJ napon a „folyó" (vol 2000, tie-bucket túlfolyás)
+  sparkline-t rajzol; RÉGI napon (2026-08-16) az akkori rekesz-szavak (ufc 330 /
+  lionel messi) üresek maradnak — a kétoldalas szemle 2/2 tiszta (MÉRT 08-18).
+  Ez **elemenkénti** üres-állapot, KÜLÖNBÖZŐ a §7.5 lista-szintű
+  üres-állapotától (az az egész listára szól). A felületnek kezelnie kell: az
+  ilyen kártya a `volumen`/kategória/`hirek` alapján megjelenik, de görbe helyett
+  elemenkénti „nincs idősor ezen a napon" jelölést kap — ne törje meg az
+  elrendezést, és ne keveredjen a lista-szintű üres állapottal.
 - **Blokk-szintű üres görbe — mind-üres nap (MÉRT, 2026-07-27/28).** Ha az
   idősor-ág BUKIK / 429 / feladás (`AgFeladva` → `trend_idosorok=[]`), a nap
   MINDEN eleme üres `idosor`-t kap — nem D1-szórtan, hanem **100%**

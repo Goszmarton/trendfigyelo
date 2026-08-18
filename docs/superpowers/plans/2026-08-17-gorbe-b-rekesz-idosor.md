@@ -34,8 +34,12 @@ visszamenőleges pótlás NEM (a régi napok sosem telnek fel, az üres-felirat 
    try/except, csendes feladás 429/hibára, FIGYELEM a naplóba, se propagálás, se
    exit-kód. (NEM a `_ag`, ami `PlafonTullepve`→exit 2 / AgFeladva→block-stop.)
 3. **Plafon:** `tervezett_hivasszam += trend_idosor_rekesz_max` → 2+15+5+13 = **35**
-   → hívás-plafon 35×`max_probak`(4) = **140** (a régi 30→120 helyett). Lásd a
-   PLAFON-128 konfliktus-elemzést lent.
+   → hívás-plafon = `(tervezett_hivasszam + MAX_MASODLAGOS_NAPI) × max_probak`
+   = **(35+2)×4 = 148** (a régi (30+2)×4 = **128** helyett). **KORREKCIÓ (Szelet 3,
+   MÉRT 08-18):** a plafon NEM `tervezett × max_probak` (az 140-et adna) — a `+
+   MAX_MASODLAGOS_NAPI`(=2) fejtér is benne van (`_szamitott_plafon`,
+   futtato.py:490-492). A doc korábbi 140-e ELÍRÁS volt. A 128 és a 148 is
+   LEVEZETETT szám, NINCS beírt konstans. Lásd a PLAFON-128 konfliktus-elemzést lent.
 4. **Konfigurálható felső korlát:** `trend_idosor_rekesz_max = 5` (NEM a 25-maradék).
    Indok (a saját mérésből): a napi többlet jellemzően +1..5; a 10 az elméleti max,
    ami épp a kiugró (08-12: 10) napokon engedne a legtöbbet — a legkockázatosabb
@@ -63,9 +67,10 @@ módosító:
 A két tag KÜLÖNBÖZŐ és ADDITÍV → **nincs közvetlen konfliktus.** DE mindkettő
 ugyanazt a függvényt módosítja → a **Task 5 tervénél a formulának MINDKÉT
 módosítást tartalmaznia kell** (idősor-rekesz + rotáció-kulcsszó). Az L4 szelep
-(`PlafonTullepve`→exit 2) érintetlen: a rekesz a MEGEMELT plafon (140) alatt fut,
+(`PlafonTullepve`→exit 2) érintetlen: a rekesz a MEGEMELT plafon (**148**) alatt fut,
 a saját 429-csendes-feladása NEM plafon-túllépés. A PLAFON-128 leltár-tétel ezzel
-ÚJRANYITVA (a plafon 120→140); a frissítés a Szelet 1 commitjában (rule a).
+ÚJRANYITVA (a plafon 128→**148**, LEVEZETETT: (35+2)×4); a frissítés a Szelet 1
+commitjában (rule a), a szám EXPLICIT levezetése a Szelet 3 leltárában.
 
 ## Szeletek
 
