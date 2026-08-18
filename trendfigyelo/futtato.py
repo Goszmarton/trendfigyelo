@@ -39,17 +39,32 @@ def tervezett_hivasszam(config) -> int:
 MAX_MASODLAGOS_NAPI = 2
 
 
-def masodlagos_szavak_ma(config, most):
-    """A ma (a `most` UTC hétnapja) ütemezett nap/het szavak.
+def masodlagos_szavak_ma(config, most, docs_data_mappa):
+    """A ma ütemezett nap/het szavak — STALENESS-vezérelt (Task 5), a %7 helyett.
 
-    A nem-órás szavak config-sorrend szerinti SORSZÁMA % 7 == hétnap → körbeforgó,
-    konstrukcióból kiegyensúlyozott (11 szó → 2-2-2-2-1-1-1). FIGYELEM: a konkrét
-    szó→nap hozzárendelés config-sorrend-FÜGGŐ — egy szó beszúrása a lista közepére
-    minden alatta lévőt eltol (a nap/het pótolható, ez nem baj, de nem szerződés).
+    A racs≠"ora" (jogosult) szavakat elavultság szerint rangsorolja: never-collected / nincs érvényes
+    `lekerdezes_utc` = MAX elavult (legelöl); azonos elavultság → CONFIG-INDEX tie-break (NEM ábécé);
+    majd az első MAX_MASODLAGOS_NAPI-t adja — EXPLICIT cap (a %7 ≤14-szó implicit feltevése megszűnik).
+    I/O-ROBUSZTUS: a `kulcsszo_masodlagos_nyers.json` HIÁNYZIK/ÜRES/JSON-hibás → NEM dob, NEM állítja meg a
+    napi futást; FALLBACK a config-index sorrend első MAX_MASODLAGOS_NAPI szavára + HANGOS FIGYELEM.
     """
     nem_oras = [t for t in config.osszes_kulcsszo() if t.racs != "ora"]
-    hetnap = most.weekday()
-    return [t for i, t in enumerate(nem_oras) if i % 7 == hetnap]
+    fajl = Path(docs_data_mappa) / "kulcsszo_masodlagos_nyers.json"
+    try:
+        sorozatok = json.loads(fajl.read_text(encoding="utf-8")).get("kulcsszavak", {})
+    except (OSError, ValueError) as e:
+        print(f"FIGYELEM: másodlagos ütemező — a(z) {fajl.name!r} nem olvasható ({type(e).__name__}); "
+              f"FALLBACK: config-index sorrend első {MAX_MASODLAGOS_NAPI} szava.")
+        return nem_oras[:MAX_MASODLAGOS_NAPI]
+
+    def _elavultsag(tetel):
+        rekordok = sorozatok.get(tetel.kifejezes, []) or []
+        korok = [nyers_kimenet._aware_dt(r.get("lekerdezes_utc")) for r in rekordok]
+        legfrissebb = max((d for d in korok if d is not None), default=None)
+        return float("inf") if legfrissebb is None else (most - legfrissebb).days   # never-collected = max elavult
+
+    rangsor = sorted(enumerate(nem_oras), key=lambda it: (-_elavultsag(it[1]), it[0]))   # elavult DESC, config-index ASC
+    return [t for _, t in rangsor[:MAX_MASODLAGOS_NAPI]]
 
 
 def _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most):
@@ -63,7 +78,7 @@ def _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most):
     """
     ag = "kulcsszo_masodlagos"
     try:
-        for tetel in masodlagos_szavak_ma(config, most):
+        for tetel in masodlagos_szavak_ma(config, most, docs_data_mappa):
             rek = kulcsszavak.gyujt_egy_masodlagos(kliens, config, tetel, most)
             if rek:
                 nyers_kimenet.ir_masodlagos(docs_data_mappa, {tetel.kifejezes: rek})

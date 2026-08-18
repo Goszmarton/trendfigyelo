@@ -48,7 +48,9 @@ def test_top_trend_struktura_parositja_az_idosort_es_hirt():
 class Mindig429Kliens:
     """Minden ág AgFeladva-t dob → teljes blokkolás szimulálása."""
     def __init__(self):
-        self.tr = object()
+        # teljes tr (a Task 5 staleness-ütemező a másodlagos ágat oda is ütemezheti, ahol a %7 nem →
+        # a hivas() fn-argumentuma kiértékelődik; a hivas maga úgyis AgFeladva-t dob)
+        self.tr = SimpleNamespace(trending_now=None, trending_now_by_rss=None, interest_over_time=None)
     def hivas(self, ag, fn, *a, **k):
         raise kliens.AgFeladva(ag, ["429", "429", "429", "429"])
     def hivasszam(self, ag):
@@ -1271,8 +1273,8 @@ def test_futtat_ir_masodlagos_regressziot(tmp_path):
     (docs_data / "kulcsszo_masodlagos_nyers.json").write_text(json.dumps({"kulcsszavak": {"albérlet": [{
         "racs": "nap", "lekerdezes_utc": veg.isoformat(), "ablak_kezdet_utc": kezd.isoformat(),
         "ablak_veg_utc": veg.isoformat(), "pontok": pontok}]}}), encoding="utf-8")
-    # weekday=1: az albérlet (nem-ora index 0) NINCS ma ütemezve → _masodlagos_ag no-op,
-    # a betett másodlagos nyers fájl érintetlen; a származtatott másodlagos regresszió abból számol.
+    # Task 5: az albérlet (egyetlen jogosult) ma ütemeződik, de a Mindig429Kliens 429-et dob → a másodlagos
+    # ág 'blokkolva' (csendes), a betett nyers fájl ÉRINTETLEN; a származtatott másodlagos regresszió abból számol.
     most = datetime(2021, 1, 5, 12, tzinfo=timezone.utc)
     cfg = _config([KulcsszoTetel("albérlet", "l", "szintmero", "nap")])
     futtato.futtat(cfg, Mindig429Kliens(), tmp_path / "adatok", docs_data, most=most)
