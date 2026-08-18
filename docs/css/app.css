@@ -37,11 +37,14 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
   background: #fff; border: 1px solid #ccc; border-radius: 4px; color: #222;
   min-width: 3.5rem; box-sizing: border-box; white-space: nowrap; }
 
-/* Task 10 §2: a dátum-<select> érintési célmérete AA-ra (19px → >=24px, kényelmes 32px); egérrel is bukó volt */
-#datum-valaszto select { min-height: 32px; }
 #intervallum-vezerlo button[aria-pressed="true"] { font-weight: bold; background: #e8e8e8; }
 #intervallum-vezerlo button[disabled] { cursor: not-allowed; color: #6b6b6b; background: #f0f0f0; }
 #intervallum-vezerlo .ok { color: #666; font-size: .85rem; }
+
+/* Task 10 §2: a dátum-<select> érintési célmérete AA-ra (19px → >=24px, kényelmes 32px); egérrel is bukó volt.
+   MIN-CSS (08-18): a #intervallum-vezerlo szabályblokk KÖZÜL kiemelve (a gomb- és a date-select-szabály közé
+   ékelődött) — a date-select KÜLÖN vezérlő. Rendering-no-op: más elem, más specificitás, nincs átfedő szabály. */
+#datum-valaszto select { min-height: 32px; }
 .ures { color: #666; font-style: italic; }
 
 /* Task 9b kulcsszó-blokk — szavankénti chartok, domen-csoportokban (rács, small multiples).

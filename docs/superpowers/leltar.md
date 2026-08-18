@@ -16,12 +16,13 @@ Utolsó frissítés: 2026-08-18.
   új ID. Lezárt tétel a **LEZÁRT / ELAVULT** szakaszba kerül, **nem törlődik**.
 - **c) INVARIÁNS (frissítéskor ellenőrizd):**
   `aktív + kész + nem-task rekord + félretett = törzs-sorszám`.
-  Most: **26 + 21 + 15 + 0 = 62**. A **LEZÁRT / ELAVULT** külön számolódik: most **12**.
+  Most: **25 + 22 + 15 + 0 = 62**. A **LEZÁRT / ELAVULT** külön számolódik: most **12**.
   (08-17: +TELJES-NEZET [aktív] és +SZEMLE-SZABÁLY [rekord] — a 6b latens rajzolási hiba utóéletéből;
   majd 6c LESZÁLLÍTVA [aktív→kész] + 3 REKORD [SZINT-VONAL-VAK, ZOLD-NEM-SZALLIT, RESZLEGES-RAJZOL].
   08-18: GORBE-B + MIN-BC + MIN-TCP [aktív→kész] — a szemle 2/2 tiszta után (három mozgás, total 62 tart:
   aktív 29→26 [B 21→18], kész 18→21). Majd VEZERLO-MAGAS [D-rekord→LEZÁRT/ELAVULT, törzs −1] és
-  +MERET-ALABECSLES [új D-rekord, törzs +1] → NETTÓ 0, a rekord marad 15, a törzs 62; a LEZÁRT 11→12.)
+  +MERET-ALABECSLES [új D-rekord, törzs +1] → NETTÓ 0, a rekord marad 15, a törzs 62; a LEZÁRT 11→12.
+  Végül MIN-CSS [aktív→kész, B 18→17, kész 21→22] → törzs 62 tart.)
   Ha ez az egyenlőség nem áll, a leltár driftel.
 - **d)** **Önhivatkozó hash TILOS:** a leltár nem tartalmazhatja a SAJÁT lezáró commitja
   hash-ét (nincs „(ez a commit)" placeholder sem, ami bent ragad). A lezáró sor állapota
@@ -33,7 +34,7 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 
 ---
 
-## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (21)
+## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (22)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
@@ -66,11 +67,13 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 
 | MIN-TCP | a `trend_chart_peldanyok` sparkline-nyilvántartás KIFEJEZÉS-KULCSÚ objektum volt → két azonos `kifejezes`-ű trend felülírta egymást a map-ben, és napváltáskor a `trend_chart_takarit` csak az UTOLSÓ példányt destroy-olta → az első Chart ÁRVÁN maradt (memória + detached canvasra kötött élő Chart). JAVÍTVA: a nyilvántartás **TÖMB** (`push` + `forEach destroy` + `= []`), kollízió-mentes (a map-nek nem volt kulcs-alapú kikeresése, csak destroy-all). Saját RED (T28: két „dupla" trend → napváltás UTÁN `Chart.getChart` egyik canvasra sem ad élő példányt; a rekesz-út a 08-18 szemlével felszabadult). Playwright 82→83. | Ph3 (8a) | LESZÁLLÍTVA (lásd git log) | MÉRT | igen (memória/életciklus) | S | — |
 
+| MIN-CSS | a `#datum-valaszto select` CSS-szabály (app.css) BEÉKELŐDÖTT a `#intervallum-vezerlo` szabályblokk közepébe (gomb-szabályok → date-select → aria/disabled/ok). JAVÍTVA: a date-select kiemelve a blokk alá → a vezérlő-szabályok összefüggők. **Rendering-no-op** (más elem, más specificitás, nincs átfedő szabály); a MIN-BC-mintára NINCS RED, az őr a `scripts/vezerlo_meres.js` harness ELŐTTE/UTÁNA mérése: a vezérlő-magasság **155px→155px @390×844 VÁLTOZATLAN** (a 234px/708px/787px is), + a meglévő suite (pytest 309 / Playwright 83). | Ph3 (T10) | LESZÁLLÍTVA (lásd git log) | MÉRT | nem | S | — |
+
 ## META / FOLYAMATBAN (0)
 
 — (üres — a LEDGER-HIG leszállt: 6f4091d, lásd LESZÁLLÍTVA)
 
-## (B) Phase 3 / korábbról örökölt (18 — 18 nyitott + 0 félretett)
+## (B) Phase 3 / korábbról örökölt (17 — 17 nyitott + 0 félretett)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
@@ -84,7 +87,6 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 | MINOR-2 | retenció-horgony robusztusság (befagyás / jövőbeli ablak_veg kivág) | Ph2.5 §11.7 | NYITOTT | BECS | igen (adatvesztés) | M | láncolás tervezés |
 | §11.8 | betegség/kórház éves átfedés | Ph2.5 | NYITOTT (kutatás) | BECS | nem (felület nem) | S-M | — |
 | VENV | venv 3.14 vs CI/átadó 3.12 | Ph2.5 | NYITOTT (nem blokkoló) | MÉRT | nem | S | — |
-| MIN-CSS | CSS-sorrend app.css:40-41 (date-select szabály a vezérlő közé ékelődött). **KÖTÉS OLDVA (08-18): a VEZERLO-MAGAS LEZÁRVA, ÉS van no-op mérő-harness (`scripts/vezerlo_meres.js`)** → a CSS-átrendezés előtte/utána méréssel igazolható no-opként (a JELENLEGI vezérlő-magasság 155px @390×844 NEM változhat; ha igen → REGRESSZIÓ, STOP), a MIN-BC mintájára. | Ph3 (T10) | NYITOTT (minor, SZABAD) | MÉRT | nem | S | — |
 | 429-RATA | 429-ráta jellemzése (n=1, több nap napló kell) | Ph3 | NYITOTT (mérés) | MÉRT | nem | S / folyamatos | több nap napló |
 | FOLYT | folytonossag él-trigger vs állapot-check. **SUCCESS-VAK KÉSZ → a függés OLDÓDIK, FOLYT önállóan eldönthető.** A folytonossag (futtato.py:424, `seged.utolso_res`) a rést a PERZISZTENS `naplo.csv`-be írja (minden rés PONTOSAN egyszer, ~333 nap retenció) → az él-trigger valószínűleg ELÉG (a rés nem vész el, auditálható). **DÖNTÉS-tétel (nem feladat, valószínűleg 0 kód):** egy körben lezárandó indoklással — él-trigger elég-e, vagy állapot-check kell. | Ph3 | NYITOTT (DÖNTÉS) | MÉRT | nem (napló) | S | — |
 | NAPLO-MENTETT | naplo.csv „mentett-szám" 6. oszlop (a részleges-mentés fixből) | Ph3 | NYITOTT | MÉRT | igen (napló-séma) | S-M | — |
