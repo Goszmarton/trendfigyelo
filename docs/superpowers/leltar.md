@@ -18,10 +18,10 @@ Utolsó frissítés: 2026-08-18.
   `aktív + kész + nem-task rekord + félretett = törzs-sorszám`.
   Most (VÖDRÖNKÉNT NEVESÍTVE, hogy kívülről ellenőrizhető legyen):
   **aktív 24** [(B)-nyitott 16 + (C) 3 + (D)-blokk NYITOTT-állapotú sorai 5]
-  + **kész 25** [a LESZÁLLÍTVA szekció]
+  + **kész 26** [a LESZÁLLÍTVA szekció]
   + **nem-task rekord 21** [a (D)-blokk REKORD-állapotú sorai]
   + **félretett 0** [4. vödör „shelved"; jelenleg ÜRES, de ÉLŐ — a GORBE-B átmenetileg itt állt (FÉLRETETT→RÉSZBEN), nem halott]
-  = **70**. A **LEZÁRT / ELAVULT** KÜLÖN számolódik (NEM a törzs): most **13**.
+  = **71**. A **LEZÁRT / ELAVULT** KÜLÖN számolódik (NEM a törzs): most **13**.
   FONTOS: a (D)-blokk fizikailag EGY tábla, de KÉT vödörbe oszlik az Állapot szerint (NYITOTT→aktív, REKORD→rekord);
   a „(D)" betű önmagában NEM azonosít vödröt.
   (08-17: +TELJES-NEZET [aktív] és +SZEMLE-SZABÁLY [rekord] — a 6b latens rajzolási hiba utóéletéből;
@@ -49,6 +49,10 @@ Utolsó frissítés: 2026-08-18.
   5668fdd felülíródott): (a) szürke-alap + kék-kiemelés a per-kategória-paletta HELYETT (csiricsáré → nyugodt,
   a bar aktív/tompított mintája); (b) a hiányzó nap NEM látszó-rés, hanem KIMARAD a tengelyről → folytonos vonal az
   első adattól (a lebegő pont javítása, 0 adatpont-veszteség); (c) top-5-default megszűnt (mind szürkén látszik).)
+  08-18 (8. kör, HETI-FELKAPOTT): +HETI-FELKAPOTT [új LESZÁLLÍTVA: kész 25→26] → törzs 70→**71**; rekord/LEZÁRT TART
+  (nincs új PARKOLT lelet). Backend 0 kód (napok/*.json már megvan). Ráadás: a #datum-valaszto opció-sorrend
+  csökkenőre fordítva (SZEMLE-konzisztencia a hét-választóval), a HETI-FELKAPOTT tétel része. VÉGÁLLAPOT: aktív 24,
+  kész 26, rekord 21, törzs **71**, LEZÁRT **13**.)
   Ha ez az egyenlőség nem áll, a leltár driftel.
 - **d)** **Önhivatkozó hash TILOS:** a leltár nem tartalmazhatja a SAJÁT lezáró commitja
   hash-ét (nincs „(ez a commit)" placeholder sem, ami bent ragad). A lezáró sor állapota
@@ -66,10 +70,11 @@ Méret: S (<20 sor) / M (20–80) / L (80+) / XL (több task).
 
 ---
 
-## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (25)
+## LESZÁLLÍTVA — a ledger nem jelölte késznek, itt rögzítve (26)
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
+| HETI-FELKAPOTT | HETI FELKAPOTT KERESÉSEK blokk (08-18): új `.szekcio` a trend-kártyák alá (a `datum-valaszto`+`trend-blokk` mintában: sticky keskeny hét-választó `<select>` + széles napi táblázat). Forrás: `napok/index.json` + `napok/<nap>.json` (`trendek[].kifejezes`) — **backend 0 kód**, a napi ág auto-írja/committolja. Hét = ISO hétfő–vasárnap; címke `34. hét (aug. 17–23)` (helyes ISO-határok); alap a legfrissebb hét; a hét-tartomány `hétfő..min(vasárnap, max(napok/index))` (jövő/nem-archivált nap kimarad, böngésző-óra NÉLKÜL); hiányzó nap → „nincs adat"; **független** a `#datum-valaszto`-tól (diszkriminátorral MÉRVE). Ráadás (SZEMLE-konzisztencia): a `#datum-valaszto` opció-sorrend növekvő→**csökkenő** (legfrissebb elöl, a hét-választóval egyezően), az alap-kiválasztás VÁLTOZATLAN (legfrissebb) — saját RED-teszttel. 6 heti + 1 datum-sorrend DOM-teszt (RED-igazolt); nincs canvas → SZEMLE csak a látványra (vizuálisan jóváhagyva). 100 Playwright + 324 pytest zöld, MUTÁCIÓ==1. | Ph4/frontend | LESZÁLLÍTVA (lásd git log) | MÉRT (08-18) | nem (megjel.) | M | napok/index.json |
 | KATEGORIA-IDOSOR | KATEGÓRIA-IDŐSOR chart (08-18): a napi felkapott-kategóriák darabszám-idősora kategóriánként egy vonalként, a `docs/data/kategoriak.json` (már meglévő, auto-generált `kategoriak.py`, `napi.yml:52` git-committed) forrásból — **backend 0 kód**. Frontend: a `kategoriak.json` a trend-blokk fajl-listájába; tiszta `kategoria_idosor` shaper (adat-vezérelt vonal-készlet, első-megjelenés előtt null, jelen-nap-0 valós 0) rejtett DOM-tükörbe (assertálható); Chart.js line a „Ma felkapott keresések" cím FÖLÉ, saját címmel + caption-nel; a napi oszlopdiagram MARAD alatta. **SZEMLE-fejlődés (a terv-doc 5668fdd felülíródott):** szürke-alap + kék-kiemelés (nem per-kategória-paletta); jobb oldali kattintható jelmagyarázat; a hiányzó nap KIMARAD a tengelyről (folytonos vonal, nem látszó-rés); top-5-default megszűnt. 10 idősor-DOM-teszt (RED-igazolt: shaper/tükör), a szín/kiemelés/legend canvas-belső → SZEMLE (L9-elv, vizuálisan jóváhagyva). Bar-őr fedése diszkriminátorral MÉRVE. 94 Playwright + 324 pytest zöld, MUTÁCIÓ==1. | Ph4/frontend | LESZÁLLÍTVA (lásd git log) | MÉRT (08-18) | nem (megjel.) | M | kategoriak.json, KATEGORIA-CIMKE-PASSTHROUGH |
 | CSS-MAGYARAZO | CSS+MAGYARÁZÓ kör (08-18): (1) 4 nagy blokk vizuális elkülönítése — FEHÉR háttér + `border:1px solid #e3e3e3` + `border-radius:6px` a `#kulcsszo-blokk`/`#trend-blokk`/2× `.vezerlo-sav`-on; a d86af56 `.vezerlo-sav{background:#fafafa}` szürkítés VISSZAVONVA (a szürke rosszabb volt). (2) kártyánkénti `Felbontás:` címke MINDEN kártyán (óránkénti/napi/heti + `data-felbontas`), az ÜRESEN is (rajzolt=aktív iv `_racs`, üres=szó config-rácsa `o.racs`). (3) intervallum-gomb magyarázatok LÁTHATÓ sub-szövegként (`.gomb-magyarazat`, „mától visszafelé …", NEM tooltip → mobilon is látszik). (4) üres-üzenet ELVI↔IDŐBELI szétválasztás: `rovid_het_ablak`/`oras_lanc_kell` = „…nem fog feltöltődni"/tény vs `nincs_masodlagos`/`rovid_masodlagos` = „Magától feltöltődik". (5) benzin/nyugdíj órás-only üzenet TÉNYSZERŰVÉ (oras_lanc_kell, ígéret nélkül) → **JOGOSULATLAN-URES-UZENET PARKOLT feloldva, a fix ennek része**. Enabling backend: `racs` config-mező a regresszió szó-rekordjában (regresszio.py, +3 sor). 3 új DOM-teszt diszkriminátorral igazolva (SZANDEKOS-ZOLD-VAK: feature-t elrontva valódi AssertionError). 324 pytest + 86 Playwright zöld, MUTÁCIÓ==1. **MEGJEGYZÉS (nem külön tétel):** a mindig látszó gomb-szövegek +80px-t adnak a vezérlőhöz (155→235px valós, MÉRVE 390×844); 0-másodlagos szintetikus esetben ~400px — a **VEZERLO-MAGAS**-t erősíti, kozmetika, valós esetben nem lóg ki → nem új rekord. | Ph4/frontend | LESZÁLLÍTVA (ez a commit) | MÉRT (08-18) | nem (megjel.) | M | JOGOSULATLAN-URES-UZENET, VEZERLO-MAGAS |
 | LEGFRISSEBB-GUARD | nulla-adatos futás NE írja felül üressel a jó legfrissebb.json-t (az EGYETLEN feltétel nélküli kanonikus felülíró; tortenet/napi/nyers már guardolt); feltétel: not(top_trendek or trend_idosorok or kulcsszavak); hangos FIGYELEM + megnevezi az üreseket; kapcsolódik: SUCCESS-VAK (bemeneti testvér); ÉLESBEN IGAZOLVA (run 31888919931) | Ph3 | LESZÁLLÍTVA (lásd git log) | MÉRT | igen (kimenet) | S | — |

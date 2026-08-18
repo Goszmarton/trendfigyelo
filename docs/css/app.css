@@ -18,8 +18,13 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
    [d86af56] felülírva — a szürke rosszabb volt). A négy nagy blokk (2 vezerlo-sav + 2 tartalom) így KÜLÖNÜL. */
 .vezerlo-sav { flex: 0 0 14rem; position: sticky; top: 1rem; align-self: flex-start;
   background: #fff; border: 1px solid #e3e3e3; border-radius: 6px; padding: .75rem; box-sizing: border-box; }
-#kulcsszo-blokk, #trend-blokk { flex: 1; min-width: 0;
+#kulcsszo-blokk, #trend-blokk, #heti-blokk { flex: 1; min-width: 0;
   background: #fff; border: 1px solid #e3e3e3; border-radius: 6px; padding: 1rem; box-sizing: border-box; }
+#heti-blokk .heti-tabla { width: 100%; border-collapse: collapse; }
+#heti-blokk .heti-nap-sor { border-top: 1px solid #eee; }
+#heti-blokk .heti-nap { white-space: nowrap; vertical-align: top; padding: .4rem .8rem .4rem 0; color: #333; font-weight: 600; }
+#heti-blokk .heti-szavak { vertical-align: top; padding: .4rem 0; color: #444; line-height: 1.4; }
+#heti-blokk .heti-nap-sor .heti-szavak:only-child, #heti-blokk .heti-ures { color: #999; }
 @media (max-width: 900px) {
   .szekcio { flex-direction: column; }
   /* column módban a fő tengely FÜGGŐLEGES → a flex:0 0 14rem MAGASSÁGOT fixálna (üresen 224px, az első

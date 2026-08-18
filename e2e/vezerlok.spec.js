@@ -126,6 +126,15 @@ test("normál napok/index.json → dátumválasztó feltöltve, alapból a LEGFR
   await expect(sel).toContainText("2026. 08. 04.");   // magyar dátumformátum
 });
 
+test("dátumválasztó: a legfrissebb nap ELÖL (csökkenő sorrend, a hét-választóval konzisztens)", async ({ page }) => {
+  await mock_napok_index(page, ["2026-08-02", "2026-08-03", "2026-08-04"]);
+  await page.goto("/");
+  const opt = page.locator("#datum-valaszto select option");
+  await expect(opt.first()).toHaveText("2026. 08. 04.");   // legfrissebb ELÖL
+  await expect(opt.last()).toHaveText("2026. 08. 02.");    // legrégebbi UTOLSÓ
+  await expect(page.locator("#datum-valaszto select")).toHaveValue("2026-08-04");   // az alap MARAD a legfrissebb
+});
+
 test("üres napok/index.json → dátumválasztó ÜRES állapot, nincs select", async ({ page }) => {
   await mock_napok_index(page, []);
   await page.goto("/");

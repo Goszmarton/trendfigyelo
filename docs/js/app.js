@@ -354,6 +354,7 @@ function datum_valaszto_render() {
   }
   napok.sort(); // növekvő ISO -> a legfrissebb az utolsó
   const legfrissebb = napok[napok.length - 1];
+  napok.reverse(); // a LEGFRISSEBB ELÖL (a hét-választóval konzisztens); az alap-kiválasztás továbbra is a legfrissebb
   el.textContent = "";
   const sel = document.createElement("select");
   napok.forEach(function (nap) {
@@ -1312,6 +1313,108 @@ async function trend_nap_valt(nap) {
   trend_blokk_render();
 }
 
+// ── HETI FELKAPOTT KERESÉSEK blokk — hét-logika (ISO, hétfő–vasárnap) + napi táblázat ──────────────
+const HO_ROVID = ["jan.", "feb.", "márc.", "ápr.", "máj.", "jún.", "júl.", "aug.", "szept.", "okt.", "nov.", "dec."];
+const NAP_NEV = ["Vasárnap", "Hétfő", "Kedd", "Szerda", "Csütörtök", "Péntek", "Szombat"];   // getUTCDay() index
+
+function iso_hetszam(d) {                        // ISO 8601 hétszám (a hét csütörtökje dönt)
+  const dt = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+  const nap = dt.getUTCDay() || 7;              // hétfő=1 … vasárnap=7
+  dt.setUTCDate(dt.getUTCDate() + 4 - nap);     // a hét csütörtökje
+  const evkezd = new Date(Date.UTC(dt.getUTCFullYear(), 0, 1));
+  return Math.ceil((((dt - evkezd) / 86400000) + 1) / 7);
+}
+function het_hetfoje(iso) {                      // egy ISO-dátum → a HETÉNEK hétfője (ISO-dátum)
+  const d = new Date(Date.parse(iso + "T00:00:00Z"));
+  const nap = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() - (nap - 1));
+  return d.toISOString().slice(0, 10);
+}
+function heti_cimke(hetfo_iso) {                 // „34. hét (aug. 17–23)" / átívelő: „júl. 27 – aug. 2"
+  const h = new Date(Date.parse(hetfo_iso + "T00:00:00Z"));
+  const v = new Date(h.getTime() + 6 * 86400000);
+  const hh = HO_ROVID[h.getUTCMonth()], vh = HO_ROVID[v.getUTCMonth()];
+  const tart = (h.getUTCMonth() === v.getUTCMonth())
+    ? (hh + " " + h.getUTCDate() + "–" + v.getUTCDate())
+    : (hh + " " + h.getUTCDate() + " – " + vh + " " + v.getUTCDate());
+  return iso_hetszam(h) + ". hét (" + tart + ")";
+}
+function heti_nap_cimke(iso) {                    // „Hétfő · 08-17"
+  const d = new Date(Date.parse(iso + "T00:00:00Z"));
+  return NAP_NEV[d.getUTCDay()] + " · " + iso.slice(5);
+}
+// a mért napok ISO-hetenként, LEGFRISSEBB elöl: [{hetfo, cimke, napok:[ISO]}]
+function hetek_index(napok) {
+  const map = {};
+  napok.forEach(function (d) { const hf = het_hetfoje(d); (map[hf] = map[hf] || []).push(d); });
+  return Object.keys(map).sort().reverse().map(function (hf) {
+    return { hetfo: hf, cimke: heti_cimke(hf), napok: map[hf].slice().sort() };
+  });
+}
+
+// a kiválasztott hét táblázata: hétfő..min(vasárnap, legfrissebb elérhető nap); hiányzó nap → „nincs adat".
+async function heti_tabla_render(hetfo_iso) {
+  const blokk = document.getElementById("heti-blokk");
+  if (!blokk) return;
+  const idx = adat["napok/index.json"];
+  const napok = (idx && Array.isArray(idx.napok)) ? idx.napok.slice().sort() : [];
+  const maxNap = napok.length ? napok[napok.length - 1] : null;
+  const vanIndex = {}; napok.forEach(function (d) { vanIndex[d] = true; });
+  const het_napjai = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(Date.parse(hetfo_iso + "T00:00:00Z") + i * 86400000).toISOString().slice(0, 10);
+    if (maxNap && d > maxNap) break;                 // csak a legfrissebb elérhető napig (nincs jövő/nem-archivált)
+    het_napjai.push(d);
+  }
+  // a hiányzó (indexben lévő, még nem cache-elt) nap-fájlok betöltése
+  await Promise.all(het_napjai
+    .filter(function (d) { return vanIndex[d] && !(("napok/" + d + ".json") in adat); })
+    .map(function (d) {
+      return json_betolt("napok/" + d + ".json").then(function (j) { adat["napok/" + d + ".json"] = j; }).catch(function () {});
+    }));
+  const regi = blokk.querySelector(".heti-tabla, .heti-ures"); if (regi) regi.remove();
+  const tabla = document.createElement("table");
+  tabla.className = "heti-tabla";
+  het_napjai.forEach(function (d) {
+    const tr = document.createElement("tr");
+    tr.className = "heti-nap-sor";
+    tr.setAttribute("data-nap", d);
+    const tdN = document.createElement("td"); tdN.className = "heti-nap"; tdN.textContent = heti_nap_cimke(d);
+    const tdSz = document.createElement("td"); tdSz.className = "heti-szavak";
+    const napi = adat["napok/" + d + ".json"];
+    const szavak = (napi && Array.isArray(napi.trendek)) ? napi.trendek.map(function (t) { return t.kifejezes; }) : [];
+    tdSz.textContent = szavak.length ? szavak.join(", ") : "nincs adat";
+    tr.appendChild(tdN); tr.appendChild(tdSz); tabla.appendChild(tr);
+  });
+  blokk.appendChild(tabla);
+}
+
+async function heti_blokk_render() {
+  const valEl = document.getElementById("heti-valaszto");
+  const blokk = document.getElementById("heti-blokk");
+  if (!valEl || !blokk) return;
+  const idx = adat["napok/index.json"];
+  const napok = (idx && Array.isArray(idx.napok)) ? idx.napok.slice().sort() : [];
+  if (!napok.length) {                              // nincs nap → üres állapot
+    const r = blokk.querySelector(".heti-tabla, .heti-ures"); if (r) r.remove();
+    const u = document.createElement("p"); u.className = "heti-ures"; u.textContent = "Még nincs napi trendlista.";
+    blokk.appendChild(u); valEl.innerHTML = ""; return;
+  }
+  const hetek = hetek_index(napok);
+  let sel = valEl.querySelector("select");
+  if (!sel) {
+    sel = document.createElement("select");
+    valEl.appendChild(sel);
+    sel.addEventListener("change", function () { heti_tabla_render(sel.value); });   // FÜGGETLEN: csak ezt a blokkot
+  }
+  sel.innerHTML = "";
+  hetek.forEach(function (h) {
+    const o = document.createElement("option"); o.value = h.hetfo; o.textContent = h.cimke; sel.appendChild(o);
+  });
+  sel.value = hetek[0].hetfo;                       // alap = LEGFRISSEBB hét
+  await heti_tabla_render(sel.value);
+}
+
 const RENDER_HIBA_SZOVEG = "Hiba a vezérlő megjelenítésekor";
 // SORREND SZÁMÍT: az intervallum-vezérlő állítja be a data-aktiv-intervallum-ot, amit a kulcsszó-blokk
 // olvas; a datum-választó a TREND-BLOKK ELŐTT fut, mert a trend-blokk a legyártott <select>-hez köti a
@@ -1321,6 +1424,7 @@ const RENDEREK = [
   { id: "kulcsszo-blokk", fn: kulcsszo_blokk_render },
   { id: "datum-valaszto", fn: datum_valaszto_render },
   { id: "trend-blokk", fn: trend_blokk_render },
+  { id: "heti-blokk", fn: heti_blokk_render },   // heti felkapott — napok/index.json-ból (a trend-blokk már betöltötte)
 ];
 
 // a renderek EGYMÁSTÓL FÜGGETLENÜL futnak (Task 5 allSettled-izoláció); a render-KIVÉTELT
