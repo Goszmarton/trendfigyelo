@@ -55,11 +55,24 @@ def _nyers_rek_ora():
     return [_ablak("2026-08-11T00:00:00+00:00", napok=7)]   # egy friss órás pillanatkép (1_het bázisa)
 
 
-def test_oras_2_het_lancolt_ervenyes():
+def test_oras_2_het_lancolt_ervenyes(monkeypatch):
+    # a láncolás LOGIKÁJA a GATE-en KÍVÜL (a Szelet 2 aktiválja élesben): gate OFF → 2_het ervenyes a láncból.
+    monkeypatch.setattr(regresszio, "LANC_2HET_GATE", False)
     lanc_sorozat = lanc.lancol([_ablak("2026-08-01T00:00:00+00:00", napok=17)])   # 17 napos lánc (≥14)
     iv = regresszio._intervallumok(_nyers_rek_ora(), "ora", lanc=lanc_sorozat)
     assert iv["2_het"]["ervenyes"] is True, iv["2_het"]           # a láncból szeletelve ERVENYES
     assert iv["2_het"].get("ok") != "nincs_lancolas"
+
+
+def test_oras_2het_gate_amig_frontend_nem_olvas():
+    # IDEIGLENES GATE-SZERZŐDÉS — a Szelet 2 (frontend) TÖRLI EZT A TESZTET ÉS a regresszio.LANC_2HET_GATE-et.
+    # Amíg a frontend nem olvassa a kulcsszo_lanc.json-t (a rajzolt pontokat a nyers 7-napos ablakából veszi,
+    # a lánc-veg nem egyezik → kirajzolhatatlan), az órás 2_het MARADJON nincs_lancolas (08-17-i ismert-jó
+    # megjelenítés). A lánc ADATA (frissit_lanc → kulcsszo_lanc.json) KÖZBEN tovább épül. Default GATE=True.
+    lanc_sorozat = lanc.lancol([_ablak("2026-08-01T00:00:00+00:00", napok=17)])   # van lánc (≥14 nap)
+    iv = regresszio._intervallumok(_nyers_rek_ora(), "ora", lanc=lanc_sorozat)
+    assert iv["2_het"]["ervenyes"] is False            # GATE: a lánc ELLENÉRE nem ervenyes
+    assert iv["2_het"]["ok"] == "nincs_lancolas"        # a 08-17-i megjelenítési szerződés
 
 
 # --- SZÁNDÉKOS-ZÖLD: órás 1_het VÁLTOZATLAN (farokszelet, a lánc NEM érinti a ≤7 napot) ---
@@ -88,7 +101,10 @@ def test_frissit_lanc_perzisztens_bovit_SZANDEKOS_ZOLD(tmp_path):
     tarolt = lanc.lancol([_ablak("2026-08-01T00:00:00+00:00", napok=10)])   # 08-01 → 08-11
     (tmp_path / lanc.FAJL).write_text(json.dumps({"kulcsszavak": {"benzin": tarolt}}), encoding="utf-8")
     friss = {"benzin": [_ablak("2026-08-05T00:00:00+00:00", napok=7)]}       # 08-05 → 08-11T23 (lezárt), átfed
-    ki = lanc.frissit_lanc(tmp_path, friss)
-    assert ki["benzin"]["ablak_kezdet_utc"] == tarolt["ablak_kezdet_utc"]    # a kezdet MEGMARAD (retenció-független)
-    assert ki["benzin"]["ablak_veg_utc"] > tarolt["ablak_veg_utc"]          # ÉS bővült a friss ablak lezárt farkáig
-    assert ki["benzin"]["ablak_veg_utc"][:10] == "2026-08-11"               # 08-10 → 08-11 (+1 nap)
+    lanc.frissit_lanc(tmp_path, friss)
+    # a LEMEZRE ÍRT láncot olvassuk vissza (NEM a visszatérési értéket) — a gate mellett is ÍR (a lánc ADATA
+    # nem áll le); egy write-kihagyó mutáció ezt PIROSÍTJA (a fájl a régi, nem-bővült marad).
+    lemez = json.loads((tmp_path / lanc.FAJL).read_text(encoding="utf-8"))["kulcsszavak"]["benzin"]
+    assert lemez["ablak_kezdet_utc"] == tarolt["ablak_kezdet_utc"]           # a kezdet MEGMARAD (retenció-független)
+    assert lemez["ablak_veg_utc"] > tarolt["ablak_veg_utc"]                  # ÉS a FÁJL bővült a friss lezárt farkáig
+    assert lemez["ablak_veg_utc"][:10] == "2026-08-11"                       # 08-10 → 08-11 (+1 nap)

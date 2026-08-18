@@ -28,6 +28,13 @@ from pathlib import Path
 from . import json_export
 
 INTERVALLUMOK = {"1_het": 7, "2_het": 14, "1_ho": 30, "3_ho": 90, "1_ev": 365}
+
+# LANC-ORAS GATE (IDEIGLENES — a Szelet 2 [frontend] TÖRLI). A lánc ADATA (kulcsszo_lanc.json) tovább épül a
+# frissit_lanc-ban; CSAK a MEGJELENÍTÉSI szerződést tartjuk vissza: amíg a frontend nem olvassa a láncot (a
+# rajzolt pontokat a kulcsszo_nyers.json 7-napos ablakából veszi, a lánc-veg NEM egyezik), az órás 2_het+ NE
+# legyen ervenyes → maradjon "nincs_lancolas", a 08-17-i ismert-jó megjelenítés. ERVENYES-ROUTING: az ervenyes
+# flag a frontend elágazását vezérli (egyesitett_reg), ezért ez FRONTEND-szerződés, nem tiszta backend-állapot.
+LANC_2HET_GATE = True
 MIN_PONT = 24                               # ora: 168/7 (a 7 napos ablak 1/7-e)
 # rács-tudatos regresszió (Task 6a): a rács szerinti slot-hossz és a rács-arányos
 # MIN_PONT = ⌊ablak_pontszám/7⌋ (ora 24 VÁLTOZATLAN / nap 12 / het 7); a RACS_ABLAK_NAP
@@ -201,7 +208,7 @@ def _intervallumok(nyers_rekordok, racs="ora", lanc=None):
     ki = {}
     for kulcs, hossz in INTERVALLUMOK.items():
         if hossz > nominal:                          # túlnyúlik a rács ablakán → LÁNCOLÁS (LANC-ORAS, §8.2)
-            if lanc and lanc.get("pontok") and \
+            if lanc and not LANC_2HET_GATE and lanc.get("pontok") and \
                     (_dt(lanc["ablak_veg_utc"]) - _dt(lanc["ablak_kezdet_utc"])).days >= hossz:
                 lveg = _dt(lanc["ablak_veg_utc"])
                 lkezd = lveg - timedelta(days=hossz)   # a LÁNCOLT sorozat farkából `hossz` nap
