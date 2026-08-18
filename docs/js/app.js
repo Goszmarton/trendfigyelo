@@ -87,6 +87,15 @@ const TENGELY_FELIRAT = "relatív keresési szint (0–100)";   // EN DASH
 const CSUPA_NULLA_SZOVEG = "Ezen az időszakon nincs érdemi keresési aktivitás (a mért értékek végig nulla körül).";
 const URES_NINCS_ABLAK = "Az adatsor ezen az időszakon nem érhető el.";
 
+// Szín-konstansok. A #3366cc kék KÉT KÜLÖNBÖZŐ SZEREPBEN fordul elő azonos értékkel — SZÁNDÉKOSAN külön
+// konstans, hogy az egyik szerep átszínezése NE mozdítsa el némán a másikat (MIN-BC):
+//  - ADAT_VONAL_SZIN: a mért ADATSOR kék vonala a vonaldiagramokban (kulcsszó-chart ÉS trend-sparkline —
+//    ugyanaz a szín ugyanazért: „ez a mért adat"; testvérei a #cc3333 trend- és #e69138 szint-vonal).
+//  - KATEGORIA_ALAP_SZIN: a kategória-akcentus a trend-kategória sávban (nem-tompított alap; testvérei a
+//    #aec4ef tompított és a #9e9e9e/#d4d4d4 „Other" szürke — ezek MIN-BC hatókörén kívül, inline maradnak).
+const ADAT_VONAL_SZIN = "#3366cc";
+const KATEGORIA_ALAP_SZIN = "#3366cc";
+
 // ── Task 6: vezérlők (intervallum-gombok + dátumválasztó) ────────────────────
 // A gombok elérhetősége a kulcsszo_regresszio.json ervenyes mezőjéből jön (spec 7.4),
 // szónkénti AGGREGÁCIÓVAL: egy intervallum engedélyezett, ha LEGALÁBB EGY szónál ervenyes.
@@ -599,7 +608,7 @@ function chart_letrehoz(kartya) {
   const racs = kartya._racs;
   const canvas = kartya.querySelector("canvas");
   if (!racs || !canvas || typeof Chart === "undefined") return;
-  const datasetek = [{ data: racs.ertekek, spanGaps: false, borderColor: "#3366cc", borderWidth: 1.5, pointRadius: 0 }];
+  const datasetek = [{ data: racs.ertekek, spanGaps: false, borderColor: ADAT_VONAL_SZIN, borderWidth: 1.5, pointRadius: 0 }];
   if (racs.vonal) datasetek.push({ data: racs.vonal, spanGaps: true, borderColor: "#cc3333", borderWidth: 1.5, borderDash: [4, 3], pointRadius: 0 });
   // 6c: esemenyjelzo szint-vonal — konstans vízszintes referencia (narancs, a kék adattól ÉS a piros trendtől
   // is elkülönül); NEM trendvonal (data-vonal marad "false"), a bázist a merteszamok-felirat mondja ki.
@@ -783,7 +792,7 @@ function kategoria_eloszlas(trendek) {
 
 function trend_szin(kategoria, tompitott) {
   if (kategoria === OTHER_CIMKE) return tompitott ? "#d4d4d4" : "#9e9e9e";   // "Other" mindig szürke
-  return tompitott ? "#aec4ef" : "#3366cc";
+  return tompitott ? "#aec4ef" : KATEGORIA_ALAP_SZIN;
 }
 
 // egy trend-sparkline AZONNALI Chart-példányosítása (mint a kategoria_chart ma — NINCS lusta observer).
@@ -804,7 +813,7 @@ function trend_sparkline_letrehoz(kartya) {
     data: {
       labels: idosor.map(function (p) { return p.idopont_utc; }),   // időbélyeg-alapú (SOHA nem index-alapú)
       datasets: [{ data: idosor.map(function (p) { return p.ertek; }), spanGaps: false,
-                   borderColor: "#3366cc", borderWidth: 1, pointRadius: 0, pointHoverRadius: 3 }],
+                   borderColor: ADAT_VONAL_SZIN, borderWidth: 1, pointRadius: 0, pointHoverRadius: 3 }],
     },
     options: {
       responsive: true, maintainAspectRatio: false, animation: false,
