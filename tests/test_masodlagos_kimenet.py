@@ -98,6 +98,21 @@ def test_masodlagos_retencio_timeframe_kulon(tmp_path):
     assert tf_szam == {"today 3-m": 3, "today 12-m": 3}          # timeframe-enként külön 3
 
 
+def test_ir_masodlagos_legacy_timeframe_backfill(tmp_path):
+    # RED (KARANTEN-LEGACY): a régi, timeframe NÉLKÜLI rekord kapja meg a timeframe-et a racs-ból a karantén ELŐTT
+    # (visszamenőleges migráció), NEM dobódik ki. Ma: az ir_masodlagos karanténba dobja → NÉMA ADATVESZTÉS.
+    legacy = {"kulcsszo": "kórház", "racs": "het", "lekerdezes_utc": "2026-08-16T12:00:00+00:00",
+              "ablak_kezdet_utc": "2025-08-10T00:00:00+00:00", "ablak_veg_utc": "2026-08-16T00:00:00+00:00",
+              "pontok": [{"idopont_utc": "2025-08-10T00:00:00+00:00", "ertek": 50, "reszleges": False}]}   # NINCS timeframe
+    (tmp_path / "kulcsszo_masodlagos_nyers.json").write_text(
+        json.dumps({"kulcsszavak": {"kórház": [legacy]}}, ensure_ascii=False), encoding="utf-8")
+    # egy ÚJ (érvényes) rekord írása egy MÁSIK szóra → az ir_masodlagos beolvassa a legacy kórház-rekordot
+    nyers_kimenet.ir_masodlagos(tmp_path, {"állás": _mrekord(kulcsszo="állás", racs="het")})
+    adat = json.loads((tmp_path / "kulcsszo_masodlagos_nyers.json").read_text(encoding="utf-8"))["kulcsszavak"]
+    assert "kórház" in adat                                    # a legacy NEM veszett el (ma: kidobva → RED)
+    assert adat["kórház"][0]["timeframe"] == "today 12-m"      # a het-racs-ból visszatöltve
+
+
 def test_ir_masodlagos_nem_urul_ha_nem_frissul(tmp_path):
     # a szó 2 pillanatképe MEGMARAD, ha egy későbbi futásban nem frissül (adat-relatív)
     nyers_kimenet.ir_masodlagos(tmp_path, {"állás": _mrekord(kulcsszo="állás", racs="het",

@@ -24,6 +24,8 @@ import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from .config import RACS_IDOKERET
+
 # aware sentinel a rendezéshez: érvénytelen/hiányzó időbélyeg előre (a validátor jelzi)
 _MIN_DT = datetime.min.replace(tzinfo=timezone.utc)
 
@@ -200,6 +202,10 @@ def ir_masodlagos(docs_data, sorozatok: dict, megtartott_db: int = 3) -> Path:
     for kif in list(kulcsszavak):
         tiszta = []
         for r in kulcsszavak[kif]:
+            # KARANTEN-LEGACY: a timeframe nélküli RÉGI rekord kapja meg a timeframe-et a racs-ból
+            # (visszamenőleges migráció) a validáció ELŐTT — NEM némán kidobva. Csak a hiányzót töltjük.
+            if not r.get("timeframe") and RACS_IDOKERET.get(r.get("racs")):
+                r["timeframe"] = RACS_IDOKERET[r["racs"]]
             hibak = ervenyes_masodlagos_rekord(r)
             if hibak:
                 print(f"FIGYELEM: sérült másodlagos rekord karanténba ({kif}): {hibak}")
