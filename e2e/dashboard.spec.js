@@ -4,5 +4,5 @@ const { test, expect } = require("@playwright/test");
 // (A Task 5 loader-smoke és a Task 6 vezérlő-smoke-ok külön lépésben jönnek.)
 test("az oldal betölt és a főcím látszik", async ({ page }) => {
   await page.goto("/");
-  await expect(page.locator("h1")).toHaveText("Mire keresnek Magyarországon? — Trendfigyelő");
+  await expect(page.locator("h1")).toHaveText("Mire keresnek rá Magyarországon? – Trendfigyelő");
 });

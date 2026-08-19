@@ -139,9 +139,39 @@ Helyi `http.server`, váltás „Teljes időszak"-ra, majd:
 6. **Konzol tiszta**; visszaváltás fix intervallumra → category-tengely visszaáll (nincs leak,
    `chart_takarit` mindkét módra jó).
 
+## SZEMLE-EVOLÚCIÓ (2026-08-19) — a terv a vizuális szemlén jelentősen fejlődött
+
+A fenti terv (közös tengely) a SZEMLE során a user visszajelzései alapján ÁTALAKULT. A LESZÁLLÍTOTT
+állapot az alábbi — a fenti szakaszok a kiindulás dokumentumai (nem íródnak át, a history megmarad).
+
+1. **KÖZÖS TENGELY → PER-SZÓ TENGELY (fő fordulat).** A közös bal szél a rövid sorozatokat összelapította
+   (benzin 7 napja hajszálvonal az 1 éves tengelyen). A user döntése: **minden kártya a SAJÁT adat-időszakára**
+   skálázódik (a lineáris tengely a saját első→utolsó pontjára). KÖVETKEZMÉNY: `teljes_kozos_kezdet`,
+   `data-teljes-kezdet`, a globális `[min,max]` megosztás és a `max_adat_veg` (fejléc globális dátum) **TÖRÖLVE**;
+   a `chart_letrehoz` per-kártya flaggel (`_teljes_mod`) rajzol. A fejléc per-szó szöveg (nincs egyetlen dátum).
+2. **PONTOS SZÉL + 2 TICK.** A tengely `min`/`max` = az ELSŐ/UTOLSÓ tényleges adatpont (nincs Chart.js grace-gap →
+   a görbe a széleket érinti); a tengelyen CSAK 2 tick: a kezdő + a vég dátum (teljes, `afterBuildTicks`).
+3. **FINDING 2+4 (gyökér-fix, ERVENYES-ROUTING osztály).** A hitel/napelem lapos-nulla + „napi" félrecímke oka:
+   `egyesitett_reg` a PRIMER (órás) intervallumra a szó CONFIG-rácsát (`o.racs`) tette → a 168 órás pont
+   nap/het-slotra collapse-olt (7/1 pont, záró-óra-nulla → téves `csupa_nulla`). **JAVÍTVA:** a primer `_racs`
+   MINDIG `"ora"` (a primer 1_het mindig órás; a config-rács CSAK a másodlagosra vonatkozik). PRE-EXISTING bug
+   (a default 1_het is így rajzolt); a teljes-default tette láthatóvá. A RACS-EGYSEG tesztek (2a/2b/2d/2e) a
+   config-rácsot a primer feliratban rögzítették → áthelyezve a MÁSODLAGOS ágra (a `racs_szo`/szakadás-fedés marad).
+4. **FINDING 3 (fejléc).** A fejléc az ELSŐ kártya `adat_veg`-jét mondta (avult, egyetlen-ablak feltevés) → a
+   per-szó tengellyel a fejléc per-szó szövegre váltott (nincs egyetlen dátum).
+5. **REQUEST 1 (teljes = ALAPNEZET).** A „Teljes időszak" gomb a lista TETEJÉN + az oldal ezzel nyílik
+   (ALAPNEZET-KONSTANS 1_het megszűnt). 10 teszt átírva a default-váltásra.
+6. **TOOLTIP-UX + DIZÁJN.** `interaction: {mode:"index", intersect:false}` → bárhol a chart fölé érve felugrik
+   (nem kell a vékony vonalra); `displayColors:false` (nincs szín-négyzet), tömör sötét háttér, csak az adatsor.
+7. **EN-DASH.** A megjelenő szövegben em-dash „—" → en-dash „–" (13 hely; a magyar helyes gondolatjel), kommentek nem.
+8. **INFO-CALLOUT.** Egységes kék bal-szegély + ⓘ (::before) + dőlt a magyarázatokra (frissesseg / kategoria-magyarazat
+   / idosor-magyarazat / trend-normalizalas); az ⓘ CSS-ből (a literál törölve).
+9. **DINAMIKUS CÍM.** „Kulcsszavak" + a nézet-leírás (pl. „– a teljes időszakban" / „– az elmúlt egy hétben").
+10. **H1.** „Mire keresnek **rá** Magyarországon? – Trendfigyelő".
+
+**GATE-emlékeztető:** a benzin/nyugdíj 7 napja továbbra is a GATE (2. kör, LANC-ORAS Sz2); a lánc után a teljes
+nézetük bővül (~18 nap), de a per-szó tengelyen már olvasható (nem lapul). **(d) RACS-PLATO** — PARKOLT lelet.
+
 ## Leltár-jegyzet (a lezáró commitban)
-- TELJES-NEZET (C) → LESZÁLLÍTVA (kész +1, törzs +1), önhivatkozó hash nélkül.
-- A leltár TELJES-NEZET sorának „config-konstans dátum" keretezése **MÉRÉSSEL cáfolva** → a sor
-  szövege a valós modellre (közös tengely, per-szó vágás, adatból számított kezdet) frissül.
-- Invariáns MÉRÉSSEL újraszámolva.
-- Ha SZEMLE-lelet PARKOLT sorként (egy mondat), nem külön kör.
+- TELJES-NEZET (C-aktív) → LESZÁLLÍTVA (aktív −1, kész +1); + RACS-PLATO új PARKOLT rekord (rekord +1, törzs +1).
+- Invariáns MÉRÉSSEL újraszámolva; a findings 2+4/3 + RACS-EGYSEG-fix a TELJES-NEZET tétel része (nem külön törzs-tétel).

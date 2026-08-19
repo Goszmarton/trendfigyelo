@@ -95,7 +95,7 @@ test("1_het ervenyes, többi false → az 1_het KIVÁLASZTVA; a 2_het tiltott, m
   await mock_regresszio(page, { "1_het": erv(), "2_het": NL, "1_ho": NL, "3_ho": NL, "1_ev": NL });
   await page.goto("/");
   await expect(page.locator('#intervallum-vezerlo button[aria-pressed="true"]'))
-    .toHaveAttribute("data-intervallum", "1_het");
+    .toHaveAttribute("data-intervallum", "teljes");   // ALAPNEZET = teljes (request 1); az 1_het gomb elérhető, de nem az alap
   await expect(page.locator('#intervallum-vezerlo button[data-intervallum="2_het"]')).toBeDisabled();
   // 6b Szelet 2 SZERZŐDÉS-JAVÍTÁS: a régi assert „összefűzött"-öt várt (órás-láncolás felirat), de a hosszú
   // intervallum forrása a nap/het másodlagos (§8.2: NEM láncolás) → a helyes üres-ok „nincs_masodlagos".
@@ -105,14 +105,13 @@ test("1_het ervenyes, többi false → az 1_het KIVÁLASZTVA; a 2_het tiltott, m
   await expect(page.locator("#intervallum-vezerlo")).not.toContainText("összefűzött"); // a félrevezető órás-láncolás felirat NEM
 });
 
-test("1_het és 1_ho ervenyes → az ALAP az 1_het (ALAPNEZET Szelet 3, NEM a leghosszabb)", async ({ page }) => {
-  // Szelet 3 / ALAPNEZET: a default a legtöbb kártyát rajzoló 1_het, nem a leghosszabb érvényes (1_ho).
-  // A régi „leghosszabb érvényes" szabály feltevése (érvényesség monoton nő ÉS leghosszabb = minden-szó-
-  // érvényes) a másodlagos nap/het adattal megtört (1_ev: 1/13 rajzol) → 1_het-pin.
+test("több érvényes intervallum → az ALAPNEZET a TELJES (request 1, SZEMLE 08-19), nem az 1_het/leghosszabb", async ({ page }) => {
+  // SZEMLE 08-19 / request 1: a kezdő nézet a TELJES időszak (közös tengely) — az oldal ezzel nyílik.
+  // (A korábbi 1_het-default [ALAPNEZET-KONSTANS] ezzel lezárult; a fix intervallumok kattintásra jönnek.)
   await mock_regresszio(page, { "1_het": erv(), "2_het": NL, "1_ho": erv(), "3_ho": NL, "1_ev": NL });
   await page.goto("/");
   await expect(page.locator('#intervallum-vezerlo button[aria-pressed="true"]'))
-    .toHaveAttribute("data-intervallum", "1_het");
+    .toHaveAttribute("data-intervallum", "teljes");
 });
 
 // ── dátumválasztó ────────────────────────────────────────────────────────────

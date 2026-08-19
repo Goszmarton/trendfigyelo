@@ -77,6 +77,7 @@ const OSZT = {
   intervallum_tetel: "intervallum-tetel",   // per-intervallum wrapper (oszlop): gomb-sor + magyarázat alatta
   intervallum_gomb_sor: "intervallum-gomb-sor",   // a gomb + (ha van) .ok EGY sorban
   gomb_magyarazat: "gomb-magyarazat",   // item 2: a gomb időtartam-magyarázata (mit jelent)
+  teljes_forras_felirat: "teljes-forras-felirat",   // TELJES-NEZET: a kártya kimondja, honnan van adata (rács + intervallum + kezdet)
 };
 const ATTR = {
   aktiv: "data-aktiv-intervallum", kulcsszo: "data-kulcsszo", drawable: "data-drawable",
@@ -86,6 +87,7 @@ const ATTR = {
   szint: "data-szint",   // 6c: esemenyjelzo szint-vonal értéke (heti medián) a kártyán
   rajzolt_pont: "data-rajzolt-pont",   // 6c javító-szelet: a RAJZOLT slotok száma (szeletelt ablak) — DOM-őr a szeletelési hibára
   felbontas: "data-felbontas",   // item 3: a kártya felbontás-rácsa (ora/nap/het) — DOM-őr
+  teljes_forras: "data-teljes-forras",   // TELJES-NEZET: a per-szó választott intervallum kulcsa (het→1_ev, nap→3_ho, ora→1_het)
 };
 const TENGELY_FELIRAT = "relatív keresési szint (0–100)";   // EN DASH
 const CSUPA_NULLA_SZOVEG = "Ezen az időszakon nincs érdemi keresési aktivitás (a mért értékek végig nulla körül).";
@@ -99,6 +101,19 @@ const URES_NINCS_ABLAK = "Az adatsor ezen az időszakon nem érhető el.";
 //    #aec4ef tompított és a #9e9e9e/#d4d4d4 „Other" szürke — ezek MIN-BC hatókörén kívül, inline maradnak).
 const ADAT_VONAL_SZIN = "#3366cc";
 const KATEGORIA_ALAP_SZIN = "#3366cc";
+
+// kulcsszó-chart tooltip közös stílusa (SZEMLE 08-19 dizájn): NINCS szín-négyzet (displayColors:false —
+// egyetlen adatsornál redundáns/ronda); tiszta, tömör sötét háttér (NEM átlátszóbb — az rontaná az olvashatóságot
+// a görbe fölött), lekerekített sarok; a tooltip CSAK az adatsort mutatja (filter: datasetIndex 0, nem a trend/szint-vonalat).
+// A teljes-ág ezt bővíti a dátum-title callbackkel (Object.assign).
+const TOOLTIP_STILUS = {
+  enabled: true,
+  filter: function (it) { return it.datasetIndex === 0; },
+  displayColors: false,
+  backgroundColor: "rgba(30, 30, 30, 0.9)",
+  cornerRadius: 4,
+  padding: 8,
+};
 
 // ── Task 6: vezérlők (intervallum-gombok + dátumválasztó) ────────────────────
 // A gombok elérhetősége a kulcsszo_regresszio.json ervenyes mezőjéből jön (spec 7.4),
@@ -121,6 +136,22 @@ const INTERVALLUMOK = [
   { kulcs: "3_ho", cimke: "3 hó", hossz: 90 },
   { kulcs: "1_ev", cimke: "1 év", hossz: 365 },
 ];
+// TELJES-NEZET: ál-intervallum a fix ablakok MELLETT (NEM az INTERVALLUMOK-ban — az az aggregáció/plafon-lista).
+// Per-szó a leghosszabb ÉRVÉNYES intervallumot választja (teljes_valaszt), közös dátum-tengelyre vetítve.
+const TELJES_KULCS = "teljes";
+const TELJES_CIMKE = "Teljes időszak";
+const TELJES_MAGYARAZAT = "a gyűjtés kezdetétől máig, szavanként eltérő indulással";
+
+// SZEMLE 08-19 (request 2): a „Kulcsszavak" cím dinamikus toldaléka az AKTÍV nézet szerint (a cím marad, mellé a nézet).
+const KULCSSZO_CIM_ALAP = "Kulcsszavak";
+const KULCSSZO_CIM_SUFFIX = {
+  teljes: "a teljes időszakban",
+  "1_het": "az elmúlt egy hétben",
+  "2_het": "az elmúlt két hétben",
+  "1_ho": "az elmúlt egy hónapban",
+  "3_ho": "az elmúlt három hónapban",
+  "1_ev": "az elmúlt egy évben",
+};
 
 // ok-kód -> LÁTHATÓ magyar magyarázat a letiltott gombhoz (spec 7.4)
 const OK_MAGYAR = {
@@ -135,11 +166,14 @@ const OK_MAGYAR = {
   // adatot SOHA → külön ok-kód (JOGOSULATLAN-URES-UZENET feloldva), a lánc-hossz (dinamikus N) a LANC-ORAS
   // Szelet 2-vel jön (a frontend akkor olvassa a láncot) — most TÉNY, se ígéret, se szám.
   nincs_masodlagos: "Ehhez az ablakhoz még gyűlik a napi/heti adat. Magától feltöltődik.",   // IDŐBELI
-  oras_lanc_kell: "Órás felbontású szó — ehhez az ablakhoz az órás sorozat láncolása kell.",  // órás-only (benzin/nyugdíj)
+  oras_lanc_kell: "Órás felbontású szó – ehhez az ablakhoz az órás sorozat láncolása kell.",  // órás-only (benzin/nyugdíj)
   rovid_masodlagos: "A napi/heti sorozat még rövidebb ennél az ablaknál. Magától feltöltődik.",  // IDŐBELI
-  rovid_het_ablak: "Heti felbontású szó — ez az ablak túl rövid a heti rácshoz. Ez nem fog feltöltődni.",  // ELVI
+  rovid_het_ablak: "Heti felbontású szó – ez az ablak túl rövid a heti rácshoz. Ez nem fog feltöltődni.",  // ELVI
   rovid_span: "Túl rövid mért időszak",
   degeneralt: "Nem illeszthető",
+  // TELJES-NEZET: egy szónak EGY érvényes intervalluma sincs (sem órás, sem másodlagos) → külön ok-kód,
+  // NEM mosódik a fenti fix-intervallum kódokkal (a user kérése: új hiba tudható legyen).
+  teljes_nincs_sorozat: "Ehhez a szóhoz még nincs rajzolható sorozat a teljes nézetben.",
 };
 
 // Ha egy intervallumnál EGYIK szó sem érvényes, több szó több OK-t adhat: a leggyakoribb (mode)
@@ -200,10 +234,13 @@ function egyesitett_reg() {
       const oiv = o.intervallumok && o.intervallumok[X];
       const miv = m && m.intervallumok && m.intervallumok[X];
       if (oiv && oiv.ervenyes) {
-        // _racs = a szó CONFIG-rácsa (o.racs): a kulcsszo_regresszio.json minden szót a SAJÁT rácsán számol
-        // (benzin/nyugdíj=óra, a többi nap/het) → ez hajtja a rajz-rácsot ÉS a „nap/óra nem-nulla" feliratot
-        // (RACS_EGYSEG). A hiánytalan órás-út bájt-azonos marad (racs hiánya → "ora"). A kártya-Felbontás is ezt olvassa.
-        ivk[X] = Object.assign({}, oiv, { _racs: o.racs || "ora", _forras: "kulcsszo_nyers.json" });
+        // SZEMLE-FIX (08-19): a PRIMER (órás) ág _racs-a MINDIG "ora" — a primer 1_het a `now 7-d` órás ablak
+        // (168 pont) MINDEN szónál, függetlenül a config-rácstól. A korábbi `o.racs` a config-rácsot (nap/het)
+        // tette az órás intervallumra → a 168 órás pont nap/het-slotra collapse-olt (7/1 pont) ÉS félrecímkézte
+        // („nap nem-nulla"), sőt a záró-óra-nulla miatt téves `csupa_nulla`-t okozott (hitel/napelem lapos-nulla).
+        // A config-rács (o.racs) KIZÁRÓLAG a MÁSODLAGOS ágra vonatkozik (lásd lentebb, m.racs). Az órás-only szó
+        // (benzin/nyugdíj) változatlan (eddig is "ora"). A kártya-Felbontás/„óra nem-nulla" felirat ezt olvassa.
+        ivk[X] = Object.assign({}, oiv, { _racs: "ora", _forras: "kulcsszo_nyers.json" });
       } else if (miv && miv.ervenyes) {
         ivk[X] = Object.assign({}, miv, { _racs: m.racs, _forras: "kulcsszo_masodlagos_nyers.json" });
       } else {
@@ -233,6 +270,19 @@ function egyesitett_reg() {
     ki[szo] = Object.assign({}, o, { intervallumok: ivk }, tobb || {});
   });
   return { kulcsszavak: ki };
+}
+
+// TELJES-NEZET: a szó egyesített intervallumai közül a LEGHOSSZABB ÉRVÉNYES = a legkorábbi ablak_kezdet_utc
+// (het→1_ev, nap→3_ho, ora→1_het) → { kulcs, iv }, vagy null ha egy sincs érvényes. Itt dől el a per-szó vágás.
+function teljes_valaszt(szoreg) {
+  const ivk = szoreg.intervallumok || {};
+  let best = null;
+  INTERVALLUMOK.forEach(function (it) {
+    const iv = ivk[it.kulcs];
+    if (!iv || !iv.ervenyes || !iv.ablak_kezdet_utc) return;
+    if (!best || iv.ablak_kezdet_utc < best.iv.ablak_kezdet_utc) best = { kulcs: it.kulcs, iv: iv };
+  });
+  return best;
 }
 
 function ures_allapot(el, uzenet) {
@@ -280,9 +330,30 @@ function intervallum_vezerlo_render() {
     fejlec.textContent = URES_NINCS_ERVENYES;
     el.appendChild(fejlec);
   } else if (blokk) {
-    // EGYETLEN igazságforrás — kezdeti aktív = a leghosszabb ÉRVÉNYES intervallum (spec 7.2/7.4);
-    // magától tolódik kifelé, ahogy újabb gombok nyílnak. A kattintás ezt írja át (aktiv_intervallum_valt).
-    blokk.setAttribute(ATTR.aktiv, kivalasztott.kulcs);
+    // ALAPNEZET (SZEMLE 08-19, request 1): a kezdő nézet a TELJES időszak (közös tengely) — az oldal ezzel nyílik.
+    // A teljes elérhető, ha van érvényes intervallum (kivalasztott != null). A fix intervallumok kattintásra jönnek.
+    // (A korábbi 1_het-default megszűnt; az ALAPNEZET-KONSTANS tétel ezzel lezárul.)
+    blokk.setAttribute(ATTR.aktiv, TELJES_KULCS);
+  }
+  // TELJES-NEZET (request 1): a "Teljes időszak" ál-gomb a lista TETEJÉN (a fix intervallumok ELŐTT); elérhető,
+  // ha ≥1 intervallum érvényes (bármely szónál) — a per-szó választást a kártya-render dönti el (teljes_valaszt).
+  if (ervenyesek.length) {
+    const tetel = document.createElement("div");
+    tetel.className = OSZT.intervallum_tetel;
+    const sor = document.createElement("div");
+    sor.className = OSZT.intervallum_gomb_sor;
+    const gomb = document.createElement("button");
+    gomb.setAttribute(ATTR.intervallum, TELJES_KULCS);
+    gomb.textContent = TELJES_CIMKE;
+    gomb.setAttribute("aria-pressed", "false");   // a tényleges értéket az aria_szinkron állítja be
+    gomb.addEventListener("click", function () { aktiv_intervallum_valt(TELJES_KULCS); });
+    sor.appendChild(gomb);
+    tetel.appendChild(sor);
+    const magy = document.createElement("div");
+    magy.className = OSZT.gomb_magyarazat;
+    magy.textContent = TELJES_MAGYARAZAT;
+    tetel.appendChild(magy);
+    el.appendChild(tetel);
   }
   allapotok.forEach(function (a) {
     // per-intervallum wrapper: a gomb és a saját ok-szövege EGY sorban maradjon, az intervallumok EGYMÁS ALATT
@@ -422,6 +493,35 @@ function slot_index(iso, racs) {
   return nap * 24 + (+iso.slice(11, 13));   // "ora" / default — az ora_index-szel azonos
 }
 
+// ── TELJES-NEZET (Szelet 2): a közös LINEÁRIS dátum-tengelyhez epoch-ms Date NÉLKÜL (tz-biztos egész-aritm.) ──
+// A vendor Chart.js-ben NINCS idő-adapter → type:"time" dobna; ezért numerikus x (ms) + tick/tooltip callback.
+function iso_ms(iso) {   // "YYYY-MM-DDTHH:..." → epoch-ms (UTC); nap/het pont 00:00 → óra-rész 0
+  return napok_civil(+iso.slice(0, 4), +iso.slice(5, 7), +iso.slice(8, 10)) * 86400000 + (+iso.slice(11, 13) || 0) * 3600000;
+}
+function slot_ms(i, racs) {   // slot-index → ms (a hiányzó slotok null-pontjának x-e; a rajzolt pontok iso_ms-t kapnak)
+  if (racs === "nap") return i * 86400000;
+  if (racs === "het") return i * 7 * 86400000;
+  return i * 3600000;   // ora: az ora_index * óra-ms
+}
+// days_from_civil INVERZE (Howard Hinnant) — ms → { y, m, d }, Date/tz nélkül; a tengely-tick/tooltip dátumához
+function civil_datum(ms) {
+  let z = Math.floor(ms / 86400000) + 719468;
+  const era = Math.floor((z >= 0 ? z : z - 146096) / 146097);
+  const doe = z - era * 146097;
+  const yoe = Math.floor((doe - Math.floor(doe / 1460) + Math.floor(doe / 36524) - Math.floor(doe / 146096)) / 365);
+  const y = yoe + era * 400;
+  const doy = doe - (365 * yoe + Math.floor(yoe / 4) - Math.floor(yoe / 100));
+  const mp = Math.floor((5 * doy + 2) / 153);
+  const d = doy - Math.floor((153 * mp + 2) / 5) + 1;
+  const m = mp < 10 ? mp + 3 : mp - 9;
+  return { y: m <= 2 ? y + 1 : y, m: m, d: d };
+}
+function ket(n) { return n < 10 ? "0" + n : "" + n; }
+function ms_datum(ms, teljes_datum) {   // tick: "2025. 08."; tooltip (teljes_datum): "2025. 08. 10."
+  const c = civil_datum(ms);
+  return c.y + ". " + ket(c.m) + "." + (teljes_datum ? " " + ket(c.d) + "." : "");
+}
+
 function tizedes2(x) { return x.toFixed(2).replace(".", ","); }   // magyar tizedesvessző
 function mered_szoveg(x) { return (x < 0 ? "-" : "+") + tizedes2(Math.abs(x)); }   // explicit előjel
 
@@ -458,6 +558,12 @@ function szint_formaz(x) { return Number.isInteger(x) ? String(x) : String(x).re
 // (2) a skála szavanként saját, nem összemérhető (§1.4). A "dátumválasztó nem hat rá" tagmondat KIKERÜLT:
 //     a §7.1 per-szekció elrendezés (a vezérlő a vezérelt szekció mellett) magától közli.
 function frissesseg_szoveg(aktiv_kulcs, adat_veg) {
+  if (aktiv_kulcs === TELJES_KULCS) {
+    // TELJES-NEZET (per-szó tengely): minden szó a SAJÁT időszakát mutatja a saját adatán, ezért a fejléc NEM
+    // mond egyetlen dátumot (szavanként eltér — az adat idősávja a kártya forrás-feliratán van). §1.4 MARAD.
+    return "Teljes időszak – szavanként eltérő időszak, mindegyik a saját adatán. "
+      + "A pontszámok szavanként külön 0–100 skálán állnak, egymással nem összemérhetők.";
+  }
   const iv = INTERVALLUMOK.find(function (i) { return i.kulcs === aktiv_kulcs; });
   const cimke = iv ? iv.cimke : aktiv_kulcs;
   // a datum_formaz már záró pontot ad → NEM teszünk mögé még egyet (különben "05.. A")
@@ -516,7 +622,7 @@ function racs_epit(ablak, iv, racs, szint) {
   const rajz_kezd = Math.max(elso_idx, iv.ablak_kezdet_utc ? slot_index(iv.ablak_kezdet_utc, racs) : elso_idx);
   const ertek_map = {}, cimke_map = {};
   lezart.forEach(function (p) { const i = slot_index(p.idopont_utc, racs); ertek_map[i] = p.ertek; cimke_map[i] = p.idopont_utc; });
-  const labels = [], ertekek = [];
+  const labels = [], ertekek = [], xy = [];   // xy: {x:ms,y} — TELJES-NEZET lineáris tengelyéhez (a category-út labels/ertekek-et használ)
   let van_nemnulla = false;
   for (let i = rajz_kezd; i < veg_idx; i++) {
     if (Object.prototype.hasOwnProperty.call(ertek_map, i)) {
@@ -525,10 +631,12 @@ function racs_epit(ablak, iv, racs, szint) {
       const cimke_datum = datum_formaz(cimke_map[i].slice(0, 10));
       labels.push(racs === "nap" || racs === "het" ? cimke_datum : cimke_datum + " " + cimke_map[i].slice(11, 16));
       ertekek.push(ertek_map[i]);
+      xy.push({ x: iso_ms(cimke_map[i]), y: ertek_map[i] });   // valós pont: a tényleges dátum ms-e
       if (ertek_map[i] !== 0) van_nemnulla = true;
     } else {
       labels.push("");
       ertekek.push(null);   // NULL a hiányzó óra helyén → a vonal itt megszakad (spanGaps:false)
+      xy.push({ x: slot_ms(i, racs), y: null });   // hiányzó slot: null-y a slot ms-én (a vonal itt is megszakad)
     }
   }
   // regressziós vonal (S1 önőrző, V1): CSAK ha MINDKÉT végpont a KIRAJZOLT rácson, MÉRT sloton van
@@ -557,7 +665,12 @@ function racs_epit(ablak, iv, racs, szint) {
   // az két végpontból trend-jellegű; ez minden slotra ugyanaz). A rajzolt hossz a sorozaté (a null-oknál is
   // fut — spanGaps:true a datasetjén), így a csúcsok fölé/alá nyúlhat, referencia-szintként.
   const szint_vonal = (szint != null) ? new Array(ertekek.length).fill(szint) : null;
-  return { labels: labels, ertekek: ertekek, vonal: vonal, vonal_van: vonal_van, szint_vonal: szint_vonal,
+  // TELJES-NEZET {x,y} párok a lineáris tengelyhez: a trend-vonal a két illesztés-végpontból (a vonal_van guard
+  // már ellenőrizte, hogy mindkettő a rajzolt sorozaton van); a szint-vonal konstans, a rajzolt x-tartomány két végén.
+  const vonal_xy = vonal_van ? [{ x: iso_ms(v[0].idopont_utc), y: v[0].ertek }, { x: iso_ms(v[1].idopont_utc), y: v[1].ertek }] : null;
+  const szint_xy = (szint != null && xy.length) ? [{ x: xy[0].x, y: szint }, { x: xy[xy.length - 1].x, y: szint }] : null;
+  return { labels: labels, ertekek: ertekek, xy: xy, vonal: vonal, vonal_van: vonal_van, vonal_xy: vonal_xy,
+           szint_vonal: szint_vonal, szint_xy: szint_xy,
            adat_veg: lezart[lezart.length - 1].idopont_utc,
            szakadas: ertekek.filter(function (v) { return v === null; }).length,
            csupa_nulla: lezart.length > 0 && !van_nemnulla };
@@ -575,7 +688,16 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs) {
   cimke.className = OSZT.cimke;
   cimke.textContent = szo;
   kartya.appendChild(cimke);
-  const iv = szoreg.intervallumok ? szoreg.intervallumok[aktiv_kulcs] : null;
+  // TELJES-NEZET: teljes módban a per-szó választás dönt (teljes_valaszt) — a data-teljes-forras a választott
+  // intervallum kulcsa (a közös tengelyre vetített leghosszabb érvényes); egyébként a globális aktív intervallum.
+  let iv, teljes_valasztott = null;
+  if (aktiv_kulcs === TELJES_KULCS) {
+    teljes_valasztott = teljes_valaszt(szoreg);
+    iv = teljes_valasztott ? teljes_valasztott.iv : null;
+    if (teljes_valasztott) kartya.setAttribute(ATTR.teljes_forras, teljes_valasztott.kulcs);
+  } else {
+    iv = szoreg.intervallumok ? szoreg.intervallumok[aktiv_kulcs] : null;
+  }
   const ablak = (iv && iv.ervenyes) ? nyers_ablak(szo, iv.ablak_veg_utc, iv._forras) : null;
 
   // item 3 (2026-08-18): a szó FELBONTÁSA MINDEN kártyán (az ÜRES-en is) — rögtön látszik, miért nincs görbe
@@ -587,12 +709,15 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs) {
   fb.textContent = "Felbontás: " + felbontas_szo(felbontas_racs);
   kartya.appendChild(fb);
 
+  const teljes_ures = (aktiv_kulcs === TELJES_KULCS && !teljes_valasztott);   // teljes módban egy érvényes intervallum sincs
   if (!iv || !iv.ervenyes || !ablak) {
     kartya.setAttribute(ATTR.drawable, "false");
-    if (iv && !iv.ervenyes && iv.ok) kartya.setAttribute(ATTR.ok, iv.ok);
+    if (teljes_ures) kartya.setAttribute(ATTR.ok, "teljes_nincs_sorozat");     // ÚJ, KÜLÖN ok-kód
+    else if (iv && !iv.ervenyes && iv.ok) kartya.setAttribute(ATTR.ok, iv.ok);
     const p = document.createElement("p");
     p.className = OSZT.ures;
-    p.textContent = (iv && !iv.ervenyes) ? (OK_MAGYAR[iv.ok] || iv.ok) : URES_NINCS_ABLAK;
+    p.textContent = teljes_ures ? OK_MAGYAR["teljes_nincs_sorozat"]
+      : ((iv && !iv.ervenyes) ? (OK_MAGYAR[iv.ok] || iv.ok) : URES_NINCS_ABLAK);
     kartya.appendChild(p);
     return kartya;
   }
@@ -629,6 +754,16 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs) {
   tf.textContent = TENGELY_FELIRAT;
   kartya.appendChild(tf);
 
+  // TELJES-NEZET: a kártya kimondja, HONNAN van adata (a per-szó választott intervallum rácsa + hossza + kezdete)
+  if (aktiv_kulcs === TELJES_KULCS && teljes_valasztott) {
+    const ivm = INTERVALLUMOK.find(function (i) { return i.kulcs === teljes_valasztott.kulcs; });
+    const ff = document.createElement("p");
+    ff.className = OSZT.teljes_forras_felirat;
+    ff.textContent = "adat forrása: " + felbontas_szo(iv._racs) + " sorozat"
+      + (ivm ? " (" + ivm.cimke + ")" : "") + ", " + datum_formaz(iv.ablak_kezdet_utc.slice(0, 10)) + "-től";
+    kartya.appendChild(ff);
+  }
+
   if (racs.csupa_nulla) {
     const cn = document.createElement("p");
     cn.className = OSZT.csupa_nulla;
@@ -652,6 +787,46 @@ function chart_letrehoz(kartya) {
   const racs = kartya._racs;
   const canvas = kartya.querySelector("canvas");
   if (!racs || !canvas || typeof Chart === "undefined") return;
+
+  // TELJES-NEZET (per-szó tengely): a lineáris dátum-tengely a KÁRTYA SAJÁT adat-tartományára AUTO-FITEL (nincs
+  // min/max → Chart.js a {x:ms,y} pontok első→utolsó értékéhez illeszt) → a rövid sorozat KITÖLTI a szélességet,
+  // nem lapul össze (a benzin 7 napja a saját tengelyén, nem egy 1 éves közösön). Nincs idő-adapter → type:"linear"
+  // + tick/tooltip callback (ms → dátum). A y-tengely VÁLTOZATLAN 0–100 (§1.4: nincs kártyák-közti átskálázás).
+  if (kartya._teljes_mod) {
+    const ds = [{ data: racs.xy, spanGaps: false, borderColor: ADAT_VONAL_SZIN, borderWidth: 1.5, pointRadius: 0 }];
+    if (racs.vonal_xy) ds.push({ data: racs.vonal_xy, spanGaps: true, borderColor: "#cc3333", borderWidth: 1.5, borderDash: [4, 3], pointRadius: 0 });
+    if (racs.szint_xy) ds.push({ data: racs.szint_xy, spanGaps: true, borderColor: "#e69138", borderWidth: 1.5, borderDash: [6, 4], pointRadius: 0 });
+    // per-szó tengely PONTOS széllel: min/max = az ELSŐ/UTOLSÓ tényleges adatpont (nincs Chart.js grace-padding →
+    // a görbe a két szélt ÉRINTI, nincs felesleges gap). A tengelyen CSAK 2 tick: a KEZDŐ + a VÉG dátum (teljes).
+    const teljes_pts = racs.xy.filter(function (p) { return p.y !== null; });
+    const x_min = teljes_pts.length ? teljes_pts[0].x : undefined;
+    const x_max = teljes_pts.length ? teljes_pts[teljes_pts.length - 1].x : undefined;
+    chart_peldanyok[kartya.getAttribute(ATTR.kulcsszo)] = new Chart(canvas, {
+      type: "line",
+      data: { datasets: ds },
+      options: {
+        responsive: true, maintainAspectRatio: false, animation: false,
+        // TOOLTIP-UX: bárhol a chart fölé érve felugorjon a legközelebbi adatpont (nem csak PONTOSAN a vonalon)
+        interaction: { mode: "index", intersect: false },
+        scales: {
+          y: { min: 0, max: 100, title: { display: true, text: TENGELY_FELIRAT } },
+          x: { type: "linear", min: x_min, max: x_max,   // pontos szél (nincs padding-gap)
+               afterBuildTicks: function (sc) { sc.ticks = [{ value: sc.min }, { value: sc.max }]; },   // CSAK a kezdő + a vég dátum
+               ticks: { autoSkip: false, callback: function (v) { return ms_datum(v, true); } } },
+        },
+        plugins: {
+          legend: { display: false },
+          // közös tooltip-stílus + a dátum a title-ben (teljes nap); a per-szó lineáris tengelyen a parsed.x az ms
+          tooltip: Object.assign({}, TOOLTIP_STILUS, {
+            callbacks: { title: function (items) { return items.length ? ms_datum(items[0].parsed.x, true) : ""; } },
+          }),
+        },
+      },
+    });
+    kartya.setAttribute(ATTR.rendered, "true");
+    return;
+  }
+
   const datasetek = [{ data: racs.ertekek, spanGaps: false, borderColor: ADAT_VONAL_SZIN, borderWidth: 1.5, pointRadius: 0 }];
   if (racs.vonal) datasetek.push({ data: racs.vonal, spanGaps: true, borderColor: "#cc3333", borderWidth: 1.5, borderDash: [4, 3], pointRadius: 0 });
   // 6c: esemenyjelzo szint-vonal — konstans vízszintes referencia (narancs, a kék adattól ÉS a piros trendtől
@@ -662,13 +837,18 @@ function chart_letrehoz(kartya) {
     data: { labels: racs.labels, datasets: datasetek },
     options: {
       responsive: true, maintainAspectRatio: false, animation: false,
+      // TOOLTIP-UX (SZEMLE 08-19): index+intersect:false → bárhol a chart fölé érve felugrik a legközelebbi x
+      // adatpontja (nem kell PONTOSAN a vékony vonalra/pontra vinni). A régi default (intersect:true) miatt volt „szórakozós".
+      interaction: { mode: "index", intersect: false },
       scales: {
         y: { min: 0, max: 100, title: { display: true, text: TENGELY_FELIRAT } },
         // J3: a tengely-TICK csak a dátumot mutatja (a záró " HH:MM"-et levágja), a TOOLTIP a teljes labelt
         // (dátum + óra) → a #9 órás felbontás a tooltipben. Canvas-belső, DOM-ból nem assertálható (ledger).
         x: { type: "category", ticks: { maxTicksLimit: 10, callback: function (v) { const l = this.getLabelForValue(v); return l ? l.replace(/\s\d{2}:\d{2}$/, "") : l; } } },
       },
-      plugins: { legend: { display: false }, tooltip: { enabled: true } },   // hover-tooltip IGEN, zoom NEM (spec 8.3)
+      // a tooltip CSAK az adatsort mutassa (datasetIndex 0); displayColors:false → NINCS szín-négyzet (egyetlen
+      // sorozatnál redundáns/ronda); tiszta tömör sötét háttér (nem átlátszóbb — az rontaná az olvashatóságot).
+      plugins: { legend: { display: false }, tooltip: TOOLTIP_STILUS },
     },
   });
   kartya.setAttribute(ATTR.rendered, "true");
@@ -708,6 +888,12 @@ function kulcsszo_blokk_render() {
   blokk.querySelectorAll("." + OSZT.frissesseg + ", ." + OSZT.csoport).forEach(function (e) { e.remove(); });
 
   const aktiv = blokk.getAttribute(ATTR.aktiv);
+  // request 2: a „Kulcsszavak" cím a nézet-leírással bővül (aktiv szerint); nincs aktív → csak a bázis cím
+  const cim_h2 = blokk.querySelector("h2");
+  if (cim_h2) {
+    const sfx = KULCSSZO_CIM_SUFFIX[aktiv];
+    cim_h2.textContent = sfx ? KULCSSZO_CIM_ALAP + " – " + sfx : KULCSSZO_CIM_ALAP;
+  }
   const reg = egyesitett_reg();
   // KORAI KILÉPÉS (spec 7.4 (a)/(b)): nincs aktív intervallum → nincs chart, nincs frissesseg, NINCS kivétel
   if (!aktiv || !reg || !reg.kulcsszavak) return;
@@ -746,11 +932,19 @@ function kulcsszo_blokk_render() {
     blokk.appendChild(cs);
   });
 
+  // TELJES-NEZET (SZEMLE 08-19, per-szó tengely): NINCS közös tengely — MINDEN kártya a SAJÁT adat-időszakára
+  // skálázódik (a lineáris dátum-tengely auto-fitel a kártya első→utolsó pontjára), így a rövid sorozat (pl. órás
+  // benzin 7 nap) KITÖLTI a kártya szélességét, nem lapul össze egy hosszú (pl. heti 1 év) közös tengelyen. A span
+  // szövegesen a forrás-feliraton marad. A kártya-Chart a _teljes_mod flaget olvassa (chart_letrehoz).
+  if (aktiv === TELJES_KULCS) {
+    rajzolhatok.forEach(function (k) { k._teljes_mod = true; });
+  }
+
   // frissesseg CSAK ha van legalább egy RAJZOLHATÓ kártya (különben — mint 15a/15b — elmarad); a h2 után
   if (adat_veg) {
     const f = document.createElement("p");
     f.className = OSZT.frissesseg;
-    f.textContent = frissesseg_szoveg(aktiv, adat_veg);
+    f.textContent = frissesseg_szoveg(aktiv, adat_veg);   // teljes módban a szöveg NEM használ egyetlen dátumot (per-szó tengely)
     const h2 = blokk.querySelector("h2");
     if (h2) h2.insertAdjacentElement("afterend", f); else blokk.appendChild(f);
   }
@@ -792,8 +986,8 @@ const TREND_URES_SZOVEG = "Ma nem érkezett friss felkapott trend erre a napra."
 const TREND_IDOSOR_URES_ELEM = "nincs idősor ezen a napon";               // elemenkénti (D1-kiterjesztett kártya)
 const TREND_IDOSOR_URES_BLOKK = "Ezen a napon egyetlen felkapott trendhez sincs idősor.";  // blokk-szintű (mind-üres nap, Task 3)
 // 8b (LELET 2): KÉTFELŰ — mi NEM olvasható ki (magasság-összevetés, §1.4 önnormalizálás) + mi IGEN (alak + időzítés, §7.3).
-const TREND_NORMALIZALAS_SZOVEG = "ⓘ A görbék magassága nem összemérhető: mindegyik a saját aznapi csúcsához (100) "
-  + "van skálázva, ezért két hasonló magasságú görbe eltérő keresettséget takarhat — azt a „volumen” mutatja. "
+const TREND_NORMALIZALAS_SZOVEG = "A görbék magassága nem összemérhető: mindegyik a saját aznapi csúcsához (100) "
+  + "van skálázva, ezért két hasonló magasságú görbe eltérő keresettséget takarhat – azt a „volumen” mutatja. "
   + "Amit a görbe megbízhatóan mutat: egy trend saját napi lefutásának alakját és a csúcs időzítését.";
 
 let kategoria_chart = null;        // az eloszlás-chart SAJÁT példánya (NEM a kulcsszó chart_peldanyok/chart_takarit)
@@ -1012,9 +1206,9 @@ function idosor_blokk_render() {
 
   const mag = document.createElement("p");
   mag.className = OSZT_T.idosor_magyarazat;
-  mag.textContent = "A vonalak a Google Trends napi kategória-osztályozását követik — nem a mi besorolásunk "
+  mag.textContent = "A vonalak a Google Trends napi kategória-osztályozását követik – nem a mi besorolásunk "
     + "(egy trend több kategóriába is eshet). A szürke vonalak közül kattintással emelhető ki egy kategória. "
-    + "A kategória-idősor " + (idosor.napok[0] || "") + "-től érhető el — a korábbi napokon nincs kategória-adat.";
+    + "A kategória-idősor " + (idosor.napok[0] || "") + "-től érhető el – a korábbi napokon nincs kategória-adat.";
   blokk.appendChild(mag);
 
   legendEl.appendChild(idosor_legend_epit(idosor));   // BAL doboz: HTML-legend
@@ -1144,7 +1338,7 @@ function trend_kartya_epit(t, blokk_ures) {
 
   const vol = document.createElement("p");
   vol.className = OSZT_T.volumen;
-  vol.textContent = "volumen: " + (t.volumen != null ? t.volumen : "—");
+  vol.textContent = "volumen: " + (t.volumen != null ? t.volumen : "–");
   k.appendChild(vol);
 
   const kat = document.createElement("p");
@@ -1228,7 +1422,7 @@ function trend_osszefoglalo_epit(trendek, eloszlas, blokk) {
   const besorolas = eloszlas.reduce(function (s, e) { return s + e.count; }, 0);
   const mag = document.createElement("p");
   mag.className = OSZT_T.magyarazat;
-  mag.textContent = "A kategóriákat a Google Trends napi osztályozása adja — nem a mi besorolásunk. "
+  mag.textContent = "A kategóriákat a Google Trends napi osztályozása adja – nem a mi besorolásunk. "
     + "Egy trend több kategóriába is tartozhat, ezért a kategóriák összege (" + besorolas + ") több lehet, "
     + "mint a megjelenített trendek száma (" + trendek.length + ").";
   oss.appendChild(mag);

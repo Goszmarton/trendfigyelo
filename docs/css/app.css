@@ -93,6 +93,8 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 #kulcsszo-blokk .merteszamok { font-size: .8rem; margin: .4rem 0 0; }
 #kulcsszo-blokk .tengely-felirat { font-size: .7rem; color: #666; margin: .1rem 0 0; }
 #kulcsszo-blokk .csupa-nulla, #kulcsszo-blokk .elettartam { font-size: .75rem; color: #666; margin: .2rem 0 0; }
+/* TELJES-NEZET: a kártya forrás-felirata (honnan van adata) — a felbontás-sorral egyező halvány stílus */
+#kulcsszo-blokk .teljes-forras-felirat { font-size: .72rem; color: #888; margin: .2rem 0 0; }
 
 /* Task 7 trend-blokk — napi felkapott trendlista + kategória-eloszlás chart + kategória-szűrő.
    Az összefoglaló (chart+magyarázat+szűrő) a lista FÖLÖTT (áttekintés → részletek). Csak saját stílus. */
@@ -130,6 +132,23 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
   border-left: 3px solid #3366cc; padding: .3rem 0 .3rem .6rem; margin: .6rem 0 .2rem; max-width: 40rem; }
 #trend-blokk .trend-idosor-ures { color: #666; font-style: italic; font-size: .85rem; margin-top: .4rem; }
 #trend-blokk .trend-idosor-ures-blokk { color: #666; font-style: italic; margin: .5rem 0; }
+
+/* SZEMLE 08-19: EGYSÉGES információ-jelző a magyarázó szövegekre (a trend-normalizalas mintája, amit a user kért):
+   kék bal-szegély (#3366cc) + ⓘ ikon (::before, nem kézzel a szövegbe) + dőlt. Minden „hogyan olvasd" magyarázat
+   egyformán néz ki. A meglévő szabályok UTÁN áll → azonos specificitásnál ez nyer a közös tulajdonságokra. */
+#kulcsszo-blokk .frissesseg,
+#trend-blokk .kategoria-magyarazat,
+#idosor-blokk .idosor-magyarazat,
+#trend-blokk .trend-normalizalas-magyarazat {
+  font-style: italic; color: #555;
+  border-left: 3px solid #3366cc; padding: .3rem 0 .3rem .6rem;
+}
+#kulcsszo-blokk .frissesseg::before,
+#trend-blokk .kategoria-magyarazat::before,
+#idosor-blokk .idosor-magyarazat::before,
+#trend-blokk .trend-normalizalas-magyarazat::before {
+  content: "ⓘ ";   /* az ⓘ CSS-ből (nem a szövegben) — így egységes és a szövegek nem duplázzák */
+}
 
 /* Task 10 §3: látható billentyűzet-fókusz (eddig nem volt focus-CSS; az A2 explicit gomb-háttere mellett
    a natív ring inkonzisztens). :focus-visible → csak billentyűzetnél, egérkattintásnál nem villan. */
