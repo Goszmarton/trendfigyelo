@@ -4,7 +4,9 @@
 Minden **nem-ora** szó kapjon MINDKÉT hosszú sorozatot (`today 3-m` ÉS `today 12-m`). Indok: a nézet-szemle
 MÉRTE, hogy ugyanaz az adat rövidebb/hosszabb ablakon MÁS irányt ad (kormányablak: 1 év R²=0,00 stagnáló vs
 3 hó R²=0,66 növekvő). Ezért NEM választunk timeframe-et szavanként, hanem **mindkettőt tartjuk**, a felhasználó
-gombbal vált. A config-rács MARAD (megjelenítési alapértelmezés), átsorolás NINCS, timeframe-sweep PARKOL.
+gombbal vált. A config-rács MARAD (megjelenítési alapértelmezés), átsorolás NINCS. A **timeframe-sweep TÁRGYTALAN** (08-19
+leltár-takarítás): mivel MINDKÉT hosszú timeframe-et gyűjtjük és tartjuk (nem választunk szavanként), nincs mit
+„sweep"-elni — a RACS-PLATO mérés is ezt támasztja alá (ugyanaz a 12-m adat 3 hó ablakon jelet ad).
 
 ## Hatókör
 - **11 nem-ora szó** (racs≠ora). benzin/nyugdíj **KIMARAD** — ott `RACS_IDOKERET`+`_intervallumok(racs="ora")`
