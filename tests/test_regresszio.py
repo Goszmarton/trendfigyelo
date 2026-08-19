@@ -336,6 +336,26 @@ def test_masodlagos_szamit_racs_es_intervallumok():
     assert w["intervallumok"]["1_ev"]["ok"] == "nincs_lancolas"
 
 
+def test_masodlagos_mindket_timeframe_intervallumot_ad():
+    # RED (3a): egy szó 3-m (nap, napi) + 12-m (het, heti) rekorddal → a kimenet intervallumaiban VAN
+    # heti-forrású 1_ev (ervenyes) ÉS napi-forrású 3_ho (ervenyes, racs=nap). Ma csak a max-ablak_veg (3-m) jön.
+    veg = KEZD + timedelta(days=90)
+    nap_p = [_pont(KEZD + timedelta(days=i), 10 + 0.5 * i) for i in range(90)] + [_pont(veg, 60, reszleges=True)]
+    het_kezd = KEZD - timedelta(days=365 - 90)
+    het_p = [_pont(het_kezd + timedelta(days=7 * i), 20 + 0.1 * i) for i in range(52)] + [_pont(veg, 40, reszleges=True)]
+    masodlagos = {"kulcsszavak": {"kórház": [
+        {"racs": "nap", "timeframe": "today 3-m", "lekerdezes_utc": veg.isoformat(),
+         "ablak_kezdet_utc": KEZD.isoformat(), "ablak_veg_utc": veg.isoformat(), "pontok": nap_p},
+        {"racs": "het", "timeframe": "today 12-m", "lekerdezes_utc": veg.isoformat(),
+         "ablak_kezdet_utc": het_kezd.isoformat(), "ablak_veg_utc": veg.isoformat(), "pontok": het_p},
+    ]}}
+    out = regresszio.regresszio_masodlagos_szamit(masodlagos, _tortenet({}), _config(["kórház"]), "T")
+    iv = out["kulcsszavak"]["kórház"]["intervallumok"]
+    assert iv["1_ev"]["ervenyes"] is True           # a heti (12-m) forrásból — RED: ma nincs_lancolas (csak a nap-rekord)
+    assert iv["3_ho"]["ervenyes"] is True            # a napi (3-m) forrásból
+    assert iv["3_ho"].get("racs") == "nap"           # a finomabb rács nyer; per-interval racs (RED: ma nincs racs mező)
+
+
 # ── 6c: esemenyjelzo → órás elnyomás + másodlagos szeletelt szint-nézet ────────
 def _esemenyjelzo_cfg():
     return SimpleNamespace(modszertan_valtas="2026-07-30",

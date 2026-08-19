@@ -175,6 +175,8 @@ def ervenyes_masodlagos_rekord(rek) -> list:
         hibak.append('racs: "nap" vagy "het" kell')
     if _aware_dt(rek.get("lekerdezes_utc")) is None:
         hibak.append("lekerdezes_utc: hiányzó vagy nem tz-aware UTC ISO")
+    if not rek.get("timeframe"):
+        hibak.append("timeframe: hiányzó (a szó × timeframe séma kulcsa)")
     return hibak
 
 
@@ -216,13 +218,17 @@ def ir_masodlagos(docs_data, sorozatok: dict, megtartott_db: int = 3) -> Path:
             raise ValueError(f"{kifejezes}: érvénytelen friss másodlagos rekord: {hibak}")
         kulcsszavak.setdefault(kifejezes, []).append(rendezett)
 
-    # 3) retenció: szavanként a megtartott_db legutóbbi rekord lekerdezes_utc szerint (adat-relatív)
+    # 3) retenció: szavanként ÉS TIMEFRAME-enként a megtartott_db legutóbbi rekord (adat-relatív, lekerdezes_utc
+    #    szerint). A per-szó több-timeframe világban a két timeframe NEM verseng egy közös 3 helyért.
     for kif in list(kulcsszavak):
-        kulcsszavak[kif] = sorted(
-            kulcsszavak[kif],
-            key=lambda r: _aware_dt(r.get("lekerdezes_utc")) or _MIN_DT,
-            reverse=True,
-        )[:megtartott_db]
+        tf_csoport = {}
+        for r in kulcsszavak[kif]:
+            tf_csoport.setdefault(r.get("timeframe"), []).append(r)
+        megtartott = []
+        for rekk in tf_csoport.values():
+            megtartott.extend(sorted(rekk, key=lambda r: _aware_dt(r.get("lekerdezes_utc")) or _MIN_DT,
+                                     reverse=True)[:megtartott_db])
+        kulcsszavak[kif] = megtartott
 
     fajl.parent.mkdir(parents=True, exist_ok=True)
     fajl.write_text(json.dumps(adat, ensure_ascii=False, indent=2), encoding="utf-8")

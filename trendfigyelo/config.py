@@ -21,6 +21,12 @@ RACSOK = {"ora", "nap", "het"}
 # a per-szó rács → Trends timeframe (Phase 4: szavanként a legfinomabb működő rács)
 RACS_IDOKERET = {"ora": "now 7-d", "nap": "today 3-m", "het": "today 12-m"}
 
+# PER-SZÓ TÖBB-TIMEFRAME (2026-08-19): minden nem-ora szó MINDKÉT hosszú sorozatot kapja (a felhasználó gombbal vált).
+MASODLAGOS_TIMEFRAMEK = ("today 3-m", "today 12-m")
+# a timeframe RÁCSA = a Google felbontása (3-m napi, 12-m heti) — a rekord `racs`-mezője EBBŐL, NEM a config-rácsból
+# (egy het-config szó 3-m rekordjának rácsa `nap`); a config-rács a megjelenítési alapértelmezés marad.
+TIMEFRAME_RACS = {"today 3-m": "nap", "today 12-m": "het"}
+
 
 class KonfigHiba(Exception):
     """Hiányzó vagy hibás konfigurációs érték."""

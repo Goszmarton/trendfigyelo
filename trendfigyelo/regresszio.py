@@ -306,6 +306,29 @@ def regresszio_ir(docs_data, adat) -> Path:
     return json_export._ir_json(Path(docs_data) / "kulcsszo_regresszio.json", adat)
 
 
+_RACS_FINOMSAG = {"ora": 0, "nap": 1, "het": 2}   # kisebb = finomabb (ütközésnél a finomabb rács nyer)
+
+
+def _masodlagos_intervallumok_egyesit(rekordok, alap_racs):
+    """PER-SZÓ TÖBB-TIMEFRAME: a szó minden timeframe-rekordjából (rács-csoportonként) számol intervallumokat,
+    majd EGYESÍTI — intervallumonként az ÉRVÉNYES nyer, azon belül a FINOMABB rács (nap > het), és minden interval
+    a forrás-rácsával címkézve (per-interval `racs`, a frontend ezt olvassa). Egyetlen rács esetén a régi viselkedés."""
+    per_racs = {}
+    for r in rekordok:
+        per_racs.setdefault(r.get("racs") or alap_racs, []).append(r)
+    if not per_racs:
+        per_racs = {alap_racs: []}
+    szamolt = {racs: _intervallumok(recs, racs) for racs, recs in per_racs.items()}
+    egyesitett = {}
+    for kulcs in INTERVALLUMOK:
+        jeloltek = [(_RACS_FINOMSAG.get(racs, 9), racs, ivs[kulcs]) for racs, ivs in szamolt.items() if kulcs in ivs]
+        jeloltek.sort(key=lambda t: (not t[2].get("ervenyes"), t[0]))   # érvényes elöl; azon belül finomabb rács elöl
+        if jeloltek:
+            _, racs, iv = jeloltek[0]
+            egyesitett[kulcs] = {**iv, "racs": racs}
+    return egyesitett
+
+
 def regresszio_masodlagos_szamit(masodlagos_nyers, tortenet, config, szamitva_utc):
     """A kulcsszo_masodlagos_regresszio.json: a nap/het szavak RÁCS-tudatos regressziója.
 
@@ -346,9 +369,9 @@ def regresszio_masodlagos_szamit(masodlagos_nyers, tortenet, config, szamitva_ut
             ki[szo]["szint"] = statistics.median(lezart) if lezart else None
             ki[szo]["szint_modszer"] = "median"
             ki[szo]["intervallumok"] = {k: _szint_intervallum(iv)
-                                        for k, iv in _intervallumok(rekordok, racs or "het").items()}
+                                        for k, iv in _masodlagos_intervallumok_egyesit(rekordok, racs or "het").items()}
         else:
-            ki[szo]["intervallumok"] = _intervallumok(rekordok, racs or "ora")
+            ki[szo]["intervallumok"] = _masodlagos_intervallumok_egyesit(rekordok, racs or "ora")
     return {
         "szamitva_utc": szamitva_utc,
         "meredekseg_egyseg": MEREDEKSEG_EGYSEG,

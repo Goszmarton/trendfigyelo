@@ -12,6 +12,7 @@ from datetime import datetime, timedelta, timezone
 import pytest
 
 from trendfigyelo import nyers_kimenet
+from trendfigyelo.config import RACS_IDOKERET
 from trendfigyelo.nyers_kimenet import elavult_masodlagos_szavak, ervenyes_masodlagos_rekord
 
 
@@ -24,7 +25,7 @@ def _mrekord(kezd="2026-05-16T00:00:00+00:00", veg="2026-08-13T00:00:00+00:00",
              lekerdezes="2026-08-13T09:00:00+00:00"):
     if pontok is None:
         pontok = [_pont(kezd, 5, False), _pont(veg, 6, True)]
-    return {"kulcsszo": kulcsszo, "racs": racs, "lekerdezes_utc": lekerdezes,
+    return {"kulcsszo": kulcsszo, "racs": racs, "timeframe": RACS_IDOKERET[racs], "lekerdezes_utc": lekerdezes,
             "ablak_kezdet_utc": kezd, "ablak_veg_utc": veg, "pontok": pontok}
 
 
@@ -83,6 +84,20 @@ def test_ir_masodlagos_megtart_3_legutobbit(tmp_path):
     assert "2026-08-13T09:00:00+00:00" not in lekek
 
 
+def test_masodlagos_retencio_timeframe_kulon(tmp_path):
+    # RED (2. rész): egy szó 3× 3-m (racs=nap) + 3× 12-m (racs=het) → MIND a 6 marad (3/timeframe), nem 3 (össz).
+    for lek in ["10:00", "11:00", "12:00"]:
+        nyers_kimenet.ir_masodlagos(tmp_path, {"hitel": _mrekord(racs="nap", lekerdezes=f"2026-08-13T{lek}:00+00:00")})
+    for lek in ["13:00", "14:00", "15:00"]:
+        nyers_kimenet.ir_masodlagos(tmp_path, {"hitel": _mrekord(racs="het", lekerdezes=f"2026-08-13T{lek}:00+00:00")})
+    rekk = json.loads((tmp_path / "kulcsszo_masodlagos_nyers.json").read_text(encoding="utf-8"))["kulcsszavak"]["hitel"]
+    tf_szam = {}
+    for r in rekk:
+        tf_szam[r["timeframe"]] = tf_szam.get(r["timeframe"], 0) + 1
+    assert len(rekk) == 6                                        # RED: ma 3-ra vág (össz, timeframe-független) → len 3
+    assert tf_szam == {"today 3-m": 3, "today 12-m": 3}          # timeframe-enként külön 3
+
+
 def test_ir_masodlagos_nem_urul_ha_nem_frissul(tmp_path):
     # a szó 2 pillanatképe MEGMARAD, ha egy későbbi futásban nem frissül (adat-relatív)
     nyers_kimenet.ir_masodlagos(tmp_path, {"állás": _mrekord(kulcsszo="állás", racs="het",
@@ -135,7 +150,7 @@ _MOST = datetime(2026, 8, 14, 12, tzinfo=timezone.utc)
 def _mrek(napja, racs="nap"):
     """Egy másodlagos rekord, aminek lekerdezes_utc-je `napja` nappal _MOST előtt."""
     utc = (_MOST - timedelta(days=napja)).isoformat()
-    return {"racs": racs, "lekerdezes_utc": utc,
+    return {"racs": racs, "timeframe": RACS_IDOKERET[racs], "lekerdezes_utc": utc,
             "pontok": [_pont("2026-05-16T00:00:00+00:00")]}
 
 

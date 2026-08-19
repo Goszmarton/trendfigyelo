@@ -48,23 +48,28 @@ def masodlagos_szavak_ma(config, most, docs_data_mappa):
     I/O-ROBUSZTUS: a `kulcsszo_masodlagos_nyers.json` HIÁNYZIK/ÜRES/JSON-hibás → NEM dob, NEM állítja meg a
     napi futást; FALLBACK a config-index sorrend első MAX_MASODLAGOS_NAPI szavára + HANGOS FIGYELEM.
     """
+    from .config import MASODLAGOS_TIMEFRAMEK
     nem_oras = [t for t in config.osszes_kulcsszo() if t.racs != "ora"]
+    # CELLA = (config-index, tetel, timeframe-index, timeframe) — minden nem-ora szó MINDKÉT hosszú sorozatot kapja
+    cellak = [(i, t, tf_i, tf) for i, t in enumerate(nem_oras)
+              for tf_i, tf in enumerate(MASODLAGOS_TIMEFRAMEK)]
     fajl = Path(docs_data_mappa) / "kulcsszo_masodlagos_nyers.json"
     try:
         sorozatok = json.loads(fajl.read_text(encoding="utf-8")).get("kulcsszavak", {})
     except (OSError, ValueError) as e:
         print(f"FIGYELEM: másodlagos ütemező — a(z) {fajl.name!r} nem olvasható ({type(e).__name__}); "
-              f"FALLBACK: config-index sorrend első {MAX_MASODLAGOS_NAPI} szava.")
-        return nem_oras[:MAX_MASODLAGOS_NAPI]
+              f"FALLBACK: config-index+timeframe sorrend első {MAX_MASODLAGOS_NAPI} cellája.")
+        return [(t, tf) for _, t, _, tf in cellak[:MAX_MASODLAGOS_NAPI]]
 
-    def _elavultsag(tetel):
-        rekordok = sorozatok.get(tetel.kifejezes, []) or []
-        korok = [nyers_kimenet._aware_dt(r.get("lekerdezes_utc")) for r in rekordok]
+    def _elavultsag(kif, tf):
+        rekk = [r for r in (sorozatok.get(kif, []) or []) if r.get("timeframe") == tf]   # cella-szintű (per timeframe)
+        korok = [nyers_kimenet._aware_dt(r.get("lekerdezes_utc")) for r in rekk]
         legfrissebb = max((d for d in korok if d is not None), default=None)
-        return float("inf") if legfrissebb is None else (most - legfrissebb).days   # never-collected = max elavult
+        return float("inf") if legfrissebb is None else (most - legfrissebb).days   # never-collected cella = max elavult
 
-    rangsor = sorted(enumerate(nem_oras), key=lambda it: (-_elavultsag(it[1]), it[0]))   # elavult DESC, config-index ASC
-    return [t for _, t in rangsor[:MAX_MASODLAGOS_NAPI]]
+    # elavult DESC, majd config-index ASC, majd timeframe-index ASC (determinista tie-break)
+    rangsor = sorted(cellak, key=lambda c: (-_elavultsag(c[1].kifejezes, c[3]), c[0], c[2]))
+    return [(t, tf) for _, t, _, tf in rangsor[:MAX_MASODLAGOS_NAPI]]
 
 
 def _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most):
@@ -78,8 +83,8 @@ def _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most):
     """
     ag = "kulcsszo_masodlagos"
     try:
-        for tetel in masodlagos_szavak_ma(config, most, docs_data_mappa):
-            rek = kulcsszavak.gyujt_egy_masodlagos(kliens, config, tetel, most)
+        for tetel, timeframe in masodlagos_szavak_ma(config, most, docs_data_mappa):
+            rek = kulcsszavak.gyujt_egy_masodlagos(kliens, config, tetel, most, timeframe)
             if rek:
                 nyers_kimenet.ir_masodlagos(docs_data_mappa, {tetel.kifejezes: rek})
         bejegyzesek.append({"ag": ag, "eredmeny": "siker",

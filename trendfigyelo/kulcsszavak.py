@@ -5,11 +5,57 @@ kapja. A gyujt visszaad: (egynapos_pontok, {nap_iso: [pontok]}, {kifejezes: nyer
 A nyers_rekord a Task 3 szerződése szerint (ablakhatárok + isPartial-jelölés).
 """
 
-from datetime import timezone
+import re
+from datetime import datetime, timezone
 from pathlib import Path
 
 from . import seged
 from .kliens import AgFeladva, PlafonTullepve
+
+# egy hónap ~ napokban (a `today N-m` ablak várt span-jének LEVEZETÉSÉHEZ — nem beírt pontszám-konstans)
+_HONAP_NAP = 30.4
+
+
+def varhato_span_nap(timeframe):
+    """A `today N-m` / `now N-d` timeframe VÁRT span-je napokban (a csonka-ellenőrzéshez, a stringből levezetve).
+    Ismeretlen alak → None. Egység: d=nap, m=hónap(~30,4), y=év(365), H=óra."""
+    m = re.match(r"(?:today|now)\s+(\d+)\s*-\s*([dmyH])", timeframe or "")
+    if not m:
+        return None
+    n, egyseg = int(m.group(1)), m.group(2)
+    return {"d": n, "m": n * _HONAP_NAP, "y": n * 365.0, "H": n / 24.0}.get(egyseg)
+
+
+def masodlagos_alak_ok(pontok, timeframe, lekerdezes_utc):
+    """ÉRKEZÉS-ELLENŐRZÉS: a KAPOTT sorozat megfelel-e a KÉRT timeframe-nek → (ok: bool, indok: str).
+    - szabályos rács: a lezárt pontok közti köz EGYENLŐ (a step MÉRT, nem beírt);
+    - span: a timeframe-ből levezetve, ≥ 0,85× (csonka-guard) és ≤ 1,2× (rossz-timeframe-guard);
+    - frissesség: a sorozat vége NEM jövőbeli és a lekérdezéshez képest ≤ 2×step + 2 nap.
+    A várt értékek a `timeframe`-ből SZÁRMAZNAK (rács-vak konstans elkerülve)."""
+    lezart = [p for p in pontok if not p.get("reszleges")]
+    if len(lezart) < 2:
+        return False, "túl kevés lezárt pont (<2)"
+    idok = sorted(datetime.fromisoformat(p["idopont_utc"]) for p in lezart)
+    kozok = {(idok[i + 1] - idok[i]).days for i in range(len(idok) - 1)}
+    if len(kozok) != 1:
+        return False, f"szabálytalan rács (több lépésköz: {sorted(kozok)})"
+    step = next(iter(kozok))
+    if step < 1:
+        return False, "0-napos lépésköz"
+    var_span = varhato_span_nap(timeframe)
+    if var_span is None:
+        return False, f"ismeretlen timeframe: {timeframe!r}"
+    span = (idok[-1] - idok[0]).days
+    if span < var_span * 0.85:
+        return False, f"csonka span ({span} nap < 0,85×{var_span:.0f} a(z) {timeframe!r}-hez)"
+    if span > var_span * 1.2:
+        return False, f"túl hosszú span ({span} nap > 1,2×{var_span:.0f} a(z) {timeframe!r}-hez)"
+    kesés = (datetime.fromisoformat(lekerdezes_utc) - idok[-1]).days
+    if kesés < 0:
+        return False, "a sorozat vége JÖVŐBELI a lekérdezéshez képest"
+    if kesés > step * 2 + 2:
+        return False, f"a sorozat vége túl régi ({kesés} nap a lekérdezés előtt, step={step})"
+    return True, ""
 
 
 def _szam(x) -> bool:
@@ -166,25 +212,32 @@ def gyujt(kliens, config, most=None):
     return pontok, napi_pontok, nyers_sorozatok
 
 
-def gyujt_egy_masodlagos(kliens, config, tetel, most):
+def gyujt_egy_masodlagos(kliens, config, tetel, most, timeframe):
     """EGY nap/het szó másodlagos (RACS_IDOKERET szerinti) lekérdezése → egy rekord vagy None.
 
     A `kulcsszo_masodlagos` ág-néven megy (külön Kliens-számláló + napló-címke). Üres/oszlop
     nélküli df → None (a szó kimarad). AgFeladva (429) NEM itt fogódik el — a hívó (a másodlagos
     ág) csendesen feladja, de a MÁR kiírt szavak megmaradnak (spec 7.4 mintája, pótolható adaton).
     """
-    from .config import RACS_IDOKERET
+    from .config import TIMEFRAME_RACS
     df = kliens.hivas(
         "kulcsszo_masodlagos", kliens.tr.interest_over_time,
-        [tetel.kifejezes], geo=config.geo, timeframe=RACS_IDOKERET[tetel.racs])
+        [tetel.kifejezes], geo=config.geo, timeframe=timeframe)
     if df is None or len(df) == 0:
         return None
     oszlop = _ertek_oszlop(df, tetel.kifejezes)
     if oszlop is None:
         return None
     rek = _nyers_sorozat(df, tetel, oszlop, _ispartial_oszlop(df))
-    rek["racs"] = tetel.racs
+    rek["racs"] = TIMEFRAME_RACS.get(timeframe, tetel.racs)   # a timeframe RÁCSA (3-m→nap, 12-m→het), NEM a config-rács
+    rek["timeframe"] = timeframe          # a szó × timeframe séma (2. rész) kulcsa; a rekord ELtárolja
     rek["lekerdezes_utc"] = most.isoformat()
+    # ÉRKEZÉS-ELLENŐRZÉS (1. rész): a kapott sorozat feleljen meg a KÉRT timeframe-nek — csonka/rossz → ELDOB + FIGYELEM
+    ok, indok = masodlagos_alak_ok(rek["pontok"], timeframe, rek["lekerdezes_utc"])
+    if not ok:
+        print(f"FIGYELEM: a(z) {tetel.kifejezes!r} másodlagos ({timeframe}) válasza NEM felel meg a kért "
+              f"timeframe-nek ({indok}); ELDOBVA (nem mentjük).")
+        return None
     return rek
 
 

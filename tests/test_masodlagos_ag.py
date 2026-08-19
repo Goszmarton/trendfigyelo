@@ -52,39 +52,47 @@ def _nap(hetnap):
 
 # --- Ciklus A: STALENESS-vezérelt ütemező (Task 5, a %7 helyett) ---
 
-def _ir_masodlagos_nyers(docs, kif_datum):
-    """kulcsszo_masodlagos_nyers.json a megadott szó→utolsó-lekerdezes-dátummal (staleness-beállítás)."""
+def _ir_masodlagos_nyers(docs, kif_tf_datum):
+    """kulcsszo_masodlagos_nyers.json PER-CELLA (szó × timeframe) utolsó-lekerdezes-dátummal (staleness-beállítás).
+    kif_tf_datum: {kif: {timeframe: datum}}."""
     docs.mkdir(parents=True, exist_ok=True)
-    kk = {kif: [{"lekerdezes_utc": f"{nap}T12:00:00+00:00", "racs": "nap"}] for kif, nap in kif_datum.items()}
+    kk = {kif: [{"timeframe": tf, "racs": "nap", "lekerdezes_utc": f"{nap}T12:00:00+00:00"}
+                for tf, nap in tf_datum.items()]
+          for kif, tf_datum in kif_tf_datum.items()}
     (docs / "kulcsszo_masodlagos_nyers.json").write_text(
         json.dumps({"kulcsszavak": kk}, ensure_ascii=False), encoding="utf-8")
+
+
+def _cellak(c, most, docs):
+    """A scheduler kimenete (tetel, timeframe) párokból (szó, timeframe) párokra."""
+    return [(t.kifejezes, tf) for t, tf in futtato.masodlagos_szavak_ma(c, most, docs)]
 
 
 _MOST = datetime(2026, 8, 18, 12, tzinfo=timezone.utc)
 
 
 def test_masodlagos_legelavultabb_elol(tmp_path):
-    # RED 1 (fed: staleness-RENDEZÉS): a 2 LEGELAVULTABB szó, nem a hétnap-alapú lista.
-    c = _config([KulcsszoTetel(k, "d", "szintmero", "nap") for k in ["a", "b", "c", "d"]])
-    _ir_masodlagos_nyers(tmp_path, {"a": "2026-08-17", "b": "2026-08-01", "c": "2026-08-10", "d": "2026-08-16"})
-    szavak = [t.kifejezes for t in futtato.masodlagos_szavak_ma(c, _MOST, tmp_path)]
-    assert szavak == ["b", "c"]   # b (17 nap) > c (8 nap) > d (2) > a (1) → a 2 legelavultabb
+    # fed: staleness-RENDEZÉS CELLA-szinten (szó × timeframe): a 2 LEGELAVULTABB CELLA.
+    c = _config([KulcsszoTetel(k, "d", "szintmero", "nap") for k in ["a", "b"]])
+    _ir_masodlagos_nyers(tmp_path, {
+        "a": {"today 3-m": "2026-08-17", "today 12-m": "2026-08-01"},   # a/12-m = 17 nap (legelavultabb)
+        "b": {"today 3-m": "2026-08-17", "today 12-m": "2026-08-10"}})   # b/12-m = 8 nap
+    assert _cellak(c, _MOST, tmp_path) == [("a", "today 12-m"), ("b", "today 12-m")]   # a 2 legelavultabb cella
 
 
 def test_masodlagos_never_collected_prioritas(tmp_path):
-    # RED 2 (fed: None=max-elavult KEZELÉS, külön a kortól): a soha-gyűjtött (fájlban NINCS) szavak ELÖL.
-    c = _config([KulcsszoTetel(k, "d", "szintmero", "nap") for k in ["a", "b", "c", "d"]])
-    _ir_masodlagos_nyers(tmp_path, {"a": "2026-08-01", "b": "2026-08-02"})   # c, d SOHA
-    szavak = [t.kifejezes for t in futtato.masodlagos_szavak_ma(c, _MOST, tmp_path)]
-    assert szavak == ["c", "d"]   # c, d never-collected (max elavult) → a régi a/b elé
+    # fed: never-collected CELLA (None=max-elavult) ELÖL — a 12-m cellák soha nem gyűltek.
+    c = _config([KulcsszoTetel(k, "d", "szintmero", "nap") for k in ["a", "b"]])
+    _ir_masodlagos_nyers(tmp_path, {"a": {"today 3-m": "2026-08-01"}, "b": {"today 3-m": "2026-08-02"}})   # 12-m SOHA
+    assert _cellak(c, _MOST, tmp_path) == [("a", "today 12-m"), ("b", "today 12-m")]   # never-collected 12-m cellák elöl
 
 
 def test_masodlagos_tie_break_config_index(tmp_path):
-    # RED 3 (fed: TIE-BREAK config-index, NEM ábécé): azonos elavultság → config-sorrend.
+    # fed: TIE-BREAK config-index (NEM ábécé): azonos elavultság (mindkét 12-m never) → config-sorrend.
     c = _config([KulcsszoTetel(k, "d", "szintmero", "nap") for k in ["zebra", "alma", "medve"]])
-    _ir_masodlagos_nyers(tmp_path, {"zebra": "2026-08-01", "alma": "2026-08-01", "medve": "2026-08-17"})
-    szavak = [t.kifejezes for t in futtato.masodlagos_szavak_ma(c, _MOST, tmp_path)]
-    assert szavak == ["zebra", "alma"]   # azonos kor → config-index (zebra idx0, alma idx1); ábécé "alma" elöl LENNE
+    _ir_masodlagos_nyers(tmp_path, {"zebra": {"today 3-m": "2026-08-17"}, "alma": {"today 3-m": "2026-08-17"},
+                                    "medve": {"today 3-m": "2026-08-17", "today 12-m": "2026-08-17"}})
+    assert _cellak(c, _MOST, tmp_path) == [("zebra", "today 12-m"), ("alma", "today 12-m")]   # config-index; ábécé "alma" elöl LENNE
 
 
 def test_masodlagos_cap_max_napi(tmp_path):
@@ -99,15 +107,28 @@ def test_masodlagos_cap_max_napi(tmp_path):
 def test_masodlagos_sorozat_hiany_nem_all_le(tmp_path, capsys):
     # RED 5 (fed: I/O-ROBUSZTUSSÁG): hiányzó/hibás nyers → NEM dob, config-index fallback + HANGOS FIGYELEM.
     c = _config([KulcsszoTetel(k, "d", "szintmero", "nap") for k in ["a", "b", "c"]])
-    # (a) fájl HIÁNYZIK
-    szavak = [t.kifejezes for t in futtato.masodlagos_szavak_ma(c, _MOST, tmp_path)]
-    assert szavak == ["a", "b"]   # config-index első 2 (fallback), NEM dob
+    # (a) fájl HIÁNYZIK → fallback: config-index+timeframe első 2 cellája = (a,3-m),(a,12-m)
+    assert _cellak(c, _MOST, tmp_path) == [("a", "today 3-m"), ("a", "today 12-m")]   # NEM dob
     ki = capsys.readouterr().out
     assert "FALLBACK" in ki and "kulcsszo_masodlagos_nyers.json" in ki   # HANGOS, megnevezi a fájlt
     # (b) JSON-hibás fájl
     (tmp_path / "kulcsszo_masodlagos_nyers.json").write_text("{ROSSZ", encoding="utf-8")
-    szavak2 = [t.kifejezes for t in futtato.masodlagos_szavak_ma(c, _MOST, tmp_path)]
-    assert szavak2 == ["a", "b"]   # JSON-hiba is fallback, NEM dob
+    assert _cellak(c, _MOST, tmp_path) == [("a", "today 3-m"), ("a", "today 12-m")]   # JSON-hiba is fallback, NEM dob
+
+
+def test_masodlagos_cella_szintu_utemezes(tmp_path):
+    # RED (4. rész): a scheduler (szó, timeframe) PÁROKAT ad; mindkét timeframe KÜLÖN cella; a never-collected elöl.
+    c = _config([KulcsszoTetel("a", "d", "szintmero", "nap")])   # 1 szó → 2 cella (today 3-m, today 12-m)
+    tmp_path.mkdir(parents=True, exist_ok=True)
+    (tmp_path / "kulcsszo_masodlagos_nyers.json").write_text(json.dumps({"kulcsszavak": {   # 3-m friss, 12-m SOHA
+        "a": [{"timeframe": "today 3-m", "racs": "nap", "lekerdezes_utc": "2026-08-18T12:00:00+00:00"}]}}),
+        encoding="utf-8")
+    cellak = futtato.masodlagos_szavak_ma(c, _MOST, tmp_path)
+    elso = cellak[0]
+    assert isinstance(elso, tuple) and len(elso) == 2          # (tetel, timeframe) pár — RED: ma KulcsszoTetel (len 4)
+    tetel, tf = elso
+    assert (tetel.kifejezes, tf) == ("a", "today 12-m")        # a never-collected 12-m cella az első
+    assert len(cellak) == futtato.MAX_MASODLAGOS_NAPI == 2     # a cap változatlan (cellákra)
 
 
 # --- Ciklus B: egy szó másodlagos gyűjtése ---
@@ -139,17 +160,60 @@ class _RogzitoKliens:
 
 
 def test_gyujt_egy_masodlagos_rekord_racs_lekerdezes_idokeret():
-    from trendfigyelo.config import RACS_IDOKERET
     from trendfigyelo.nyers_kimenet import ervenyes_masodlagos_rekord
     tetel = KulcsszoTetel("hitel", "h", "szintmero", "nap")
     k = _RogzitoKliens()
     most = datetime(2026, 8, 13, 9, 0, tzinfo=timezone.utc)
-    rek = kulcsszavak.gyujt_egy_masodlagos(k, _config([tetel]), tetel, most)
-    assert k.timeframe == RACS_IDOKERET["nap"] == "today 3-m"   # a racs szerinti timeframe ment ki
+    rek = kulcsszavak.gyujt_egy_masodlagos(k, _config([tetel]), tetel, most, "today 3-m")
+    assert k.timeframe == "today 3-m"                           # a PARAMÉTER timeframe ment ki
     assert k.ag == "kulcsszo_masodlagos"                        # külön Kliens-számláló / napló-ág
-    assert rek["racs"] == "nap"
+    assert rek["racs"] == "nap"                                 # a timeframe RÁCSA (today 3-m → nap)
+    assert rek["timeframe"] == "today 3-m"
     assert rek["lekerdezes_utc"] == "2026-08-13T09:00:00+00:00"
-    assert ervenyes_masodlagos_rekord(rek) == []               # a Task 2 szerződését teljesíti
+    assert ervenyes_masodlagos_rekord(rek) == []               # a séma-szerződést teljesíti
+
+
+# --- Ciklus B2: ÉRKEZÉS-ELLENŐRZÉS (per-szó több-timeframe, 1. rész) ---
+
+def _df_racs(kif, n, step_nap, veg=_MOST):
+    """n szabályos LEZÁRT pont step_nap közönként, az utolsó (veg−step) napon; részleges farok a veg-en.
+    A `veg`-re végződés → frissesség-OK; a span/step a timeframe-ellenőrzés bemenete."""
+    from datetime import timedelta
+    utolso = veg - timedelta(days=step_nap)
+    napok = [utolso - timedelta(days=i * step_nap) for i in range(n)][::-1]
+    ertek = [50] * n
+    ip = [False] * n
+    napok.append(veg); ertek.append(0); ip.append(True)
+    return pd.DataFrame({kif: ertek, "isPartial": ip}, index=pd.to_datetime(napok))
+
+
+def test_masodlagos_csonka_eldobva():
+    # RED (1. rész): nap-szó (today 3-m, ~91 nap várt) DE csak 10 napi pont (span 9 nap) → ELDOBVA (None), nem mentve.
+    tetel = KulcsszoTetel("hitel", "h", "szintmero", "nap")
+    k = _RogzitoKliens(df_gyar=lambda kif: _df_racs(kif, 10, 1))   # span 9 nap << 0,85×91
+    rek = kulcsszavak.gyujt_egy_masodlagos(k, _config([tetel]), tetel, _MOST, "today 3-m")
+    assert rek is None   # csonka → eldobva
+
+
+def test_masodlagos_alak_timeframe_fuggo():
+    # RED (1. rész, SZÁNDÉKOS-ZÖLD fedés): UGYANAZ a 92 napi pont (span 91 nap) — nap-szónak (3-m) ÉRVÉNYES,
+    # het-szónak (12-m, ~365 nap várt) ELDOBVA. A verdikt a timeframe-ből LEVEZETVE (nem beírt konstans).
+    df92 = lambda kif: _df_racs(kif, 92, 1)
+    nap = KulcsszoTetel("hitel", "h", "szintmero", "nap")
+    het = KulcsszoTetel("kórház", "e", "szintmero", "het")
+    assert kulcsszavak.gyujt_egy_masodlagos(_RogzitoKliens(df92), _config([nap]), nap, _MOST, "today 3-m") is not None   # 3-m OK
+    assert kulcsszavak.gyujt_egy_masodlagos(_RogzitoKliens(df92), _config([het]), het, _MOST, "today 12-m") is None      # 12-m csonka
+
+
+def test_masodlagos_timeframe_mezo_kotelezo():
+    # RED (1. rész): a séma (2. rész) timeframe-re kulcsol → a rekordnak KÖTELEZŐ timeframe mezője.
+    from trendfigyelo.nyers_kimenet import ervenyes_masodlagos_rekord
+    rek = {"kulcsszo": "hitel", "ablak_kezdet_utc": "2026-05-18T00:00:00+00:00",
+           "ablak_veg_utc": "2026-08-18T00:00:00+00:00",
+           "pontok": [{"idopont_utc": "2026-05-18T00:00:00+00:00", "ertek": 50, "reszleges": False}],
+           "racs": "nap", "lekerdezes_utc": "2026-08-18T12:00:00+00:00"}   # NINCS timeframe
+    hibak = ervenyes_masodlagos_rekord(rek)
+    assert any("timeframe" in h for h in hibak)   # a hiányzó timeframe hibát ad (ma: nincs ilyen ellenőrzés → RED)
 
 
 # --- Ciklus C: a másodlagos ág (szavankénti írás + csendes feladás) ---
@@ -173,8 +237,10 @@ class _MasodlagosBukoKliens:
 def test_masodlagos_ag_szavankent_ir_a_blokk_elott(tmp_path):
     # 8 nap-szó, MIND never-collected (nincs nyers) → fallback config-index első 2 = szo0, szo1; a 2. (szo1) blokkol.
     c = _config([KulcsszoTetel(f"szo{i}", "d", "szintmero", "nap") for i in range(8)])
-    most = _nap(0)
-    assert [t.kifejezes for t in futtato.masodlagos_szavak_ma(c, most, tmp_path)] == ["szo0", "szo1"]
+    most = _MOST   # 2026 — a df-fel kortárs (az érkezés-ellenőrzésnek nem jövőbeli)
+    # minden szó 12-m gyűjtött (stale 0) → a top cellák a NEVER-collected 3-m cellák (szo0, szo1); a _df 3-m-re érvényes
+    _ir_masodlagos_nyers(tmp_path, {f"szo{i}": {"today 12-m": "2026-08-18"} for i in range(8)})
+    assert _cellak(c, most, tmp_path) == [("szo0", "today 3-m"), ("szo1", "today 3-m")]
     bejegyzesek = []
     futtato._masodlagos_ag(bejegyzesek, _MasodlagosBukoKliens(), c, tmp_path, most)  # NEM dob (csendes)
     fajl = tmp_path / "kulcsszo_masodlagos_nyers.json"
