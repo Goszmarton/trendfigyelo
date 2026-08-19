@@ -1,0 +1,68 @@
+name: Másodlagos-only feltöltés (kézi)
+
+# CSAK kézi (workflow_dispatch) — SOHA nem ütemezett. A belépő KIZÁRÓLAG a másodlagos (nap/het) cellákat gyűjti;
+# a primer órás (now 7-d), az idosor/felkapott/rss ág, a lánc-frissítés és a napi adat-commit NEM indul (§10:
+# a primer órás az EGYETLEN pótolhatatlan adat). A cél a 13 hiányzó cella feltöltésének GYORSÍTÁSA a 11 nap helyett.
+on:
+  workflow_dispatch:
+    inputs:
+      max_cella:
+        description: "Hány cellát töltsön (ÓVATOS alap: 2). A staleness szerinti legelavultabbakat választja."
+        required: false
+        default: "2"
+      commit:
+        description: "Commitolja-e a kulcsszo_masodlagos_nyers.json-t (alap: false → csak artefakt; a persistálást te döntöd)."
+        required: false
+        default: "false"
+
+permissions:
+  contents: write
+
+concurrency:
+  # KRITIKUS: a napi órás gyűjtéssel NE fusson párhuzamosan (kvóta-védelem) — közös csoport a napi futtatással
+  group: napi-futtatas
+  cancel-in-progress: false
+
+jobs:
+  masodlagos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python beállítása
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Függőségek telepítése
+        run: pip install -r requirements.txt
+
+      - name: Másodlagos-only feltöltés (CSAK a nap/het cellák)
+        shell: bash
+        run: |
+          set -o pipefail
+          python -m trendfigyelo.masodlagos_only --max-cella "${{ inputs.max_cella }}" 2>&1 | tee masodlagos.log
+
+      - name: Artefakt (a másodlagos fájl + log — mindig, hogy LÁSD, mi történt)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: masodlagos-only-${{ github.run_id }}
+          retention-days: 14
+          path: |
+            docs/data/kulcsszo_masodlagos_nyers.json
+            masodlagos.log
+
+      - name: Commit (OPT-IN, CSAK a másodlagos fájl — NEM a napi teljes adat-commit)
+        if: ${{ inputs.commit == 'true' && github.ref == 'refs/heads/main' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/kulcsszo_masodlagos_nyers.json
+          if git diff --staged --quiet; then
+            echo "Nincs változás — nincs commit."
+          else
+            git commit -m "adat: másodlagos-only feltöltés ($(date -u +%Y-%m-%dT%H:%MZ))"
+            git push
+          fi

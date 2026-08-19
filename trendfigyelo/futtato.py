@@ -39,8 +39,11 @@ def tervezett_hivasszam(config) -> int:
 MAX_MASODLAGOS_NAPI = 2
 
 
-def masodlagos_szavak_ma(config, most, docs_data_mappa):
-    """A ma ütemezett nap/het szavak — STALENESS-vezérelt (Task 5), a %7 helyett.
+def masodlagos_szavak_ma(config, most, docs_data_mappa, limit=None):
+    """A ma ütemezett (szó × timeframe) cellák — STALENESS-vezérelt (Task 5), a %7 helyett.
+
+    `limit` = hány cellát adjon vissza; None → MAX_MASODLAGOS_NAPI (a NAPI útvonal változatlan). A másodlagos-only
+    belépő SAJÁT limitet ad át (a napi cap-et NEM kerüli meg).
 
     A racs≠"ora" (jogosult) szavakat elavultság szerint rangsorolja: never-collected / nincs érvényes
     `lekerdezes_utc` = MAX elavult (legelöl); azonos elavultság → CONFIG-INDEX tie-break (NEM ábécé);
@@ -49,6 +52,7 @@ def masodlagos_szavak_ma(config, most, docs_data_mappa):
     napi futást; FALLBACK a config-index sorrend első MAX_MASODLAGOS_NAPI szavára + HANGOS FIGYELEM.
     """
     from .config import MASODLAGOS_TIMEFRAMEK
+    limit = limit or MAX_MASODLAGOS_NAPI
     nem_oras = [t for t in config.osszes_kulcsszo() if t.racs != "ora"]
     # CELLA = (config-index, tetel, timeframe-index, timeframe) — minden nem-ora szó MINDKÉT hosszú sorozatot kapja
     cellak = [(i, t, tf_i, tf) for i, t in enumerate(nem_oras)
@@ -59,7 +63,7 @@ def masodlagos_szavak_ma(config, most, docs_data_mappa):
     except (OSError, ValueError) as e:
         print(f"FIGYELEM: másodlagos ütemező — a(z) {fajl.name!r} nem olvasható ({type(e).__name__}); "
               f"FALLBACK: config-index+timeframe sorrend első {MAX_MASODLAGOS_NAPI} cellája.")
-        return [(t, tf) for _, t, _, tf in cellak[:MAX_MASODLAGOS_NAPI]]
+        return [(t, tf) for _, t, _, tf in cellak[:limit]]
 
     def _elavultsag(kif, tf):
         rekk = [r for r in (sorozatok.get(kif, []) or []) if r.get("timeframe") == tf]   # cella-szintű (per timeframe)
@@ -69,7 +73,7 @@ def masodlagos_szavak_ma(config, most, docs_data_mappa):
 
     # elavult DESC, majd config-index ASC, majd timeframe-index ASC (determinista tie-break)
     rangsor = sorted(cellak, key=lambda c: (-_elavultsag(c[1].kifejezes, c[3]), c[0], c[2]))
-    return [(t, tf) for _, t, _, tf in rangsor[:MAX_MASODLAGOS_NAPI]]
+    return [(t, tf) for _, t, _, tf in rangsor[:limit]]
 
 
 def _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most):
