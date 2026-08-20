@@ -3,6 +3,8 @@
 import json
 from pathlib import Path
 
+from . import seged
+
 
 def _szam_e(x):
     try:
@@ -59,8 +61,7 @@ def kulcsszo_napi_osszesites(kulcsszo_pontok) -> list:
 
 
 def _ir_json(fajl: Path, adat):
-    fajl.parent.mkdir(parents=True, exist_ok=True)
-    fajl.write_text(json.dumps(adat, ensure_ascii=False, indent=2), encoding="utf-8")
+    seged.atomi_ir_szoveg(fajl, json.dumps(adat, ensure_ascii=False, indent=2))   # ATOMI-IRAS
     return fajl
 
 

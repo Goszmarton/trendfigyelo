@@ -24,6 +24,7 @@ import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from . import seged
 from .config import RACS_IDOKERET, TIMEFRAME_RACS
 
 # aware sentinel a rendezéshez: érvénytelen/hiányzó időbélyeg előre (a validátor jelzi)
@@ -231,8 +232,7 @@ def ir_gordulo(docs_data, nyers_sorozatok: dict, megtartott_nap: int = 14) -> Pa
             if not kulcsszavak[kif]:
                 del kulcsszavak[kif]           # ne maradjon üres lista a kulcsszóra
 
-    fajl.parent.mkdir(parents=True, exist_ok=True)
-    fajl.write_text(json.dumps(adat, ensure_ascii=False, indent=2), encoding="utf-8")
+    seged.atomi_ir_szoveg(fajl, json.dumps(adat, ensure_ascii=False, indent=2))   # ATOMI-IRAS (pótolhatatlan)
     return fajl
 
 
@@ -299,8 +299,7 @@ def ir_masodlagos(docs_data, sorozatok: dict, megtartott_db: int = 3) -> Path:
                                      reverse=True)[:megtartott_db])
         kulcsszavak[kif] = megtartott
 
-    fajl.parent.mkdir(parents=True, exist_ok=True)
-    fajl.write_text(json.dumps(adat, ensure_ascii=False, indent=2), encoding="utf-8")
+    seged.atomi_ir_szoveg(fajl, json.dumps(adat, ensure_ascii=False, indent=2))   # ATOMI-IRAS
     return fajl
 
 

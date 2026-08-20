@@ -1,11 +1,37 @@
-"""Közös segédfüggvények: idő, szöveggé alakítás, CSV-író."""
+"""Közös segédfüggvények: idő, szöveggé alakítás, CSV-író, atomi lemezírás."""
 
 import csv
+import os
+import tempfile
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
 BUDAPEST = ZoneInfo("Europe/Budapest")
+
+
+def atomi_ir_szoveg(fajl, szoveg: str, encoding: str = "utf-8") -> Path:
+    """Atomi szöveg-lemezírás (ATOMI-IRAS): temp fájl UGYANABBAN a könyvtárban + `os.replace`.
+
+    A `write_text` in-place ír → egy megszakadt írás (crash/OOM/leállás írás közben) csonkíthatja a
+    PÓTOLHATATLAN fájlt. Itt előbb egy temp fájlba írunk (a cél könyvtárában, hogy az `os.replace` azonos
+    fájlrendszeren fusson → atomi rename), majd egy lépésben a helyére cseréljük. Hiba esetén a temp
+    törlődik (nincs szemét), és a MEGLÉVŐ fájl bájtjai SÉRTETLENEK maradnak.
+    """
+    fajl = Path(fajl)
+    fajl.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=str(fajl.parent), prefix=fajl.name + ".", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding=encoding) as f:
+            f.write(szoveg)
+        os.replace(tmp, fajl)                       # atomi rename az azonos könyvtárban
+    except BaseException:
+        try:
+            os.unlink(tmp)                          # ne maradjon szemét temp fájl
+        except OSError:
+            pass
+        raise
+    return fajl
 
 
 def most_utc() -> datetime:

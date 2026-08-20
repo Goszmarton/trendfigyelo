@@ -2,9 +2,28 @@
 és a _intervallumok 2_het+ láncolt szeletelése."""
 
 import json
+import os
 from datetime import datetime, timedelta, timezone
 
 from trendfigyelo import lanc, regresszio
+
+
+def test_frissit_lanc_megszakadt_iras_megorzi_a_regi_fajlt(tmp_path, monkeypatch):
+    # ATOMI-IRAS (a pótolhatatlan kulcsszo_lanc.json bekötés fedése): megszakadt kommit (os.replace) →
+    # a régi lánc-fájl bájtjai sértetlenek, nincs temp szemét.
+    fajl = tmp_path / lanc.FAJL
+    fajl.write_text("SENTINEL-REGI-LANC", encoding="utf-8")     # a betolt_lanc parse-hibán {}-t ad, a fájl marad
+
+    def _crash(*a, **k):
+        raise OSError("kommit crash")
+    monkeypatch.setattr(os, "replace", _crash)
+
+    try:
+        lanc.frissit_lanc(tmp_path, {})
+    except OSError:
+        pass
+    assert fajl.read_text(encoding="utf-8") == "SENTINEL-REGI-LANC", "a régi lánc-fájl megsérült a megszakadt írásnál"
+    assert not list(tmp_path.glob("*.tmp")), "maradt szemét temp fájl"
 
 
 def _ablak(kezdet_iso, napok=7, skala=1.0, csucs=100):

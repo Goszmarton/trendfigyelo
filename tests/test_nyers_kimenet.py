@@ -6,6 +6,7 @@ csonk-validátor ezen a két negatív teszten megbukik.
 """
 
 import json
+import os
 from datetime import datetime, timedelta
 
 import pytest
@@ -183,6 +184,31 @@ def test_ir_gordulo_jovobeli_ablak_veg_nem_gorditi_ki_a_jo_multat(tmp_path):
     adat = json.loads(fajl.read_text(encoding="utf-8"))
     vegek = [r["ablak_veg_utc"] for r in adat["kulcsszavak"].get("hitel", [])]
     assert "2026-07-27T21:00:00+00:00" in vegek, "a jó, friss múlt kigördült a jövőbeli veg miatt"
+
+
+# --- ATOMI-IRAS: a pótolhatatlan lemezírás atomi (temp + os.replace) ---
+
+def test_ir_gordulo_megszakadt_iras_megorzi_a_regi_fajlt(tmp_path, monkeypatch):
+    # ATOMI-IRAS: ha a KOMMIT lépés (os.replace) elhasal (crash/leállás írás közben), a RÉGI fájl bájtjai
+    # SÉRTETLENEK maradnak, és nincs szemét temp. RED: a régi write_text in-place felülírja a régit.
+    fajl = tmp_path / "kulcsszo_nyers.json"
+    regi = _rekord("2026-07-20T21:00:00+00:00", "2026-07-27T21:00:00+00:00",
+                   [_pont("2026-07-27T20:00:00+00:00", 5, False)], kulcsszo="hitel")
+    fajl.write_text(json.dumps({"kulcsszavak": {"hitel": [regi]}}), encoding="utf-8")
+    regi_tartalom = fajl.read_text(encoding="utf-8")
+
+    def _crash(*a, **k):
+        raise OSError("megszakadt írás (kommit)")
+    monkeypatch.setattr(os, "replace", _crash)
+
+    friss = {"betegség": _rekord("2026-07-20T21:00:00+00:00", "2026-07-27T21:00:00+00:00",
+                                 [_pont("2026-07-27T20:00:00+00:00", 5, True)])}
+    try:
+        nyers_kimenet.ir_gordulo(tmp_path, friss)
+    except OSError:
+        pass                                     # az atomi kommit elhasalt — VÁRT az atomi írónál
+    assert fajl.read_text(encoding="utf-8") == regi_tartalom, "a régi fájl tartalma megsérült a megszakadt írásnál"
+    assert not list(tmp_path.glob("*.tmp")), "maradt szemét temp fájl"
 
 
 def test_ir_gordulo_friss_hibas_rekord_hard_fail(tmp_path):

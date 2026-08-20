@@ -1,7 +1,34 @@
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
 from trendfigyelo import seged
+
+
+# --- ATOMI-IRAS: seged.atomi_ir_szoveg ---
+
+def test_atomi_ir_szoveg_kiirja_a_tartalmat_es_nem_hagy_temp_szemetet(tmp_path):
+    fajl = tmp_path / "adat.json"
+    seged.atomi_ir_szoveg(fajl, '{"x": 1}')
+    assert fajl.read_text(encoding="utf-8") == '{"x": 1}'
+    assert not list(tmp_path.glob("*.tmp"))          # nincs temp maradék siker után
+
+
+def test_atomi_ir_szoveg_megszakadt_kommit_megorzi_a_regit_es_nem_hagy_tempet(tmp_path, monkeypatch):
+    # ha az os.replace (a KOMMIT) elhasal, a MEGLÉVŐ fájl bájtjai sértetlenek, és a temp törlődik
+    fajl = tmp_path / "adat.json"
+    fajl.write_text("REGI", encoding="utf-8")
+
+    def _crash(*a, **k):
+        raise OSError("kommit crash")
+    monkeypatch.setattr(os, "replace", _crash)
+
+    try:
+        seged.atomi_ir_szoveg(fajl, "UJ")
+    except OSError:
+        pass
+    assert fajl.read_text(encoding="utf-8") == "REGI", "a régi fájl megsérült a megszakadt kommitnál"
+    assert not list(tmp_path.glob("*.tmp")), "maradt szemét temp fájl"
 
 
 def test_szovegge_kezeli_a_none_es_lista_eseteket():

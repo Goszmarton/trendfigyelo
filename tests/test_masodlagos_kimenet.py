@@ -7,6 +7,7 @@ Az órás `ervenyes_nyers_rekord`-hoz NEM nyúlunk — a bázist újrahasználju
 """
 
 import json
+import os
 from datetime import datetime, timedelta, timezone
 
 import pytest
@@ -150,6 +151,25 @@ def test_ir_masodlagos_ismeretlen_uj_kotelezo_mezo_nem_uriti_a_lemezt(tmp_path):
         nyers_kimenet._TOVABBI_KOTELEZO_MEZOK.clear()
     adat = json.loads(fajl.read_text(encoding="utf-8"))["kulcsszavak"]
     assert "kórház" in adat, "a 'kórház' másodlagos rekord eltűnt a lemezről"
+
+
+def test_ir_masodlagos_megszakadt_iras_megorzi_a_regi_fajlt(tmp_path, monkeypatch):
+    # ATOMI-IRAS (a masodlagos bekötés fedése): megszakadt kommit (os.replace) → a régi fájl sértetlen, nincs temp.
+    fajl = tmp_path / "kulcsszo_masodlagos_nyers.json"
+    fajl.write_text(json.dumps({"kulcsszavak": {"régi": [_mrekord(kulcsszo="régi")]}}, ensure_ascii=False),
+                    encoding="utf-8")
+    regi_tartalom = fajl.read_text(encoding="utf-8")
+
+    def _crash(*a, **k):
+        raise OSError("kommit crash")
+    monkeypatch.setattr(os, "replace", _crash)
+
+    try:
+        nyers_kimenet.ir_masodlagos(tmp_path, {"hitel": _mrekord()})
+    except OSError:
+        pass
+    assert fajl.read_text(encoding="utf-8") == regi_tartalom, "a régi másodlagos fájl megsérült a megszakadt írásnál"
+    assert not list(tmp_path.glob("*.tmp")), "maradt szemét temp fájl"
 
 
 def test_ir_masodlagos_friss_hibas_hard_fail(tmp_path):

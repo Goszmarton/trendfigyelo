@@ -9,6 +9,8 @@ A `kulcsszo_nyers.json` 14 nap után kigördül; a lánc-történet CSAK ebben a
 import json
 from pathlib import Path
 
+from . import seged
+
 FAJL = "kulcsszo_lanc.json"
 
 
@@ -108,6 +110,6 @@ def frissit_lanc(docs_data, nyers_sorozatok, marker=None):
         else:
             uj.pop("szakasz_kezdet_utc", None)          # a tárolt alakban nincs szükség rá (1 szakasz)
             ki[kif] = uj
-    (Path(docs_data) / FAJL).write_text(
-        json.dumps({"kulcsszavak": ki}, ensure_ascii=False), encoding="utf-8")
+    seged.atomi_ir_szoveg(Path(docs_data) / FAJL,        # ATOMI-IRAS (pótolhatatlan lánc)
+                          json.dumps({"kulcsszavak": ki}, ensure_ascii=False))
     return ki
