@@ -218,10 +218,13 @@ def ir_gordulo(docs_data, nyers_sorozatok: dict, megtartott_nap: int = 14) -> Pa
             raise ValueError(f"{kifejezes}: érvénytelen friss nyers rekord: {hibak}")
         kulcsszavak.setdefault(kifejezes, []).append(rendezett)
 
-    # 3) retenció: minden megmaradó vég már érvényes tz-aware → egyszerű összehasonlítás
-    vegek = [_aware_dt(r["ablak_veg_utc"]) for lst in kulcsszavak.values() for r in lst]
-    if vegek:
-        hatar = max(vegek) - timedelta(days=megtartott_nap)
+    # 3) retenció (MINOR-2): a horizont a legfrissebb VALÓS adatpontra (max idopont_utc) áll — NEM a
+    #    max(ablak_veg_utc)-ra. Egy sérült/jövőbeli ablak_veg (metaadat) így nem húzhatja a hatar-t a jövőbe
+    #    és nem gördítheti ki a PÓTOLHATATLAN múltat; a future-veg rekord MEGMARAD (fail-open). Adat-relatív.
+    pont_idok = [d for lst in kulcsszavak.values() for r in lst for p in (r.get("pontok") or [])
+                 for d in (_aware_dt(p.get("idopont_utc")),) if d is not None]
+    if pont_idok:
+        hatar = max(pont_idok) - timedelta(days=megtartott_nap)
         for kif in list(kulcsszavak):
             kulcsszavak[kif] = [r for r in kulcsszavak[kif]
                                 if _aware_dt(r["ablak_veg_utc"]) >= hatar]

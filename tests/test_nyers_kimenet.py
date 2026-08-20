@@ -167,6 +167,24 @@ def test_ir_gordulo_friss_uj_kotelezo_mezo_nelkul_tovabbra_is_hard_fail(tmp_path
         nyers_kimenet._TOVABBI_KOTELEZO_MEZOK.clear()
 
 
+# --- MINOR-2: a retenció-horgony a legfrissebb VALÓS adatpontra áll (nem max ablak_veg) ---
+
+def test_ir_gordulo_jovobeli_ablak_veg_nem_gorditi_ki_a_jo_multat(tmp_path):
+    # MINOR-2: egy JÖVŐBELI ablak_veg (metaadat-hiba/legacy) NE húzza a retenció-horizontot a jövőbe → a jó,
+    # friss MÚLT NE gördüljön ki a PÓTOLHATATLAN lemezről. RED: a régi max(ablak_veg) horgony a 09-30-ra ugrik,
+    # a hatar 09-16 lesz, a 07-27-i jó rekord (< hatar) kigördül.
+    jo = _rekord("2026-07-20T21:00:00+00:00", "2026-07-27T21:00:00+00:00",
+                 [_pont("2026-07-27T20:00:00+00:00", 5, False)], kulcsszo="hitel")
+    jovo_veg = _rekord("2026-06-01T00:00:00+00:00", "2026-09-30T00:00:00+00:00",     # veg JÖVŐBELI, de a pont RÉGI
+                       [_pont("2026-07-01T00:00:00+00:00", 5, False)], kulcsszo="hitel")
+    fajl = tmp_path / "kulcsszo_nyers.json"
+    fajl.write_text(json.dumps({"kulcsszavak": {"hitel": [jo, jovo_veg]}}), encoding="utf-8")
+    nyers_kimenet.ir_gordulo(tmp_path, {})            # üres friss, megtartott_nap=14
+    adat = json.loads(fajl.read_text(encoding="utf-8"))
+    vegek = [r["ablak_veg_utc"] for r in adat["kulcsszavak"].get("hitel", [])]
+    assert "2026-07-27T21:00:00+00:00" in vegek, "a jó, friss múlt kigördült a jövőbeli veg miatt"
+
+
 def test_ir_gordulo_friss_hibas_rekord_hard_fail(tmp_path):
     # A FRISS producer-kimenet hibája a MI bugunk → hard fail (ValueError), nem karantén.
     friss = {"hitel": _rekord("2026-07-20T21:00:00+00:00", "2026-07-27T21:00:00+00:00",
