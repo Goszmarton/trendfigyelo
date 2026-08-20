@@ -1,12 +1,17 @@
 const { test, expect } = require("@playwright/test");
 
-// Task 10 §1 — render-on-load GUARD (data-rendered near-vs-far). A mért geometriát rögzíti kód-formában:
-// az első kulcsszó-kártya (~708px, 360×640) a rootMargin:400 zónán (alja 1040) BELÜL → chart_letrehoz rajzol →
-// data-rendered="true" load-kor. Egy TÁVOLI kártya (zónán kívül, ~1506px) NEM rajzolódik → data-rendered=null.
+// Task 10 §1 — render-on-load GUARD (data-rendered near-vs-far). A mért geometriát rögzíti kód-formában.
 // FONTOS: a canvas ELEM eagerly jön létre (kartya_letrehoz:415), tehát a canvas jelenléte TAUTOLÓGIA lenne; a
 // data-rendered CSAK rajzoláskor (chart_letrehoz:507) kerül fel → az méri a valódi lusta állapotot.
 // A near-vs-far szerkezet BEÉPÍTETT nem-vacuous bizonyíték: ha a pozitív magától teljesülne (eager), a negatív
 // oldal is teljesülne → a teszt BUKNA. A mock a napi valós adattól független (kulcsszo.spec.js mintája).
+// ÁTTEKINTŐ-PANEL ÚJRAMÉRÉS (2026-08-20, #attekinto-blokk hozzáadva a #kulcsszo-blokk ELÉ): a panel legfelülre
+// tolja a kulcsszó-kártyákat → load-kor (scrollY=0, 360×640, zóna-alja = VH+rootMargin(400) = 1040) MÉRT top:
+// állás=1317px, albérlet=1880px, hitel=2385px — MINDHÁROM a zónán KÍVÜL → load-kor 0 kártya rendered (ez a
+// panel SZÁNDÉKOS, prominens elhelyezésének helyes következménye, NEM render-regresszió). A pozitív bizonyíték
+// ezért innentől scrollIntoViewIfNeeded-del jön (mint a kulcsszo.spec.js "11." tesztje): az elsőt a zónába
+// görgetve MÉRT scrollY=1242, állás top=75px, albérlet top=638px (mindkettő a zónában) → RENDERED; a hitel
+// (utolsó) ekkor top=1143px, a zóna-alján (1040) TÚL marad → NEM rendered — a near-vs-far szerkezet megmarad.
 
 const KEZD_MS = Date.parse("2026-07-29T20:00:00Z");
 const iso = (h) => new Date(KEZD_MS + h * 3600000).toISOString().replace(".000Z", "+00:00");
@@ -27,17 +32,20 @@ async function mock_kulcsszo(page) {
   await page.route(/kulcsszo_nyers\.json/, (r) => r.fulfill({ contentType: "application/json", body: JSON.stringify(NYERS) }));
 }
 
-// ── G1 — render-on-load: az első (zónában lévő) kártya rendered, egy TÁVOLI (zónán kívüli) NEM (beépített nem-vacuous) ──
-test("G1. render-on-load: első kulcsszó-kártya data-rendered=true 360x640-en (rootMargin:400 zóna lefedi ~708px), egy TÁVOLI kártya NEM", async ({ page }) => {
+// ── G1 — render-on-load: a panel miatt load-kor SENKI nem rendered; a zónába görgetett kártya IGEN, a TÁVOLI NEM (beépített nem-vacuous) ──
+test("G1. render-on-load 360x640-en: a #attekinto-blokk miatt load-kor 0 kártya rendered; zónába görgetve az első IGEN, a TÁVOLI (utolsó) NEM", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 640 });
   await mock_kulcsszo(page);
   await page.goto("/");
   const kartyak = page.locator("#kulcsszo-blokk .kulcsszo-chart");
   await expect(kartyak).toHaveCount(3);
   await page.evaluate(() => window.scrollTo(0, 0));
-  // POZITÍV: az első kártya (~708px) a rootMargin:400 zónán (alja 1040) BELÜL → rajzolódik load-kor
+  // LOAD-KOR: a panel a fold alá tolja mindhárom kártyát (lásd fenti mért geometria) → egyik sem rendered.
+  await expect(page.locator("#kulcsszo-blokk .kulcsszo-chart[data-rendered='true']")).toHaveCount(0);
+  // POZITÍV: az elsőt a zónába görgetve (scrollIntoViewIfNeeded) rajzolódik.
+  await kartyak.first().scrollIntoViewIfNeeded();
   await expect(kartyak.first()).toHaveAttribute("data-rendered", "true");
-  // NEGATÍV (beépített nem-vacuous bizonyíték): a TÁVOLI (utolsó, ~1506px) kártya a zónán KÍVÜL → NEM rajzolódik.
+  // NEGATÍV (beépített nem-vacuous bizonyíték): a TÁVOLI (utolsó) kártya EKKOR is a zónán KÍVÜL marad → NEM rajzolódik.
   // Ha a data-rendered eagerly kerülne fel (canvas-tautológia), ez is "true" lenne → a teszt bukna.
   await expect(kartyak.last()).not.toHaveAttribute("data-rendered", "true");
 });

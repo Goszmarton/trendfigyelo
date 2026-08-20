@@ -891,16 +891,28 @@ test("11. kis viewport → csak az első kártyák data-rendered; scroll → a l
   for (let i = 0; i < 8; i++) { szavak["szo" + i] = regSzo(); nyersMap["szo" + i] = [nyersRekord("szo" + i)]; }
   await mock(page, { regObj: reg(szavak), nyersObj: nyers(nyersMap) });
   // 6b Szelet 2: itt EGYETLEN szónak sincs másodlagos adata → mind a 4 hosszú intervallum-gomb TILTOTT.
-  // SZEMLE 08-19 ÚJRAMÉRÉS (380 széles, 8 szintetikus szó, 0 másodlagos, ALAPNEZET=teljes + info-magyarázat szegély/
-  // padding + dinamikus cím): szo0 top=992px, szo1=1477px, szo7=4384px. Az IO zóna-alja = VH + rootMargin(400).
-  // VH=700 → zóna-alja 1100: a szo0 (992) BELEESIK, a szo1+ (1477+) és a szo7 (4384) NEM → near-vs-far szándék marad
-  // (szo0 renderel, a többi csak scrollra). MIÉRT nem prod-hatás: éles adaton 4 szónak VAN másodlagosa → rövidebb
+  // ÁTTEKINTŐ-PANEL ÚJRAMÉRÉS (2026-08-20, #attekinto-blokk hozzáadva a #kulcsszo-blokk ELÉ; 380 széles, 8
+  // szintetikus szó — mind "munkaeropiac" domén, tehát a panel EGYETLEN domén-csoportot rajzol 8 kártyával —,
+  // 0 másodlagos, ALAPNEZET=teljes): MÉRT top (scrollY=0): szo0=1468px, szo1=1953px, …, szo7=4860px. Az IO
+  // zóna-alja = VH + rootMargin(400); VH=700 → zóna-alja 1100 → MIND a 8 kártya a zónán KÍVÜL → load-kor 0
+  // kártya rendered (a panel prominens elhelyezésének SZÁNDÉKOS, helyes következménye, NEM render-regresszió).
+  // A pozitív bizonyíték ezért scrollIntoViewIfNeeded-del jön: a szo0-t a zónába görgetve MÉRT eredmény —
+  // szo0/szo1/szo2 → rendered="true", szo3..szo7 → marad NEM rendered (near-vs-far szerkezet megmarad: a
+  // TÁVOLI szo7 EKKOR is kívül esik). Végül a szo7-et is a zónába görgetve az IS rajzolódik (valódi lusta
+  // állapot, nem "sosem renderel" hiba). MIÉRT nem prod-hatás: éles adaton 4 szónak VAN másodlagosa → rövidebb
   // vezérlő; a szintetikus 0-másodlagos a friss-telepítés/KULCS-LISTA esete (lásd VEZERLO-MAGAS leltár-megfigyelés).
   await page.setViewportSize({ width: 380, height: 700 });
   await page.goto("/");
   const rendered = page.locator(`${K} .kulcsszo-chart[data-rendered="true"]`);
+  // LOAD-KOR: a panel a fold alá tolja mind a 8 kártyát → egyik sem rendered.
+  await expect(rendered).toHaveCount(0);
+  // POZITÍV: a szo0-t a zónába görgetve rajzolódik (a szomszédos szo1/szo2 is, de nem mind a 8).
+  await page.locator(`${K} .kulcsszo-chart[data-kulcsszo="szo0"]`).scrollIntoViewIfNeeded();
   await expect(rendered).not.toHaveCount(0);                                         // auto-retry: várd meg az IO-callbacket
   expect(await rendered.count()).toBeLessThan(8);                                    // de NEM mind renderelt egyszerre
+  // NEGATÍV (beépített nem-vacuous bizonyíték): a TÁVOLI szo7 EKKOR is a zónán KÍVÜL marad → NEM rendered.
+  await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="szo7"]`)).not.toHaveAttribute("data-rendered", "true");
+  // majd a szo7-et is a zónába görgetve AZ IS rajzolódik (valódi lusta állapot, nem "sosem renderel" hiba).
   await page.locator(`${K} .kulcsszo-chart[data-kulcsszo="szo7"]`).scrollIntoViewIfNeeded();
   await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="szo7"]`)).toHaveAttribute("data-rendered", "true");
 });
