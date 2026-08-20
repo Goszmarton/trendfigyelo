@@ -452,6 +452,7 @@ const DOMEN_SORREND = ["munkaeropiac", "kozigazgatas", "lakhatas", "fogyasztas",
   "energia", "jovedelem", "haztartasi_penzugy", "kozelet", null];
 const EGYEB_KULCS = "__egyeb__";
 const IRANY_MAGYAR = { novekszik: "iránya növekvő", csokken: "iránya csökkenő", stagnal: "iránya stagnáló" };
+const IRANY_IKON = { novekszik: "novekszik", stagnal: "stagnal", csokken: "csokken" };  // data-irany értékek
 // RACS_EGYSEG (6b első szelet): a jel-erősség feliratban a rács-SZÓ (óra/nap/hét). A mértékegység
 // ("relatív pont/nap") rács-INVARIÁNS (mindkét JSON meredekseg_egyseg-e per-nap), NEM itt dől el.
 // Az órás JSON nem hordoz racs-ot → default "ora" → az órás felirat bájt-azonos. Ismeretlen rács
@@ -881,6 +882,64 @@ function lusta_megfigyel(kartyak) {
   kartyak.forEach(function (k) { megfigyelo.observe(k); });
 }
 
+// az első ÉRVÉNYES intervallum (legrövidebb ablak = a legfrissebb) — a panel „mai" nézete
+function elsodleges_iv(szoreg) {
+  const ivk = (szoreg && szoreg.intervallumok) || {};
+  for (let i = 0; i < INTERVALLUMOK.length; i++) {
+    const iv = ivk[INTERVALLUMOK[i].kulcs];
+    if (iv && iv.ervenyes) return iv;
+  }
+  return null;
+}
+function attekinto_blokk_render() {
+  const blokk = document.getElementById("attekinto-blokk");
+  if (!blokk) return;
+  blokk.querySelectorAll(".attekinto-csoport").forEach(function (e) { e.remove(); });
+  const reg = egyesitett_reg();
+  if (!reg || !reg.kulcsszavak) return;
+  const csoportok = {};
+  Object.keys(reg.kulcsszavak).forEach(function (szo) {
+    const d = reg.kulcsszavak[szo].domen;
+    const kulcs = DOMEN_MAGYAR[d] ? d : EGYEB_KULCS;
+    (csoportok[kulcs] = csoportok[kulcs] || []).push(szo);
+  });
+  DOMEN_SORREND.forEach(function (d) {
+    const kulcs = d === null ? EGYEB_KULCS : d;
+    const szavak = csoportok[kulcs];
+    if (!szavak || !szavak.length) return;
+    const cs = document.createElement("div");
+    cs.className = "attekinto-csoport";
+    cs.setAttribute("data-domen", d === null ? "egyeb" : d);
+    const h3 = document.createElement("h3");
+    h3.textContent = d === null ? "Egyéb" : DOMEN_MAGYAR[d];
+    cs.appendChild(h3);
+    szavak.forEach(function (szo) {
+      cs.appendChild(attekinto_kartya(szo, reg.kulcsszavak[szo]));
+    });
+    blokk.appendChild(cs);
+  });
+}
+function attekinto_kartya(szo, szoreg) {
+  const k = document.createElement("div");
+  k.className = "attekinto-kartya";
+  k.setAttribute("data-kulcsszo", szo);
+  const iv = elsodleges_iv(szoreg);
+  const ikon = document.createElement("span");
+  ikon.className = "attekinto-ikon";
+  if (iv && IRANY_IKON[iv.irany]) ikon.setAttribute("data-irany", iv.irany);
+  k.appendChild(ikon);
+  const nev = document.createElement("span");
+  nev.className = "attekinto-szo";
+  nev.textContent = szo;
+  k.appendChild(nev);
+  if (iv && IRANY_MAGYAR[iv.irany]) {
+    const it = document.createElement("span");
+    it.className = "attekinto-irany-szoveg";
+    it.textContent = IRANY_MAGYAR[iv.irany];
+    k.appendChild(it);
+  }
+  return k;
+}
 function kulcsszo_blokk_render() {
   const blokk = document.getElementById("kulcsszo-blokk");
   if (!blokk) return;
@@ -1634,6 +1693,7 @@ const RENDER_HIBA_SZOVEG = "Hiba a vezérlő megjelenítésekor";
 // olvas; a datum-választó a TREND-BLOKK ELŐTT fut, mert a trend-blokk a legyártott <select>-hez köti a
 // napváltást. Mind szinkron fn → a microtask-sorrend = a tömb sorrendje.
 const RENDEREK = [
+  { id: "attekinto-blokk", fn: attekinto_blokk_render },
   { id: "intervallum-vezerlo", fn: intervallum_vezerlo_render },
   { id: "kulcsszo-blokk", fn: kulcsszo_blokk_render },
   { id: "datum-valaszto", fn: datum_valaszto_render },

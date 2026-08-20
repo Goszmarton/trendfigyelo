@@ -163,3 +163,10 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
   #trend-blokk .kategoria-gomb,
   #datum-valaszto select { min-height: 44px; }
 }
+
+#attekinto-blokk .attekinto-csoport { margin: .6rem 0; }
+#attekinto-blokk .attekinto-kartya { display: flex; align-items: center; gap: .5rem;
+  padding: .4rem .6rem; border: 1px solid #e2e2e2; border-radius: 6px; margin: .3rem 0; max-width: 100%; }
+#attekinto-blokk .attekinto-ikon[data-irany="novekszik"]::before { content: "▲"; color: #2e7d32; }
+#attekinto-blokk .attekinto-ikon[data-irany="stagnal"]::before   { content: "▬"; color: #777; }
+#attekinto-blokk .attekinto-ikon[data-irany="csokken"]::before   { content: "▼"; color: #b23c3c; }
