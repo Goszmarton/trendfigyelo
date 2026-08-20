@@ -166,13 +166,21 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
   #datum-valaszto select { min-height: 44px; }
 }
 
-#attekinto-blokk .attekinto-csoport { margin: .6rem 0; }
-#attekinto-blokk .attekinto-kartya { display: flex; align-items: center; gap: .5rem;
-  padding: .4rem .6rem; border: 1px solid #e2e2e2; border-radius: 6px; margin: .3rem 0; max-width: 100%; }
+/* TÖMÖR ELRENDEZÉS: kategóriánként EGY sor — a domén-címke balra (fix szélesség), a szó-chipek jobbra (wrap). */
+#attekinto-blokk .attekinto-sor { display: flex; flex-wrap: wrap; align-items: baseline; gap: .4rem .6rem;
+  margin: .35rem 0; max-width: 100%; }
+#attekinto-blokk .attekinto-domen { flex: 0 0 8.5rem; font-weight: 600; font-size: .9rem; }
+#attekinto-blokk .attekinto-chipek { display: flex; flex-wrap: wrap; gap: .3rem .4rem; flex: 1 1 0; min-width: 0; }
+#attekinto-blokk .attekinto-kartya { display: inline-flex; align-items: center; gap: .3rem;
+  padding: .1rem .5rem; border: 1px solid #e2e2e2; border-radius: 999px; font-size: .85rem; white-space: nowrap; }
 #attekinto-blokk .attekinto-ikon[data-irany="novekszik"]::before { content: "▲"; color: #2e7d32; }
 #attekinto-blokk .attekinto-ikon[data-irany="stagnal"]::before   { content: "▬"; color: #777; }
 #attekinto-blokk .attekinto-ikon[data-irany="csokken"]::before   { content: "▼"; color: #b23c3c; }
 
-#attekinto-blokk .attekinto-illeszkedes { font-size: .82rem; color: #555; }
 #attekinto-blokk .attekinto-illeszkedes[data-illeszkedes="tavolabb"]::before { content: "⚠ "; color: #b8860b; }
 #attekinto-blokk .attekinto-illeszkedes[data-illeszkedes="illeszkedik"]::before { content: "✓ "; color: #2e7d32; }
+
+/* keskeny viewporton a domén-címke csökkenhet, de a sor sosem okoz vízszintes lapgörgetést (wrap + max-width). */
+@media (max-width: 480px) {
+  #attekinto-blokk .attekinto-domen { flex-basis: 100%; }
+}

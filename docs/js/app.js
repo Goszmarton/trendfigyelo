@@ -903,7 +903,7 @@ function elsodleges_iv(szoreg) {
 function attekinto_blokk_render() {
   const blokk = document.getElementById("attekinto-blokk");
   if (!blokk) return;
-  blokk.querySelectorAll(".attekinto-csoport").forEach(function (e) { e.remove(); });
+  blokk.querySelectorAll(".attekinto-sor").forEach(function (e) { e.remove(); });
   blokk.querySelectorAll(".attekinto-magyarazat").forEach(function (e) { e.remove(); });
   const magy = document.createElement("p");
   magy.className = "attekinto-magyarazat";
@@ -922,20 +922,25 @@ function attekinto_blokk_render() {
     const kulcs = d === null ? EGYEB_KULCS : d;
     const szavak = csoportok[kulcs];
     if (!szavak || !szavak.length) return;
-    const cs = document.createElement("div");
-    cs.className = "attekinto-csoport";
-    cs.setAttribute("data-domen", d === null ? "egyeb" : d);
-    const h3 = document.createElement("h3");
-    h3.textContent = d === null ? "Egyéb" : DOMEN_MAGYAR[d];
-    cs.appendChild(h3);
+    // TÖMÖR ELRENDEZÉS: kategóriánként EGY sor — a domén-címke balra, a szó-chipek jobbra (wrap).
+    const sor = document.createElement("div");
+    sor.className = "attekinto-sor";
+    sor.setAttribute("data-domen", d === null ? "egyeb" : d);
+    const cimke = document.createElement("span");
+    cimke.className = "attekinto-domen";
+    cimke.textContent = d === null ? "Egyéb" : DOMEN_MAGYAR[d];
+    sor.appendChild(cimke);
+    const chipek = document.createElement("span");
+    chipek.className = "attekinto-chipek";
     szavak.forEach(function (szo) {
-      cs.appendChild(attekinto_kartya(szo, reg.kulcsszavak[szo]));
+      chipek.appendChild(attekinto_kartya(szo, reg.kulcsszavak[szo]));
     });
-    blokk.appendChild(cs);
+    sor.appendChild(chipek);
+    blokk.appendChild(sor);
   });
 }
 function attekinto_kartya(szo, szoreg) {
-  const k = document.createElement("div");
+  const k = document.createElement("span");
   k.className = "attekinto-kartya";
   k.setAttribute("data-kulcsszo", szo);
   const iv = elsodleges_iv(szoreg);
@@ -953,24 +958,27 @@ function attekinto_kartya(szo, szoreg) {
     if (all && ILLESZKEDES_SZINT_SZOVEG[all]) {
       const j = document.createElement("span");
       j.className = "attekinto-illeszkedes";
-      j.setAttribute("data-illeszkedes", all);
-      j.textContent = ILLESZKEDES_SZINT_SZOVEG[all];
+      j.setAttribute("data-illeszkedes", all);   // csak glyph (::before) — a szöveg a chip title/aria-label-jébe megy
       k.appendChild(j);
+      const cim = ILLESZKEDES_SZINT_SZOVEG[all];
+      k.setAttribute("title", cim);
+      k.setAttribute("aria-label", cim);
     }
     return k;
   }
-  if (iv && IRANY_MAGYAR[iv.irany]) {
-    const it = document.createElement("span");
-    it.className = "attekinto-irany-szoveg";
-    it.textContent = IRANY_MAGYAR[iv.irany];
-    k.appendChild(it);
-  }
+  const cimreszek = [];
+  if (iv && IRANY_MAGYAR[iv.irany]) cimreszek.push(IRANY_MAGYAR[iv.irany]);
   if (iv && iv.illeszkedes && ILLESZKEDES_SZOVEG[iv.illeszkedes]) {
+    cimreszek.push(ILLESZKEDES_SZOVEG[iv.illeszkedes]);
     const j = document.createElement("span");
     j.className = "attekinto-illeszkedes";
-    j.setAttribute("data-illeszkedes", iv.illeszkedes);
-    j.textContent = ILLESZKEDES_SZOVEG[iv.illeszkedes];
+    j.setAttribute("data-illeszkedes", iv.illeszkedes);   // csak glyph (::before) — a szöveg a title/aria-label-ben
     k.appendChild(j);
+  }
+  if (cimreszek.length) {
+    const cim = cimreszek.join(" · ");
+    k.setAttribute("title", cim);
+    k.setAttribute("aria-label", cim);
   }
   return k;
 }

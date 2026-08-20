@@ -34,7 +34,7 @@ async function mock(page, regObj, mpRegObj) {
 }
 const A = "#attekinto-blokk";
 
-test("attekinto: panel legfelül, domen-csoportok, irány-ikon", async ({ page }) => {
+test("attekinto: panel legfelül, kategória-sor (domén balra, chipek jobbra), irány-ikon", async ({ page }) => {
   await mock(page, reg({
     "állás": szo({ domen: "munkaeropiac", irany: "csokken" }),
     "albérlet": szo({ domen: "lakhatas", irany: "stagnal" }),
@@ -47,14 +47,14 @@ test("attekinto: panel legfelül, domen-csoportok, irány-ikon", async ({ page }
     return a && k ? (a.compareDocumentPosition(k) & Node.DOCUMENT_POSITION_FOLLOWING) > 0 : false;
   });
   expect(sorrend).toBe(true);
-  await expect(page.locator(A + " .attekinto-csoport[data-domen='munkaeropiac'] h3")).toHaveText("Munkaerőpiac");
+  await expect(page.locator(A + " .attekinto-sor[data-domen='munkaeropiac'] .attekinto-domen")).toHaveText("Munkaerőpiac");
   await expect(page.locator(A + " .attekinto-kartya[data-kulcsszo='állás'] .attekinto-ikon"))
     .toHaveAttribute("data-irany", "csokken");
   await expect(page.locator(A + " .attekinto-kartya[data-kulcsszo='albérlet'] .attekinto-ikon"))
     .toHaveAttribute("data-irany", "stagnal");
 });
 
-test("attekinto: illeszkedés-jelző két állapota + null → nincs jelző", async ({ page }) => {
+test("attekinto: illeszkedés-jelző két állapota (glyph a chipen, teljes szöveg a title/aria-label-ben) + null → nincs jelző", async ({ page }) => {
   await mock(page, reg({
     "állás": szo({ domen: "munkaeropiac", irany: "csokken", illeszkedes: "illeszkedik" }),
     "hitel": szo({ domen: "haztartasi_penzugy", irany: "novekszik", illeszkedes: "tavolabb" }),
@@ -63,8 +63,14 @@ test("attekinto: illeszkedés-jelző két állapota + null → nincs jelző", as
   await page.goto("/");
   await expect(page.locator(A + " .attekinto-kartya[data-kulcsszo='állás'] .attekinto-illeszkedes"))
     .toHaveAttribute("data-illeszkedes", "illeszkedik");
+  await expect(page.locator(A + " .attekinto-kartya[data-kulcsszo='állás']"))
+    .toHaveAttribute("title", /illeszkedik a trendhez/);
   await expect(page.locator(A + " .attekinto-kartya[data-kulcsszo='hitel'] .attekinto-illeszkedes"))
     .toHaveAttribute("data-illeszkedes", "tavolabb");
+  await expect(page.locator(A + " .attekinto-kartya[data-kulcsszo='hitel']"))
+    .toHaveAttribute("title", "iránya növekvő · a szokásosnál távolabb a trendtől");
+  await expect(page.locator(A + " .attekinto-kartya[data-kulcsszo='hitel']"))
+    .toHaveAttribute("aria-label", "iránya növekvő · a szokásosnál távolabb a trendtől");
   // benzin: nincs érvényes intervallum → nincs illeszkedés-jelző (nem kitalált)
   await expect(page.locator(A + " .attekinto-kartya[data-kulcsszo='benzin'] .attekinto-illeszkedes")).toHaveCount(0);
 });
@@ -80,7 +86,7 @@ function mpReg(kulcsszavak) {
     elmozdulas_kuszob: 7.0, megjegyzes: "teszt", kulcsszavak };
 }
 
-test("attekinto: tüntetés esemenyjelzo — nincs nyíl, mediántól-eltérés", async ({ page }) => {
+test("attekinto: tüntetés esemenyjelzo — nincs nyíl, mediántól-eltérés a title-ben", async ({ page }) => {
   const regObj = reg({
     "tüntetés": szo({ domen: "kozelet", tipus: "esemenyjelzo",
       iv1het: { ervenyes: false, ok: "esemenyjelzo" } }),
@@ -94,5 +100,7 @@ test("attekinto: tüntetés esemenyjelzo — nincs nyíl, mediántól-eltérés"
   await expect(kartya).toHaveCount(1);
   await expect(kartya.locator(".attekinto-ikon")).not.toHaveAttribute("data-irany", /.+/);   // nincs nyíl
   await expect(kartya.locator(".attekinto-illeszkedes")).toHaveAttribute("data-illeszkedes", "tavolabb");
-  await expect(kartya.locator(".attekinto-illeszkedes")).toContainText("mediántól");
+  await expect(kartya.locator(".attekinto-illeszkedes")).toHaveText("");   // csak glyph (::before), szöveg NINCS
+  await expect(kartya).toHaveAttribute("title", /mediántól/);
+  await expect(kartya).toHaveAttribute("aria-label", /mediántól/);
 });
