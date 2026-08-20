@@ -168,13 +168,31 @@ def _migral_masodlagos_hianyzo(rek, kulcs):
     return rek
 
 
+def _tisztit_pontok(rek):
+    """Szelet 2 — PONT-szintű zárt (iii) dobás: a visszaolvasott rekordból ELDOBJA az ELHELYEZHETETLEN pontokat
+    (nem dict / hiányzó-érvénytelen `idopont_utc`), a TÖBBIT MEGTARTJA. `(rek, eldobott_szam)`. Ha MINDEN pont
+    elhelyezhetetlen → a `pontok` üres lesz → a `_strukturalis_hibak` „nincs pont" ága ejti a rekordot."""
+    if not isinstance(rek, dict) or not isinstance(rek.get("pontok"), list):
+        return rek, 0
+    jo = [p for p in rek["pontok"] if isinstance(p, dict) and _aware_dt(p.get("idopont_utc")) is not None]
+    eldobott = len(rek["pontok"]) - len(jo)
+    if eldobott:
+        rek = dict(rek)
+        rek["pontok"] = jo
+    return rek, eldobott
+
+
 def _karantenaz(kulcsszavak, migral, valid) -> None:
-    """VISSZAOLVASÁS-elnéző karantén (helyben módosít): a rekordot előbb fill-only migrálja, majd DOBJA CSAK
-    ha `_strukturalis_hibak` (iii). Minden más szerződés-hibát MEGTART + FIGYELEM. Üres szó → törlés."""
+    """VISSZAOLVASÁS-elnéző karantén (helyben módosít): a rekordot előbb fill-only migrálja, majd PONT-szinten
+    tisztítja (elhelyezhetetlen pont eldobva), végül DOBJA CSAK ha `_strukturalis_hibak` (iii — pl. nincs pont).
+    Minden más szerződés-hibát MEGTART + FIGYELEM. Üres szó → törlés."""
     for kif in list(kulcsszavak):
         tiszta = []
         for r in kulcsszavak[kif]:
             r = migral(r, kif)
+            r, eldobott_pont = _tisztit_pontok(r)
+            if eldobott_pont:
+                print(f"FIGYELEM: {eldobott_pont} elhelyezhetetlen pont ELDOBVA, a rekord MEGTARTVA ({kif})")
             strukt = _strukturalis_hibak(r)
             if strukt:
                 print(f"FIGYELEM: strukturálisan sérült rekord karanténba ({kif}): {strukt}")

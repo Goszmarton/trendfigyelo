@@ -153,6 +153,21 @@ def test_ir_masodlagos_ismeretlen_uj_kotelezo_mezo_nem_uriti_a_lemezt(tmp_path):
     assert "kórház" in adat, "a 'kórház' másodlagos rekord eltűnt a lemezről"
 
 
+def test_ir_masodlagos_egy_rossz_pont_nem_dobja_az_egesz_rekordot(tmp_path):
+    # KARANTEN-LEGACY Sz2 (másodlagos fedés): egy elhelyezhetetlen pont eldobódik, a rekord a többivel megmarad.
+    legacy = _mrekord(kulcsszo="kórház", racs="het",
+                      pontok=[_pont("2026-05-16T00:00:00+00:00", 5, False),
+                              _pont("NEM-DATUM", 9, False),
+                              _pont("2026-08-13T00:00:00+00:00", 6, False)])
+    fajl = tmp_path / "kulcsszo_masodlagos_nyers.json"
+    fajl.write_text(json.dumps({"kulcsszavak": {"kórház": [legacy]}}, ensure_ascii=False), encoding="utf-8")
+    nyers_kimenet.ir_masodlagos(tmp_path, {})
+    adat = json.loads(fajl.read_text(encoding="utf-8"))["kulcsszavak"]
+    assert "kórház" in adat, "a rossz pont az egész másodlagos rekordot eldobta"
+    idok = [p["idopont_utc"] for p in adat["kórház"][0]["pontok"]]
+    assert "NEM-DATUM" not in idok and len(idok) == 2
+
+
 def test_ir_masodlagos_megszakadt_iras_megorzi_a_regi_fajlt(tmp_path, monkeypatch):
     # ATOMI-IRAS (a masodlagos bekötés fedése): megszakadt kommit (os.replace) → a régi fájl sértetlen, nincs temp.
     fajl = tmp_path / "kulcsszo_masodlagos_nyers.json"

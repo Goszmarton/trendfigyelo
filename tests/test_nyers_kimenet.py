@@ -186,6 +186,36 @@ def test_ir_gordulo_jovobeli_ablak_veg_nem_gorditi_ki_a_jo_multat(tmp_path):
     assert "2026-07-27T21:00:00+00:00" in vegek, "a jó, friss múlt kigördült a jövőbeli veg miatt"
 
 
+# --- KARANTEN-LEGACY Szelet 2: pont-szintű dobás (egy rossz pont ne dobja az egész rekordot) ---
+
+def test_ir_gordulo_egy_rossz_pont_nem_dobja_az_egesz_rekordot(tmp_path):
+    # Sz2: egy ELHELYEZHETETLEN pont (érvénytelen idopont) ELDOBÓDIK, a rekord a TÖBBI ponttal MEGMARAD.
+    # RED (Sz1): a rossz pont az EGÉSZ rekordot karanténba dobja → a szó eltűnik.
+    legacy = _rekord("2026-07-20T21:00:00+00:00", "2026-07-27T21:00:00+00:00",
+                     [_pont("2026-07-26T20:00:00+00:00", 5, False),
+                      _pont("NEM-DATUM", 9, False),                       # elhelyezhetetlen pont
+                      _pont("2026-07-27T20:00:00+00:00", 6, False)], kulcsszo="hitel")
+    fajl = tmp_path / "kulcsszo_nyers.json"
+    fajl.write_text(json.dumps({"kulcsszavak": {"hitel": [legacy]}}), encoding="utf-8")
+    nyers_kimenet.ir_gordulo(tmp_path, {})
+    adat = json.loads(fajl.read_text(encoding="utf-8"))
+    assert "hitel" in adat["kulcsszavak"], "a rossz pont az egész rekordot eldobta"
+    idok = [p["idopont_utc"] for p in adat["kulcsszavak"]["hitel"][0]["pontok"]]
+    assert "NEM-DATUM" not in idok                          # a rossz pont eldobva
+    assert len(idok) == 2                                   # a 2 jó pont megmaradt
+
+
+def test_ir_gordulo_minden_pont_elhelyezhetetlen_a_rekord_esik(tmp_path):
+    # Sz2 határa: ha MINDEN pont elhelyezhetetlen → üres pontok → (iii) „nincs pont" → a rekord esik.
+    legacy = _rekord("2026-07-20T21:00:00+00:00", "2026-07-27T21:00:00+00:00",
+                     [_pont("BAD-1", 5, False), _pont("BAD-2", 6, False)], kulcsszo="hitel")
+    fajl = tmp_path / "kulcsszo_nyers.json"
+    fajl.write_text(json.dumps({"kulcsszavak": {"hitel": [legacy]}}), encoding="utf-8")
+    nyers_kimenet.ir_gordulo(tmp_path, {})
+    adat = json.loads(fajl.read_text(encoding="utf-8"))
+    assert "hitel" not in adat["kulcsszavak"]              # minden pont rossz → nincs pont → (iii) drop
+
+
 # --- ATOMI-IRAS: a pótolhatatlan lemezírás atomi (temp + os.replace) ---
 
 def test_ir_gordulo_megszakadt_iras_megorzi_a_regi_fajlt(tmp_path, monkeypatch):
