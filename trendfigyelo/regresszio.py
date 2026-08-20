@@ -43,6 +43,9 @@ RACS_GRID_STEP = {"ora": 3600, "nap": 86400, "het": 604800}
 RACS_ABLAK_NAP = {"ora": 7, "nap": 90, "het": 365}
 RACS_MIN_PONT = {"ora": 24, "nap": 12, "het": 7}
 IRANY_KUSZOB = 1.0                          # relatív pont / nap — ÓRÁS ág (kalibrálva: 875ea1a)
+# ILLESZKEDES_SAV: LEÍRÓ kétállapot-sáv szorzó a mai reziduum és a szokásos ingadozás (MAD) között.
+# NEM szignifikancia-küszöb; konzervatív, kerek választás (spec 2026-08-20-attekinto-muszerfal-design §3).
+ILLESZKEDES_SAV = 1.5
 # IRANY-KUSZOB: a per-nap küszöb a hosszú nap/het ablakon degenerál (365 nap × 1.0/nap = 365
 # pont kellene, a skála max 100 → az 1_ev matematikailag holt irány-ág). A nap/het ág ezért
 # ABLAK-RELATÍV: a címke a TELJES elmozduláson (|meredekseg × span_nap| pont = % a 0-100
@@ -158,6 +161,17 @@ def regresszio_egy_ablak(pontok, ablak_kezdet_utc, ablak_veg_utc, ablak_hossz_na
         {"idopont_utc": lezart[0]["idopont_utc"], "ertek": a + b * xs[0]},
         {"idopont_utc": lezart[-1]["idopont_utc"], "ertek": a + b * xs[-1]},
     ]
+    illesztett = [a + b * x for x in xs]
+    reziduumok = [y - f for y, f in zip(ys, illesztett)]
+    mai_reziduum = reziduumok[-1]
+    if len(reziduumok) >= 2:
+        med = statistics.median(reziduumok)
+        mad = statistics.median([abs(r - med) for r in reziduumok])
+        reziduum_szokasos = round(mad, 2)
+        illeszkedes = "illeszkedik" if abs(mai_reziduum) <= ILLESZKEDES_SAV * mad else "tavolabb"
+    else:
+        reziduum_szokasos = None
+        illeszkedes = None
     return {
         "ervenyes": True,
         "meredekseg_nap": round(b, 3),
@@ -174,6 +188,10 @@ def regresszio_egy_ablak(pontok, ablak_kezdet_utc, ablak_veg_utc, ablak_hossz_na
         "pontok_kihagyva_reszleges": kihagyva,
         "pontok_hianyzo": _hianyzo_pontok(ablak_kezdet_utc, ablak_veg_utc, ts, grid_step),
         "illesztes_vonal": illesztes_vonal,
+        "mai_ertek": round(ys[-1], 2),
+        "mai_reziduum": round(mai_reziduum, 2),
+        "reziduum_szokasos": reziduum_szokasos,
+        "illeszkedes": illeszkedes,
     }
 
 

@@ -465,3 +465,34 @@ def test_oras_irany_per_nap_valtozatlan_SZANDEKOS_ZOLD():
     r = regresszio.regresszio_egy_ablak(pontok, KEZD.isoformat(), veg.isoformat(), 20,
                                         grid_step=86400, min_pont=12)
     assert r["irany"] == "stagnal"                             # per-nap 0.9 < 1.0, nem a +18
+
+
+def _pontok_egyenes(n, meredek=1.0, bazis=40.0, utolso_elteres=0.0):
+    # n lezárt óránkénti pont egy egyenesen; az utolsó ponthoz opcionális eltérés
+    t0 = datetime(2026, 8, 1, tzinfo=timezone.utc)
+    pts = []
+    for i in range(n):
+        e = bazis + meredek * i + (utolso_elteres if i == n - 1 else 0.0)
+        pts.append({"idopont_utc": (t0 + timedelta(hours=i)).isoformat(),
+                    "ertek": e, "reszleges": False})
+    return pts, t0
+
+
+def test_regresszio_egy_ablak_mai_pont_illeszkedik():
+    pts, t0 = _pontok_egyenes(48, utolso_elteres=0.0)
+    iv = regresszio.regresszio_egy_ablak(
+        pts, t0.isoformat(), (t0 + timedelta(hours=47)).isoformat(), 2)
+    assert iv["ervenyes"] is True
+    assert iv["mai_ertek"] == 87.0                 # 40 + 47
+    assert abs(iv["mai_reziduum"]) < 0.01          # a vonalon ül
+    assert iv["illeszkedes"] == "illeszkedik"
+
+
+def test_regresszio_egy_ablak_mai_pont_tavolabb():
+    pts, t0 = _pontok_egyenes(48, utolso_elteres=30.0)   # az utolsó pont 30 ponttal a vonal fölött
+    iv = regresszio.regresszio_egy_ablak(
+        pts, t0.isoformat(), (t0 + timedelta(hours=47)).isoformat(), 2)
+    assert iv["ervenyes"] is True
+    assert iv["mai_reziduum"] > 10                 # jóval a vonal fölött
+    assert iv["reziduum_szokasos"] is not None
+    assert iv["illeszkedes"] == "tavolabb"
