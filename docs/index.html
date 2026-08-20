@@ -7,16 +7,20 @@
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
-  <h1>Mire keresnek rá Magyarországon? – Trendfigyelő</h1>
-  <p class="halvany">Magyarországi (geo=HU) Google Trends adatok, napi frissítéssel.</p>
+  <header class="fejlec-doboz">
+    <h1>Mire keresnek rá Magyarországon? – Trendfigyelő</h1>
+    <p class="halvany">Magyarországi (geo=HU) Google Trends adatok, napi frissítéssel.</p>
+  </header>
 
   <div id="dashboard">
-    <section id="attekinto-blokk" aria-label="Áttekintő – mai irány és trend">
-      <h2>Mai áttekintő</h2>
+    <hr class="blokk-vonal">
+    <section id="attekinto-blokk" class="attekinto-panel" data-mod="elteres" aria-label="Áttekintő – mai eltérés a trendtől">
+      <h2>Mai eltérés a kulcsszavak trendjétől</h2>
     </section>
     <!-- §7.1 per-szekció elrendezés: minden szekció a SAJÁT (sticky) vezérlősávjával -->
     <div class="szekcio">
       <aside class="vezerlo-sav">
+        <p class="vezerlo-cim">Kulcsszó-időszak</p>
         <div id="intervallum-vezerlo" aria-label="Kulcsszó időtartomány">
           <!-- 1 hét / 2 hét / 1 hó / 3 hó / 1 év — a gombok elérhetősége a kulcsszo_regresszio.json-ból (Task 6) -->
         </div>
@@ -27,8 +31,16 @@
       </section>
     </div>
 
+    <!-- a Kulcsszavak ALATT, a napi kategória-idősor ELŐTT: a szavak TREND-iránya (növekvő/stagnáló/csökkenő) -->
+    <section id="attekinto-blokk-alul" class="attekinto-panel" data-mod="trend" aria-label="A kulcsszavak trendje">
+      <h2>A kulcsszavak trendje</h2>
+    </section>
+
+    <hr class="blokk-vonal">
+
     <div class="szekcio">
       <aside class="vezerlo-sav">
+        <p class="vezerlo-cim">Kategóriák</p>
         <div id="idosor-legend" aria-label="Kategória-idősor jelmagyarázat">
           <!-- a kategória-idősor kattintható legendje (szürke→kék kiemelés) — a Chart.js belső legend helyett -->
         </div>
@@ -41,6 +53,7 @@
 
     <div class="szekcio">
       <aside class="vezerlo-sav">
+        <p class="vezerlo-cim">Nap</p>
         <div id="datum-valaszto" aria-label="Trend dátumválasztó">
           <!-- napok/index.json alapján; belépéskor a legfrissebb nap (Task 6) -->
         </div>
@@ -53,6 +66,7 @@
 
     <div class="szekcio">
       <aside class="vezerlo-sav">
+        <p class="vezerlo-cim">Hét</p>
         <div id="heti-valaszto" aria-label="Hét választó">
           <!-- napok/index.json → ISO-hetek (hétfő–vasárnap); alap a legfrissebb hét -->
         </div>

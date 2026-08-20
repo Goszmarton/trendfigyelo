@@ -11,6 +11,16 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 
 /* §7.1 per-szekció elrendezés: minden szekció bal oldalán a saját (sticky) vezérlősávja.
    A #kulcsszo-blokk/#trend-blokk MARAD a tartalom-konténer (ID-szerződés), a vezérlő a .vezerlo-sav-ban. */
+/* a lap fejléce (H1 + alcím) a szokásos keretes dobozban, mint a szekciók */
+.fejlec-doboz { background: #fff; border: 1px solid #e3e3e3; border-radius: 6px;
+  padding: .9rem 1.25rem; margin: 0 0 1.5rem; box-sizing: border-box; }
+.fejlec-doboz h1 { margin: 0 0 .25rem; }
+.fejlec-doboz .halvany { margin: 0; }
+/* a vezérlősávok (időszak-gombok, kategória-legend) fölötti kis cím */
+.vezerlo-cim { font-weight: 600; font-size: .9rem; color: #333; margin: 0 0 .6rem; }
+/* vízszintes elválasztó a fő blokkok között (ugyanaz a vonal, mint a .szekcio+.szekcio-nál) */
+.blokk-vonal { border: none; border-top: 1px solid #e3e3e3; margin: 1.5rem 0; }
+
 .szekcio { display: flex; gap: 1.5rem; align-items: flex-start; margin: 1.5rem 0; }
 /* A1: a két nagy blokk vizuális elválasztása (a margó önmagában nem látszott) */
 .szekcio + .szekcio { border-top: 1px solid #e3e3e3; padding-top: 1.5rem; }
@@ -140,15 +150,15 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 #trend-blokk .kategoria-magyarazat,
 #idosor-blokk .idosor-magyarazat,
 #trend-blokk .trend-normalizalas-magyarazat,
-#attekinto-blokk .attekinto-magyarazat {
-  font-style: italic; color: #555;
+.attekinto-panel .attekinto-magyarazat {
+  font-style: italic; color: #555; font-size: .85rem;   /* ne legyen nagyobb, mint a többi honlap-szöveg */
   border-left: 3px solid #3366cc; padding: .3rem 0 .3rem .6rem;
 }
 #kulcsszo-blokk .frissesseg::before,
 #trend-blokk .kategoria-magyarazat::before,
 #idosor-blokk .idosor-magyarazat::before,
 #trend-blokk .trend-normalizalas-magyarazat::before,
-#attekinto-blokk .attekinto-magyarazat::before {
+.attekinto-panel .attekinto-magyarazat::before {
   content: "ⓘ ";   /* az ⓘ CSS-ből (nem a szövegben) — így egységes és a szövegek nem duplázzák */
 }
 
@@ -166,21 +176,41 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
   #datum-valaszto select { min-height: 44px; }
 }
 
-/* TÖMÖR ELRENDEZÉS: kategóriánként EGY sor — a domén-címke balra (fix szélesség), a szó-chipek jobbra (wrap). */
-#attekinto-blokk .attekinto-sor { display: flex; flex-wrap: wrap; align-items: baseline; gap: .4rem .6rem;
-  margin: .35rem 0; max-width: 100%; }
-#attekinto-blokk .attekinto-domen { flex: 0 0 8.5rem; font-weight: 600; font-size: .9rem; }
-#attekinto-blokk .attekinto-chipek { display: flex; flex-wrap: wrap; gap: .3rem .4rem; flex: 1 1 0; min-width: 0; }
-#attekinto-blokk .attekinto-kartya { display: inline-flex; align-items: center; gap: .3rem;
-  padding: .1rem .5rem; border: 1px solid #e2e2e2; border-radius: 999px; font-size: .85rem; white-space: nowrap; }
-#attekinto-blokk .attekinto-ikon[data-irany="novekszik"]::before { content: "▲"; color: #2e7d32; }
-#attekinto-blokk .attekinto-ikon[data-irany="stagnal"]::before   { content: "▬"; color: #777; }
-#attekinto-blokk .attekinto-ikon[data-irany="csokken"]::before   { content: "▼"; color: #b23c3c; }
+/* A panel EGY keretes box, ugyanaz a minta, mint a többi szekció (#kulcsszo-blokk stb., 21-22. sor). */
+.attekinto-panel { background: #fff; border: 1px solid #e3e3e3; border-radius: 6px; padding: 1rem; box-sizing: border-box; }
 
-#attekinto-blokk .attekinto-illeszkedes[data-illeszkedes="tavolabb"]::before { content: "⚠ "; color: #b8860b; }
-#attekinto-blokk .attekinto-illeszkedes[data-illeszkedes="illeszkedik"]::before { content: "✓ "; color: #2e7d32; }
+/* TÖMÖR ELRENDEZÉS: a kategória-cellák FIX oszlop-rácsban, a nagy kategóriák egymás MELLETT, a teljes
+   szélességben; az oszlopok közt vékony elválasztó csík (border-left a nem-első oszlopon). Cellán belül a
+   domén-címke balra (fix szélesség), a szó-chipek jobbra (wrap). */
+.attekinto-panel .attekinto-lista { display: grid; grid-template-columns: repeat(3, 1fr); gap: .15rem 0; max-width: 100%; }
+.attekinto-panel .attekinto-sor { display: flex; flex-wrap: wrap; align-items: baseline; gap: .35rem .6rem;
+  padding: .25rem 1.3rem; min-width: 0; }
+.attekinto-panel .attekinto-sor:not(:nth-child(3n+1)) { border-left: 1px solid #eee; }   /* csík az oszlopok közt */
+.attekinto-panel .attekinto-domen { flex: 0 0 8.5rem; font-weight: 600; font-size: .85rem; }
+.attekinto-panel .attekinto-chipek { display: flex; flex-wrap: wrap; gap: .3rem .4rem; flex: 1 1 0; min-width: 0; }
+.attekinto-panel .attekinto-kartya { display: inline-flex; align-items: center; gap: .3rem;
+  padding: .1rem .5rem; border: 1px solid #e2e2e2; border-radius: 999px; font-size: .85rem; white-space: nowrap;
+  cursor: pointer; }
+.attekinto-panel .attekinto-kartya:hover { border-color: #3366cc; background: #f5f8ff; }
+.attekinto-panel .attekinto-kartya:focus-visible { outline: 2px solid #3366cc; outline-offset: 1px; }
+/* a MAI ELTÉRÉS ikonja a szó ELŐTT: ▲ felette ZÖLD · ▼ alatta PIROS · • illeszkedik SZÜRKE (trendkövető, semleges) */
+.attekinto-panel .attekinto-ikon[data-illeszkedes="felette"]::before     { content: "▲"; color: #2e7d32; }
+.attekinto-panel .attekinto-ikon[data-illeszkedes="alatta"]::before      { content: "▼"; color: #b23c3c; }
+.attekinto-panel .attekinto-ikon[data-illeszkedes="illeszkedik"]::before { content: "•"; color: #777; }
+/* TREND-panel ikonjai: ▲ növekvő ZÖLD · ▼ csökkenő PIROS · ■ stagnáló/esemény SZÜRKE NÉGYZET */
+.attekinto-panel .attekinto-ikon[data-trend="novekszik"]::before { content: "▲"; color: #2e7d32; }
+.attekinto-panel .attekinto-ikon[data-trend="csokken"]::before   { content: "▼"; color: #b23c3c; }
+.attekinto-panel .attekinto-ikon[data-trend="stagnal"]::before   { content: "■"; color: #777; font-size: .8em; }
+.attekinto-panel .attekinto-ikon[data-trend="esemeny"]::before   { content: "■"; color: #777; font-size: .8em; }
 
-/* keskeny viewporton a domén-címke csökkenhet, de a sor sosem okoz vízszintes lapgörgetést (wrap + max-width). */
-@media (max-width: 480px) {
-  #attekinto-blokk .attekinto-domen { flex-basis: 100%; }
+/* reszponzív oszlopszám: 3 → 2 → 1, a csík mindig a nem-első oszlopon (a keskeny nézet 1 oszlop, csík nélkül) */
+@media (max-width: 1100px) {
+  .attekinto-panel .attekinto-lista { grid-template-columns: repeat(2, 1fr); }
+  .attekinto-panel .attekinto-sor { border-left: none; }
+  .attekinto-panel .attekinto-sor:not(:nth-child(2n+1)) { border-left: 1px solid #eee; }
+}
+@media (max-width: 700px) {
+  .attekinto-panel .attekinto-lista { grid-template-columns: 1fr; }
+  .attekinto-panel .attekinto-sor { border-left: none; padding-left: 0; }
+  .attekinto-panel .attekinto-domen { flex-basis: 100%; }
 }

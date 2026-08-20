@@ -456,12 +456,57 @@ const DOMEN_SORREND = ["munkaeropiac", "kozigazgatas", "lakhatas", "fogyasztas",
   "energia", "jovedelem", "haztartasi_penzugy", "kozelet", null];
 const EGYEB_KULCS = "__egyeb__";
 const IRANY_MAGYAR = { novekszik: "iránya növekvő", csokken: "iránya csökkenő", stagnal: "iránya stagnáló" };
-const IRANY_IKON = { novekszik: "novekszik", stagnal: "stagnal", csokken: "csokken" };  // data-irany értékek
-const ILLESZKEDES_SZOVEG = { illeszkedik: "illeszkedik a trendhez", tavolabb: "a szokásosnál távolabb a trendtől" };
-const ILLESZKEDES_SZINT_SZOVEG = { illeszkedik: "a megszokott szint körül",
-  tavolabb: "a megszokottnál távolabb a mediántól" };
-const ATTEKINTO_MAGYARAZAT = "Ez számolt, leíró jelző: a mai érték eltérése a szokásos ingadozáshoz mérve — " +
-  "nem szignifikancia-teszt. A tüntetésnél a mediántól való eltérés.";
+// ÁTTEKINTŐ: a chip a MAI ELTÉRÉST mutatja a szó saját trendjéhez (nem a trend irányát): a backend 3-állapotú
+// `illeszkedes`-e — felette (▲, ma a trend fölé ugrott) / alatta (▼, a trend alá esett) / illeszkedik (✓, sávban).
+const ELTERES_SZOVEG = {
+  felette: "ma a szokásosnál magasabb – a trendje fölé ugrott",
+  alatta: "ma a szokásosnál alacsonyabb – a trendje alá esett",
+  illeszkedik: "ma a szokásos sávban – illeszkedik a trendjéhez",
+};
+const ELTERES_SZINT_SZOVEG = {   // esemenyjelzo (tüntetés): a MEDIÁNHOZ mérve (nincs trend)
+  felette: "ma a megszokottnál magasabb – a medián fölött",
+  alatta: "ma a megszokottnál alacsonyabb – a medián alatt",
+  illeszkedik: "ma a megszokott szint körül – a medián közelében",
+};
+// TREND-panel: a szó KERESETTSÉGÉNEK IRÁNYA az elmúlt időszakban (a trendvonal meredeksége, backend `irany`).
+// esemenyjelzo (tüntetés) → nincs trend ("esemeny"): a szintjét az 52 hetes mediánhoz mérjük.
+const TREND_SZOVEG = {
+  novekszik: "a trendje növekvő – az elmúlt időszakban emelkedik a keresettsége",
+  csokken: "a trendje csökkenő – az elmúlt időszakban esik a keresettsége",
+  stagnal: "a trendje stagnáló – nagyjából egy szinten mozog",
+  esemeny: "esemény-jellegű szó – nincs trendje; a szintjét az elmúlt 52 hét mediánjához mérjük",
+};
+const TREND_SZIN = { novekszik: "#2e7d32", csokken: "#b23c3c", stagnal: "#777", esemeny: "#777" };
+// az áttekintő eltérés-ikonok színei (megegyeznek az app.css ::before színeivel) — a magyarázat glyph-jei is EZEKKEL.
+// felette ▲ ZÖLD (a szokásos fölé), alatta ▼ PIROS (alá), illeszkedik • SZÜRKE (semleges: követi a trendet)
+const ATTEKINTO_SZIN = { felette: "#2e7d32", alatta: "#b23c3c", illeszkedik: "#777" };
+// egy SZÍNES, nem-dőlt glyph a magyarázatba (a doboz dőlt-szürke; a glyph kiemelt színnel, egyenesen)
+function attekinto_glif(ch, szin) {
+  const s = document.createElement("span");
+  s.textContent = ch;
+  s.style.color = szin;
+  s.style.fontStyle = "normal";
+  return s;
+}
+// a magyarázat-doboz (a panel ALJÁN), a MÓD szerint: sima nyelvű leírás + SZÍNES ikon-legenda
+function attekinto_magyarazat_epit(mod) {
+  const p = document.createElement("p");
+  p.className = "attekinto-magyarazat";
+  const t = function (s) { p.appendChild(document.createTextNode(s)); };
+  if (mod === "trend") {
+    t("A szó keresettségének iránya a teljes megjelenített időszakban – a trendvonal (regressziós egyenes) meredeksége. ");
+    p.appendChild(attekinto_glif("▲", TREND_SZIN.novekszik)); t(" növekvő (emelkedik) · ");
+    p.appendChild(attekinto_glif("▼", TREND_SZIN.csokken));   t(" csökkenő (esik) · ");
+    p.appendChild(attekinto_glif("■", TREND_SZIN.stagnal));   t(" stagnáló (nagyjából egy szinten). A tüntetés esemény-jellegű – nincs trendje, ott a szintet az elmúlt 52 hét mediánjához mérjük (");
+    p.appendChild(attekinto_glif("■", TREND_SZIN.esemeny));   t(" szürke).");
+    return p;
+  }
+  t("Azt mutatja, egy szó keresettsége ma eltért-e a saját szokásos mintázatától – és merre. ");
+  p.appendChild(attekinto_glif("▲", ATTEKINTO_SZIN.felette)); t(" a szokásosnál magasabb (ma a trendje fölé ugrott) · ");
+  p.appendChild(attekinto_glif("▼", ATTEKINTO_SZIN.alatta));  t(" a szokásosnál alacsonyabb (a trendje alá esett) · ");
+  p.appendChild(attekinto_glif("•", ATTEKINTO_SZIN.illeszkedik)); t(" a szokásos sávban maradt (követi a trendjét). A viszonyítás a teljes megjelenített időszak trendvonalához történik; a „szokásos” sávot ennek az időszaknak az ingadozásából számoljuk (a trendvonaltól való eltérések tipikus, medián nagysága). A tüntetésnél nincs trend – ott a mai értéket az elmúlt 52 hét mediánjához mérjük.");
+  return p;
+}
 // RACS_EGYSEG (6b első szelet): a jel-erősség feliratban a rács-SZÓ (óra/nap/hét). A mértékegység
 // ("relatív pont/nap") rács-INVARIÁNS (mindkét JSON meredekseg_egyseg-e per-nap), NEM itt dől el.
 // Az órás JSON nem hordoz racs-ot → default "ora" → az órás felirat bájt-azonos. Ismeretlen rács
@@ -890,96 +935,108 @@ function lusta_megfigyel(kartyak) {
   }, { rootMargin: "400px" });
   kartyak.forEach(function (k) { megfigyelo.observe(k); });
 }
-
-// az első ÉRVÉNYES intervallum (legrövidebb ablak = a legfrissebb) — a panel „mai" nézete
-function elsodleges_iv(szoreg) {
-  const ivk = (szoreg && szoreg.intervallumok) || {};
-  for (let i = 0; i < INTERVALLUMOK.length; i++) {
-    const iv = ivk[INTERVALLUMOK[i].kulcs];
-    if (iv && iv.ervenyes) return iv;
-  }
-  return null;
-}
+// MINDEN .attekinto-panel-be rajzol (a lap TETEJÉN és ALJÁN is ugyanaz az áttekintő) — egy adatszámítás,
+// két megjelenítés. A csoportosítás egyszer készül, a kitöltés panelenként (külön DOM-példányok).
 function attekinto_blokk_render() {
-  const blokk = document.getElementById("attekinto-blokk");
-  if (!blokk) return;
-  blokk.querySelectorAll(".attekinto-sor").forEach(function (e) { e.remove(); });
-  blokk.querySelectorAll(".attekinto-magyarazat").forEach(function (e) { e.remove(); });
-  const magy = document.createElement("p");
-  magy.className = "attekinto-magyarazat";
-  magy.textContent = ATTEKINTO_MAGYARAZAT;
-  const h2 = blokk.querySelector("h2");
-  if (h2) h2.insertAdjacentElement("afterend", magy); else blokk.appendChild(magy);
+  const panelek = document.querySelectorAll(".attekinto-panel");
+  if (!panelek.length) return;
   const reg = egyesitett_reg();
-  if (!reg || !reg.kulcsszavak) return;
   const csoportok = {};
-  Object.keys(reg.kulcsszavak).forEach(function (szo) {
-    const d = reg.kulcsszavak[szo].domen;
-    const kulcs = DOMEN_MAGYAR[d] ? d : EGYEB_KULCS;
-    (csoportok[kulcs] = csoportok[kulcs] || []).push(szo);
-  });
-  DOMEN_SORREND.forEach(function (d) {
-    const kulcs = d === null ? EGYEB_KULCS : d;
-    const szavak = csoportok[kulcs];
-    if (!szavak || !szavak.length) return;
-    // TÖMÖR ELRENDEZÉS: kategóriánként EGY sor — a domén-címke balra, a szó-chipek jobbra (wrap).
-    const sor = document.createElement("div");
-    sor.className = "attekinto-sor";
-    sor.setAttribute("data-domen", d === null ? "egyeb" : d);
-    const cimke = document.createElement("span");
-    cimke.className = "attekinto-domen";
-    cimke.textContent = d === null ? "Egyéb" : DOMEN_MAGYAR[d];
-    sor.appendChild(cimke);
-    const chipek = document.createElement("span");
-    chipek.className = "attekinto-chipek";
-    szavak.forEach(function (szo) {
-      chipek.appendChild(attekinto_kartya(szo, reg.kulcsszavak[szo]));
+  if (reg && reg.kulcsszavak) {
+    Object.keys(reg.kulcsszavak).forEach(function (szo) {
+      const d = reg.kulcsszavak[szo].domen;
+      const kulcs = DOMEN_MAGYAR[d] ? d : EGYEB_KULCS;
+      (csoportok[kulcs] = csoportok[kulcs] || []).push(szo);
     });
-    sor.appendChild(chipek);
-    blokk.appendChild(sor);
+  }
+  panelek.forEach(function (blokk) {
+    attekinto_panel_kitolt(blokk, reg, csoportok, blokk.getAttribute("data-mod") || "elteres");
   });
 }
-function attekinto_kartya(szo, szoreg) {
+// EGY panel kitöltése: kategória-cellák FIX oszlop-rácsban (nagy kategóriák egymás MELLETT, elválasztó
+// csíkkal), cellán belül a domén-címke balra, a szó-chipek jobbra; a magyarázat a panel ALJÁN.
+function attekinto_panel_kitolt(blokk, reg, csoportok, mod) {
+  blokk.querySelectorAll(".attekinto-lista, .attekinto-magyarazat").forEach(function (e) { e.remove(); });
+  if (reg && reg.kulcsszavak) {
+    const lista = document.createElement("div");
+    lista.className = "attekinto-lista";
+    DOMEN_SORREND.forEach(function (d) {
+      const kulcs = d === null ? EGYEB_KULCS : d;
+      const szavak = csoportok[kulcs];
+      if (!szavak || !szavak.length) return;
+      const sor = document.createElement("div");
+      sor.className = "attekinto-sor";
+      sor.setAttribute("data-domen", d === null ? "egyeb" : d);
+      const cimke = document.createElement("span");
+      cimke.className = "attekinto-domen";
+      cimke.textContent = d === null ? "Egyéb" : DOMEN_MAGYAR[d];
+      sor.appendChild(cimke);
+      const chipek = document.createElement("span");
+      chipek.className = "attekinto-chipek";
+      szavak.forEach(function (szo) {
+        chipek.appendChild(attekinto_kartya(szo, reg.kulcsszavak[szo], mod));
+      });
+      sor.appendChild(chipek);
+      lista.appendChild(sor);
+    });
+    blokk.appendChild(lista);
+  }
+  blokk.appendChild(attekinto_magyarazat_epit(mod));   // a magyarázat a panel ALJÁN
+}
+// egy chip. `mod`: "elteres" (mai eltérés a trendtől) vagy "trend" (a keresettség trend-iránya).
+function attekinto_kartya(szo, szoreg, mod) {
   const k = document.createElement("span");
   k.className = "attekinto-kartya";
   k.setAttribute("data-kulcsszo", szo);
-  const iv = elsodleges_iv(szoreg);
-  const ikon = document.createElement("span");
-  ikon.className = "attekinto-ikon";
-  if (iv && IRANY_IKON[iv.irany]) ikon.setAttribute("data-irany", iv.irany);
-  k.appendChild(ikon);
+  // kattintható: a chipre kattintva a #kulcsszo-blokk megfelelő chartjához ugrunk (billentyűvel is)
+  k.setAttribute("role", "link");
+  k.setAttribute("tabindex", "0");
+  function attekinto_ugras() {
+    const cel = document.querySelector('#kulcsszo-blokk .' + OSZT.kartya + '[' + ATTR.kulcsszo + '="' + szo.replace(/"/g, '\\"') + '"]');
+    if (cel) cel.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+  k.addEventListener("click", attekinto_ugras);
+  k.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); attekinto_ugras(); }
+  });
+  // az ikon adat-attribútuma + értéke + a teljes szöveg — a panel MÓDJA szerint
+  let attr = null, ertek = null, cim = null;
+  if (mod === "trend") {
+    // TREND-irány: esemenyjelzo → nincs trend ("esemeny", mediánhoz); egyébként a backend `irany`-a
+    if (szoreg.tipus === "esemenyjelzo") {
+      attr = "data-trend"; ertek = "esemeny"; cim = TREND_SZOVEG.esemeny;
+    } else {
+      const _tv = teljes_valaszt(szoreg);
+      const iv = _tv && _tv.iv;
+      const ir = iv && iv.irany;
+      if (ir && TREND_SZOVEG[ir]) { attr = "data-trend"; ertek = ir; cim = TREND_SZOVEG[ir]; }
+    }
+  } else {
+    // MAI ELTÉRÉS: esemenyjelzo → a MEDIÁNHOZ mérve; egyébként a szó elsődleges ablakának trendjéhez
+    let allapot;
+    if (szoreg.tipus === "esemenyjelzo") {
+      allapot = szoreg.illeszkedes_szint;
+      cim = allapot ? ELTERES_SZINT_SZOVEG[allapot] : null;
+    } else {
+      const _tv = teljes_valaszt(szoreg);
+      const iv = _tv && _tv.iv;
+      allapot = iv && iv.illeszkedes;
+      cim = allapot ? ELTERES_SZOVEG[allapot] : null;
+    }
+    if (allapot && ELTERES_SZOVEG[allapot]) { attr = "data-illeszkedes"; ertek = allapot; }
+  }
+  // az ikon a szó ELÉ — csak ha van állapot (nincs kitalálás)
+  if (attr && ertek) {
+    const ikon = document.createElement("span");
+    ikon.className = "attekinto-ikon";
+    ikon.setAttribute(attr, ertek);
+    k.appendChild(ikon);
+  }
   const nev = document.createElement("span");
   nev.className = "attekinto-szo";
   nev.textContent = szo;
   k.appendChild(nev);
-  if (szoreg.tipus === "esemenyjelzo") {
-    // NINCS irány-nyíl (a backend nem ad irányt); a „kiugró" a MEDIÁNTÓL való eltérés
-    const all = szoreg.illeszkedes_szint;
-    if (all && ILLESZKEDES_SZINT_SZOVEG[all]) {
-      const j = document.createElement("span");
-      j.className = "attekinto-illeszkedes";
-      j.setAttribute("data-illeszkedes", all);   // csak glyph (::before) — a szöveg a chip title/aria-label-jébe megy
-      k.appendChild(j);
-      const cim = ILLESZKEDES_SZINT_SZOVEG[all];
-      k.setAttribute("title", cim);
-      k.setAttribute("aria-label", cim);
-    }
-    return k;
-  }
-  const cimreszek = [];
-  if (iv && IRANY_MAGYAR[iv.irany]) cimreszek.push(IRANY_MAGYAR[iv.irany]);
-  if (iv && iv.illeszkedes && ILLESZKEDES_SZOVEG[iv.illeszkedes]) {
-    cimreszek.push(ILLESZKEDES_SZOVEG[iv.illeszkedes]);
-    const j = document.createElement("span");
-    j.className = "attekinto-illeszkedes";
-    j.setAttribute("data-illeszkedes", iv.illeszkedes);   // csak glyph (::before) — a szöveg a title/aria-label-ben
-    k.appendChild(j);
-  }
-  if (cimreszek.length) {
-    const cim = cimreszek.join(" · ");
-    k.setAttribute("title", cim);
-    k.setAttribute("aria-label", cim);
-  }
+  if (cim) { k.setAttribute("title", cim); k.setAttribute("aria-label", cim); }
   return k;
 }
 function kulcsszo_blokk_render() {
