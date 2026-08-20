@@ -174,7 +174,7 @@ kategória-idősor kör leszállította, user-döntés).
 
 | ID | Név | Fázis | Állapot | M/B | Futásra hat | Méret | Függ |
 |---|---|---|---|---|---|---|---|
-| MINOR-2 | retenció-horgony robusztusság (befagyás / jövőbeli ablak_veg kivág) — az EGYETLEN Ph3-örökség adatvesztés-kockázattal | Ph2.5 §11.7 | NYITOTT | BECS | igen (adatvesztés) | M | láncolás tervezés |
+| MINOR-2 | retenció-horgony robusztusság (befagyás / jövőbeli ablak_veg kivág) — az EGYETLEN Ph3-örökség adatvesztés-kockázattal. **TERV (DOC 2026-08-20, kód ELŐTT):** MÉRVE — az `ir_gordulo` órás retenció (`nyers_kimenet.py:222-227`) a `max(ablak_veg_utc)−14 nap`-ra horgonyoz → egy JÖVŐBELI veg (óra-eltolt CI / adathiba / KARANTEN-LEGACY óta MEGTARTOTT legacy) a jövőbe húzza a `hatar`-t, a jó MÚLT kigördül a **PÓTOLHATATLAN** lemezről = NÉMA ADATVESZTÉS. „veg nem jövő" őr CSAK a másodlagos friss ÉRKEZÉSEN van (`kulcsszavak.py:54-55`), az órás úton NINCS. Éles lemez MÉRVE 2026-08-20: `kulcsszo_nyers.json` 180 rek / `masodlagos` 12 rek — **0 jövőbeli veg/lekerdezes** (kockázat élő, befagyás ma nincs). **FIX:** a horgony a legfrissebb VALÓS adatpontra (`max(idopont_utc)`) álljon, ne a `max(ablak_veg_utc)`-ra (adat-relatív, NINCS falóra, NINCS aláírás-változás); a future-veg rekord MEGMARAD (fail-open). Hatókör CSAK órás retenció; a másodlagos retenció (lekerdezes-alapú) + lánc-horgony pótolható/POTÓLHATATLANSÁG-guardolt → NEM ide. | Ph2.5 §11.7 | RÉSZBEN (terv kész, kód jön) | MÉRT (08-20) | igen (adatvesztés) | S-M | — |
 
 ## (C) Phase 4 hátralévő (2 nyitott: TASK5, LANC-ORAS; TELJES-NEZET → LESZÁLLÍTVA 08-19)
 
