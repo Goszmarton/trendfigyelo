@@ -43,9 +43,22 @@ RACS_GRID_STEP = {"ora": 3600, "nap": 86400, "het": 604800}
 RACS_ABLAK_NAP = {"ora": 7, "nap": 90, "het": 365}
 RACS_MIN_PONT = {"ora": 24, "nap": 12, "het": 7}
 IRANY_KUSZOB = 1.0                          # relatív pont / nap — ÓRÁS ág (kalibrálva: 875ea1a)
-# ILLESZKEDES_SAV: LEÍRÓ kétállapot-sáv szorzó a mai reziduum és a szokásos ingadozás (MAD) között.
-# NEM szignifikancia-küszöb; konzervatív, kerek választás (spec 2026-08-20-attekinto-muszerfal-design §3).
-ILLESZKEDES_SAV = 1.5
+# ILLESZKEDES_SAV / _MIN: a mai eltérés HÁROM-állapotú, LEÍRÓ besorolásának sávja. A sáv szélessége
+# max(SAV × szokásos ingadozás[MAD], MIN) — a MIN abszolút padló (relatív pont) védi a MAD≈0 esetet
+# (majdnem konstans sorozat) a néma túl-jelzéstől. A sávon BELÜL "illeszkedik"; FÖLÖTTE (a mai érték a
+# trend/medián fölött) "felette"; ALATTA "alatta". NEM szignifikancia-küszöb — leíró, szelektív választás
+# (SAV≈2,0 ≈ 1,35 szórás; mérve 2026-08-20: 1,5× túl zajos volt, 12-ből 5-6 eltérő).
+ILLESZKEDES_SAV = 2.0
+ILLESZKEDES_SAV_MIN = 3.0
+
+
+def _illeszkedes_allapot(elteres, mad):
+    """Három-állapotú leíró besorolás: a mai `elteres` (reziduum vagy mediántól-eltérés) a szokásos
+    ingadozás (MAD) sávjához mérve. Visszaad: "illeszkedik" | "felette" | "alatta"."""
+    sav = max(ILLESZKEDES_SAV * mad, ILLESZKEDES_SAV_MIN)
+    if abs(elteres) <= sav:
+        return "illeszkedik"
+    return "felette" if elteres > 0 else "alatta"
 # IRANY-KUSZOB: a per-nap küszöb a hosszú nap/het ablakon degenerál (365 nap × 1.0/nap = 365
 # pont kellene, a skála max 100 → az 1_ev matematikailag holt irány-ág). A nap/het ág ezért
 # ABLAK-RELATÍV: a címke a TELJES elmozduláson (|meredekseg × span_nap| pont = % a 0-100
@@ -168,7 +181,7 @@ def regresszio_egy_ablak(pontok, ablak_kezdet_utc, ablak_veg_utc, ablak_hossz_na
         med = statistics.median(reziduumok)
         mad = statistics.median([abs(r - med) for r in reziduumok])
         reziduum_szokasos = round(mad, 2)
-        illeszkedes = "illeszkedik" if abs(mai_reziduum) <= ILLESZKEDES_SAV * mad else "tavolabb"
+        illeszkedes = _illeszkedes_allapot(mai_reziduum, mad)
     else:
         reziduum_szokasos = None
         illeszkedes = None
@@ -397,8 +410,7 @@ def regresszio_masodlagos_szamit(masodlagos_nyers, tortenet, config, szamitva_ut
                 ki[szo]["mai_szint"] = mai_szint
                 ki[szo]["mai_elteres"] = round(mai_elteres, 2)
                 ki[szo]["szint_szokasos"] = round(mad, 2)
-                ki[szo]["illeszkedes"] = ("illeszkedik"
-                    if abs(mai_elteres) <= ILLESZKEDES_SAV * mad else "tavolabb")
+                ki[szo]["illeszkedes"] = _illeszkedes_allapot(mai_elteres, mad)
             ki[szo]["intervallumok"] = {k: _szint_intervallum(iv)
                                         for k, iv in _masodlagos_intervallumok_egyesit(rekordok, racs or "het").items()}
         else:

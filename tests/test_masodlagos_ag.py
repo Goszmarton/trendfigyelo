@@ -301,7 +301,7 @@ def test_masodlagos_esemenyjelzo_median_elteres():
     assert t["mai_szint"] == 30
     assert t["mai_elteres"] == 22.0
     assert t["szint_szokasos"] is not None
-    assert t["illeszkedes"] == "tavolabb"
+    assert t["illeszkedes"] == "felette"   # a mediántól POZITÍV irányban, a sáv fölött
 
 
 def test_masodlagos_esemenyjelzo_intervallum_nem_szivargat_task1_mezoket():

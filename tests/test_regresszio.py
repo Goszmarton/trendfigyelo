@@ -488,11 +488,30 @@ def test_regresszio_egy_ablak_mai_pont_illeszkedik():
     assert iv["illeszkedes"] == "illeszkedik"
 
 
-def test_regresszio_egy_ablak_mai_pont_tavolabb():
-    pts, t0 = _pontok_egyenes(48, utolso_elteres=30.0)   # az utolsó pont 30 ponttal a vonal fölött
+def test_regresszio_egy_ablak_mai_pont_felette():
+    pts, t0 = _pontok_egyenes(48, utolso_elteres=30.0)   # az utolsó pont 30 ponttal a vonal FÖLÖTT
     iv = regresszio.regresszio_egy_ablak(
         pts, t0.isoformat(), (t0 + timedelta(hours=47)).isoformat(), 2)
     assert iv["ervenyes"] is True
     assert iv["mai_reziduum"] > 10                 # jóval a vonal fölött
     assert iv["reziduum_szokasos"] is not None
-    assert iv["illeszkedes"] == "tavolabb"
+    assert iv["illeszkedes"] == "felette"          # a sáv fölött, POZITÍV irányban
+
+
+def test_regresszio_egy_ablak_mai_pont_alatta():
+    pts, t0 = _pontok_egyenes(48, utolso_elteres=-30.0)  # az utolsó pont 30 ponttal a vonal ALATT
+    iv = regresszio.regresszio_egy_ablak(
+        pts, t0.isoformat(), (t0 + timedelta(hours=47)).isoformat(), 2)
+    assert iv["ervenyes"] is True
+    assert iv["mai_reziduum"] < -10
+    assert iv["illeszkedes"] == "alatta"           # a sáv alatt, NEGATÍV irányban
+
+
+def test_regresszio_egy_ablak_sav_min_padlo_kis_elteresnel():
+    # majdnem konstans sorozat (MAD≈0) + egy 2 pontos rezdülés a végén → a MIN padló (3,0) miatt
+    # NEM billen eltérőre (nem néma túl-jelzés a kerekítési zajra).
+    pts, t0 = _pontok_egyenes(48, meredek=0.0, bazis=50.0, utolso_elteres=2.0)
+    iv = regresszio.regresszio_egy_ablak(
+        pts, t0.isoformat(), (t0 + timedelta(hours=47)).isoformat(), 2)
+    assert iv["ervenyes"] is True
+    assert iv["illeszkedes"] == "illeszkedik"      # |2| <= max(2×MAD, 3,0) = 3,0
