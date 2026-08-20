@@ -106,6 +106,22 @@ Az órástól (`kulcsszo_nyers.json`) KÜLÖN fájl, hogy az órás rács tiszta
   visszaolvasott sérült örökség karanténba (kihagyás + naplózás); a FRISS
   producer-rekord hibája a MI bugunk → `ValueError` (fail-loud).
 
+**KARANTEN-LEGACY invariáns (2026-08-20) — VISSZAOLVASÁS elnéző, FRISS ÍRÁS szigorú:**
+A visszaolvasó karantén (`ir_gordulo` #1 / `ir_masodlagos` #3) rekordot **CSAK
+strukturális (iii) okból** dobhat el: nincs egyetlen pont sem, vagy a pont
+elhelyezhetetlen (nem dict / hiányzó-érvénytelen `idopont_utc`). **HIÁNYZÓ MEZŐ
+ÖNMAGÁBAN — az ISMERETLEN, osztályozatlan is — SOHA nem ok a dobásra**: a rekord
+MEGMARAD + FIGYELEM (miután a fill-only migráció a levezethető hiányzó mezőket
+kitöltötte, meglévőt SOHA nem írva felül). Indok: egy jövőbeli új kötelező
+mezőnek nincs levezetési szabálya, ezért a védelmet a **ZÁRT DOBÁSI LISTA** adja,
+nem a migrációs réteg. **Az írás iránya (MÉRVE 2026-08-20):** a visszaolvasáson
+MEGTARTOTT rekord a kiírás felé **NEM esik a friss-írás hard-fail kapujába** — a
+karantén-ág a lemezről olvasott `kulcsszavak` dict-en iterál
+(`json.loads(fajl.read_text())`), a `raise ValueError` KIZÁRÓLAG a friss
+producer-argumentum (`nyers_sorozatok` / `sorozatok`) hurkában él; a két
+gyűjtemény diszjunkt. (Az írás `write_text` — in-place, NEM temp+rename; az
+atomicitás külön, meglévő kérdés, nem ide tartozik.)
+
 **KIMONDANDÓ — idempotencia-teszt NEM írható rá:** az órás `ir_gordulo`-ra van
 bájt-azonos újraszámolási teszt (ugyanabból a bemenetből ugyanaz jön ki). A
 másodlagos író erre NEM tesztelhető, mert **3 pillanatképet tart**: egy második
