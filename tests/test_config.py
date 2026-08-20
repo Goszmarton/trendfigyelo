@@ -207,6 +207,60 @@ def test_max_probak_nulla_konfighibat_dob(tmp_path):
         config.betolt(_ir(tmp_path, rossz))
 
 
+# --- KONFIG-VALIDALATLAN: numerikus kulcsok tartomány-őre (≥1 / ≥0 ADD-ON) ---
+
+def test_trend_idosor_max_nulla_konfighibat_dob(tmp_path):
+    # trend_idosor_max=0 EDDIG csendesen átment (int) → a RESZBEN-TELT-BLOKK leak config-elérhető.
+    # A tartomány-őr ≥1-et követel. RED: ma NEM dob (0 átmegy).
+    rossz = JO.replace("trend_idosor_max: 15", "trend_idosor_max: 0")
+    with pytest.raises(config.KonfigHiba):
+        config.betolt(_ir(tmp_path, rossz))
+
+
+def test_trend_idosor_max_negativ_konfighibat_dob(tmp_path):
+    rossz = JO.replace("trend_idosor_max: 15", "trend_idosor_max: -3")
+    with pytest.raises(config.KonfigHiba):
+        config.betolt(_ir(tmp_path, rossz))
+
+
+def test_idoablak_orak_nulla_konfighibat_dob(tmp_path):
+    rossz = JO.replace("idoablak_orak: 24", "idoablak_orak: 0")
+    with pytest.raises(config.KonfigHiba):
+        config.betolt(_ir(tmp_path, rossz))
+
+
+def test_trend_megjelenites_max_nulla_konfighibat_dob(tmp_path):
+    rossz = JO + "trend_megjelenites_max: 0\n"
+    with pytest.raises(config.KonfigHiba):
+        config.betolt(_ir(tmp_path, rossz))
+
+
+def test_naplo_max_sor_nulla_konfighibat_dob(tmp_path):
+    rossz = JO + "naplo_max_sor: 0\n"
+    with pytest.raises(config.KonfigHiba):
+        config.betolt(_ir(tmp_path, rossz))
+
+
+def test_trend_idosor_rekesz_max_nulla_engedett(tmp_path):
+    # ADD-ON kulcs (≥0): a 0 LEGITIM (nincs rekesz-sparkline) — NEM dob. SZANDEKOS-ZOLD-VAK diszkriminátor:
+    # ha a min tévesen 1 lenne, ez a teszt bukna.
+    c = config.betolt(_ir(tmp_path, JO + "trend_idosor_rekesz_max: 0\n"))
+    assert c.trend_idosor_rekesz_max == 0
+
+
+def test_trend_idosor_rekesz_max_negativ_konfighibat_dob(tmp_path):
+    # a ≥0 nem „nincs ellenőrzés": a negatív TILOS.
+    rossz = JO + "trend_idosor_rekesz_max: -1\n"
+    with pytest.raises(config.KonfigHiba):
+        config.betolt(_ir(tmp_path, rossz))
+
+
+def test_tortenet_visszapotlas_nap_nulla_engedett(tmp_path):
+    # ADD-ON kulcs (≥0): a 0 LEGITIM (nincs visszapótlás) — NEM dob.
+    c = config.betolt(_ir(tmp_path, JO + "tortenet_visszapotlas_nap: 0\n"))
+    assert c.tortenet_visszapotlas_nap == 0
+
+
 def test_naplo_max_sor_alapertelmezes(tmp_path):
     c = config.betolt(_ir(tmp_path, JO))
     assert c.naplo_max_sor == 2000
