@@ -256,6 +256,7 @@ def _intervallumok(nyers_rekordok, racs="ora", lanc=None):
 _ESEMENYJELZO_TREND_MEZOK = (
     "meredekseg_nap", "se_meredekseg", "se_masodlagos_autokorrelacio",
     "irany", "r2", "r2_masodlagos_autokorrelacio", "illesztes_vonal",
+    "mai_ertek", "mai_reziduum", "reziduum_szokasos", "illeszkedes",
 )
 
 
@@ -383,9 +384,21 @@ def regresszio_masodlagos_szamit(masodlagos_nyers, tortenet, config, szamitva_ut
             # _intervallumok UGYANÚGY szeleteli (rács-tudatos ablak; rövidnél keves_pont →
             # a frontend rovid_het_ablak), de a TREND-mezők strippelve — a felülírás minden
             # ablakot ugyanarra a görbére húzna (no-op intervallum-választó), a szeletelés nem.
-            lezart = [p["ertek"] for p in rek["pontok"] if not p.get("reszleges")] if rek else []
-            ki[szo]["szint"] = statistics.median(lezart) if lezart else None
+            lezart_pontok = sorted((p for p in rek["pontok"] if not p.get("reszleges")),
+                                   key=lambda p: p["idopont_utc"]) if rek else []
+            ertekek = [p["ertek"] for p in lezart_pontok]
+            szint = statistics.median(ertekek) if ertekek else None
+            ki[szo]["szint"] = szint
             ki[szo]["szint_modszer"] = "median"
+            if szint is not None and len(ertekek) >= 2:
+                mai_szint = ertekek[-1]
+                mai_elteres = mai_szint - szint
+                mad = statistics.median([abs(e - szint) for e in ertekek])
+                ki[szo]["mai_szint"] = mai_szint
+                ki[szo]["mai_elteres"] = round(mai_elteres, 2)
+                ki[szo]["szint_szokasos"] = round(mad, 2)
+                ki[szo]["illeszkedes"] = ("illeszkedik"
+                    if abs(mai_elteres) <= ILLESZKEDES_SAV * mad else "tavolabb")
             ki[szo]["intervallumok"] = {k: _szint_intervallum(iv)
                                         for k, iv in _masodlagos_intervallumok_egyesit(rekordok, racs or "het").items()}
         else:

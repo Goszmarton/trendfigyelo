@@ -271,3 +271,51 @@ def test_masodlagos_ag_plafon_naploz_plafont_es_propagal(tmp_path):
         futtato._masodlagos_ag(bejegyzesek, _MasodlagosPlafonKliens(), c, tmp_path, _nap(0))
     naplo = {b["ag"]: b["eredmeny"] for b in bejegyzesek}
     assert naplo.get("kulcsszo_masodlagos") == "plafon"       # NEM 'kihagyva' — külön 'plafon'-címke
+
+
+# ── esemenyjelzo (tüntetés) SZÓ-SZINTŰ mediántól-eltérés + illeszkedés (Task 2) ──
+
+def _mp_nyers_esemeny(ertekek):
+    # egy heti esemenyjelzo rekord növekvő idővel; az utolsó érték = a legfrissebb szint
+    from datetime import datetime, timedelta, timezone
+    t0 = datetime(2026, 5, 1, tzinfo=timezone.utc)
+    pts = [{"idopont_utc": (t0 + timedelta(weeks=i)).isoformat(),
+            "ertek": e, "reszleges": False} for i, e in enumerate(ertekek)]
+    return {"kulcsszavak": {"tüntetés": [{
+        "racs": "het", "timeframe": "today 12-m",
+        "ablak_kezdet_utc": pts[0]["idopont_utc"],
+        "ablak_veg_utc": pts[-1]["idopont_utc"], "pontok": pts}]}}
+
+
+def test_masodlagos_esemenyjelzo_median_elteres():
+    from trendfigyelo import regresszio
+    from trendfigyelo.config import KulcsszoTetel
+    # a `_config` helper (a fájl tetején) — a tüntetést esemenyjelzo-ként ismeri → _domen_tipus
+    # a config-ból adja a tipus="esemenyjelzo"-t (nincs szükség tortenet-re)
+    config = _config([KulcsszoTetel("tüntetés", "kozelet", "esemenyjelzo", "het")])
+    nyers = _mp_nyers_esemeny([8, 8, 8, 8, 9, 8, 8, 30])   # medián 8; az utolsó (30) messze
+    out = regresszio.regresszio_masodlagos_szamit(
+        nyers, {"napok": []}, config, "2026-08-20T19:00:00+00:00")
+    t = out["kulcsszavak"]["tüntetés"]
+    assert t["szint"] == 8
+    assert t["mai_szint"] == 30
+    assert t["mai_elteres"] == 22.0
+    assert t["szint_szokasos"] is not None
+    assert t["illeszkedes"] == "tavolabb"
+
+
+def test_masodlagos_esemenyjelzo_intervallum_nem_szivargat_task1_mezoket():
+    # controller-döntés: a Task-1 4 új intervallum-mezője (mai_ertek/mai_reziduum/
+    # reziduum_szokasos/illeszkedes) NE szivárogjon a tüntetés MASODLAGOS *ervenyes*
+    # intervallumaiba — az esemenyjelzo-nak nincs trend-mezője (§ szándékos terv).
+    from trendfigyelo import regresszio
+    from trendfigyelo.config import KulcsszoTetel
+    config = _config([KulcsszoTetel("tüntetés", "kozelet", "esemenyjelzo", "het")])
+    nyers = _mp_nyers_esemeny([8, 8, 8, 8, 9, 8, 8, 30])
+    out = regresszio.regresszio_masodlagos_szamit(
+        nyers, {"napok": []}, config, "2026-08-20T19:00:00+00:00")
+    t = out["kulcsszavak"]["tüntetés"]
+    ervenyesek = [iv for iv in t["intervallumok"].values() if iv.get("ervenyes")]
+    assert ervenyesek, "a fixture-nek legalább egy ervenyes intervallumot kell adnia"
+    for iv in ervenyesek:
+        assert "mai_reziduum" not in iv
