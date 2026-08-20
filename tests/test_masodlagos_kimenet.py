@@ -125,15 +125,31 @@ def test_ir_masodlagos_nem_urul_ha_nem_frissul(tmp_path):
 
 
 def test_ir_masodlagos_karanten(tmp_path):
-    # LEMEZRŐL visszaolvasott sérült örökség (racs nélkül) KIHAGYVA, a friss kiíródik
+    # KARANTEN-LEGACY Sz1: a karantén CSAK (iii)-STRUKTURÁLIS okból dob — itt ÜRES pontok ("nincs egyetlen
+    # pont sem"). (Korábban `del racs`-ot használt; az MOST visszatöltődik timeframe-ből → MEGTARTÁS, lásd
+    # test_ir_masodlagos_ismeretlen_uj_kotelezo_mezo_nem_uriti_a_lemezt / legacy_timeframe_backfill.)
     fajl = tmp_path / "kulcsszo_masodlagos_nyers.json"
-    serult = _mrekord(kulcsszo="régi")
-    del serult["racs"]
+    serult = _mrekord(kulcsszo="régi", pontok=[])
     fajl.write_text(json.dumps({"kulcsszavak": {"régi": [serult]}}), encoding="utf-8")
     p = nyers_kimenet.ir_masodlagos(tmp_path, {"hitel": _mrekord()})   # nem dob kivételt
     adat = json.loads(p.read_text(encoding="utf-8"))
-    assert "régi" not in adat["kulcsszavak"]                          # a sérült örökség karanténba
+    assert "régi" not in adat["kulcsszavak"]                          # a strukturálisan sérült örökség karanténba
     assert adat["kulcsszavak"]["hitel"]                               # a friss kiíródott
+
+
+def test_ir_masodlagos_ismeretlen_uj_kotelezo_mezo_nem_uriti_a_lemezt(tmp_path):
+    # A #3 másodlagos ág őre: egy jövőbeli kötelező mező (a rétegnek ISMERETLEN, a VALÓDI _TOVABBI_KOTELEZO_MEZOK
+    # mechanizmuson át) NEM üríti a másodlagos lemezt — MEGTARTÁS + FIGYELEM; a drop CSAK strukturális.
+    fajl = tmp_path / "kulcsszo_masodlagos_nyers.json"
+    legacy = _mrekord(kulcsszo="kórház", racs="het")
+    fajl.write_text(json.dumps({"kulcsszavak": {"kórház": [legacy]}}, ensure_ascii=False), encoding="utf-8")
+    nyers_kimenet._TOVABBI_KOTELEZO_MEZOK.append("ujmezo")
+    try:
+        nyers_kimenet.ir_masodlagos(tmp_path, {})                     # üres friss → csak a legacy örökséget olvassa
+    finally:
+        nyers_kimenet._TOVABBI_KOTELEZO_MEZOK.clear()
+    adat = json.loads(fajl.read_text(encoding="utf-8"))["kulcsszavak"]
+    assert "kórház" in adat, "a 'kórház' másodlagos rekord eltűnt a lemezről"
 
 
 def test_ir_masodlagos_friss_hibas_hard_fail(tmp_path):

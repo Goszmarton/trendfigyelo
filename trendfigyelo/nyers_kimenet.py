@@ -24,7 +24,7 @@ import json
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from .config import RACS_IDOKERET
+from .config import RACS_IDOKERET, TIMEFRAME_RACS
 
 # aware sentinel a rendezéshez: érvénytelen/hiányzó időbélyeg előre (a validátor jelzi)
 _MIN_DT = datetime.min.replace(tzinfo=timezone.utc)
@@ -43,6 +43,13 @@ def _aware_dt(x):
     except ValueError:
         return None
     return dt if dt.tzinfo is not None else None
+
+
+# KARANTEN-LEGACY seam (2026-08-20): a jövőbeli KÖTELEZŐ mezőket IDE veszi fel a fejlesztő — EGY deklaratív hely.
+# A FRISS-írás validátora megköveteli (hard-fail), a LEMEZ-örökség karanténja ELLENBEN NEM dob rá (a drop a
+# `_strukturalis_hibak` zárt (iii) listája; hiányzó mező → MEGTARTÁS + FIGYELEM). Így egy új kötelező mező NEM
+# üríti ki visszamenőleg a lemezt. A teszt EZEN a listán át injektál (nem monkeypatch a validátorra).
+_TOVABBI_KOTELEZO_MEZOK: list = []          # mezőnevek; jelen-és-truthy kell
 
 
 def ervenyes_nyers_rekord(rek) -> list:
@@ -82,6 +89,9 @@ def ervenyes_nyers_rekord(rek) -> list:
                 hibak.append(f"pontok[{i}].ertek: int vagy '' kell")
             if not isinstance(p.get("reszleges"), bool):
                 hibak.append(f"pontok[{i}].reszleges: bool kell (véglegesség-jelölés)")
+    for mezo in _TOVABBI_KOTELEZO_MEZOK:            # seam: jövőbeli kötelező mezők (ma üres → no-op)
+        if isinstance(rek, dict) and not rek.get(mezo):
+            hibak.append(f"{mezo}: hiányzó (kötelező mező)")
     return hibak
 
 
@@ -100,6 +110,82 @@ def _rendezett(rek) -> dict:
             key=lambda p: (_aware_dt(p.get("idopont_utc")) if isinstance(p, dict) else None) or _MIN_DT,
         )
     return r
+
+
+# ---------- KARANTEN-LEGACY Szelet 1: fill-only migráció + zárt (iii) dobási lista ----------
+
+def _strukturalis_hibak(rek) -> list:
+    """A ZÁRT (iii) dobási lista — CSAK ez ürítheti a lemezt visszaolvasáskor: nincs egyetlen pont sem,
+    vagy a pont elhelyezhetetlen (nem dict / hiányzó-érvénytelen `idopont_utc`). MINDEN MÁS hiányzó/rossz
+    mező (az ISMERETLEN is) → MEGTARTÁS. A pontszintű finomítás (egy rossz pont ne dobja az egészet) = Szelet 2."""
+    if not isinstance(rek, dict):
+        return ["a rekord nem dict"]
+    pontok = rek.get("pontok")
+    if not isinstance(pontok, list) or not pontok:
+        return ["pontok: nincs egyetlen pont sem"]
+    for i, p in enumerate(pontok):
+        if not isinstance(p, dict):
+            return [f"pontok[{i}]: elhelyezhetetlen pont (nem dict)"]
+        if _aware_dt(p.get("idopont_utc")) is None:
+            return [f"pontok[{i}].idopont_utc: elhelyezhetetlen (hiányzó/érvénytelen)"]
+    return []
+
+
+def _migral_nyers_hianyzo(rek, kulcs):
+    """Fill-only visszamenőleges migráció: CSAK HIÁNYZÓ mezőt tölt, meglévőt SOHA nem ír felül (a MINOR-2
+    `ablak_veg_utc`-horgony védelme). Levezetés meglévő adatból/kulcsból, NEM beírt konstansból."""
+    if not isinstance(rek, dict):
+        return rek
+    rek = dict(rek)
+    if not rek.get("kulcsszo"):
+        rek["kulcsszo"] = kulcs                              # a konténer-kulcs a szó identitása
+    pontok = rek.get("pontok")
+    if isinstance(pontok, list) and pontok:
+        rek["pontok"] = [                                    # reszleges ← False (spec 4.3 véglegesség-default)
+            ({**p, "reszleges": False} if isinstance(p, dict) and not isinstance(p.get("reszleges"), bool) else p)
+            for p in pontok
+        ]
+        idok = sorted(d for p in pontok if isinstance(p, dict)
+                      for d in (_aware_dt(p.get("idopont_utc")),) if d is not None)
+        if idok:                                             # ablak ← a pontok tényleges min/max-a (tiszta levezetés)
+            rek.setdefault("ablak_kezdet_utc", idok[0].isoformat())
+            rek.setdefault("ablak_veg_utc", idok[-1].isoformat())
+    return rek
+
+
+def _migral_masodlagos_hianyzo(rek, kulcs):
+    """A bázis migráció + a másodlagos racs↔timeframe kölcsönös levezetés. A 207–208 inline timeframe-ág
+    BEOLVAD ide — EGY mechanizmus marad."""
+    rek = _migral_nyers_hianyzo(rek, kulcs)
+    if not isinstance(rek, dict):
+        return rek
+    rek = dict(rek)
+    if not rek.get("timeframe") and RACS_IDOKERET.get(rek.get("racs")):
+        rek["timeframe"] = RACS_IDOKERET[rek["racs"]]        # timeframe ← racs
+    if not rek.get("racs") and TIMEFRAME_RACS.get(rek.get("timeframe")):
+        rek["racs"] = TIMEFRAME_RACS[rek["timeframe"]]       # racs ← timeframe (csak ha HIÁNYZIK)
+    return rek
+
+
+def _karantenaz(kulcsszavak, migral, valid) -> None:
+    """VISSZAOLVASÁS-elnéző karantén (helyben módosít): a rekordot előbb fill-only migrálja, majd DOBJA CSAK
+    ha `_strukturalis_hibak` (iii). Minden más szerződés-hibát MEGTART + FIGYELEM. Üres szó → törlés."""
+    for kif in list(kulcsszavak):
+        tiszta = []
+        for r in kulcsszavak[kif]:
+            r = migral(r, kif)
+            strukt = _strukturalis_hibak(r)
+            if strukt:
+                print(f"FIGYELEM: strukturálisan sérült rekord karanténba ({kif}): {strukt}")
+                continue
+            maradek = valid(r)
+            if maradek:                                      # megtartjuk, de HANGOSAN jelöljük a hiányt
+                print(f"FIGYELEM: hiányos rekord MEGTARTVA + jelölve ({kif}): {maradek}")
+            tiszta.append(r)
+        if tiszta:
+            kulcsszavak[kif] = tiszta
+        else:
+            del kulcsszavak[kif]
 
 
 def ir_gordulo(docs_data, nyers_sorozatok: dict, megtartott_nap: int = 14) -> Path:
@@ -121,19 +207,8 @@ def ir_gordulo(docs_data, nyers_sorozatok: dict, megtartott_nap: int = 14) -> Pa
         adat = {"kulcsszavak": {}}
     kulcsszavak = adat.setdefault("kulcsszavak", {})
 
-    # 1) VISSZAOLVASOTT örökség: sérült rekord KARANTÉN (kihagyás + naplózás)
-    for kif in list(kulcsszavak):
-        tiszta = []
-        for r in kulcsszavak[kif]:
-            hibak = ervenyes_nyers_rekord(r)
-            if hibak:
-                print(f"FIGYELEM: sérült nyers rekord karanténba ({kif}): {hibak}")
-                continue
-            tiszta.append(r)
-        if tiszta:
-            kulcsszavak[kif] = tiszta
-        else:
-            del kulcsszavak[kif]
+    # 1) VISSZAOLVASOTT örökség: VISSZAOLVASÁS-elnéző karantén (drop CSAK strukturális; hiányzó mező MEGMARAD)
+    _karantenaz(kulcsszavak, _migral_nyers_hianyzo, ervenyes_nyers_rekord)
 
     # 2) FRISS producer-kimenet: hibás rekord a MI bugunk → hard fail
     for kifejezes, rek in nyers_sorozatok.items():
@@ -198,23 +273,8 @@ def ir_masodlagos(docs_data, sorozatok: dict, megtartott_db: int = 3) -> Path:
         adat = {"kulcsszavak": {}}
     kulcsszavak = adat.setdefault("kulcsszavak", {})
 
-    # 1) VISSZAOLVASOTT örökség: sérült rekord KARANTÉN
-    for kif in list(kulcsszavak):
-        tiszta = []
-        for r in kulcsszavak[kif]:
-            # KARANTEN-LEGACY: a timeframe nélküli RÉGI rekord kapja meg a timeframe-et a racs-ból
-            # (visszamenőleges migráció) a validáció ELŐTT — NEM némán kidobva. Csak a hiányzót töltjük.
-            if not r.get("timeframe") and RACS_IDOKERET.get(r.get("racs")):
-                r["timeframe"] = RACS_IDOKERET[r["racs"]]
-            hibak = ervenyes_masodlagos_rekord(r)
-            if hibak:
-                print(f"FIGYELEM: sérült másodlagos rekord karanténba ({kif}): {hibak}")
-                continue
-            tiszta.append(r)
-        if tiszta:
-            kulcsszavak[kif] = tiszta
-        else:
-            del kulcsszavak[kif]
+    # 1) VISSZAOLVASOTT örökség: VISSZAOLVASÁS-elnéző karantén (a 207–208 timeframe-migráció BEOLVAD a rétegbe)
+    _karantenaz(kulcsszavak, _migral_masodlagos_hianyzo, ervenyes_masodlagos_rekord)
 
     # 2) FRISS producer-kimenet: hibás rekord a MI bugunk → hard fail
     for kifejezes, rek in sorozatok.items():

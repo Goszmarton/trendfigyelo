@@ -125,21 +125,46 @@ def test_ir_gordulo_rendezi_a_pontokat(tmp_path):
 
 
 def test_ir_gordulo_a_visszaolvasott_hibas_rekordot_karantenba_teszi(tmp_path):
-    # Q2 (finomítva): a LEMEZRŐL visszaolvasott sérült örökség-rekordot KIHAGYJA
-    # (karantén), de a friss adat kiíródik — egy romlott legacy-rekord nem
-    # béníthatja meg a napi írást.
+    # KARANTEN-LEGACY Sz1: a karantén CSAK (iii)-STRUKTURÁLIS okból dob — itt egy ELHELYEZHETETLEN pont
+    # (érvénytelen idopont_utc). A friss adat kiíródik — egy strukturálisan romlott legacy nem bénít.
+    # (Korábban ablakon-kívüli pontot használt; az MOST NEM strukturális → külön keep-teszt lentebb.)
     fajl = tmp_path / "kulcsszo_nyers.json"
     serult = _rekord("2026-07-20T21:00:00+00:00", "2026-07-27T21:00:00+00:00",
-                     [_pont("2026-07-28T20:00:00+00:00", 5, False)])  # 07-28 > veg → ablakon kívül
+                     [_pont("NEM-DATUM", 5, False)])  # elhelyezhetetlen pont → (iii)-strukturális
     fajl.write_text(json.dumps({"kulcsszavak": {"hitel": [serult]}}), encoding="utf-8")
     friss = {"betegség": _rekord("2026-07-20T21:00:00+00:00", "2026-07-27T21:00:00+00:00",
                                  [_pont("2026-07-27T20:00:00+00:00", 5, True)])}
     p = nyers_kimenet.ir_gordulo(tmp_path, friss)    # NEM dob kivételt
     adat = json.loads(p.read_text(encoding="utf-8"))
-    assert "hitel" not in adat["kulcsszavak"]        # a sérült örökség karanténba került
+    assert "hitel" not in adat["kulcsszavak"]        # a strukturálisan sérült örökség karanténba került
     assert adat["kulcsszavak"]["betegség"]           # a friss adat kiíródott
     for rek in adat["kulcsszavak"]["betegség"]:
         assert ervenyes_nyers_rekord(rek) == []
+
+
+def test_ir_gordulo_ablakon_kivuli_pont_nem_dob_hanem_megtart(tmp_path):
+    # Sz1 — a ZÁRT DOBÁSI LISTA szűkítése: az ablakon kívüli pont NEM (iii)-strukturális (a pont elhelyezhető,
+    # van érvényes idopont_utc-je) → a rekord MEGMARAD + FIGYELEM, NEM ürül. A pontszintű kezelés = Szelet 2.
+    fajl = tmp_path / "kulcsszo_nyers.json"
+    legacy = _rekord("2026-07-20T21:00:00+00:00", "2026-07-27T21:00:00+00:00",
+                     [_pont("2026-07-28T20:00:00+00:00", 5, False)], kulcsszo="hitel")  # 07-28 > veg
+    fajl.write_text(json.dumps({"kulcsszavak": {"hitel": [legacy]}}), encoding="utf-8")
+    nyers_kimenet.ir_gordulo(tmp_path, {})
+    adat = json.loads(fajl.read_text(encoding="utf-8"))
+    assert "hitel" in adat["kulcsszavak"], "az ablakon kívüli pont nem dobhatja el a teljes rekordot"
+
+
+def test_ir_gordulo_friss_uj_kotelezo_mezo_nelkul_tovabbra_is_hard_fail(tmp_path):
+    # Aszimmetria-őr: a fail-open NEM szivároghat az ÍRÁSRA. A friss producer-rekord, amiből az új kötelező
+    # mező hiányzik, TOVÁBBRA IS hard-fail (ValueError) — a szigor a friss ágon marad (#2).
+    nyers_kimenet._TOVABBI_KOTELEZO_MEZOK.append("ujmezo")
+    try:
+        friss = {"hitel": _rekord("2026-07-20T21:00:00+00:00", "2026-07-27T21:00:00+00:00",
+                                  [_pont("2026-07-27T20:00:00+00:00", 5, True)])}  # nincs ujmezo
+        with pytest.raises(ValueError):
+            nyers_kimenet.ir_gordulo(tmp_path, friss)
+    finally:
+        nyers_kimenet._TOVABBI_KOTELEZO_MEZOK.clear()
 
 
 def test_ir_gordulo_friss_hibas_rekord_hard_fail(tmp_path):
@@ -148,3 +173,22 @@ def test_ir_gordulo_friss_hibas_rekord_hard_fail(tmp_path):
                               [_pont("2026-07-28T20:00:00+00:00", 5, True)])}  # ablakon kívül
     with pytest.raises(ValueError):
         nyers_kimenet.ir_gordulo(tmp_path, friss)
+
+
+# --- KARANTEN-LEGACY Szelet 1: zárt dobási lista (drop CSAK strukturális) ---
+
+def test_ir_gordulo_ismeretlen_uj_kotelezo_mezo_nem_uriti_a_lemezt(tmp_path):
+    # A ZÁRT DOBÁSI LISTA őre: egy jövőbeli fejlesztő ÚJ kötelező mezőt vesz fel a VALÓDI mechanizmuson
+    # (_TOVABBI_KOTELEZO_MEZOK), amiből a MEGLÉVŐ lemez-rekord hiányzik. A visszaolvasó karantén NEM
+    # dobhatja ki (hiányzó mező != (iii)-strukturális): MEGTARTÁS + FIGYELEM. RED (régi logika): kidobja.
+    fajl = tmp_path / "kulcsszo_nyers.json"
+    legacy = _rekord("2026-07-20T21:00:00+00:00", "2026-07-27T21:00:00+00:00",
+                     [_pont("2026-07-27T20:00:00+00:00", 5, False)], kulcsszo="állás")
+    fajl.write_text(json.dumps({"kulcsszavak": {"állás": [legacy]}}), encoding="utf-8")
+    nyers_kimenet._TOVABBI_KOTELEZO_MEZOK.append("ujmezo")   # a jövőbeli kötelező mező (a rétegnek ISMERETLEN)
+    try:
+        nyers_kimenet.ir_gordulo(tmp_path, {})               # üres friss → csak a legacy örökséget olvassa
+    finally:
+        nyers_kimenet._TOVABBI_KOTELEZO_MEZOK.clear()
+    adat = json.loads(fajl.read_text(encoding="utf-8"))
+    assert "állás" in adat["kulcsszavak"], "az 'állás' rekord eltűnt a lemezről"
