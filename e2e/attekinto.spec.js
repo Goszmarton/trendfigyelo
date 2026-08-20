@@ -74,3 +74,25 @@ test("attekinto: ⓘ-magyarázó doboz jelen van", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator(A + " .attekinto-magyarazat")).toHaveCount(1);
 });
+
+function mpReg(kulcsszavak) {
+  return { szamitva_utc: "2026-08-19T19:00:00+00:00", meredekseg_egyseg: "relatív pont / nap",
+    elmozdulas_kuszob: 7.0, megjegyzes: "teszt", kulcsszavak };
+}
+
+test("attekinto: tüntetés esemenyjelzo — nincs nyíl, mediántól-eltérés", async ({ page }) => {
+  const regObj = reg({
+    "tüntetés": szo({ domen: "kozelet", tipus: "esemenyjelzo",
+      iv1het: { ervenyes: false, ok: "esemenyjelzo" } }),
+  });
+  const mp = mpReg({ "tüntetés": { racs: "het", aktiv: true, domen: "kozelet", tipus: "esemenyjelzo",
+    szint: 8, szint_modszer: "median", mai_szint: 30, mai_elteres: 22, szint_szokasos: 1,
+    illeszkedes: "tavolabb", intervallumok: {} } });
+  await mock(page, regObj, mp);
+  await page.goto("/");
+  const kartya = page.locator(A + " .attekinto-kartya[data-kulcsszo='tüntetés']");
+  await expect(kartya).toHaveCount(1);
+  await expect(kartya.locator(".attekinto-ikon")).not.toHaveAttribute("data-irany", /.+/);   // nincs nyíl
+  await expect(kartya.locator(".attekinto-illeszkedes")).toHaveAttribute("data-illeszkedes", "tavolabb");
+  await expect(kartya.locator(".attekinto-illeszkedes")).toContainText("mediántól");
+});

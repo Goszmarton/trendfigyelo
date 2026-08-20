@@ -266,7 +266,11 @@ function egyesitett_reg() {
     });
     // 6c: az esemenyjelzo szint (heti medián) a MÁSODLAGOS entryn él (m), az órás o-n nincs → átvezetjük,
     // hogy a kártya-render (merteszamok_szoveg / szint-vonal / data-szint) elérje. Nem-esemenyjelzo: undefined.
-    const tobb = (m && m.szint != null) ? { szint: m.szint, szint_modszer: m.szint_modszer } : null;
+    const tobb = (m && m.szint != null)
+      ? { szint: m.szint, szint_modszer: m.szint_modszer,
+          mai_szint: m.mai_szint, mai_elteres: m.mai_elteres,
+          szint_szokasos: m.szint_szokasos, illeszkedes_szint: m.illeszkedes }
+      : null;
     ki[szo] = Object.assign({}, o, { intervallumok: ivk }, tobb || {});
   });
   return { kulcsszavak: ki };
@@ -454,6 +458,8 @@ const EGYEB_KULCS = "__egyeb__";
 const IRANY_MAGYAR = { novekszik: "iránya növekvő", csokken: "iránya csökkenő", stagnal: "iránya stagnáló" };
 const IRANY_IKON = { novekszik: "novekszik", stagnal: "stagnal", csokken: "csokken" };  // data-irany értékek
 const ILLESZKEDES_SZOVEG = { illeszkedik: "illeszkedik a trendhez", tavolabb: "a szokásosnál távolabb a trendtől" };
+const ILLESZKEDES_SZINT_SZOVEG = { illeszkedik: "a megszokott szint körül",
+  tavolabb: "a megszokottnál távolabb a mediántól" };
 const ATTEKINTO_MAGYARAZAT = "Ez számolt, leíró jelző: a mai érték eltérése a szokásos ingadozáshoz mérve — " +
   "nem szignifikancia-teszt. A tüntetésnél a mediántól való eltérés.";
 // RACS_EGYSEG (6b első szelet): a jel-erősség feliratban a rács-SZÓ (óra/nap/hét). A mértékegység
@@ -941,6 +947,18 @@ function attekinto_kartya(szo, szoreg) {
   nev.className = "attekinto-szo";
   nev.textContent = szo;
   k.appendChild(nev);
+  if (szoreg.tipus === "esemenyjelzo") {
+    // NINCS irány-nyíl (a backend nem ad irányt); a „kiugró" a MEDIÁNTÓL való eltérés
+    const all = szoreg.illeszkedes_szint;
+    if (all && ILLESZKEDES_SZINT_SZOVEG[all]) {
+      const j = document.createElement("span");
+      j.className = "attekinto-illeszkedes";
+      j.setAttribute("data-illeszkedes", all);
+      j.textContent = ILLESZKEDES_SZINT_SZOVEG[all];
+      k.appendChild(j);
+    }
+    return k;
+  }
   if (iv && IRANY_MAGYAR[iv.irany]) {
     const it = document.createElement("span");
     it.className = "attekinto-irany-szoveg";
