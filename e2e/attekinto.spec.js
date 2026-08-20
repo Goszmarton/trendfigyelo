@@ -53,3 +53,24 @@ test("attekinto: panel legfelül, domen-csoportok, irány-ikon", async ({ page }
   await expect(page.locator(A + " .attekinto-kartya[data-kulcsszo='albérlet'] .attekinto-ikon"))
     .toHaveAttribute("data-irany", "stagnal");
 });
+
+test("attekinto: illeszkedés-jelző két állapota + null → nincs jelző", async ({ page }) => {
+  await mock(page, reg({
+    "állás": szo({ domen: "munkaeropiac", irany: "csokken", illeszkedes: "illeszkedik" }),
+    "hitel": szo({ domen: "haztartasi_penzugy", irany: "novekszik", illeszkedes: "tavolabb" }),
+    "benzin": szo({ domen: "energia", iv1het: { ervenyes: false, ok: "keves_pont" } }),
+  }));
+  await page.goto("/");
+  await expect(page.locator(A + " .attekinto-kartya[data-kulcsszo='állás'] .attekinto-illeszkedes"))
+    .toHaveAttribute("data-illeszkedes", "illeszkedik");
+  await expect(page.locator(A + " .attekinto-kartya[data-kulcsszo='hitel'] .attekinto-illeszkedes"))
+    .toHaveAttribute("data-illeszkedes", "tavolabb");
+  // benzin: nincs érvényes intervallum → nincs illeszkedés-jelző (nem kitalált)
+  await expect(page.locator(A + " .attekinto-kartya[data-kulcsszo='benzin'] .attekinto-illeszkedes")).toHaveCount(0);
+});
+
+test("attekinto: ⓘ-magyarázó doboz jelen van", async ({ page }) => {
+  await mock(page, reg({ "állás": szo({ domen: "munkaeropiac" }) }));
+  await page.goto("/");
+  await expect(page.locator(A + " .attekinto-magyarazat")).toHaveCount(1);
+});

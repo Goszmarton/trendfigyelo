@@ -453,6 +453,9 @@ const DOMEN_SORREND = ["munkaeropiac", "kozigazgatas", "lakhatas", "fogyasztas",
 const EGYEB_KULCS = "__egyeb__";
 const IRANY_MAGYAR = { novekszik: "iránya növekvő", csokken: "iránya csökkenő", stagnal: "iránya stagnáló" };
 const IRANY_IKON = { novekszik: "novekszik", stagnal: "stagnal", csokken: "csokken" };  // data-irany értékek
+const ILLESZKEDES_SZOVEG = { illeszkedik: "illeszkedik a trendhez", tavolabb: "a szokásosnál távolabb a trendtől" };
+const ATTEKINTO_MAGYARAZAT = "Ez számolt, leíró jelző: a mai érték eltérése a szokásos ingadozáshoz mérve — " +
+  "nem szignifikancia-teszt. A tüntetésnél a mediántól való eltérés.";
 // RACS_EGYSEG (6b első szelet): a jel-erősség feliratban a rács-SZÓ (óra/nap/hét). A mértékegység
 // ("relatív pont/nap") rács-INVARIÁNS (mindkét JSON meredekseg_egyseg-e per-nap), NEM itt dől el.
 // Az órás JSON nem hordoz racs-ot → default "ora" → az órás felirat bájt-azonos. Ismeretlen rács
@@ -895,6 +898,12 @@ function attekinto_blokk_render() {
   const blokk = document.getElementById("attekinto-blokk");
   if (!blokk) return;
   blokk.querySelectorAll(".attekinto-csoport").forEach(function (e) { e.remove(); });
+  blokk.querySelectorAll(".attekinto-magyarazat").forEach(function (e) { e.remove(); });
+  const magy = document.createElement("p");
+  magy.className = "attekinto-magyarazat";
+  magy.textContent = ATTEKINTO_MAGYARAZAT;
+  const h2 = blokk.querySelector("h2");
+  if (h2) h2.insertAdjacentElement("afterend", magy); else blokk.appendChild(magy);
   const reg = egyesitett_reg();
   if (!reg || !reg.kulcsszavak) return;
   const csoportok = {};
@@ -937,6 +946,13 @@ function attekinto_kartya(szo, szoreg) {
     it.className = "attekinto-irany-szoveg";
     it.textContent = IRANY_MAGYAR[iv.irany];
     k.appendChild(it);
+  }
+  if (iv && iv.illeszkedes && ILLESZKEDES_SZOVEG[iv.illeszkedes]) {
+    const j = document.createElement("span");
+    j.className = "attekinto-illeszkedes";
+    j.setAttribute("data-illeszkedes", iv.illeszkedes);
+    j.textContent = ILLESZKEDES_SZOVEG[iv.illeszkedes];
+    k.appendChild(j);
   }
   return k;
 }

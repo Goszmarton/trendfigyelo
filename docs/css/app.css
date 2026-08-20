@@ -139,14 +139,16 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 #kulcsszo-blokk .frissesseg,
 #trend-blokk .kategoria-magyarazat,
 #idosor-blokk .idosor-magyarazat,
-#trend-blokk .trend-normalizalas-magyarazat {
+#trend-blokk .trend-normalizalas-magyarazat,
+#attekinto-blokk .attekinto-magyarazat {
   font-style: italic; color: #555;
   border-left: 3px solid #3366cc; padding: .3rem 0 .3rem .6rem;
 }
 #kulcsszo-blokk .frissesseg::before,
 #trend-blokk .kategoria-magyarazat::before,
 #idosor-blokk .idosor-magyarazat::before,
-#trend-blokk .trend-normalizalas-magyarazat::before {
+#trend-blokk .trend-normalizalas-magyarazat::before,
+#attekinto-blokk .attekinto-magyarazat::before {
   content: "ⓘ ";   /* az ⓘ CSS-ből (nem a szövegben) — így egységes és a szövegek nem duplázzák */
 }
 
@@ -170,3 +172,7 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 #attekinto-blokk .attekinto-ikon[data-irany="novekszik"]::before { content: "▲"; color: #2e7d32; }
 #attekinto-blokk .attekinto-ikon[data-irany="stagnal"]::before   { content: "▬"; color: #777; }
 #attekinto-blokk .attekinto-ikon[data-irany="csokken"]::before   { content: "▼"; color: #b23c3c; }
+
+#attekinto-blokk .attekinto-illeszkedes { font-size: .82rem; color: #555; }
+#attekinto-blokk .attekinto-illeszkedes[data-illeszkedes="tavolabb"]::before { content: "⚠ "; color: #b8860b; }
+#attekinto-blokk .attekinto-illeszkedes[data-illeszkedes="illeszkedik"]::before { content: "✓ "; color: #2e7d32; }
