@@ -88,7 +88,13 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 /* item 2: a tétel OSZLOP (gomb-sor + magyarázat alatta); a gomb-sor a régi flex-row (gomb + .ok egy sorban) */
 #intervallum-vezerlo .intervallum-tetel { display: flex; flex-direction: column; align-items: flex-start; gap: .1rem; }
 #intervallum-vezerlo .intervallum-gomb-sor { display: flex; align-items: baseline; gap: .5rem; }
-#intervallum-vezerlo .gomb-magyarazat { font-size: .7rem; color: #888; line-height: 1.1; }
+/* kék vonal a kísérő szöveg elé (ⓘ nélkül); FIX magasságú sáv (pseudo), hogy MIND egyforma hosszú legyen,
+   függetlenül attól, hogy a szöveg 1 vagy 2 sorra tördel */
+#intervallum-vezerlo .gomb-magyarazat { font-size: .7rem; color: #888; line-height: 1.1;
+  position: relative; padding-left: .5rem; }
+#intervallum-vezerlo .gomb-magyarazat::before {
+  content: ""; position: absolute; left: 0; top: .05rem; width: 3px; height: .8rem;
+  background: #3366cc; border-radius: 1px; }
 #intervallum-vezerlo button { padding: .3rem .7rem; cursor: pointer;
   background: #fff; border: 1px solid #ccc; border-radius: 4px; color: #222;
   min-width: 3.5rem; box-sizing: border-box; white-space: nowrap; }
@@ -100,7 +106,26 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 /* Task 10 §2: a dátum-<select> érintési célmérete AA-ra (19px → >=24px, kényelmes 32px); egérrel is bukó volt.
    MIN-CSS (08-18): a #intervallum-vezerlo szabályblokk KÖZÜL kiemelve (a gomb- és a date-select-szabály közé
    ékelődött) — a date-select KÜLÖN vezérlő. Rendering-no-op: más elem, más specificitás, nincs átfedő szabály. */
-#datum-valaszto select { min-height: 32px; }
+/* naptár nap-választó (inline; a select helyett) */
+#datum-valaszto .naptar { font-size: .82rem; }
+.naptar-fej { display: flex; align-items: center; justify-content: space-between; margin-bottom: .3rem; }
+.naptar-cim { font-weight: 600; color: #333; }
+.honap-lep { border: none; background: none; cursor: pointer; font-size: 1.15rem; color: #333;
+  padding: 0 .4rem; border-radius: 4px; line-height: 1.3; }
+.honap-lep:hover:not([disabled]) { background: #eee; }
+.honap-lep[disabled] { color: #ccc; cursor: default; }
+.naptar-racs { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; }
+.naptar-fejnap { text-align: center; font-size: .68rem; color: #999; padding: .1rem 0; }
+.nap-cella { aspect-ratio: 1; min-height: 28px; display: flex; align-items: center; justify-content: center;
+  border: none; background: none; cursor: pointer; border-radius: 50%; font-size: .8rem; color: #222; padding: 0; }
+.nap-cella:hover:not([disabled]) { background: #eef2ff; }
+.nap-cella.nem-valaszthato { color: #ccc; cursor: default; }   /* nincs adat → kicsit szürke, nem-választható */
+.nap-cella.szomszed-honap { color: #ddd; }
+.nap-cella.valasztott { background: #3366cc; color: #fff; font-weight: 600; }
+.nap-cella.valasztott:hover { background: #2a52a0; }
+/* heti naptár: a kiválasztott HÉT mind a 7 napja UGYANÚGY néz ki, mint a napi kiválasztott (kék kör, fehér szám) */
+#heti-valaszto .nap-cella.valasztott-het { background: #3366cc; color: #fff; font-weight: 600; }
+#heti-valaszto .nap-cella.valasztott-het:hover { background: #2a52a0; }
 .ures { color: #666; font-style: italic; }
 
 /* Task 9b kulcsszó-blokk — szavankénti chartok, domen-csoportokban (rács, small multiples).
@@ -187,14 +212,15 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
    a natív ring inkonzisztens). :focus-visible → csak billentyűzetnél, egérkattintásnál nem villan. */
 #intervallum-vezerlo button:focus-visible,
 #trend-blokk .kategoria-gomb:focus-visible,
-#datum-valaszto select:focus-visible { outline: 2px solid #3366cc; outline-offset: 2px; }
+#datum-valaszto .nap-cella:focus-visible,
+#datum-valaszto .honap-lep:focus-visible { outline: 2px solid #3366cc; outline-offset: 2px; }
 
 /* Task 10 §2: érintő-eszközön minden vezérlő tap-magassága >= 44px (AAA 2.5.5 komfort). A DESKTOP VÁLTOZATLAN.
    A pill/szögletes forma megmarad — csak a magasság nő. */
 @media (pointer: coarse) {
   #intervallum-vezerlo button,
   #trend-blokk .kategoria-gomb,
-  #datum-valaszto select { min-height: 44px; }
+  #datum-valaszto .nap-cella { min-height: 44px; }
 }
 
 /* A panel EGY keretes box, ugyanaz a minta, mint a többi szekció (#kulcsszo-blokk stb., 21-22. sor). */

@@ -427,28 +427,137 @@ function datum_formaz(iso) {
   return r[0] + ". " + r[1] + ". " + r[2] + ".";
 }
 
+// ── naptár nap-választó (a select helyett; a böngészőben TILOS a Date → tiszta egész-aritmetika) ──
+const NAPTAR_HETNAPOK = ["H", "K", "Sz", "Cs", "P", "Sz", "V"];   // hétfő-kezdő fejsor
+const NAPTAR_HONAPOK = ["január", "február", "március", "április", "május", "június",
+  "július", "augusztus", "szeptember", "október", "november", "december"];
+function naptar_szoko(y) { return (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0; }
+function naptar_honap_napjai(y, m) {   // m: 1..12
+  return [31, naptar_szoko(y) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m - 1];
+}
+function naptar_hetnap_hetfo0(y, m, d) {   // Sakamoto → 0=vasárnap; hétfő-kezdőre: (dow+6)%7
+  const t = [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4];
+  const yy = m < 3 ? y - 1 : y;
+  const dow = (yy + Math.floor(yy / 4) - Math.floor(yy / 100) + Math.floor(yy / 400) + t[m - 1] + d) % 7;
+  return (dow + 6) % 7;   // 0=hétfő .. 6=vasárnap
+}
+function naptar_honap_lep(kulcs, delta) {   // "2026-08" ± delta hónap
+  let y = +kulcs.slice(0, 4), m = +kulcs.slice(5, 7) + delta;
+  while (m > 12) { m -= 12; y += 1; }
+  while (m < 1) { m += 12; y -= 1; }
+  return y + "-" + String(m).padStart(2, "0");
+}
+
+// KÖZÖS naptár-rács (napi ÉS heti választó): fej (‹ cím ›) + hét-fejsor + 6×7 nap-cella. A `cellaAllapot(iso, szomszed)`
+// dönt cellánként: { valaszthato: bool, extraOsztaly: string, aria: string|null }. A kattintást a hívó a konténeren
+// delegálja (a nap-cella `data-nap`-jából). Visszaad: a naptár <div> (a hívó teszi a #datum-valaszto / #heti-valaszto-ba).
+function naptar_epit(honap, elso_ho, utolso_ho, cellaAllapot) {
+  const naptar = document.createElement("div");
+  naptar.className = "naptar";
+  const fej = document.createElement("div");
+  fej.className = "naptar-fej";
+  const vissza = document.createElement("button");
+  vissza.type = "button"; vissza.className = "honap-lep vissza"; vissza.textContent = "‹";
+  vissza.setAttribute("aria-label", "Előző hónap");
+  if (honap <= elso_ho) vissza.disabled = true;
+  const cim = document.createElement("span");
+  cim.className = "naptar-cim";
+  const hy = +honap.slice(0, 4), hm = +honap.slice(5, 7);
+  cim.textContent = hy + ". " + NAPTAR_HONAPOK[hm - 1];
+  const elore = document.createElement("button");
+  elore.type = "button"; elore.className = "honap-lep elore"; elore.textContent = "›";
+  elore.setAttribute("aria-label", "Következő hónap");
+  if (honap >= utolso_ho) elore.disabled = true;
+  fej.appendChild(vissza); fej.appendChild(cim); fej.appendChild(elore);
+  naptar.appendChild(fej);
+
+  const racs = document.createElement("div");
+  racs.className = "naptar-racs";
+  NAPTAR_HETNAPOK.forEach(function (hn) {
+    const f = document.createElement("span"); f.className = "naptar-fejnap"; f.textContent = hn;
+    racs.appendChild(f);
+  });
+  const napok_szama = naptar_honap_napjai(hy, hm);
+  const elso_hetnap = naptar_hetnap_hetfo0(hy, hm, 1);   // 0=hétfő
+  const elozo_ho = naptar_honap_lep(honap, -1);
+  const kov_ho = naptar_honap_lep(honap, 1);
+  const elozo_napjai = naptar_honap_napjai(+elozo_ho.slice(0, 4), +elozo_ho.slice(5, 7));
+  for (let i = 0; i < 42; i++) {   // 6 sor × 7 nap (fix magasság; a szomszéd-hónap napjai szürkék)
+    const napszam = i - elso_hetnap + 1;   // 1-alapú a megjelenített hónapban
+    let iso, szam, szomszed = false;
+    if (napszam < 1) { szam = elozo_napjai + napszam; iso = elozo_ho + "-" + String(szam).padStart(2, "0"); szomszed = true; }
+    else if (napszam > napok_szama) { szam = napszam - napok_szama; iso = kov_ho + "-" + String(szam).padStart(2, "0"); szomszed = true; }
+    else { szam = napszam; iso = honap + "-" + String(szam).padStart(2, "0"); }
+    const st = cellaAllapot(iso, szomszed);
+    const cella = document.createElement("button");
+    cella.type = "button";
+    cella.className = "nap-cella" + (szomszed ? " szomszed-honap" : "") +
+      (st.valaszthato ? "" : " nem-valaszthato") + (st.extraOsztaly ? " " + st.extraOsztaly : "");
+    cella.textContent = String(szam);
+    cella.setAttribute("data-nap", iso);
+    if (!st.valaszthato) cella.disabled = true;                // nem-választható → letiltva
+    if (st.aria) cella.setAttribute("aria-current", st.aria);
+    racs.appendChild(cella);
+  }
+  naptar.appendChild(racs);
+  return naptar;
+}
+
 function datum_valaszto_render() {
   const el = document.getElementById("datum-valaszto");
   if (!el) return;
   const idx = adat["napok/index.json"];
-  const napok = (idx && Array.isArray(idx.napok)) ? idx.napok.slice() : [];
-  if (!napok.length) {
-    ures_allapot(el, "Nincs elérhető nap.");
-    return;
-  }
-  napok.sort(); // növekvő ISO -> a legfrissebb az utolsó
+  const napok = (idx && Array.isArray(idx.napok)) ? idx.napok.slice().sort() : [];
+  if (!napok.length) { ures_allapot(el, "Nincs elérhető nap."); return; }
   const legfrissebb = napok[napok.length - 1];
-  napok.reverse(); // a LEGFRISSEBB ELÖL (a hét-választóval konzisztens); az alap-kiválasztás továbbra is a legfrissebb
+  const elerheto = {};
+  napok.forEach(function (n) { elerheto[n] = true; });
+  const elso_ho = napok[0].slice(0, 7);        // a tartomány első hónapja ("2026-07")
+  const utolso_ho = legfrissebb.slice(0, 7);   // a tartomány utolsó hónapja
+  // állapot: a kiválasztott nap (alap = legfrissebb) + a megjelenített hónap (alap = a kiválasztott hónapja)
+  let valasztott = el.getAttribute("data-valasztott-nap");
+  if (!valasztott || !elerheto[valasztott]) valasztott = legfrissebb;
+  let honap = el.getAttribute("data-honap") || valasztott.slice(0, 7);
+  if (honap < elso_ho) honap = elso_ho;
+  if (honap > utolso_ho) honap = utolso_ho;
+  el.setAttribute("data-valasztott-nap", valasztott);
+  el.setAttribute("data-honap", honap);
   el.textContent = "";
-  const sel = document.createElement("select");
-  napok.forEach(function (nap) {
-    const opt = document.createElement("option");
-    opt.value = nap;
-    opt.textContent = datum_formaz(nap);
-    if (nap === legfrissebb) opt.selected = true; // alapból a legfrissebb nap
-    sel.appendChild(opt);
-  });
-  el.appendChild(sel);
+  el.appendChild(naptar_epit(honap, elso_ho, utolso_ho, function (iso, szomszed) {
+    const vanAdat = !szomszed && !!elerheto[iso];
+    return { valaszthato: vanAdat, extraOsztaly: iso === valasztott ? "valasztott" : "", aria: iso === valasztott ? "date" : null };
+  }));
+}
+
+// HETI naptár (hét-kiemelő): a kiválasztott hét MIND a 7 cellája kiemelve; kattintás → az adott hét.
+function heti_valaszto_render() {
+  const el = document.getElementById("heti-valaszto");
+  if (!el) return;
+  const idx = adat["napok/index.json"];
+  const napok = (idx && Array.isArray(idx.napok)) ? idx.napok.slice().sort() : [];
+  if (!napok.length) { el.textContent = ""; return; }   // az üres állapotot a heti_blokk_render kezeli
+  const legfrissebb = napok[napok.length - 1];
+  const adatHetek = {};                                  // a data-hét-hétfők (amelyik héten van adat)
+  napok.forEach(function (n) { adatHetek[het_hetfoje(n)] = true; });
+  const legfrissebbHet = het_hetfoje(legfrissebb);
+  const elso_ho = napok[0].slice(0, 7), utolso_ho = legfrissebb.slice(0, 7);
+  let valasztottHet = el.getAttribute("data-valasztott-het");
+  if (!valasztottHet || !adatHetek[valasztottHet]) valasztottHet = legfrissebbHet;
+  let honap = el.getAttribute("data-honap") || valasztottHet.slice(0, 7);
+  if (honap < elso_ho) honap = elso_ho;
+  if (honap > utolso_ho) honap = utolso_ho;
+  el.setAttribute("data-valasztott-het", valasztottHet);
+  el.setAttribute("data-honap", honap);
+  el.textContent = "";
+  el.appendChild(naptar_epit(honap, elso_ho, utolso_ho, function (iso, szomszed) {
+    const hetfo = het_hetfoje(iso);
+    const hetVanAdat = !!adatHetek[hetfo];
+    return {
+      valaszthato: !szomszed && hetVanAdat,                     // csak nem-szomszéd, adat-hét kattintható
+      extraOsztaly: hetfo === valasztottHet ? "valasztott-het" : "",   // a HÉT egész sora kiemelve (szomszéd is)
+      aria: null,
+    };
+  }));
 }
 
 // ── Task 9b: kulcsszó-blokk — szavankénti chartok + regresszió + mérőszámok + üres állapotok ──
@@ -1203,8 +1312,9 @@ function trend_adat_nap(nap) {
 function trend_aktualis_nap(blokk) {
   const meglevo = blokk.getAttribute(ATTR_T.nap);
   if (meglevo) return meglevo;
-  const sel = document.querySelector("#datum-valaszto select");
-  if (sel && sel.value) return sel.value;
+  const el = document.getElementById("datum-valaszto");
+  const v = el && el.getAttribute("data-valasztott-nap");   // a naptár kiválasztott napja (a régi select.value helyett)
+  if (v) return v;
   return trend_legfrissebb_nap();
 }
 
@@ -1306,7 +1416,8 @@ function idosor_aktiv_valt(nev) {
 function trend_idosor_chart_epit(canvas, idosor) {
   canvas.setAttribute(ATTR_T.idosor_chart_rendered, "true");   // DOM-szerződés akkor is, ha nincs Chart (a tükör a forrás)
   if (typeof Chart === "undefined") return;
-  idosor_aktiv = "";
+  // alap: az ELSŐ kategória KIEMELVE (kék), nem „mind szürke" — így rögtön olvasható egy görbe (user-kérés)
+  idosor_aktiv = (idosor.vonalak && idosor.vonalak[0] && idosor.vonalak[0].nev) || "";
   idosor_chart = new Chart(canvas, {
     type: "line",
     data: {
@@ -1327,7 +1438,7 @@ function trend_idosor_chart_epit(canvas, idosor) {
       },
       scales: {
         x: { grid: { display: false } },   // függőleges rács KI — zaj (átlósan keresztezi a vonalakat), a dátum az x-tengelyen van
-        y: { beginAtZero: true, ticks: { precision: 0 }, title: { display: true, text: "trendek száma" },
+        y: { beginAtZero: true, ticks: { precision: 0 }, title: { display: true, text: "kategóriába eső trendek" },
              grid: { color: "#f0f0f0" } },   // vízszintes rács HALVÁNY — az érték-leolvasáshoz, a kék kiemelt vonal fölé nem tolakszik
       },
       plugins: {
@@ -1392,9 +1503,10 @@ function idosor_blokk_render() {
   blokk.appendChild(mag);
 
   legendEl.appendChild(idosor_legend_epit(idosor));   // BAL doboz: HTML-legend
-  blokk.setAttribute(ATTR_T.idosor_aktiv, "");        // alap: semmi nem kiemelt (a legend-tükör kezdőállapota)
+  blokk.setAttribute(ATTR_T.idosor_aktiv, "");        // pre-build kezdőállapot (a chart-build után az idosor_szinez felülírja)
 
-  trend_idosor_chart_epit(canvas, idosor);   // a canvas már a jobb dobozban van
+  trend_idosor_chart_epit(canvas, idosor);   // a canvas már a jobb dobozban van (itt áll be idosor_aktiv = az ELSŐ kategória)
+  idosor_szinez();   // az alap (első kategória) tükrözése a DOM-mirror (data-idosor-aktiv) + a bal legend (.kiemelt) felé
 }
 
 function trend_szin(kategoria, tompitott) {
@@ -1682,13 +1794,23 @@ function trend_blokk_render() {
   trend_szinkron(blokk);   // a kezdő állapot (nincs szűrés) szinkronja
 }
 
-// a dátumválasztó változása vezérli a napot (esemény-delegálás a konténeren → túléli a select újraépítését)
+// a naptár vezérli a napot (esemény-delegálás a konténeren → túléli a naptár újrarajzolását)
 function trend_esemeny_kot() {
   if (trend_esemeny_kotve) return;
   const el = document.getElementById("datum-valaszto");
   if (!el) return;
-  el.addEventListener("change", function (ev) {
-    if (ev.target && ev.target.tagName === "SELECT") trend_nap_valt(ev.target.value);
+  el.addEventListener("click", function (ev) {
+    const btn = ev.target && ev.target.closest ? ev.target.closest("button") : null;
+    if (!btn || btn.disabled) return;
+    if (btn.classList.contains("nap-cella")) {                 // nap kiválasztása
+      el.setAttribute("data-valasztott-nap", btn.getAttribute("data-nap"));
+      datum_valaszto_render();                                 // a kék kiemelés áthelyezése
+      trend_nap_valt(btn.getAttribute("data-nap"));            // a dashboard nap-váltása
+    } else if (btn.classList.contains("honap-lep")) {          // hónap-lépés (a kiválasztás VÁLTOZATLAN)
+      const cur = el.getAttribute("data-honap") || "";
+      el.setAttribute("data-honap", naptar_honap_lep(cur, btn.classList.contains("elore") ? 1 : -1));
+      datum_valaszto_render();
+    }
   });
   trend_esemeny_kotve = true;
 }
@@ -1794,19 +1916,31 @@ async function heti_blokk_render() {
     const u = document.createElement("p"); u.className = "heti-ures"; u.textContent = "Még nincs napi trendlista.";
     blokk.appendChild(u); valEl.innerHTML = ""; return;
   }
-  const hetek = hetek_index(napok);
-  let sel = valEl.querySelector("select");
-  if (!sel) {
-    sel = document.createElement("select");
-    valEl.appendChild(sel);
-    sel.addEventListener("change", function () { heti_tabla_render(sel.value); });   // FÜGGETLEN: csak ezt a blokkot
-  }
-  sel.innerHTML = "";
-  hetek.forEach(function (h) {
-    const o = document.createElement("option"); o.value = h.hetfo; o.textContent = h.cimke; sel.appendChild(o);
+  heti_valaszto_render();          // a hét-kiemelő naptár (beállítja data-valasztott-het = legfrissebb hét, ha nincs)
+  heti_esemeny_kot();              // FÜGGETLEN a napi választótól: csak ezt a blokkot vezérli
+  await heti_tabla_render(valEl.getAttribute("data-valasztott-het"));
+}
+
+let heti_esemeny_kotve = false;
+// a heti naptár kattintás-kötése (delegált a konténeren → túléli az újrarajzolást)
+function heti_esemeny_kot() {
+  if (heti_esemeny_kotve) return;
+  const el = document.getElementById("heti-valaszto");
+  if (!el) return;
+  el.addEventListener("click", function (ev) {
+    const btn = ev.target && ev.target.closest ? ev.target.closest("button") : null;
+    if (!btn || btn.disabled) return;
+    if (btn.classList.contains("nap-cella")) {                 // egy nap → az EGÉSZ HETE
+      el.setAttribute("data-valasztott-het", het_hetfoje(btn.getAttribute("data-nap")));
+      heti_valaszto_render();                                  // a hét-kiemelés áthelyezése
+      heti_tabla_render(el.getAttribute("data-valasztott-het"));
+    } else if (btn.classList.contains("honap-lep")) {          // hónap-lépés (a kiválasztás VÁLTOZATLAN)
+      const cur = el.getAttribute("data-honap") || "";
+      el.setAttribute("data-honap", naptar_honap_lep(cur, btn.classList.contains("elore") ? 1 : -1));
+      heti_valaszto_render();
+    }
   });
-  sel.value = hetek[0].hetfo;                       // alap = LEGFRISSEBB hét
-  await heti_tabla_render(sel.value);
+  heti_esemeny_kotve = true;
 }
 
 const RENDER_HIBA_SZOVEG = "Hiba a vezérlő megjelenítésekor";

@@ -10,6 +10,16 @@ const { test, expect } = require("@playwright/test");
 const T = "#trend-blokk";
 const I = "#idosor-blokk";   // a kategória-idősor ÖNÁLLÓ szekciója (jobb doboz); a legend a bal #idosor-legend-ben
 
+// nap-váltás az INLINE NAPTÁRRAL (a régi <select>.selectOption helyett): a cél-hónapra navigál (‹/›), majd a napra kattint.
+async function napValt(page, nap) {
+  const el = page.locator("#datum-valaszto");
+  await el.locator(".naptar").waitFor();   // a naptár async renderelése UTÁN olvassuk a data-honap-ot (különben null → nincs navigáció)
+  const celHo = nap.slice(0, 7);
+  while ((await el.getAttribute("data-honap")) > celHo) await page.locator("#datum-valaszto .honap-lep.vissza").click();
+  while ((await el.getAttribute("data-honap")) < celHo) await page.locator("#datum-valaszto .honap-lep.elore").click();
+  await page.locator(`#datum-valaszto .nap-cella[data-nap="${nap}"]`).click();
+}
+
 // egy trend-elem; temak === undefined → a mező HIÁNYZIK (régi archív nap), [] → nincs besorolás, [...] → van
 // idosor: opcionális pont-tömb ({idopont_utc, ertek}); alap [] (üres — D1-kiterjesztett / mind-üres eset).
 function trend(kifejezes, volumen, temak, idosor) {
@@ -231,7 +241,7 @@ test("10. régi napon (nincs kategória) a chart ÉS a szűrő ELTŰNIK, de a k�
     napok: { "2026-08-01": REGI3, "2026-08-07": MAI16 },
   });
   await page.goto("/");
-  await page.locator("#datum-valaszto select").selectOption("2026-08-01");
+  await napValt(page, "2026-08-01");
   // közös szabály MINDKÉT ága:
   await expect(page.locator(`${T} .trend-kartya`)).toHaveCount(3);        // a kártyalista MEGVAN (régi 3)
   await expect(page.locator(`${T} .kategoria-szuro`)).toHaveCount(0);     // a szűrő eltűnt
@@ -250,7 +260,7 @@ test("11. napváltáskor az aktív szűrés nullázódik", async ({ page }) => {
   await expect(gomb).toHaveCount(1);
   await gomb.click();
   await expect(page.locator(T)).toHaveAttribute("data-aktiv-kategoria", "Politics");
-  await page.locator("#datum-valaszto select").selectOption("2026-08-01");
+  await napValt(page, "2026-08-01");
   await expect(page.locator(T)).not.toHaveAttribute("data-aktiv-kategoria", /.+/);
 });
 
@@ -263,7 +273,7 @@ test("12. a kártyaszám a data hosszát követi: mai 16, régi 3 (nincs fix 15/
   });
   await page.goto("/");
   await expect(page.locator(`${T} .trend-kartya`)).toHaveCount(16);
-  await page.locator("#datum-valaszto select").selectOption("2026-08-01");
+  await napValt(page, "2026-08-01");
   await expect(page.locator(`${T} .trend-kartya`)).toHaveCount(3);
 });
 
@@ -416,7 +426,7 @@ test("22. archív nap → sparkline megvan, kategória-chart+szűrő nincs (disz
     napok: { "2026-07-30": REGI_IDOS },
   });
   await page.goto("/");
-  await page.locator("#datum-valaszto select").selectOption("2026-07-30");
+  await napValt(page, "2026-07-30");
   // sparkline MEGVAN
   await expect(page.locator(`${T} .trend-kartya[data-idosor-allapot="van"]`)).toHaveCount(2);
   await expect(page.locator(`${T} .trend-sparkline-doboz canvas`)).toHaveCount(2);
@@ -478,7 +488,7 @@ test("26. archív nap: görbe van/kategória nincs → normalizálás-magyaráza
     napok: { "2026-07-30": REGI_IDOS },
   });
   await page.goto("/");
-  await page.locator("#datum-valaszto select").selectOption("2026-07-30");
+  await napValt(page, "2026-07-30");
   await expect(page.locator(`${T} .trend-normalizalas-magyarazat`)).toHaveCount(1);   // van görbe → magyarázat kell
   await expect(page.locator(`${T} .trend-osszefoglalo`)).toHaveCount(0);              // nincs kategória → nincs összefoglaló
 });
@@ -521,8 +531,9 @@ test("28. két azonos kifejezésű trend → napváltás UTÁN nincs árva Chart
   // NAPVÁLTÁS a régi napra → trend_blokk_render → trend_chart_takarit() destroy-ol MINDENT, amit nyilvántart.
   // A váltás ASZINKRON (napok/<nap>.json fetch) → determinisztikusan a data-nap attribútumra várunk (a
   // .trend-kifejezes-re várni strict-mode-ot dobna az átmeneti két „dupla"-n).
-  await page.locator("#datum-valaszto select").selectOption("2026-07-30");
+  await napValt(page, "2026-07-30");
   await expect(page.locator("#trend-blokk")).toHaveAttribute("data-nap", "2026-07-30");
+  await expect(page.locator(`${T} .trend-kartya`)).toHaveCount(1);            // a régi nap kártyái leültek (a 2 „dupla" eltűnt)
   await expect(page.locator(`${T} .trend-kifejezes`)).toHaveText("archív");   // egyetlen kártya → a régi nap kirajzolódott
 
   // A napváltás után a KÉT régi-napi canvashoz kötött Chart EGYIKE SEM élhet. A bugos (kifejezés-kulcsú)
@@ -643,9 +654,10 @@ test("idősor-legend: kattintásra az elem .kiemelt lesz + data-idosor-aktiv tü
   await page.goto("/");
   const bE = page.locator('#idosor-legend .idosor-legend-elem[data-kategoria="B"]');
   await expect(bE).toHaveCount(1);
-  // alap: semmi nem kiemelt
-  await expect(page.locator("#idosor-legend .idosor-legend-elem.kiemelt")).toHaveCount(0);
-  await expect(page.locator(I)).toHaveAttribute("data-idosor-aktiv", "");
+  // alap (user-kérés): az ELSŐ kategória KIEMELT (nem „mind szürke")
+  await expect(page.locator("#idosor-legend .idosor-legend-elem.kiemelt")).toHaveCount(1);
+  await expect(page.locator("#idosor-legend .idosor-legend-elem").first()).toHaveClass(/kiemelt/);   // az első a kiemelt
+  await expect(page.locator(I)).not.toHaveAttribute("data-idosor-aktiv", "");                         // van alap-kiválasztás
   // katt B-re → B kiemelt, más nem; a tükör B
   await bE.click();
   await expect(bE).toHaveClass(/kiemelt/);

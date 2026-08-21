@@ -32,22 +32,25 @@ async function mock(page) {
   }
 }
 
-// ── 1. hét-választó: ISO-hetek, legfrissebb elöl + alapból kiválasztva ──
-test("1. hét-választó: ISO-heteket sorol, legfrissebb elöl, alap = legfrissebb hét", async ({ page }) => {
+// ── 1. hét-kiemelő naptár: a legfrissebb hét sora kiemelve (alap = 34. hét, hétfő 08-17) ──
+test("1. hét-kiemelő naptár: alap = a legfrissebb hét, mind a 7 napja kiemelve (34. hét, 08-17..08-23)", async ({ page }) => {
   await mock(page);
   await page.goto("/");
-  const opt = page.locator("#heti-valaszto select option");
-  await expect(opt).toHaveCount(2);                                    // 33. + 34. hét
-  await expect(opt.first()).toHaveText("34. hét (aug. 17–23)");        // legfrissebb ELÖL
-  await expect(page.locator("#heti-valaszto select")).toHaveValue("2026-08-17");   // alap = legfrissebb (hétfő-dátum a value)
-  await expect(opt.last()).toHaveText("33. hét (aug. 10–16)");
+  await expect(page.locator("#heti-valaszto .naptar")).toBeVisible();
+  await expect(page.locator("#heti-valaszto")).toHaveAttribute("data-valasztott-het", "2026-08-17");   // legfrissebb hét hétfője
+  await expect(page.locator("#heti-valaszto")).toHaveAttribute("data-honap", "2026-08");
+  await expect(page.locator("#heti-valaszto .nap-cella.valasztott-het")).toHaveCount(7);                // az EGÉSZ hét sora
+  await expect(page.locator('#heti-valaszto .nap-cella[data-nap="2026-08-17"]')).toHaveClass(/valasztott-het/);
+  await expect(page.locator('#heti-valaszto .nap-cella[data-nap="2026-08-23"]')).toHaveClass(/valasztott-het/);
 });
 
-// ── 2. ISO-hét-határ (a hibás „aug 11–17" ellen élesítve) ──
-test("2. a 2026-08-17 a »34. hét (aug. 17–23)« alá esik (hétfő–vasárnap, ISO)", async ({ page }) => {
+// ── 2. adat-hét napjai kattinthatók; az adat-nélküli hét napjai szürkék ──
+test("2. adat-hét napjai kattinthatók, adat-nélküli hét szürke (nem-választható)", async ({ page }) => {
   await mock(page);
   await page.goto("/");
-  await expect(page.locator("#heti-valaszto select option[value=\"2026-08-17\"]")).toHaveText("34. hét (aug. 17–23)");
+  await expect(page.locator('#heti-valaszto .nap-cella[data-nap="2026-08-10"]:not([disabled])')).toBeVisible();  // 33. hét
+  await expect(page.locator('#heti-valaszto .nap-cella[data-nap="2026-08-17"]:not([disabled])')).toBeVisible();  // 34. hét
+  await expect(page.locator('#heti-valaszto .nap-cella[data-nap="2026-08-05"]')).toHaveClass(/nem-valaszthato/); // 08-03..09 hét: nincs adat
 });
 
 // ── 3. alap-hét (34.) táblázata: csak 08-17 (a legfrissebb elérhető napig; 08-18+ NEM) ──
@@ -64,7 +67,8 @@ test("3. alap-hét táblázata a hétfőtől a legfrissebb elérhető napig; a j
 test("4. 33. hét: 7 nap (hétfő–vasárnap), a hiányzó nap »nincs adat«, nem marad ki", async ({ page }) => {
   await mock(page);
   await page.goto("/");
-  await page.locator("#heti-valaszto select").selectOption("2026-08-10");          // 33. hét hétfője
+  await page.locator('#heti-valaszto .nap-cella[data-nap="2026-08-10"]').click();  // a 33. hét egy napja → az egész hét
+  await expect(page.locator("#heti-valaszto")).toHaveAttribute("data-valasztott-het", "2026-08-10");
   await expect(page.locator(`${H} .heti-nap-sor`)).toHaveCount(7);                  // hétfő–vasárnap MIND
   await expect(page.locator(`${H} .heti-nap-sor[data-nap="2026-08-10"] .heti-szavak`)).toHaveText("alfa, béta");
   await expect(page.locator(`${H} .heti-nap-sor[data-nap="2026-08-12"] .heti-szavak`)).toHaveText("nincs adat");   // hiányzó nap
@@ -75,7 +79,7 @@ test("4. 33. hét: 7 nap (hétfő–vasárnap), a hiányzó nap »nincs adat«, 
 test("5. napi sor = az aznapi összes felkapott szó, tárolt (volumen) sorrendben", async ({ page }) => {
   await mock(page);
   await page.goto("/");
-  await page.locator("#heti-valaszto select").selectOption("2026-08-10");
+  await page.locator('#heti-valaszto .nap-cella[data-nap="2026-08-10"]').click();
   await expect(page.locator(`${H} .heti-nap-sor[data-nap="2026-08-13"] .heti-szavak`)).toHaveText("delta, epszilon, zéta");
 });
 
@@ -83,9 +87,9 @@ test("5. napi sor = az aznapi összes felkapott szó, tárolt (volumen) sorrendb
 test("6. hét-váltás FÜGGETLEN — a #datum-valaszto értéke és a trend-blokk napja VÁLTOZATLAN", async ({ page }) => {
   await mock(page);
   await page.goto("/");
-  await expect(page.locator("#datum-valaszto select")).toHaveValue("2026-08-17");   // alap: legfrissebb nap
+  await expect(page.locator("#datum-valaszto")).toHaveAttribute("data-valasztott-nap", "2026-08-17");   // alap: legfrissebb nap
   await expect(page.locator("#trend-blokk")).toHaveAttribute("data-nap", "2026-08-17");
-  await page.locator("#heti-valaszto select").selectOption("2026-08-10");           // hét-váltás
-  await expect(page.locator("#datum-valaszto select")).toHaveValue("2026-08-17");   // VÁLTOZATLAN
+  await page.locator('#heti-valaszto .nap-cella[data-nap="2026-08-10"]').click();   // hét-váltás (a heti naptár KÜLÖN vezérlő maradt)
+  await expect(page.locator("#datum-valaszto")).toHaveAttribute("data-valasztott-nap", "2026-08-17");   // VÁLTOZATLAN
   await expect(page.locator("#trend-blokk")).toHaveAttribute("data-nap", "2026-08-17");
 });

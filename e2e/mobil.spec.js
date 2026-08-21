@@ -51,13 +51,14 @@ test("G1. render-on-load 360x640-en: a #attekinto-blokk miatt load-kor 0 kártya
 });
 
 // ── G2 — a dátum-<select> érintési célmérete >= 24px (WCAG 2.5.8 AA); MÉRT ma: 19px (BUKIK) ──
-test("G2. a dátum-select magassága >= 24px (WCAG 2.5.8 AA; ma 19px bukna)", async ({ page }) => {
+test("G2. a naptár nap-cella érintési célmérete >= 24px (WCAG 2.5.8 AA; a select-magasság helyett)", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 640 });
   await page.goto("/");
-  const sel = page.locator("#datum-valaszto select");
-  await expect(sel).toHaveCount(1);
-  const bb = await sel.boundingBox();
+  const cella = page.locator("#datum-valaszto .nap-cella[aria-current='date']");   // a kiválasztott nap (pontosan 1)
+  await expect(cella).toHaveCount(1);
+  const bb = await cella.boundingBox();
   expect(bb.height).toBeGreaterThanOrEqual(24);
+  expect(bb.width).toBeGreaterThanOrEqual(24);
 });
 
 // ── G3 — a coarse-réteg (44px érintési célméret) nem törölhető NÉMÁN: a @media (pointer: coarse) szabály LÉTEZIK ──

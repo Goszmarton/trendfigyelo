@@ -116,22 +116,22 @@ test("több érvényes intervallum → az ALAPNEZET a TELJES (request 1, SZEMLE 
 
 // ── dátumválasztó ────────────────────────────────────────────────────────────
 
-test("normál napok/index.json → dátumválasztó feltöltve, alapból a LEGFRISSEBB nap", async ({ page }) => {
+test("normál napok/index.json → naptár a legfrissebb hónapot rajzolja, alapból a LEGFRISSEBB nap kiválasztva", async ({ page }) => {
   await mock_napok_index(page, ["2026-08-02", "2026-08-03", "2026-08-04"]);
   await page.goto("/");
-  const sel = page.locator("#datum-valaszto select");
-  await expect(sel.locator("option")).toHaveCount(3);
-  await expect(sel).toHaveValue("2026-08-04");        // alapból a legfrissebb
-  await expect(sel).toContainText("2026. 08. 04.");   // magyar dátumformátum
+  await expect(page.locator("#datum-valaszto .naptar")).toBeVisible();
+  await expect(page.locator("#datum-valaszto")).toHaveAttribute("data-valasztott-nap", "2026-08-04");   // alap: legfrissebb
+  await expect(page.locator("#datum-valaszto")).toHaveAttribute("data-honap", "2026-08");
+  await expect(page.locator("#datum-valaszto .naptar-cim")).toContainText("augusztus");
+  await expect(page.locator("#datum-valaszto .nap-cella.valasztott")).toHaveText("4");
 });
 
-test("dátumválasztó: a legfrissebb nap ELÖL (csökkenő sorrend, a hét-választóval konzisztens)", async ({ page }) => {
+test("naptár: pontosan az adat-napok kattinthatók, a hónap többi napja nem-választható (szürke)", async ({ page }) => {
   await mock_napok_index(page, ["2026-08-02", "2026-08-03", "2026-08-04"]);
   await page.goto("/");
-  const opt = page.locator("#datum-valaszto select option");
-  await expect(opt.first()).toHaveText("2026. 08. 04.");   // legfrissebb ELÖL
-  await expect(opt.last()).toHaveText("2026. 08. 02.");    // legrégebbi UTOLSÓ
-  await expect(page.locator("#datum-valaszto select")).toHaveValue("2026-08-04");   // az alap MARAD a legfrissebb
+  await expect(page.locator("#datum-valaszto button.nap-cella:not([disabled])")).toHaveCount(3);   // pontosan a 3 adat-nap
+  await expect(page.locator('#datum-valaszto .nap-cella[data-nap="2026-08-04"]:not([disabled])')).toBeVisible();
+  await expect(page.locator('#datum-valaszto .nap-cella[data-nap="2026-08-01"]')).toHaveClass(/nem-valaszthato/);   // nincs adat → szürke
 });
 
 test("üres napok/index.json → dátumválasztó ÜRES állapot, nincs select", async ({ page }) => {
