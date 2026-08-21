@@ -129,6 +129,29 @@ lekérdezés új rekordot fűz hozzá, a fájl NEM lesz bájt-azonos. A szerződ
 ezért CSAK a szerkezetet és az érvényességet őrizheti (mezők megléte, retenció
 mérete, rendezés, karantén/hard-fail), NEM a bájt-azonosságot.
 
+**KARANTEN — RENDSZER-SZINTŰ HATÓKÖR (MÉRVE 2026-08-21): a zárt dobási lista
+LEFEDI a TÁROLT-PÓTOLHATATLAN adat MINDEN visszaolvasását.** A `#1`
+(`ir_gordulo`, `nyers_kimenet.py`) és `#3` (`ir_masodlagos`) az EGYETLEN két út,
+amely a lemezről visszaolvasott örökség-rekordot eldobhatja, és mindkettő a
+`_karantenaz` közös, zárt (iii)-listás ágán megy. A rendszerben MEGMARADÓ
+„dobás"-logika a #1/#3-on KÍVÜL KIZÁRÓLAG a következő, SZÁNDÉKOS osztályok:
+(a) **FRISS érkezés-ellenőrzés** (`kulcsszavak.masodlagos_alak_ok` a
+`gyujt_egy_masodlagos`-ban / `masodlagos_only`) — friss LETÖLTÖTT cella, sosem
+tárolt adat; (b) **FRISS producer hard-fail** (`nyers_kimenet` `raise
+ValueError`, a #1/#3 friss argumentum-hurka) — a MI bugunk, fail-loud; (c) a
+**lánc visszaolvasása** (`lanc.betolt_lanc`) — a POTÓLHATATLANSÁG-guard KÜLÖN
+tétele (LANC-*), nem a séma-karantén. A derivált / már-karanténozott olvasók
+(`futtato` másodlagos-ütemező + elavult-jelző, `json_export`, `kategoriak`)
+I/O-robusztusak (try/except → fallback/skip), NINCS per-rekord séma-dobásuk.
+Ezért a „dobj minden sémahibánál" veszélyes minta a TÁROLT örökségen SEHOL nem
+él a zárt listán kívül — a KARANTEN-LEGACY „logika-politika" alkérdés ITT,
+invariánsként ZÁRVA (kód nélkül).
+
+**HATÁR (kimondva):** az invariáns a NYERS visszaolvasásra (`#1/#3`) áll. A
+lánc-visszaolvasás (`lanc.py betolt_lanc`) NEM tartozik ide: ott nincs per-rekord
+séma-dobás, de az EGÉSZ-FÁJL parse-hiba `{}`-t ad vissza — a `kulcsszo_lanc.json`
+szintén PÓTOLHATATLAN, ez KÜLÖN nyitott kérdés (BETOLT-LANC-PARSE, parkolt).
+
 ---
 
 ## 6. Az ütemezés és a másodlagos ág
