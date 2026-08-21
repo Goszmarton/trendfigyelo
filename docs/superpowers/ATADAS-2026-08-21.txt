@@ -1,18 +1,47 @@
-ÁTADÓ — 2026-08-21 (trendfigyelo, Phase 4) — NAPI RUTIN + 3 doc-zárás (KARANTEN-politika, §8.2-INV, TASK5-mérés)
+ÁTADÓ — 2026-08-21 (trendfigyelo, Phase 4) — NAPI RUTIN + 3 doc-zárás (KARANTEN, §8.2-INV, TASK5) + LANC-ORAS Sz2 LESZÁLLÍTVA
 ================================================================================
 
 ZÁRÓ ÁLLAPOT (2026-08-21)
 ------------------------
-origin/main = HEAD = a119ec1. rev-list 0 0. Suite: pytest 362 + Playwright 116 (SOROS), MUTÁCIÓ == 1.
+origin/main = HEAD = ab7c4e0. rev-list 0 0. Suite: pytest 361 + Playwright 120 (SOROS), MUTÁCIÓ == 1.
 Munkafa: csak a régi ROOT-beli ATADAS-2026-08-18.txt untracked (NE add-eld). docs/data TISZTA.
-Leltár-invariáns MÉRÉSSEL: aktív 4 + kész 34 + rekord 29 + félretett 0 = 67 (törzs); LEZÁRT/ELAVULT KÜLÖN 18.
-  aktív 4 = (B) 0 · (C) 2: TASK5 + LANC-ORAS · (D) 2: IRANY-KUSZOB + ADD-SWAP.
+Leltár-invariáns MÉRÉSSEL: aktív 3 + kész 35 + rekord 29 + félretett 0 = 67 (törzs); LEZÁRT/ELAVULT KÜLÖN 18.
+  aktív 3 = (B) 0 · (C) 1: TASK5 · (D) 2: IRANY-KUSZOB + ADD-SWAP.  (LANC-ORAS → LESZÁLLÍTVA a Sz2-vel.)
 
-A mai két commit (mindkettő doc-only, pusholva, rev-list 0 0 minden push után):
-  a527c42  doc(karanten): rendszer-szintű hatókör-invariáns + HATÁR (a zárt dobási lista lefedi a
-           tárolt-pótolhatatlan visszaolvasást; 08-20 429-mérés 38/148 a 429-RATA sorba; új BETOLT-LANC-PARSE note)
+A mai commitok (pusholva, rev-list 0 0 minden push után):
+  a527c42  doc(karanten): rendszer-szintű hatókör-invariáns + HATÁR (429-mérés 38/148 a 429-RATA-ba; BETOLT-LANC-PARSE note)
   a119ec1  doc(leltar): §8.2-INV → PARKOLT (MÉRVE: nem aktív hiba) + TASK5 Sz3 evidencia-státusz
-(közte a nightly 46a045a adat-commit — a 08-20 esti éles futás; a doc-commitok RÁ vannak rebase-elve.)
+  a0eee4e  doc(atado): ÁTADÓ 2026-08-21 (ez a fájl)
+  545a1bf  doc(lanc-oras-sz2): terv a kód ELŐTT (GATE-feloldás)
+  ab7c4e0  feat(lanc-oras-sz2): az órás 2_het a LÁNCBÓL rajzol — GATE feloldva + a szemlén elkapott trendvonal-defekt javítva
+(a nightly 46a045a adat-commit — a 08-20 esti éles futás — a doc-commitok RÁ vannak rebase-elve.)
+
+
+*** LANC-ORAS SZELET 2 — LESZÁLLÍTVA (545a1bf terv + ab7c4e0 fix), canvas-kör, SZEMLE 2/2 TISZTA ***
+  - A `LANC_2HET_GATE` + a gate-teszt TÖRÖLVE; az órás 2_het a perzisztens kulcsszo_lanc.json-ból szeletelt,
+    átskálázott sorozatból rajzol (12 szó). A frontend olvassa a láncot (`nyers_ablak` lánc-ág).
+  - FORRÁS-ROUTING = FRONTEND-oldali döntés (`egyesitett_reg`: X != "1_het" → `_forras` kulcsszo_lanc.json),
+    NEM új backend mező → az ERVENYES-ROUTING felület nem nő.
+  - A SZEMLÉN ELKAPOTT rendering-defekt (LANC-2HET-VONAL) — JAVÍTVA a szeleten belül (ZOLD-NEM-SZALLIT, a
+    suite zöld volt): a lánc `ablak_veg_utc`-je UTOLSÓ VALÓS pont, a nyersé RÉSZLEGES záró slot → a `veg_idx`
+    kizárólagos felső határa a láncnál az UTOLSÓ PONTOT ÉS a TRENDVONALAT kiejtette („a mező nem azonos azzal,
+    amire használjuk"). FIX: a rekord `_veg_valos` FORRÁS-jelzője (a `nyers_ablak` állítja), a `racs_epit` ebből
+    dönt inkluzív(+1, lánc)/kizáró(+0, nyers) között — a NYERS ÁG BÁJT-AZONOS (a 21. őrző fogai MÉRVE: naiv fix
+    alatt piros). Terv: plans/2026-08-21-lanc-oras-sz2.md.
+  - NEVESÍTETT REJTETT FELTEVÉSEK (a tervben, a MIN_PONT/IRANY-KUSZOB család bővítése):
+    (1) RACS_ABLAK_NAP["ora"]==7 — a frontend forrás-választás (X != "1_het" → lánc) ERRE épül; ha a nominál
+        órás ablak változna, a routing újranézendő.
+    (2) a lánc-vs-nyers ablak_veg_utc konvenció-eltérés (lánc=valós pont / nyers=részleges slot) — a `_veg_valos`
+        jelző teszi explicitté; a naiv „veg_idx=utolsó lezárt+1" a nyers hátsó-lyukat is elrontaná (TILTOTT).
+  - TESZTEK: 18/19/20 RED→GREEN (2_het a láncból; data-vonal=true; data-rajzolt-pont=337, utolsó pont), 21 ŐRZŐ
+    (nyers hátsó-lyuk változatlan). A 10./13. ÚJRAMÉRVE (fabrikált 720-pontos nyers órás 1_ho → 2_het lánc; NEM
+    termék-regresszió — a jelenet sosem volt valós). ORAS-1HO-FEDES ÚJRAMÉRVE a tesztekbe (órás 1_ho nincs_lancolas
+    → tiltott gomb; MEGSZÓLAL, ha a lánc eléri a 30 napot) — NEM parkolt.
+  - napelem MÉRVE VÁRT: a lánc globális max 100.00 @ 2026-08-02T11 a 2 hét NÉZETEN KÍVÜL (a nézeten belül max
+    26.05 @ 08-09) → a ~26 sáv a nézet-ablak vágása, nem hiba; a skálázó faktorok simák (a 08-02 csúcs kigördülése
+    08-09-nél legitim); kontroll kormányablak/nyaralás egyezik → a napelem szélsőségesebb eset, nem külön jelenség.
+  - HÁTRA (KÜLÖN kör): LANC-SZAKASZ-TORES (tüntetés csonka lánc); a lánc 30 nap fölött → 1_ho+ chain-forrás
+    (a `_veg_valos` fix ÁLTALÁNOS, automatikusan fog). Ma csak a 2_het chain-forrású (1_ho/3_ho/1_ev nincs_lancolas).
 
 
 *** A 08-20 ESTI ÉLES FUTÁS — MÉRT EREDMÉNY (az ELSŐ éles kör az 5 órás-ág változással) ***
@@ -33,13 +62,14 @@ Az 5 tegnapi változás a PÓTOLHATATLAN órás ágon: zárt dobási lista, pont
 
 *** TÜNTETÉS LÁNC — CSÚSZÁS, PÓTOLHATATLAN, NAPONTA NŐ ***
 A tüntetés lánc-vége 2026-08-17T18:00-nál RAGADT (168 pont); a többi 12 szó 08-20T18:00-ig ér.
-  - CSÚSZÁS a 08-20 esti futás után: 3 nap (08-17 → 08-20). MA (08-21) a következő futással 4 nap, és MINDEN
-    éles futással +1, amíg a szakasz-törés áll.
+  - CSÚSZÁS MA (2026-08-21): a 08-17 óta eltelt 4. NAP (08-17 → 08-21). A többi 12 szó a 08-20 esti futásig
+    08-20-ig ér → a tüntetés jelenleg 3 NAP-pal marad el a többitől; a 08-21 ESTI futással ez is 4 napra nő,
+    ha a szakasz-törés marad. MINDEN éles futással +1. NAPONTA NŐ.
   - OK (run.log önjelentette): „a(z) 'tüntetés' bővítése nem tud lezárt átfedésre épülni … a lánc ÉRINTETLEN
     (megőrzött vég: 2026-08-17T18:00)". A ritka/0-értékű esemenyjelzőnél a friss 7-napos ablak nem ér vissza lezárt,
     nem-nulla átfedéssel a tárolt lánc-végig → szakasz-törés (lanc.py:41).
   - NEM adatvesztés (a nyers megvan), de a LÁNC pótolhatatlan (git=backup) és NÉMÁN egyre rövidebb a genezisnél
-    (07-30) — a lánc-alapú nézet tüntetésnél hiányos. Követett: LANC-SZAKASZ-TORES (parkolt), a LANC-ORAS Sz2-nél kezelendő.
+    (07-30) — a lánc-alapú nézet tüntetésnél hiányos. Követett: LANC-SZAKASZ-TORES (parkolt), KÜLÖN kör (a Sz2 után is nyitott).
 
 
 *** A MAI HÁROM DOC-ZÁRÁS — a MÖGÖTTÜK ÁLLÓ MÉRÉSSEL (nem csak a döntés) ***
@@ -76,7 +106,7 @@ A tüntetés lánc-vége 2026-08-17T18:00-nál RAGADT (168 pont); a többi 12 sz
    TELJES 22/22 lefedettség utáni steady-state-et kéri. NEM erőltetve (pótolhatatlan-szomszédos út). TIE-BREAK is marad.
 
 
-*** A NÉGY MARADÉK AKTÍV TÉTEL — FELOLDÓ FELTÉTEL + BECSÜLT DÁTUM (ma = 2026-08-21) ***
+*** A HÁROM MARADÉK AKTÍV TÉTEL — FELOLDÓ FELTÉTEL + BECSÜLT DÁTUM (ma = 2026-08-21; LANC-ORAS → LESZÁLLÍTVA) ***
 
   TASK5 (C, Sz3 staleness-ütemező) — IDŐ-BLOKKOLT, a legpontosabb.
     Feltétel: teljes 22/22 cella-lefedettség + pár futás steady-state. Ma 14/22; hiányzik 8 cella:
@@ -91,13 +121,9 @@ A tüntetés lánc-vége 2026-08-17T18:00-nál RAGADT (168 pont); a többi 12 sz
   ADD-SWAP (D) — IDŐ/MÉRÉS-BLOKKOLT, KÖZÖS kapu az IRANY-KUSZOB-bal.
     Feltétel: ugyanaz a ≥15-intervallum mérés → EGYÜTT oldódnak fel. Becslés: ~2-3 hét → ~szeptember 4-11. [Becslés.]
 
-  LANC-ORAS Sz2 (C, canvas: 2_het a láncból + a GATE törlése) — >>> NEM IDŐ-BLOKKOLT <<<.
-    NINCS adat-várakozása. Döntés/CANVAS + kötelező VIZUÁLIS SZEMLE (SZEMLE-SZABÁLY: 1_het vs 2_het egy szón) tartja
-    vissza; BÁRMELYIK nap indítható, amint canvas-kört akarunk. Az egyetlen adat-szál (tüntetés csonka lánc,
-    LANC-SZAKASZ-TORES) MAGÁBAN a Sz2-ben kezelendő, NEM előfeltétel. Törli: LANC_2HET_GATE + a gate-teszt.
+  [LANC-ORAS Sz2 — LESZÁLLÍTVA 2026-08-21 (ab7c4e0), lásd a fenti LANC-ORAS SZELET 2 szakaszt. Kikerült a maradékból.]
 
-  SORREND ahogy MAGUKTÓL jönnek: 1) TASK5 (~08-25→28) · 2) IRANY-KUSZOB+ADD-SWAP (~szept. eleje-közepe) ·
-  3) LANC-ORAS Sz2 (amikor canvas+szemle kört döntünk — nincs várakozás).
+  SORREND ahogy MAGUKTÓL jönnek: 1) TASK5 (~08-25→28) · 2) IRANY-KUSZOB+ADD-SWAP (~szept. eleje-közepe).
 
 
 *** PARKOLT SOROK — EGY HELYEN (rekord 29 + nem-számolt NOTE-ok) ***
@@ -108,10 +134,10 @@ A tüntetés lánc-vége 2026-08-17T18:00-nál RAGADT (168 pont); a többi 12 sz
   NEM-SZÁMOLT NOTE-ok: KONFIG-FELSO-KORLAT, TELJES-NEZET-FLAKE, BETOLT-LANC-PARSE, MUNKAMODSZER-LELETEK (hivatkozó)
 
 
-*** LANC_2HET_GATE ÁLLAPOTA ***
-  regresszio.LANC_2HET_GATE = True (IDEIGLENES). Az órás 2_het+ marad „nincs_lancolas" (08-17-i ismert-jó megjelenítés),
-  amíg a frontend nem olvassa a láncot; a lánc ADATA közben tovább épül. A LANC-ORAS Sz2 törli a flaget ÉS a
-  test_oras_2het_gate_amig_frontend_nem_olvas tesztet.
+*** LANC_2HET_GATE ÁLLAPOTA — TÖRÖLVE (LANC-ORAS Sz2, ab7c4e0) ***
+  A regresszio.LANC_2HET_GATE és a test_oras_2het_gate_amig_frontend_nem_olvas teszt TÖRÖLVE. Az órás 2_het a
+  Sz2 óta a láncból rajzol (12 lánc-elég szó); a backend-viselkedést a frissített test_oras_2_het_lancolt_ervenyes
+  őrzi (feltétel nélkül ervenyes a láncból). tüntetés marad nincs_lancolas (lánc 6 nap < 14, LANC-SZAKASZ-TORES).
 
 
 *** NAPI RUTIN (VÁLTOZATLAN) — a következő ülés eleje, KÓD NÉLKÜL, csak mérés ***
@@ -120,14 +146,21 @@ A tüntetés lánc-vége 2026-08-17T18:00-nál RAGADT (168 pont); a többi 12 sz
   3) Állapot: git fetch / log --oneline -10 / rev-list --left-right --count origin/main...HEAD / status --short.
   4) Suite: .venv/bin/pytest -q + npx playwright test --workers=1 (SOROS).
   5) grep -rn "MUTÁCIÓ" docs/js docs/css e2e tests trendfigyelo → PONTOSAN 1.
-  6) LANC_2HET_GATE állapota (regresszio.py).
+  6) LANC_2HET_GATE MÁR NINCS (a Sz2 törölte, ab7c4e0). HELYETTE: a kulcsszo_regresszio.json-ban az órás 2_het
+     ERVENYES-e a 12 lánc-elég szónál (a Sz2 óta a láncból szeletel; tüntetés marad nincs_lancolas).
   7) Leltár: aktív/kész/rekord/törzs/LEZÁRT + INVARIÁNS vödrönként, NÉVVEL.
   8) A LEGFONTOSABB: az esti éles futás ellenőrzése — napló áganként/hívásszám/429/taxonómia; kulcsszo_nyers SZÓ+REKORD
      a baseline-hez (180/30 417, HA CSÖKKENT → REGRESSZIÓ, STOP); masodlagos szó/rekord + hány ÚJ cella; lánc-vég
      szavanként (a tüntetés láncát KÜLÖN); .tmp szemét (atomi írás után); GitHub Actions run.log FIGYELEM-sorai.
+     >>> PLUSZ (a 08-21 esti a Sz2 UTÁNI ELSŐ futás): a kulcsszo_lanc.json REKORD-ALAKJA VÁLTOZATLAN-e
+     (szó→{ablak_kezdet_utc, ablak_veg_utc, pontok:[{idopont_utc,ertek}]}, EGY rekord/szó, reszleges nélkül) — a Sz2
+     NEM nyúlt a lanc.py-hoz, csak regresszio.py GATE + frontend, tehát a lánc-építés VÁLTOZATLAN. A lánc-vég szavanként
+     a 12 egészséges szónál 08-20→08-21 (+24 pont/nap), a tüntetés MARAD 08-17T18:00 (szakasz-törés). HA a rekord-alak
+     változott VAGY a 12 szó lánc-vége nem gördült elő → STOP, jelzés (a Sz2 nem érinthette a lánc-adatot).
   9) Bármi eltér → STOP és jelzés, NE javítsd. Nem indítasz új tételt, amíg a fentit nem jelentetted.
-  MÉRT baseline a következő rutinhoz: kulcsszo_nyers 180/30 417 · masodlagos 14/1023 (9 szó, 14 cella) · lánc 12 szó
-  523 pont/08-20T18:00 + tüntetés 168 pont/08-17T18:00 · Google-hívás 38/148.
+  MÉRT baseline a következő rutinhoz (a 08-20 futás UTÁN, a 08-21 este ELŐTT): kulcsszo_nyers 180/30 417 ·
+  masodlagos 14/1023 (9 szó, 14 cella) · lánc 12 szó 523 pont/08-20T18:00 + tüntetés 168 pont/08-17T18:00 ·
+  Google-hívás 38/148. A 08-21 esti futás UTÁN: a 12 szó lánc-vége 08-21, a masodlagos +2 cella (várt).
 
 
 MUNKAMÓDSZER (VÁLTOZATLAN): magyar; Co-Authored-By: Claude Opus 4.8 + Claude-Session; KÜLÖN adat-commit; SOROS suite;
