@@ -53,3 +53,30 @@ az adat-napok kattinthatók (nap-váltás működik), a többi halvány; a ‹ �
 
 ## 6. Kapuk
 DOC-COMMIT (ez) a kód ELŐTT; teljes SOROS suite zöld; docs/data TISZTA; MUTÁCIÓ=1; leltár a záró commitban.
+
+## 7. HETI naptár (Szelet 2, USER-jóváhagyva: „hét-kiemelő naptár")
+
+A `#heti-valaszto` `<select>`-jét is naptár váltja, DE hét-granularitással: kattintáskor a nap EGÉSZ HETE
+(hétfő–vasárnap sor) kiemelődik, és az adott hét kerül kiválasztásra.
+
+- **Közös rács:** a `naptar_epit(honap, elso_ho, utolso_ho, cellaAllapot)` helper (a napi naptárból kiemelve,
+  DRY) építi a fej + ‹ › + rács szerkezetet; a `cellaAllapot(iso, szomszed)` dönt a választhatóságról/kiemelésről.
+- **Heti logika:** egy HÉT választható, ha van benne adat-nap (`het_hetfo(iso)` a data-hét-hétfők közt). A
+  kiválasztott hét MIND a 7 cellája `.valasztott-het` (világoskék sor, a szomszéd-hónap cellái is). Kattintható
+  csak a nem-szomszéd, adat-hét nap.
+- **Hétfő-számítás Date nélkül:** `het_hetfo(iso)` = iso − (Sakamoto hétfő-index) nap, `iso_nap_lep`-pel
+  (nap ±delta hónap/év átfordulással, tiszta egész-aritmetika).
+- **Állapot:** a kiválasztott hét hétfője a `#heti-valaszto` `data-valasztott-het`-ben, a hónap `data-honap`-ban.
+  Alap = a LEGFRISSEBB hét. Nap-kattintás → `data-valasztott-het` = a hét hétfője → `heti_tabla_render(hétfő)`.
+- **Cím:** „Melyik hét felkapottjai?" (a napi „Melyik nap felkapottjai?" párja).
+
+### Tesztek
+- Újramérendő: `heti.spec.js` a `#heti-valaszto select`-re épülő tesztjei (a widget naptár lett).
+- Új (TDD): a heti naptár a legfrissebb hét sorát emeli ki; nap-kattintás → az egész hét kiemelve + a heti tábla követi;
+  adat-nélküli hét szürke.
+
+## 8. Kísérő kis tweak-ek (USER, live-iteráció, ugyanebben a körben)
+- Napi cím „Nap" → „Melyik nap felkapottjai?"; heti cím „Hét" → „Melyik hét felkapottjai?".
+- Kategória-idősor y-felirat „trendek száma" → „kategóriába eső trendek".
+- Kategória-idősor ALAP: az ELSŐ kategória kiemelve (nem „mind szürke") — `idosor_aktiv` az első vonalra,
+  `idosor_szinez()` a build után a DOM-mirror + legend szinkronhoz.
