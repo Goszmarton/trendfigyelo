@@ -52,6 +52,12 @@ Frontend (`docs/js/app.js`):
   konstans valaha változik, a `X !== "1_het"` heurisztika törik. A MIN_PONT / IRANY-KUSZOB /
   ALAPNEZET-KONSTANS / RESZBEN-TELT-BLOKK család ÖTÖDIK/HATODIK rejtett rács-csatolt feltevése —
   tudatos, dokumentált; ha a nominál ablak változna, ez a routing újranézendő.
+- **REJTETT FELTEVÉS NEVESÍTVE #2 (LANC-2HET-VONAL, szemle-lelet, ugyanide):** a rajzoló `veg_idx`
+  kizárólagos felső határa a NYERS konvencióra épült — a nyers `ablak_veg_utc` egy RÉSZLEGES záró
+  slot (kizárandó), a LÁNC `ablak_veg_utc`-je viszont az UTOLSÓ VALÓS pont. „A mező nem azonos azzal,
+  amire használjuk." A fix a FORRÁS konvencióját teszi EXPLICITTÉ: a rekord `_veg_valos` jelzője mondja
+  meg (a `nyers_ablak` lánc-ága állítja), és a `racs_epit` ebből dönt INKLUZÍV(+1)/kizáró(+0) között —
+  NEM a hurok-határt tolja vakon (a naiv „utolsó lezárt +1" a nyers hátsó-lyukat is elrontaná). Lásd §11.
 
 ## 5. VÁRT ÁLLAPOT a szemlén — szavanként (MÉRVE 2026-08-21 a kulcsszo_lanc.json-ból)
 
@@ -96,3 +102,71 @@ hiba). Csak a szemle OK után jöhet a lezáró commit + push (külön kör).
 ## 9. Kapuk
 Teljes SOROS suite zöld; `git status --short docs/data/` TISZTA; MUTÁCIÓ=1; leltár a záró
 commitban; DOC-COMMIT (ez) a kód ELŐTT.
+
+## 10. Teszt-újramérés (kód közben derült ki, USER-jóváhagyva 2026-08-21)
+
+A `kulcsszo.spec.js` „10." és „13." teszt a Sz2 után PIROS lett. **ÚJRAMÉRVE, NEM
+törölve** — és MIÉRT: mindkettő egy **órás 1_ho-t** rajzoltatott egy **FIKTÍV 720-pontos
+NYERS ablakból**; a Sz2 routing (órás X≠1_het → LÁNC) **legitim módon megváltoztatta a
+forrást** (a fiktív nyers-ablak már nem éri el). A tesztek VALÓDI tárgya (a váltás frissíti
+a kártyát / a frissesseg követi az aktív intervallumot) generikus — a VALÓS Sz2-viselkedésre
+mérve újra: `1_het` (nyers) → `2_het` (LÁNCBÓL), lanc-fixture-rel.
+
+**Osztályozás: fabrikált-forrás ÚJRAMÉRÉS, NEM termék-regresszió. 4 pontos bizonyíték:**
+1. A tesztek maga bevallja: az órás 1_ho „fiktív, mock-vezérelt".
+2. A valóságban NINCS 720-pontos órás nyers ablak (a nyers 7 nap / 168 pont); a valós órás
+   1_ho `nincs_lancolas` (a lánc 21 nap < 30) → a tesztelt jelenet SOSEM volt valós. **(döntő)**
+3. A TELJES suite-ból CSAK ez a 2, azonos-fabrikált teszt bukott — minden VALÓS rajzolás zöld
+   → nincs termék-regresszió.
+4. A tesztek generikus tárgya (váltás-mechanizmus / frissesseg-követés) ép, csak a „hosszú
+   intervallum" forrását kell a helyes helyről (lánc) etetni.
+
+**Ez a Task-3 geometria-tesztek analógiája** (a panel eltolta a pixeleket → a load-idejű
+geometria-tesztek újramérése; ott is a változás legitim módon módosította a mért állapotot).
+
+**ORAS-1HO-FEDES megőrizve (USER-kikötés):** az órás 1_ho ágat NEM hagytuk el — a VALÓS
+jelenlegi állapotra mérve (`nincs_lancolas` → tiltott gomb). Ez az assert MEGSZÓLAL, amikor a
+lánc eléri a 30 napot és az 1_ho drawable lesz — pont ez a fedés értéke (időben változó helyzet).
+
+## 11. LANC-2HET-VONAL — a szemle-lelet FIXE (USER-döntés: fix most, nem parkolt)
+
+**Ez a mai kör regressziója — a valódi okot javítjuk, nem parkoljuk.** A szemle elkapta: a
+lánc-forrású 2_het-en az UTOLSÓ PONT és a REGRESSZIÓS VONAL nem rajzolódott. Gyökér-ok: a
+rajzoló `veg_idx = slot_index(ablak.ablak_veg_utc)` kizárólagos felső határa a NYERS konvencióra
+épült (a nyers `ablak_veg_utc` RÉSZLEGES záró slot → kizárandó), DE a lánc `ablak_veg_utc`-je az
+UTOLSÓ VALÓS pont → a `[rajz_kezd, veg_idx)` kihagyta, és a vonal-végpont (`i1 == ertekek.length`)
+a `rajta()` guardon kívülre esett. „A mező nem azonos azzal, amire használjuk."
+
+**Fix (forrás-konvenció explicit, NYERS ág VÁLTOZATLAN):**
+- `app.js nyers_ablak` (lánc-ág): a visszaadott rekord `_veg_valos: true` (a `ablak_veg_utc` VALÓS pont).
+- `app.js racs_epit`: `veg_idx = slot_index(ablak.ablak_veg_utc, racs) + (ablak._veg_valos ? 1 : 0)`.
+  A nyers `_veg_valos` undefined → +0 → BÁJT-AZONOS a régivel; a lánc +1 → inkluzív (utolsó pont + vonal).
+
+**Hatókör (MÉRVE 2026-08-21): jelenleg CSAK a 2_het chain-forrású (12 szó); az 1_ho/3_ho/1_ev mind
+`nincs_lancolas` (lánc 21 nap < 30/90/365).** A fix mégis ÁLTALÁNOS (forrás-konvenció alapú, nem
+2_het-specifikus) → amikor a lánc eléri a 30 napot és az 1_ho chain-forrású lesz, AUTOMATIKUSAN helyes.
+
+**TDD (3 teszt, valódi RED, NÉVRE+VISELKEDÉSRE):**
+- 19. RED: lánc 2_het → `data-vonal="true"` (RED: „false" — a vonal-végpont a tartományon kívül).
+- 20. RED: lánc 2_het → `data-rajzolt-pont="337"` (RED: „336" — az utolsó pont kiesik; ez ADAT, nem dísz).
+- 21. ŐRZŐ (SZÁNDÉKOS-ZÖLD, fogak MÉRVE): nyers HÁTSÓ-LYUK változatlan (`data-rajzolt-pont="168"`, a 3
+  hátsó null bennmarad). FOGAK IGAZOLVA: a tiltott naiv fix (utolsó lezárt+1) alatt e teszt PIROS (165≠168),
+  a helyes forrás-konvenciós fix alatt zöld (168).
+
+## 12. Szemle-mérés eredményei (2026-08-21, a szemle UTÁN rögzítve)
+
+### napelem 2_het „~26 plafon" — VÁRT (nem lelet)
+MÉRVE a kulcsszo_lanc.json-ból: a napelem lánc GLOBÁLIS maximuma **100.00 @ 2026-08-02T11** — a
+2 hét nézeten KÍVÜL (a [08-06,08-20] ablakon belül a max csak **26.05 @ 08-09**). A skálázó faktorok
+SIMÁK/MAGYARÁZOTTAK: a 0.97→0.42 lépés 08-09-nél a 08-02-i csúcs kigördülése a 7-napos ablakból
+(legitim újranormálás), nincs egyedi kiugró faktor. Kontroll (kormányablak: max 100 @ 08-03, 2 hét 93;
+nyaralás: max 100 @ 08-02, 2 hét 87) UGYANEZ a minta → a napelem csak SZÉLSŐSÉGESEBB eset, nem külön
+jelenség. **A 2 hét nézeten a lánc globális maximuma kívül eshet, ezért a görbe alacsonyan futhat — nem hiba.**
+(Megjegyzés: ez megerősíti a §8.2-INV parkolást — a skálázás a GATE törlésével láthatóvá vált, de sima.)
+
+### Két apróság a jegyzőkönyvbe (VÁRT, nem javítjuk most)
+- **A tüntetés 1_het ELŐREJELZÉSEM TÉVES volt** (a szemle-táblában „rajzol (rövid)"): a valóságban a
+  heti-rács üzenet jön MINDKÉT nézeten. Az ELŐREJELZÉS volt téves, NEM a termék — itt rögzítve, hogy a
+  doc ne tartson fenn hamis várt állapotot.
+- **A 2 hét x-tengely utolsó tick 08-19, az adat vége 08-20** (a tick-osztás miatt) — a NEZET-SZEMLE-0819
+  **B4/E2** családja, VÁRT, nem ebben a körben javítjuk.

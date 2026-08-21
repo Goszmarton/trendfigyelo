@@ -40,6 +40,22 @@ function nyers(map) {
   return { kulcsszavak: map };
 }
 
+// ── LANC-ORAS Sz2 lánc-fixture: a tárolt kulcsszo_lanc.json alakja EGY rekord/szó (nem ablak-lista),
+// reszleges NÉLKÜL. A 2_het a lánc-vég − 14 nap farkából rajzol (RACS_ABLAK_NAP["ora"]==7 → csak az
+// 1_het jön a nyersből, a 2_het+ a láncból). Megosztott a 10./13./18. teszt közt.
+const LVEG = iso(360);          // lánc-vég (15 nappal a KEZD után) — NINCS veg-egyező nyers ablak (a nyers VEG=iso168)
+const L2HET_KEZD = iso(24);     // 2_het = a lánc-vég − 14 nap (336 óra)
+function lancRek() {
+  const pts = [];
+  for (let i = 0; i <= 360; i++) pts.push({ idopont_utc: iso(i), ertek: 40 + (i % 20) });
+  return { ablak_kezdet_utc: iso(0), ablak_veg_utc: LVEG, pontok: pts };
+}
+// a 2_het lánc-interval (a backend a lanc["ablak_veg_utc"]-ig szeletel; a frontend a láncból rajzolja)
+function iv2hetLanc() {
+  return ivErvenyes({ ablak_kezdet_utc: L2HET_KEZD, ablak_veg_utc: LVEG, pontok_hasznalt: 337,
+    illesztes_vonal: [{ idopont_utc: L2HET_KEZD, ertek: 40 }, { idopont_utc: LVEG, ertek: 55 }] });
+}
+
 // ── napi/heti rács-fixture (6b rajzolás Szelet 1) — lepes_nap=1 (nap) vagy 7 (het) ──────────────
 const NAP_MS = Date.parse("2026-08-01T00:00:00Z");
 function racs_iso(i, lepes_nap) {
@@ -141,11 +157,15 @@ function reg(kulcsszavak, over = {}) {
 
 // A másodlagos fájlokat MINDIG route-oljuk (default üres), különben a teszt-szerver VALÓS
 // másodlagos adata szivárogna be és eltolná a nem-másodlagos teszteket (routing/alap-intervallum).
-async function mock(page, { regObj, nyersObj, mpRegObj, mpNyersObj }) {
+async function mock(page, { regObj, nyersObj, mpRegObj, mpNyersObj, lancObj }) {
   await page.route(/kulcsszo_masodlagos_regresszio\.json/, (r) =>
     r.fulfill({ contentType: "application/json", body: JSON.stringify(mpRegObj || { kulcsszavak: {} }) }));
   await page.route(/kulcsszo_masodlagos_nyers\.json/, (r) =>
     r.fulfill({ contentType: "application/json", body: JSON.stringify(mpNyersObj || { kulcsszavak: {} }) }));
+  // LANC-ORAS Sz2: a lánc-fájlt MINDIG route-oljuk (default üres), különben a frontend a valós
+  // kulcsszo_lanc.json-t kérné a statikus szerverről és eltolná a nem-lánc teszteket (mint a másodlagos).
+  await page.route(/kulcsszo_lanc\.json/, (r) =>
+    r.fulfill({ contentType: "application/json", body: JSON.stringify(lancObj || { kulcsszavak: {} }) }));
   await page.route(/kulcsszo_regresszio\.json/, (r) =>
     r.fulfill({ contentType: "application/json", body: JSON.stringify(regObj) }));
   await page.route(/kulcsszo_nyers\.json/, (r) =>
@@ -774,32 +794,38 @@ test("9. minden lezárt pont 0 → .csupa-nulla + chart renderel; nem-nulla szó
 });
 
 // ── 10. alapértelmezett = leghosszabb + váltás + aria-szinkron (mod 3, 4. pont) ──────────────
-test("10. default = 1_het (ALAPNEZET); kattintásra 1_ho-ra data-ablak-veg + data-pontok VÁLTOZIK; pontosan 1 aria-pressed", async ({ page }) => {
-  const veg1het = VEG, pont1het = 168;
-  const veg1ho = iso(720), pont1ho = 720;   // fiktív, mock-vezérelt (1_ho ma csak mockkal drawable)
+// ÚJRAMÉRVE (LANC-ORAS Sz2, 2026-08-21): a régi jelenet órás 1_ho-t rajzoltatott egy FIKTÍV 720-pontos
+// NYERS ablakból — a Sz2 routing (órás X!=1_het → LÁNC) legitim módon megváltoztatta a forrást. A generikus
+// váltás-mechanizmust most a VALÓS Sz2-viselkedésre mérjük: 1_het (nyers) → 2_het (LÁNCBÓL). Az órás 1_ho
+// ág fedése MEGMARAD, a VALÓS jelenlegi állapotra mérve: ma nincs_lancolas (a lánc 21 nap < 30) → gomb TILTOTT;
+// ez az assert MEGSZÓLAL, amikor a lánc eléri a 30 napot és az 1_ho drawable lesz (ORAS-1HO-FEDES).
+test("10. default = teljes; 1_het (nyers) → 2_het (LÁNCBÓL) váltás: data-ablak-veg + data-pontok VÁLTOZIK; 1 aria-pressed; órás 1_ho ma nincs_lancolas (gomb tiltott)", async ({ page }) => {
   await mock(page, {
     regObj: reg({ "állás": regSzo({ intervallumok: {
-      "1_het": ivErvenyes({ ablak_veg_utc: veg1het, pontok_hasznalt: pont1het }),
-      "1_ho": ivErvenyes({ ablak_veg_utc: veg1ho, pontok_hasznalt: pont1ho }),
-      "2_het": ivHibas("nincs_lancolas"), "3_ho": ivHibas("nincs_lancolas"), "1_ev": ivHibas("nincs_lancolas"),
+      "1_het": ivErvenyes({ ablak_veg_utc: VEG, pontok_hasznalt: 168 }),   // nyers 7-napos ablak
+      "2_het": iv2hetLanc(),                                               // láncból szeletelt (veg = lánc-vég)
+      "1_ho": ivHibas("nincs_lancolas"),   // VALÓS: az órás 1_ho ma nincs_lancolas (lánc 21<30) — a fedés MEGSZÓLAL 30 nap fölött
+      "3_ho": ivHibas("nincs_lancolas"), "1_ev": ivHibas("nincs_lancolas"),
     } }) }),
-    nyersObj: nyers({ "állás": [
-      nyersRekord("állás", 50, { veg: veg1het, n: 168 }),
-      nyersRekord("állás", 50, { kezd: iso(0), veg: veg1ho, pontok: pontok(pont1ho, 50) }),
-    ] }),
+    nyersObj: nyers({ "állás": [nyersRekord("állás", 50, { veg: VEG, n: 168 })] }),
+    lancObj: { kulcsszavak: { "állás": lancRek() } },
   });
   await page.goto("/");
-  // ALAPNEZET (request 1): a default a TELJES; a fix intervallumok kattintásra. 1_het → 1_ho váltás: az ablak_veg/pontok VÁLTOZIK.
   await expect(page.locator(K)).toHaveAttribute("data-aktiv-intervallum", "teljes");
+  // VALÓS jelenlegi viselkedés — az órás 1_ho nincs_lancolas → a gombja TILTOTT (ORAS-1HO-FEDES: 30 nap fölött megszólal)
+  await expect(page.locator('#intervallum-vezerlo button[data-intervallum="1_ho"]')).toBeDisabled();
   await page.locator('#intervallum-vezerlo button[data-intervallum="1_het"]').click();
   await expect(page.locator(K)).toHaveAttribute("data-aktiv-intervallum", "1_het");
-  await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`)).toHaveAttribute("data-ablak-veg", veg1het);
-  await page.locator('#intervallum-vezerlo button[data-intervallum="1_ho"]').click();   // váltás a hosszabb nézetre
-  await expect(page.locator(K)).toHaveAttribute("data-aktiv-intervallum", "1_ho");
-  await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`)).toHaveAttribute("data-ablak-veg", veg1ho);
-  await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`)).toHaveAttribute("data-pontok", String(pont1ho));
+  const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`);
+  await expect(c).toHaveAttribute("data-ablak-veg", VEG);
+  const pont1het = Number(await c.getAttribute("data-pontok"));
+  await page.locator('#intervallum-vezerlo button[data-intervallum="2_het"]').click();   // váltás a LÁNCBÓL rajzolt hosszabb nézetre
+  await expect(page.locator(K)).toHaveAttribute("data-aktiv-intervallum", "2_het");
+  await expect(c).toHaveAttribute("data-ablak-veg", LVEG);                                // a LÁNC vége, NEM a nyers VEG
+  const pont2het = Number(await c.getAttribute("data-pontok"));
+  expect(pont2het).toBeGreaterThan(pont1het);                                             // a ~14-napos lánc-farok ≫ a 7-napos nyers
   await expect(page.locator('#intervallum-vezerlo button[aria-pressed="true"]')).toHaveCount(1);
-  await expect(page.locator('#intervallum-vezerlo button[aria-pressed="true"]')).toHaveAttribute("data-intervallum", "1_ho");
+  await expect(page.locator('#intervallum-vezerlo button[aria-pressed="true"]')).toHaveAttribute("data-intervallum", "2_het");
 });
 
 // ── CSS+MAGYARÁZÓ kör: blokk-elválasztás, kártya-felbontás, gomb-magyarázat ────────────────────
@@ -929,28 +955,30 @@ test("12. data-y-max=100 + tengely-felirat", async ({ page }) => {
 });
 
 // ── 13. frissesség-felirat követi az aktív intervallumot + dátum az ablak_veg_utc-ból (mod 5, F1) ─
-test("13. .frissesseg: cimke + dátum az aktív intervallumból (nem a szamitva_utc-ból); váltásra követi", async ({ page }) => {
-  const veg1het = VEG /* 08-05 */, veg1ho = iso(720);
+// ÚJRAMÉRVE (LANC-ORAS Sz2, 2026-08-21): a régi jelenet órás 1_ho-t rajzoltatott FIKTÍV 720-pontos NYERS
+// ablakból; a Sz2 routing (órás X!=1_het → LÁNC) megváltoztatta a forrást. A frissesseg-követést a VALÓS
+// Sz2-viselkedésre mérjük: 1_het (nyers) → 2_het (LÁNCBÓL). Az órás 1_ho fedése MEGMARAD (nincs_lancolas → tiltott gomb).
+test("13. .frissesseg: cimke + dátum az aktív intervallumból (nem a szamitva_utc-ból); 1_het → 2_het (LÁNCBÓL) váltásra követi", async ({ page }) => {
   await mock(page, {
     regObj: reg({ "állás": regSzo({ intervallumok: {
-      "1_het": ivErvenyes({ ablak_veg_utc: veg1het }),
-      "1_ho": ivErvenyes({ ablak_veg_utc: veg1ho }),
-      "2_het": ivHibas("nincs_lancolas"), "3_ho": ivHibas("nincs_lancolas"), "1_ev": ivHibas("nincs_lancolas"),
+      "1_het": ivErvenyes({ ablak_veg_utc: VEG }),
+      "2_het": iv2hetLanc(),                                             // láncból; ablak_veg = LVEG (2026-08-13)
+      "1_ho": ivHibas("nincs_lancolas"),   // VALÓS: órás 1_ho ma nincs_lancolas (ORAS-1HO-FEDES)
+      "3_ho": ivHibas("nincs_lancolas"), "1_ev": ivHibas("nincs_lancolas"),
     } }) }, { szamitva_utc: "2026-08-06T02:00:00+00:00" /* KÉSŐBBI nap, mint az ablak_veg */ }),
-    nyersObj: nyers({ "állás": [
-      nyersRekord("állás", 50, { veg: veg1het }),
-      nyersRekord("állás", 50, { kezd: iso(0), veg: veg1ho, pontok: pontok(720, 50) }),
-    ] }),
+    nyersObj: nyers({ "állás": [nyersRekord("állás", 50, { veg: VEG })] }),
+    lancObj: { kulcsszavak: { "állás": lancRek() } },
   });
   await page.goto("/");
-  await page.locator('#intervallum-vezerlo button[data-intervallum="1_het"]').click();   // a teljes az alap (request 1) → a fix 1_het nézethez kattintunk
+  await expect(page.locator('#intervallum-vezerlo button[data-intervallum="1_ho"]')).toBeDisabled();   // órás 1_ho nincs_lancolas — fedés
+  await page.locator('#intervallum-vezerlo button[data-intervallum="1_het"]').click();   // a teljes az alap → a fix 1_het nézethez kattintunk
   const f = page.locator(`${K} .frissesseg`);
   // a frissesseg az AKTÍV intervallum ablak_veg-jét mutatja (NEM 08-06 szamitva)
   await expect(f).toContainText("(1 hét)");
   await expect(f).toContainText("2026. 08. 05.");                                    // veg1het napja, NEM 08-06
-  await page.locator('#intervallum-vezerlo button[data-intervallum="1_ho"]').click();
-  await expect(f).toContainText("(1 hó)");
-  await expect(f).toContainText(veg1ho.slice(0, 10).replace(/-/g, ". ") + ".");      // váltás után az 1_ho ablak_veg napja
+  await page.locator('#intervallum-vezerlo button[data-intervallum="2_het"]').click();
+  await expect(f).toContainText("(2 hét)");
+  await expect(f).toContainText(LVEG.slice(0, 10).replace(/-/g, ". ") + ".");        // váltás után a LÁNC ablak_veg napja (2026. 08. 13.)
 });
 
 // ── 14. nincs illeszkedő nyers ablak → .ures, NINCS .merteszamok, NINCS canvas (2. pont, bináris) ─
@@ -1019,6 +1047,92 @@ test("16. veg-egyező nyers ablak LEZÁRT pont nélkül → data-drawable=false,
   await expect(c.locator("canvas")).toHaveCount(0);
   await expect(c.locator(".merteszamok")).toHaveCount(0);
   await expect(page.locator(`${K} .hiba`)).toHaveCount(0);   // nem kivétellel kezeljük (nincs racs_epit TypeError)
+});
+
+// ── LANC-ORAS Sz2: órás 2_het a LÁNCBÓL rajzol (nem a 7-napos nyersből) ─────────────────────────
+// A 2_het interval ervenyes (a backend a láncból szeletelte), az ablak_veg = a LÁNC vége (iso360),
+// amihez NINCS veg-egyező nyers 7-napos ablak. Ha a frontend a nyersből próbál rajzolni → nincs
+// egyezés → data-drawable=false (a 14. teszt mintája). A HELYES Sz2-viselkedés: a 2_het a
+// kulcsszo_lanc.json-ból rajzol → drawable=true, és a rajzolt tartomány a lánc ~14-napos farka
+// (≫ a 7-napos nyers 168 pontja), NEM az 1_het nyújtása. A lánc-fixture a fájl tetején (lancRek/iv2hetLanc).
+
+test("18. LANC-ORAS Sz2: órás 2_het a LÁNCBÓL rajzol (drawable=true, ~14 nap ≫ 168), nem a 7-napos nyersből", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "állás": regSzo({ intervallumok: {
+      "1_het": ivErvenyes(),                                        // nyers 7-napos ablak (VEG)
+      "2_het": iv2hetLanc(),                                        // láncból szeletelt (veg = lánc-vég)
+      "1_ho": ivHibas("nincs_lancolas"), "3_ho": ivHibas("nincs_lancolas"), "1_ev": ivHibas("nincs_lancolas"),
+    } }) }),
+    nyersObj: nyers({ "állás": [nyersRekord("állás")] }),           // CSAK a VEG (iso168) ablak — NINCS iso360-egyező
+    lancObj: { kulcsszavak: { "állás": lancRek() } },               // a lánc a 2_het forrása
+  });
+  await page.goto("/");
+  await page.click('#intervallum-vezerlo button[data-intervallum="2_het"]');
+  const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`);
+  await expect(c).toHaveAttribute("data-drawable", "true");         // RED: ma a nyersből próbál → nincs iso360-ablak → false
+  await expect(c).toHaveAttribute("data-ablak-veg", LVEG);          // a rajzolt ablak a LÁNC vége, nem a nyers VEG
+  const rp = Number(await c.getAttribute("data-rajzolt-pont"));
+  expect(rp).toBeGreaterThan(168);                                  // a lánc ~14-napos farka, NEM a 7-napos nyers (168)
+});
+
+// ── LANC-2HET-VONAL: a lánc-forrás ablak_veg_utc = utolsó VALÓS pont (a nyersé = RÉSZLEGES záró slot). A
+// veg_idx kizárólagos felső határa a NYERS konvencióra épült → a láncnál az utolsó pont ÉS a trendvonal kiesett.
+// A fix a FORRÁS konvencióját teszi explicitté (a rekord _veg_valos jelzője), a NYERS ág változatlan.
+test("19. LANC-2HET-VONAL (a): lánc-forrású 2_het → a trendvonal dataset LÉTREJÖN (data-vonal=true)", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "állás": regSzo({ intervallumok: {
+      "1_het": ivErvenyes(), "2_het": iv2hetLanc(),
+      "1_ho": ivHibas("nincs_lancolas"), "3_ho": ivHibas("nincs_lancolas"), "1_ev": ivHibas("nincs_lancolas"),
+    } }) }),
+    nyersObj: nyers({ "állás": [nyersRekord("állás")] }),
+    lancObj: { kulcsszavak: { "állás": lancRek() } },
+  });
+  await page.goto("/");
+  await page.click('#intervallum-vezerlo button[data-intervallum="2_het"]');
+  const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`);
+  await expect(c).toHaveAttribute("data-drawable", "true");
+  await expect(c).toHaveAttribute("data-vonal", "true");   // RED: ma false — a vonal-végpont az utolsó valós ponton (veg_idx) a rajzolt tartományon KÍVÜL esik
+});
+
+test("20. LANC-2HET-VONAL (b): lánc-forrású 2_het → az UTOLSÓ PONT is rajzolódik (adat, nem dísz)", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "állás": regSzo({ intervallumok: {
+      "1_het": ivErvenyes(), "2_het": iv2hetLanc(),
+      "1_ho": ivHibas("nincs_lancolas"), "3_ho": ivHibas("nincs_lancolas"), "1_ev": ivHibas("nincs_lancolas"),
+    } }) }),
+    nyersObj: nyers({ "állás": [nyersRekord("állás")] }),
+    lancObj: { kulcsszavak: { "állás": lancRek() } },
+  });
+  await page.goto("/");
+  await page.click('#intervallum-vezerlo button[data-intervallum="2_het"]');
+  const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`);
+  // a lánc-farok iso(24)..iso(360) INKLUZÍV = 337 slot (a régi kizárólagos [24,360) csak 336-ot rajzol → RED)
+  await expect(c).toHaveAttribute("data-rajzolt-pont", "337");
+  await expect(c).toHaveAttribute("data-adat-veg", LVEG);   // az utolsó KIRAJZOLT lezárt pont a lánc vége
+});
+
+// ŐRZŐ (SZÁNDÉKOS-ZÖLD, fogak MÉRVE): a NYERS ág HÁTSÓ-LYUK viselkedése VÁLTOZATLAN a fix után. A nyers
+// ablak_veg RÉSZLEGES slot (iso168), az utolsó LEZÁRT pont iso164 (iso165/166/167 HIÁNYZIK). A rajzolt tartomány
+// [0, veg_idx=168) → 168 slot, a 3 hátsó null BENNMARAD. FOGAK: a tiltott naiv fix (veg_idx=utolsó lezárt+1=165)
+// itt 165-öt adna → e teszt PIROSÍTANÁ; a helyes forrás-konvenciós fix (nyers _veg_valos undefined → +0) 168-at ad.
+test("21. ŐRZŐ: nyers HÁTSÓ-LYUK változatlan a LANC-2HET-VONAL fix után (data-rajzolt-pont=168, a 3 hátsó null bennmarad)", async ({ page }) => {
+  const gapPts = [];
+  for (let i = 0; i < 165; i++) gapPts.push({ idopont_utc: iso(i), ertek: 50, reszleges: false });   // iso0..iso164 lezárt
+  gapPts.push({ idopont_utc: iso(168), ertek: 0, reszleges: true });                                  // részleges záró; iso165/166/167 HIÁNYZIK
+  await mock(page, {
+    regObj: reg({ "állás": regSzo({ intervallumok: {
+      "1_het": ivErvenyes({ ablak_kezdet_utc: ELSO, ablak_veg_utc: VEG, pontok_hasznalt: 165, pontok_hianyzo: 3,
+        illesztes_vonal: [{ idopont_utc: ELSO, ertek: 35 }, { idopont_utc: iso(164), ertek: 42 }] }),
+      "2_het": ivHibas("nincs_lancolas"), "1_ho": ivHibas("nincs_lancolas"),
+      "3_ho": ivHibas("nincs_lancolas"), "1_ev": ivHibas("nincs_lancolas"),
+    } }) }),
+    nyersObj: nyers({ "állás": [{ kulcsszo: "állás", ablak_kezdet_utc: ELSO, ablak_veg_utc: VEG, pontok: gapPts }] }),
+  });
+  await page.goto("/");
+  await page.click('#intervallum-vezerlo button[data-intervallum="1_het"]');
+  const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`);
+  await expect(c).toHaveAttribute("data-drawable", "true");
+  await expect(c).toHaveAttribute("data-rajzolt-pont", "168");   // a részleges slotig; a 3 hátsó null BENNMARAD (nyers konvenció változatlan)
 });
 
 // ── 17. ora_index hónap-/évhatáron át (J4) — a böngészőbeli egész-aritmetika olcsó fedezete ───

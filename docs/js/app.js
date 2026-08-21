@@ -33,7 +33,8 @@ function hiba_kiir(blokk_id, reszletek, bevezeto) {
 // blokk -> a hozzá tartozó init-fájlok
 const BLOKKOK = [
   { id: "kulcsszo-blokk", fajlok: ["kulcsszo_regresszio.json", "kulcsszo_nyers.json",
-    "kulcsszo_masodlagos_regresszio.json", "kulcsszo_masodlagos_nyers.json"] },
+    "kulcsszo_masodlagos_regresszio.json", "kulcsszo_masodlagos_nyers.json",
+    "kulcsszo_lanc.json"] },   // LANC-ORAS Sz2: az órás 2_het+ a láncból rajzol
   { id: "trend-blokk", fajlok: ["legfrissebb.json", "napok/index.json", "kategoriak.json"] },
 ];
 
@@ -240,7 +241,12 @@ function egyesitett_reg() {
         // („nap nem-nulla"), sőt a záró-óra-nulla miatt téves `csupa_nulla`-t okozott (hitel/napelem lapos-nulla).
         // A config-rács (o.racs) KIZÁRÓLAG a MÁSODLAGOS ágra vonatkozik (lásd lentebb, m.racs). Az órás-only szó
         // (benzin/nyugdíj) változatlan (eddig is "ora"). A kártya-Felbontás/„óra nem-nulla" felirat ezt olvassa.
-        ivk[X] = Object.assign({}, oiv, { _racs: "ora", _forras: "kulcsszo_nyers.json" });
+        // LANC-ORAS Sz2: az órás 1_het a nyers 7-napos ablakból, a HOSSZABB (2_het+) a LÁNCBÓL (kulcsszo_lanc.json)
+        // rajzol. Rács-csatolt feltevés: RACS_ABLAK_NAP["ora"]==7 → csak az 1_het fér a nyers ablakba; minden
+        // hosszabb érvényes órás intervallum a láncból szeletelt (regresszio._intervallumok). A forrás-választás
+        // FRONTEND-oldali (nem új backend mező) — az ERVENYES-ROUTING felület nem nő.
+        const _forras = (X === "1_het") ? "kulcsszo_nyers.json" : "kulcsszo_lanc.json";
+        ivk[X] = Object.assign({}, oiv, { _racs: "ora", _forras: _forras });
       } else if (miv && miv.ervenyes) {
         ivk[X] = Object.assign({}, miv, { _racs: m.racs, _forras: "kulcsszo_masodlagos_nyers.json" });
       } else {
@@ -652,6 +658,16 @@ function elettartam_szoveg(szoreg, iv, ablak) {
 // (spec 8.3/mod 8) — NEM "utolsó rekord" és NEM max(ablak_veg); egyezés hiánya → null (kirajzolhatatlan)
 function nyers_ablak(szo, veg, forras) {
   const kw = (adat[forras || "kulcsszo_nyers.json"] || {}).kulcsszavak || {};
+  // LANC-ORAS Sz2: a lánc-forrás alakja EGY rekord (nem ablak-lista) — a 2_het+ órás ebből rajzol.
+  // Egyezés az iv.ablak_veg_utc-vel (a backend a lanc["ablak_veg_utc"]-ig szeletelt); a lánc pontjai
+  // mind lezártak (nincs reszleges). Nincs pont / nincs egyezés → null (kirajzolhatatlan).
+  if (forras === "kulcsszo_lanc.json") {
+    const rek = kw[szo];
+    if (!rek || rek.ablak_veg_utc !== veg) return null;
+    // LANC-2HET-VONAL: a lánc ablak_veg_utc-je VALÓS (rajzolandó) pont — NEM részleges záró slot, mint a nyersé.
+    // Explicit jelző (_veg_valos), hogy a racs_epit INKLUZÍVAN vegye hozzá az utolsó pontot + a trendvonal-végpontot.
+    return (rek.pontok || []).length ? Object.assign({}, rek, { _veg_valos: true }) : null;
+  }
   const ablakok = kw[szo] || [];
   for (let i = 0; i < ablakok.length; i++) {
     if (ablakok[i].ablak_veg_utc !== veg) continue;
@@ -669,7 +685,10 @@ function racs_epit(ablak, iv, racs, szint) {
   const pontok = ablak.pontok.slice().sort(function (a, b) { return a.idopont_utc < b.idopont_utc ? -1 : 1; });
   const lezart = pontok.filter(function (p) { return !p.reszleges; });
   const elso_idx = slot_index(lezart[0].idopont_utc, racs);
-  const veg_idx = slot_index(ablak.ablak_veg_utc, racs);  // a részleges slot; a lezárt rács [elso_idx, veg_idx)
+  // LANC-2HET-VONAL: a NYERS ablak_veg_utc RÉSZLEGES záró slot (kizárva marad); a LÁNC-é VALÓS pont (_veg_valos)
+  // → INKLUZÍV (+1), különben az utolsó pont ÉS a trendvonal-végpont kiesik. A rekord mondja meg a konvenciót,
+  // NEM a hurok-határt toljuk vakon → a nyers ág (hátsó-lyuk) VÁLTOZATLAN (_veg_valos undefined → +0).
+  const veg_idx = slot_index(ablak.ablak_veg_utc, racs) + (ablak._veg_valos ? 1 : 0);
   // 6c javító-szelet (latens 6b-hiba): a RAJZOLT tartomány az INTERVALLUM ablakára szeletelt, NEM a teljes rekord.
   // A kezdet az iv.ablak_kezdet_utc slotja (a BACKEND számolta, NEM a mai dátumból — a kettő eltér, ha az adat
   // régebbi), de SOSEM a rekord első lezárt pontja elé (max). Enélkül a 3_ho a teljes 52 hetet rajzolta, a felirat
