@@ -1135,6 +1135,27 @@ test("21. ŐRZŐ: nyers HÁTSÓ-LYUK változatlan a LANC-2HET-VONAL fix után (d
   await expect(c).toHaveAttribute("data-rajzolt-pont", "168");   // a részleges slotig; a 3 hátsó null BENNMARAD (nyers konvenció változatlan)
 });
 
+// ── 3b: a masodlagos intervallum a PER-INTERVALLUM rácsán rajzol (nem a szó-config rácsán) ──────
+// A nap-config szó (m.racs="nap") HET-forrású 1_ev intervalluma (iv.racs="het", heti pontok 7 naponta)
+// a szó-config rács miatt NAPI slotra kerülne → 6 null/heti pont → a görbe láthatatlan. A per-interval
+// racs (miv.racs) használatával HETI slotra kerül → folytonos. RED: ma data-felbontas="nap", sok szakadás.
+test("22. 3b: nap-config szó HET-forrású 1_ev-je HETI rácson rajzol (data-felbontas=het, data-szakadas=0)", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "állás": regSzo({ racs: "nap", domen: "munkaeropiac" }) }),   // config nap; a primer 1_het órás
+    nyersObj: nyers({ "állás": [nyersRekord("állás")] }),
+    mpRegObj: mpReg({ "állás": mpSzo("nap", {   // SZÓ-racs nap, DE az 1_ev PER-INTERVAL het (mint a valós backend)
+      "1_ev": Object.assign(hetIvErv(0, 52), { racs: "het" }),
+    }, { domen: "munkaeropiac" }) }),
+    mpNyersObj: mpNyers({ "állás": [racs_nyersRekord("állás", 52, 7)] }),   // 52 heti pont, 7-nap köz
+  });
+  await page.goto("/");
+  await page.click('#intervallum-vezerlo button[data-intervallum="1_ev"]');
+  const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`);
+  await expect(c).toHaveAttribute("data-drawable", "true");
+  await expect(c).toHaveAttribute("data-felbontas", "het");   // RED: ma "nap" (a szó-racs) → a heti pontok szétszórva
+  await expect(c).toHaveAttribute("data-szakadas", "0");      // RED: ma sok szakadás (6 null / heti pont)
+});
+
 // ── 17. ora_index hónap-/évhatáron át (J4) — a böngészőbeli egész-aritmetika olcsó fedezete ───
 test("17. ablak 2027-12-28 → 2028-01-04 belső lyukkal → data-szakadas pontos (ora_index év-/hónaphatár)", async ({ page }) => {
   const YMS = Date.parse("2027-12-28T00:00:00Z");

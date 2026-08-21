@@ -248,7 +248,10 @@ function egyesitett_reg() {
         const _forras = (X === "1_het") ? "kulcsszo_nyers.json" : "kulcsszo_lanc.json";
         ivk[X] = Object.assign({}, oiv, { _racs: "ora", _forras: _forras });
       } else if (miv && miv.ervenyes) {
-        ivk[X] = Object.assign({}, miv, { _racs: m.racs, _forras: "kulcsszo_masodlagos_nyers.json" });
+        // 3b: a masodlagos intervallum a PER-INTERVALLUM rácsán rajzol (miv.racs; a backend adja: 1_ev→het,
+        // 3_ho→nap), NEM a szó-config rácsán (m.racs). Enélkül egy nap-config szó het-forrású 1_ev-je NAPI
+        // slotra szóródna (6 null/heti pont → láthatatlan görbe). Szó-szintű fallback, ha nincs per-interval racs.
+        ivk[X] = Object.assign({}, miv, { _racs: miv.racs || m.racs, _forras: "kulcsszo_masodlagos_nyers.json" });
       } else {
         // ÜRES: rács-tudatos ok. A hosszú intervallum SOHA nem "nincs_lancolas" (órás-láncolás, §8.2 szerint
         // a nap/het ágon irreleváns) — a másodlagos MAGA is adhat nincs_lancolas-t (a sorozat rövidebb az
