@@ -57,7 +57,26 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
      kártyát a rootMargin-zóna alá tolja); auto-basis + static a természetes magasságra ejti (L10). */
   .vezerlo-sav { flex: 0 0 auto; position: static; }
 }
-#nyers-adat { margin-top: 3rem; border-top: 1px solid #eee; padding-top: 1rem; font-size: .9rem; }
+/* Fő menüsor — Excel-munkalap stílusú kis fülek (fülecskék) */
+#fomenu { display: flex; gap: .2rem; margin: 0 0 -1px; padding: 0 .4rem; position: relative; z-index: 1; }
+#fomenu a { padding: .28rem .85rem; font-size: .82rem; text-decoration: none; color: #666;
+  background: #ededed; border: 1px solid #ddd; border-bottom: none; border-radius: 7px 7px 0 0; }
+#fomenu a:hover { background: #e4e4e4; }
+#fomenu a.aktiv { background: #fff; color: #1a3a8a; font-weight: 600; border-color: #e3e3e3;
+  border-bottom: 1px solid #fff; }
+
+/* „Az adatokról" oldal — tematikus dobozok (mint a főoldal szekciói) */
+#adatokrol { max-width: 44rem; }
+.adat-doboz { background: #fff; border: 1px solid #e3e3e3; border-radius: 6px;
+  padding: .8rem 1.2rem; margin: 0 0 1rem; }
+.adat-doboz h2 { font-size: 1.05rem; margin: 0 0 .4rem; }
+.adat-doboz p { line-height: 1.55; margin: .4rem 0; }
+.adat-doboz li { line-height: 1.55; }
+.adat-doboz ol { margin: .3rem 0 .3rem 1.3rem; }
+.adat-doboz > *:last-child { margin-bottom: 0; }
+
+/* üres lábléc — a tartalom és a lábléc között a szokásos elválasztó vonal (mint a .blokk-vonal) */
+#labresz { margin-top: 1.5rem; border-top: 1px solid #e3e3e3; padding-top: 1.5rem; min-height: 2.5rem; }
 
 /* hibaállapot: a loader ezt írja a blokk konténerébe (nem néma, §7.5) */
 .hiba { color: #a00; }
@@ -150,7 +169,8 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 #trend-blokk .kategoria-magyarazat,
 #idosor-blokk .idosor-magyarazat,
 #trend-blokk .trend-normalizalas-magyarazat,
-.attekinto-panel .attekinto-magyarazat {
+.attekinto-panel .attekinto-magyarazat,
+#adatokrol .adat-magyarazat {
   font-style: italic; color: #555; font-size: .85rem;   /* ne legyen nagyobb, mint a többi honlap-szöveg */
   border-left: 3px solid #3366cc; padding: .3rem 0 .3rem .6rem;
 }
@@ -158,7 +178,8 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 #trend-blokk .kategoria-magyarazat::before,
 #idosor-blokk .idosor-magyarazat::before,
 #trend-blokk .trend-normalizalas-magyarazat::before,
-.attekinto-panel .attekinto-magyarazat::before {
+.attekinto-panel .attekinto-magyarazat::before,
+#adatokrol .adat-magyarazat::before {
   content: "ⓘ ";   /* az ⓘ CSS-ből (nem a szövegben) — így egységes és a szövegek nem duplázzák */
 }
 

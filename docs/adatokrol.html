@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Az adatokról – Trendfigyelő</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <nav id="fomenu" aria-label="Fő menü">
+    <a href="index.html">Trendek</a>
+    <a href="adatokrol.html" class="aktiv" aria-current="page">Az adatokról</a>
+  </nav>
+
+  <header class="fejlec-doboz">
+    <h1>Az adatokról</h1>
+    <p class="halvany">Honnan jönnek az adatok, mikor és hogyan gyűjtjük őket.</p>
+  </header>
+
+  <main id="adatokrol">
+    <section class="adat-doboz">
+      <p><strong>Honnan?</strong> Minden adat a Google Trends nyilvános szolgáltatásából származik, kizárólag Magyarországra (<code>geo=HU</code>). Kétféle dolgot mutatunk: a Google <strong>aznap felkapott kereséseit</strong>, és <strong>13 általunk figyelt kulcsszó</strong> keresési érdeklődését.</p>
+      <p><strong>Mikor kérjük le?</strong> Naponta egyszer, automatikusan: 19:07 UTC-kor (kb. 21:07 nyári / 20:07 téli budapesti idő). Egy futás néhány percig tart.</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Mi a kulcsszó?</h2>
+      <p>A 13 figyelt keresőszó (pl. <em>állás</em>, <em>albérlet</em>, <em>benzin</em>, <em>tüntetés</em>), kategóriákba (munkaerőpiac, lakhatás, fogyasztás, egészség, …) sorolva. Ezekre naponta lekérjük, mennyire keresnek rájuk Magyarországon.</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Mik a napi felkapott szavak?</h2>
+      <p>A Google által aznap <em>felkapottként</em> jelölt keresések listája — <strong>nem</strong> a mi 13 szavunk, hanem a Google saját napi trendlistája. Ezt naponta elmentjük; a „Heti felkapott keresések" blokk ezekből mutat napi bontást.</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Órás és hosszabb sorozatok</h2>
+      <p>Minden figyelt kulcsszóra egy <strong>7 napos, órás felbontású</strong> ablakot kérünk le (<code>now 7-d</code>) — ez a friss „1 hét" nézet, minden szónál naprakész. A hosszabb nézetekhez külön <strong>napi (3 hónap)</strong> és <strong>heti (12 hónap)</strong> sorozatot is gyűjtünk. A Google hívás-korlátja miatt ezekből naponta csak <strong>2 szó</strong> frissül (a legrégebben frissítettek előre), így egy szó hosszú sorozata kb. 11 naponta újul meg.</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Láncolás</h2>
+      <p>Az egymást átfedő 7 napos órás ablakokból egy <strong>közös skálájú, hosszabb órás sorozatot</strong> fűzünk össze (2 hét és afölött). Az átfedő pontokból számoljuk ki, hogyan illeszkedik egymáshoz két szomszédos ablak — így a „2 hét" nézet is órás felbontású marad, nem csak a legfrissebb hét nyújtása.</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Trend</h2>
+      <p>A megjelenített időszakra egy <strong>egyenest illesztünk</strong> (legkisebb négyzetek módszere). Az irány (növekvő / stagnáló / csökkenő) az egyenes meredekségéből adódik; az R² (0–1) az illeszkedés <em>jóságát</em> írja le.</p>
+      <p class="adat-magyarazat">Az irány és az R² <strong>leíró</strong> mérőszám — nem azt állítja, hogy a mozgás „jelentős" vagy „valódi". Minden szó a saját 0–100 relatív skáláján áll (a Google így normál), ezért <strong>a szavak egymással nem összemérhetők</strong>; csak az egy szón belüli mozgás olvasható.</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Tüntetés — miért medián?</h2>
+      <p>A <em>tüntetés</em> esemény-jellegű szó: nincs folyamatos trendje, szórványosan ugrik meg. Ezért nem trendvonalat rajzolunk rá, hanem a <strong>szintjét</strong> az elmúlt <strong>52 hét heti mediánjához</strong> mérjük — ez stabil viszonyítási szint, amit a ritka kiugrások nem torzítanak.</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Miért eltérő a végpont a Teljes nézeten?</h2>
+      <p>A Teljes nézet szavanként a <strong>leghosszabb</strong> érvényes időszakot mutatja — ez sokszor a heti (12 hónapos) sorozat. Két <strong>szándékos</strong> ok miatt ennek a vége nem a mai nap:</p>
+      <ol>
+        <li><strong>Heti sorozat → az utolsó teljes hét.</strong> Egy heti sorozat nem mutathat részleges, még folyamatban lévő hetet, ezért a legfrissebb heti végpont is ~4 nappal a mai nap előtt van (az aktuális, le nem zárt hét kimarad).</li>
+        <li><strong>Rotációs frissítés (2 szó/nap).</strong> A hívás-korlát miatt a hosszú sorozatok rotációban frissülnek; egy szó heti adata kb. 11 naponta újul meg. Amelyik szót régebben gyűjtöttük, annak a vége régebbi — de <strong>frissülni fog</strong> (a legrégebbieket priorizáljuk).</li>
+      </ol>
+      <p class="adat-magyarazat">A <strong>friss napi adat megvan</strong>: minden szónak van naprakész „1 hét" (órás) nézete. A Teljes nézet csak azért mutathat régebbi véget, mert a leghosszabb (heti/napi) időszakot választja.</p>
+    </section>
+  </main>
+
+  <footer id="labresz" aria-label="Lábléc"></footer>
+</body>
+</html>

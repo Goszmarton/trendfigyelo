@@ -7,6 +7,11 @@
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
+  <nav id="fomenu" aria-label="Fő menü">
+    <a href="index.html" class="aktiv" aria-current="page">Trendek</a>
+    <a href="adatokrol.html">Az adatokról</a>
+  </nav>
+
   <header class="fejlec-doboz">
     <h1>Mire keresnek rá Magyarországon? – Trendfigyelő</h1>
     <p class="halvany">Magyarországi (geo=HU) Google Trends adatok, napi frissítéssel.</p>
@@ -78,16 +83,7 @@
     </div>
   </div>
 
-  <!-- ÁTMENETI fallback: a nyers adat elérése, amíg a dashboard elkészül (Task 9b/10 távolítja el) -->
-  <footer id="nyers-adat" class="halvany">
-    <p>Nyers adat (átmeneti, a felület elkészültéig):</p>
-    <ul>
-      <li><a href="data/legfrissebb.json"><code>data/legfrissebb.json</code></a> – a legutóbbi futás összesítése</li>
-      <li><a href="data/tortenet.json"><code>data/tortenet.json</code></a> – kulcsszó-történet (napi átlag + csúcs)</li>
-      <li><a href="data/napok/index.json"><code>data/napok/index.json</code></a> – az elérhető napi trendlisták dátumai</li>
-    </ul>
-    <p>Minden adat kizárólag Magyarországra (geo=HU), az elmúlt 24 órára vonatkozik.</p>
-  </footer>
+  <footer id="labresz" aria-label="Lábléc"></footer>
 
   <script src="vendor/chartjs/chart.umd.js"></script>
   <script src="js/app.js"></script>
