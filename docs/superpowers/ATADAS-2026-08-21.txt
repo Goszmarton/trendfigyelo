@@ -1,20 +1,27 @@
-ÁTADÓ — 2026-08-21 (trendfigyelo, Phase 4) — NAPI RUTIN + 3 doc-zárás (KARANTEN, §8.2-INV, TASK5) + LANC-ORAS Sz2 LESZÁLLÍTVA
+ÁTADÓ — 2026-08-21 (trendfigyelo, Phase 4) — NAPI RUTIN + 3 doc-zárás (KARANTEN, §8.2-INV, TASK5) + LANC-ORAS Sz2 + 3b + MENÜ/INFÓ-OLDAL + NAPTÁR-VÁLASZTÓK
 ================================================================================
 
 ZÁRÓ ÁLLAPOT (2026-08-21)
 ------------------------
-origin/main = HEAD = ab7c4e0. rev-list 0 0. Suite: pytest 361 + Playwright 120 (SOROS), MUTÁCIÓ == 1.
+origin/main = HEAD = 211b15e. rev-list 0 0. Suite: pytest 361 + Playwright 128 (SOROS), MUTÁCIÓ == 1.
 Munkafa: csak a régi ROOT-beli ATADAS-2026-08-18.txt untracked (NE add-eld). docs/data TISZTA.
-Leltár-invariáns MÉRÉSSEL: aktív 3 + kész 35 + rekord 29 + félretett 0 = 67 (törzs); LEZÁRT/ELAVULT KÜLÖN 18.
-  aktív 3 = (B) 0 · (C) 1: TASK5 · (D) 2: IRANY-KUSZOB + ADD-SWAP.  (LANC-ORAS → LESZÁLLÍTVA a Sz2-vel.)
+Leltár-invariáns MÉRÉSSEL: aktív 3 + kész 38 + rekord 29 + félretett 0 = 70 (törzs); LEZÁRT/ELAVULT KÜLÖN 18.
+  aktív 3 = (B) 0 · (C) 1: TASK5 · (D) 2: IRANY-KUSZOB + ADD-SWAP.
 
-A mai commitok (pusholva, rev-list 0 0 minden push után):
-  a527c42  doc(karanten): rendszer-szintű hatókör-invariáns + HATÁR (429-mérés 38/148 a 429-RATA-ba; BETOLT-LANC-PARSE note)
+A mai commitok (12, mind pusholva, rev-list 0 0 minden push után):
+  a527c42  doc(karanten): rendszer-szintű hatókör-invariáns + HATÁR (429-mérés 38/148; BETOLT-LANC-PARSE note)
   a119ec1  doc(leltar): §8.2-INV → PARKOLT (MÉRVE: nem aktív hiba) + TASK5 Sz3 evidencia-státusz
-  a0eee4e  doc(atado): ÁTADÓ 2026-08-21 (ez a fájl)
+  a0eee4e  doc(atado): ÁTADÓ 2026-08-21 (ez a fájl, első verzió)
   545a1bf  doc(lanc-oras-sz2): terv a kód ELŐTT (GATE-feloldás)
-  ab7c4e0  feat(lanc-oras-sz2): az órás 2_het a LÁNCBÓL rajzol — GATE feloldva + a szemlén elkapott trendvonal-defekt javítva
-(a nightly 46a045a adat-commit — a 08-20 esti éles futás — a doc-commitok RÁ vannak rebase-elve.)
+  ab7c4e0  feat(lanc-oras-sz2): az órás 2_het a LÁNCBÓL rajzol — GATE feloldva + LANC-2HET-VONAL fix
+  bcd7e92  doc(atado): ÁTADÓ kiegészítés — LANC-ORAS Sz2 LESZÁLLÍTVA
+  86b4fe9  doc(3b): terv a kód ELŐTT — masodlagos per-interval rács
+  6286cac  fix(3b): a masodlagos intervallum a PER-INTERVALLUM rácsán rajzol (nem a szó-configén)
+  ace6047  feat(menu-info): Excel-fül menüsor + külön „Az adatokról" oldal (a nyers-adat footer helyett)
+  ccb068c  doc(naptar): terv a kód ELŐTT — inline naptár nap-választó
+  f97d513  doc(naptar): heti naptár terv (hét-kiemelő) + kísérő tweak-ek
+  211b15e  feat(naptar): inline naptár nap- és hét-választó (a select-ek helyett) + kísérő UI-tweak-ek
+(a nightly 46a045a adat-commit — a 08-20 esti éles futás — RÁ vannak rebase-elve.)
 
 
 *** LANC-ORAS SZELET 2 — LESZÁLLÍTVA (545a1bf terv + ab7c4e0 fix), canvas-kör, SZEMLE 2/2 TISZTA ***
@@ -42,6 +49,38 @@ A mai commitok (pusholva, rev-list 0 0 minden push után):
     08-09-nél legitim); kontroll kormányablak/nyaralás egyezik → a napelem szélsőségesebb eset, nem külön jelenség.
   - HÁTRA (KÜLÖN kör): LANC-SZAKASZ-TORES (tüntetés csonka lánc); a lánc 30 nap fölött → 1_ho+ chain-forrás
     (a `_veg_valos` fix ÁLTALÁNOS, automatikusan fog). Ma csak a 2_het chain-forrású (1_ho/3_ho/1_ev nincs_lancolas).
+
+
+*** 3b — a MASODLAGOS intervallum a PER-INTERVALLUM rácsán rajzol (86b4fe9 terv + 6286cac fix) ***
+  A LANC-ORAS Sz2 előnézetén elkapott szemle-lelet: a TELJES nézeten a nap-config szavaknál (állás, kormányablak,
+  eladó lakás, akciós újság) a kék adat-görbe NEM rajzolt (a trendvonal igen). OK: az `egyesitett_reg` (app.js) a
+  SZÓ-szintű `m.racs`-ot tette a masodlagos intervallumra a PER-INTERVALLUM `miv.racs` helyett → egy nap-config szó
+  het-forrású 1_ev-je (heti pontok, 7 naponta) NAPI slot-rácsra került → 6 null/heti pont (data-szakadas=312) →
+  spanGaps:false mellett láthatatlan görbe. FIX (1 sor): `_racs: miv.racs || m.racs`. Ez a MASODLAGOS-TF-nél DEFERRED
+  „3b" — PRE-EXISTING, NEM a Sz2 okozta (most jelent meg, mert a both-timeframe adat feltöltődött). 1 RED→GREEN (22).
+  MEGJEGYZÉS (by-design, NEM hiba): a TELJES nézet a LEGHOSSZABB intervallumot választja → a masodlagos-het szavak
+  végpontja a rotáció (2 cella/nap, TASK5) + a heti-határ (részleges hét kimarad, ~08-16 max) miatt régebbi, nem 08-20.
+
+
+*** MENÜ + „AZ ADATOKRÓL" OLDAL (ace6047) ***
+  A régi #nyers-adat footer (DB-linkek + az ELAVULT „elmúlt 24 óra" — az órás ablak MA 7 nap) TÖRÖLVE. Helyette:
+  Excel-fül menüsor (#fomenu: Trendek / Az adatokról) + külön `adatokrol.html` oldal 8 tematikus dobozban (honnan/
+  mikor/kulcsszó/felkapott/órás+hosszú/láncolás/trend/tüntetés-medián/végpont-eltérés, óvatos fogalmazás). Üres
+  #labresz footer a #e3e3e3 vonallal. 3 smoke-teszt (menu.spec.js); a geometria-tesztek átmennek (nav ~40px belefér
+  a rootMargin:400 zónába, nincs újramérés).
+
+
+*** NAPTÁR-VÁLASZTÓK (ccb068c + f97d513 terv + 211b15e fix) — live UI-iteráció, user-szemle többször ***
+  A #datum-valaszto ÉS #heti-valaszto <select>-jét INLINE NAPTÁR váltja (közös `naptar_epit` helper, tiszta
+  egész-aritmetika Sakamoto hétnappal — a böngészőben TILOS a Date; a heti a meglévő UTC-`het_hetfoje`-t használja):
+  - NAPI: egy nap választható; nem-választható napok szürkék+letiltva; ‹ › az adat-tartományban; a kiválasztás a
+    `data-valasztott-nap`-ban (a select.value helyett); `trend_aktualis_nap` + click-delegálás frissítve.
+  - HETI: kattintáskor az egész HÉT sora kiemelve (kék kör/fehér szám, mint a napi); `data-valasztott-het`. FÜGGETLEN a napitól.
+  KÍSÉRŐ TWEAK-EK (ugyanez a kör): napi/heti cím „Melyik nap/hét felkapottjai?"; kategória-idősor y-felirat
+  „kategóriába eső trendek"; kategória-default az ELSŐ kategória kiemelve (idosor_szinez a build után); „Az adatokról"
+  8 hosszú kötőjel (—)→rövid (-); kék bal-vonalak a kulcsszó-időszak kísérő szövegeinél (.gomb-magyarazat::before, fix magasság).
+  TESZTEK: 4 új naptar.spec.js; heti/vezerlok/trend (napValt-helper)/mobil G2 + kategória-default ÚJRAMÉRVE
+  (mechanizmus select→naptár, NEM termék-regresszió). A #heti-valaszto FÜGGETLEN a napitól.
 
 
 *** A 08-20 ESTI ÉLES FUTÁS — MÉRT EREDMÉNY (az ELSŐ éles kör az 5 órás-ág változással) ***
