@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Elemzés – Trendfigyelő</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <nav id="fomenu" aria-label="Fő menü">
+    <a href="index.html">Trendek</a>
+    <a href="elemzes.html" class="aktiv" aria-current="page">Elemzés</a>
+    <a href="adatokrol.html">Az adatokról</a>
+  </nav>
+
+  <header class="fejlec-doboz">
+    <h1>Napi elemzés</h1>
+    <p class="halvany" id="elemzes-fejlec">Betöltés…</p>
+  </header>
+
+  <main id="elemzes">
+    <div id="elemzes-naptar" aria-label="Archívum — nap-választó"></div>
+    <section id="elemzes-tartalom" aria-live="polite"></section>
+  </main>
+
+  <footer id="labresz" aria-label="Lábléc"></footer>
+
+  <script src="js/app.js"></script>
+  <script src="js/elemzes.js"></script>
+</body>
+</html>

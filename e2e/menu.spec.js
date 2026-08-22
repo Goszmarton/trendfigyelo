@@ -1,11 +1,12 @@
 const { test, expect } = require("@playwright/test");
 
 // Menüsor (Excel-fül) + „Az adatokról" külön oldal — statikus szerkezet-őr (nincs adat-mock, a nav statikus).
-test("menüsor: 2 fül, aktív = Trendek; a linkek helyesek", async ({ page }) => {
+test("menüsor: 3 fül, aktív = Trendek; a linkek helyesek", async ({ page }) => {
   await page.goto("/");
   const linkek = page.locator("#fomenu a");
-  await expect(linkek).toHaveCount(2);
+  await expect(linkek).toHaveCount(3);
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Trendek");
+  await expect(page.locator('#fomenu a[href="elemzes.html"]')).toHaveText("Elemzés");
   await expect(page.locator('#fomenu a[href="adatokrol.html"]')).toHaveText("Az adatokról");
   await expect(page.locator("#labresz")).toBeAttached();          // üres lábléc jelen
   await expect(page.locator("#adatokrol")).toHaveCount(0);        // az infó-tartalom NEM a főoldalon van

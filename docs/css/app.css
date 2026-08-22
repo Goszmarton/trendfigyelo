@@ -128,6 +128,24 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 #heti-valaszto .nap-cella.valasztott-het:hover { background: #2a52a0; }
 .ures { color: #666; font-style: italic; }
 
+/* „Elemzés" fül (Task 6) — a VALÓS (tényszerű) és az ELMÉLETI (AI-feltételezés) réteg
+   VIZUÁLISAN elkülönül: a VALÓS tömör kék bal-szegéllyel (mint a többi kiemelés, #3366cc),
+   az ELMÉLETI szaggatott, szürke, dőlt betűvel — nem összetéveszthető. */
+#elemzes { max-width: 60rem; }
+#elemzes-naptar { margin: 0 0 1.2rem; max-width: 16rem; }
+.elemzes-szekcio { background: #fff; border: 1px solid #e3e3e3; border-radius: 6px;
+  padding: .8rem 1.2rem; margin: 0 0 1rem; }
+.elemzes-szekcio h3 { font-size: 1rem; margin: 0 0 .4rem; }
+.elemzes-szoveg { color: #333; margin: .3rem 0; }
+.elemzes-megfigyeles { border-left: 3px solid #3366cc; padding-left: .6em; margin: .3em 0; }
+.elemzes-elmeleti { border-left: 3px dashed #999; padding-left: .6em; margin: .3em 0; color: #555; font-style: italic; }
+.elemzes-csempek { margin: 0 0 1rem; }
+.elemzes-csempe { display: inline-block; border: 1px solid #e3e3e3; border-radius: 6px; padding: .3em .6em; margin: .2em; }
+.elemzes-csempe.irany-emelkedik { border-color: #3366cc; color: #1a3a8a; }
+.elemzes-csempe.irany-csokken { border-color: #a00; color: #a00; }
+.elemzes-felkapott-csempe { display: inline-block; border: 1px solid #e3e3e3; border-radius: 6px;
+  padding: .3em .6em; margin: .2em; background: #f5f8ff; }
+
 /* Task 9b kulcsszó-blokk — szavankénti chartok, domen-csoportokban (rács, small multiples).
    A kártya-magasság KELL a lusta rendereléshez: enélkül a canvasok összeesnek és nem lóg túl a viewporton. */
 #kulcsszo-blokk .frissesseg { color: #666; font-style: italic; font-size: .9rem; margin: .25rem 0 1rem; }
