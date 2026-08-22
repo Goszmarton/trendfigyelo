@@ -1,0 +1,53 @@
+ÁTADÓ — 2026-08-22 (trendfigyelo, Phase 4) — ELEMZES-FUL (napi AI-elemzés) LESZÁLLÍTVA + ÉLES FUTÁS IGAZOLVA
+================================================================================
+(A tágabb RUTIN / baseline / leltár-állapothoz lásd az előző átadót: ATADAS-2026-08-21.txt. Ez a fájl a mai ülésre fókuszál.)
+
+ZÁRÓ ÁLLAPOT (2026-08-22)
+------------------------
+origin/main = HEAD = 2211cee (a workflow esti/kézi adat-commitja). A feature-kód: d5c3b73..ea92ed5 (9 commit),
+pusholva. Suite a leszálláskor: pytest 378 + Playwright 129 (SOROS), MUTÁCIÓ == 1. Munkafa: csak a régi
+ROOT-beli ATADAS-2026-08-18.txt untracked (SOHA ne add-eld). A pótolhatatlan órás ág (kulcsszo_nyers/lanc) ÉRINTETLEN.
+
+*** ELEMZES-FUL — LESZÁLLÍTVA + ÉLESBEN IGAZOLVA ***
+  Új „Elemzés" fül: minden nap automatikusan Claude-elemzés (Sonnet 5) a friss adatból, statikus artefaktként.
+  - Backend: trendfigyelo/elemzo.py (epit_payload = determinisztikus VALÓS számok; nap_diff = „mi változott ma";
+    elemez = injektálható Claude-varrat; valasz_to_artefakt = spec §5 alak; futtat = archívum/index + FAIL-SOFT)
+    + elemzes.py belépő. A számokat PYTHON számolja; a Claude CSAK narratíva, ELMÉLETI-jelöléssel; ok-okozat
+    tényként tilos. API-hibán az előző elemzes.json bit-azonosan marad (fail-soft; az elemzés NEM pótolhatatlan).
+  - Workflow: .github/workflows/elemzes.yml — workflow_run a napi.yml (Napi trendgyűjtés) SIKERE után + kézi
+    dispatch; közös napi-futtatas concurrency; KÜLÖN commit CSAK az elemzés-fájlokra; ANTHROPIC_API_KEY secret.
+  - Frontend: docs/elemzes.html + docs/js/elemzes.js — 3-fül menü, VALÓS vs ELMÉLETI vizuális szétválasztás,
+    archívum-választó (naptar_epit), végig textContent (XSS-biztos). Archívum: elemzesek/<datum>.json + index.json.
+  - SDD-folyamat: 6 task + záró fix-hullám, minden review tiszta; záró teljes-branch szemle (opus) = „mergeable".
+  - ÉLES FUTÁS: workflow #1 (kézi dispatch) SIKERES (1m25s) — külön adat-commit 2211cee (elemzes.json +
+    elemzesek/2026-08-22.json + index.json). A GitHub Pages fül él. Első futás → „mi változott ma" helyesen
+    van_elozo=hamis (nem fabrikál változást). Az esti napi.yml sikere után innentől MAGÁTÓL fut.
+  - Terv/spec: docs/superpowers/plans/2026-08-22-elemzes-ai-ful.md + specs/2026-08-22-elemzes-ai-ful-design.md.
+
+*** >>> A KÖVETKEZŐ NAGY MUNKA EZEN A FUNKCIÓN: AZ ELEMZÉS TARTALMA/MINŐSÉGE MÉG BŐVEN CSISZOLANDÓ (USER) *** <<<
+  NEM MA. A prompt/output hangolása külön, nagyobb kör. Az első éles kimenetből konkrét kezdő-leletek:
+  - A szöveg BELSŐ MEZŐNEVEKET és „payload"-ot SZIVÁROGTAT a felhasználónak (pl. „van_elozo: hamis",
+    „a kapott payloadban", „irany_valtok/mozgok/felkapott_uj listák üresek"). A RENDSZER_PROMPT tiltsa a
+    mező-/mechanika-hivatkozást; természetes magyar prózát kérjen (a felhasználó nem lát JSON-t/mezőneveket).
+  - Az elemzés érdemi MÉLYSÉGE, HANGNEME, HASZNOSSÁGA is hangolandó (mit lát a felhasználó, mit szűr le).
+  - Ez a funkció fő nyitott iránya — külön ülés(ek).
+
+*** NYITOTT / KÖVETKEZŐ ***
+  1) LELTÁR-FRISSÍTÉS HIÁNYZIK (munkamódszer-gát): a docs/superpowers/leltar.md-be új tétel
+     „ELEMZES-FUL — LESZÁLLÍTVA", invariáns MÉRÉSSEL, ID-struktúrával. A user a push-t választotta ELŐBB,
+     tehát ez KÜLÖN kör. (Ma nem történt meg.)
+  2) ELEMZÉS-MINŐSÉG csiszolás — lásd fent (a fő nyitott munka).
+  3) Fast-follow (a záró szemle deferelte, nem bug): kulcsszo_het tortenet last-7 trajektória VALÓS tile-ként
+     (most üres {}; a „1 hét" szekció az irányokkal megalapozott); indent=0→indent=2 az elemzés-JSON-írásoknál;
+     JS mozgók tizedes-formázás (2→2.0).
+
+*** RUTIN-KIEGÉSZÍTÉS (a következő ülésektől) ***
+  Az esti éles-futás ellenőrzésébe (RUTIN §8) innentől az ELEMZÉS-ÁG is beleveendő:
+  - futott-e az elemzes.yml (Actions), zöld-e; kiírta-e a napi elemzes.json + elemzesek/<nap>.json + index-et
+    (KÜLÖN committal); az esetleges Claude-hiba fail-soft-e (előző elemzes.json maradt-e).
+
+MUNKAMÓDSZER (változatlan): magyar; Co-Authored-By: Claude Opus 4.8 + Claude-Session; KÜLÖN adat-commit;
+SOROS suite; MUTÁCIÓ==1; commit CSAK jóváhagyott üzenettel; git add NÉVVEL (a ROOT ATADAS-2026-08-18.txt SOHA);
+DOC-COMMIT a kód ELŐTT; TDD valódi RED-del (a haiku-implementerek hajlamosak „(vár)"-jelölt előrejelzett RED-re
+a valós elkapott kimenet helyett — a dispatchben KÖTELEZŐ a literál pytest-kimenet); a szándékos-zöld fedését
+MÉRNI; a DOM-belső egyetlen őre a vizuális szemle; git checkout uncommitted kódra TILOS.
