@@ -1,5 +1,5 @@
 {
-"frissitve": "2026-08-22T19:02:17+00:00",
+"frissitve": "2026-08-22T19:36:22+00:00",
 "modell": "claude-sonnet-5",
 "nap": "2026-08-22",
 "valtozas": {
@@ -10,115 +10,114 @@
 "felkapott_eltunt": [],
 "van_elozo": false
 },
-"szoveg": "Nincs elérhető korábbi időszakra vonatkozó összehasonlító adat (van_elozo: hamis), így a mai adatokból kiinduló változásokat nem lehet korábbi állapothoz viszonyítani.",
+"szoveg": "Nincs érdemi összehasonlítási adat az előző időszakhoz, mivel az előzményadatok hiányoznak.",
 "megfigyelesek": [
-"Az irany_valtok, mozgok, felkapott_uj és felkapott_eltunt listák üresek a kapott payloadban.",
-"A van_elozo mező értéke hamis, tehát nincs bázisadat az összevetéshez."
+"A kapott payload szerint nincs korábbi adat (van_elozo: false), így irány-váltás vagy mozgás nem állapítható meg."
 ],
 "elmeleti": [
-"Feltételezés: az üres listák és a van_elozo=hamis arra utalhat, hogy ez az első mért időszak, vagy a rendszer még nem gyűjtött össze elegendő korábbi adatot az összehasonlításhoz."
+"Feltételezés: a változás-mező üressége technikai vagy adatgyűjtési okra vezethető vissza, nem feltétlenül tényleges stagnálásra."
 ]
 },
 "kulcsszavak": {
 "szamok": [
 {
 "szo": "akciós újság",
-"irany": "csokken",
-"meredekseg": -1.562,
+"irany": "stagnal",
+"meredekseg": 0.853,
 "ervenyes": true,
-"mai_ertek": 44,
-"csucs": 44.0,
-"atlag": 34.33
+"mai_ertek": 33,
+"csucs": 74.0,
+"atlag": 41.57
 },
 {
 "szo": "albérlet",
-"irany": "novekszik",
-"meredekseg": 1.149,
+"irany": "stagnal",
+"meredekseg": -0.474,
 "ervenyes": true,
-"mai_ertek": 37,
-"csucs": 41.0,
-"atlag": 30.21
+"mai_ertek": 42,
+"csucs": 62.0,
+"atlag": 47.11
 },
 {
 "szo": "benzin",
 "irany": "csokken",
-"meredekseg": -1.737,
+"meredekseg": -2.24,
 "ervenyes": true,
-"mai_ertek": 23,
-"csucs": 47.0,
-"atlag": 30.38
+"mai_ertek": 21,
+"csucs": 31.0,
+"atlag": 25.9
 },
 {
 "szo": "betegség",
-"irany": "stagnal",
-"meredekseg": -0.671,
+"irany": "csokken",
+"meredekseg": -1.581,
 "ervenyes": true,
-"mai_ertek": 33,
-"csucs": 70.0,
-"atlag": 33.79
+"mai_ertek": 29,
+"csucs": 44.0,
+"atlag": 30.67
 },
 {
 "szo": "eladó lakás",
-"irany": "stagnal",
-"meredekseg": 0.421,
+"irany": "novekszik",
+"meredekseg": 1.141,
 "ervenyes": true,
 "mai_ertek": 72,
-"csucs": 87.0,
-"atlag": 70.7
+"csucs": 92.0,
+"atlag": 69.57
 },
 {
 "szo": "hitel",
 "irany": "csokken",
-"meredekseg": -3.787,
+"meredekseg": -4.016,
 "ervenyes": true,
-"mai_ertek": 17,
-"csucs": 23.0,
-"atlag": 16.83
+"mai_ertek": 34,
+"csucs": 60.0,
+"atlag": 44.89
 },
 {
 "szo": "kormányablak",
-"irany": "stagnal",
-"meredekseg": 0.393,
+"irany": "csokken",
+"meredekseg": -4.148,
 "ervenyes": true,
-"mai_ertek": 8,
-"csucs": 17.0,
-"atlag": 11.83
+"mai_ertek": 5,
+"csucs": 30.0,
+"atlag": 15.81
 },
 {
 "szo": "kórház",
-"irany": "stagnal",
-"meredekseg": 0.456,
+"irany": "csokken",
+"meredekseg": -1.973,
 "ervenyes": true,
-"mai_ertek": 14,
-"csucs": 32.0,
-"atlag": 22.1
+"mai_ertek": 18,
+"csucs": 33.0,
+"atlag": 22.48
 },
 {
 "szo": "napelem",
-"irany": "stagnal",
-"meredekseg": -0.016,
+"irany": "csokken",
+"meredekseg": -1.017,
 "ervenyes": true,
-"mai_ertek": 37,
-"csucs": 75.0,
-"atlag": 53.5
+"mai_ertek": 19,
+"csucs": 69.0,
+"atlag": 51.12
 },
 {
 "szo": "nyaralás",
-"irany": "stagnal",
-"meredekseg": -0.973,
+"irany": "csokken",
+"meredekseg": -1.269,
 "ervenyes": true,
-"mai_ertek": 35,
-"csucs": 89.0,
-"atlag": 43.88
+"mai_ertek": 29,
+"csucs": 100.0,
+"atlag": 36.38
 },
 {
 "szo": "nyugdíj",
 "irany": "csokken",
-"meredekseg": -4.486,
+"meredekseg": -2.233,
 "ervenyes": true,
-"mai_ertek": 7,
-"csucs": 22.0,
-"atlag": 8.9
+"mai_ertek": 62,
+"csucs": 31.0,
+"atlag": 12.68
 },
 {
 "szo": "tüntetés",
@@ -126,53 +125,49 @@
 "meredekseg": null,
 "ervenyes": false,
 "mai_ertek": null,
-"csucs": 64.0,
-"atlag": 49.8
+"csucs": 100.0,
+"atlag": 68.1
 },
 {
 "szo": "állás",
-"irany": "stagnal",
-"meredekseg": -0.407,
+"irany": "csokken",
+"meredekseg": -1.514,
 "ervenyes": true,
 "mai_ertek": 16,
-"csucs": 100.0,
-"atlag": 25.04
+"csucs": 33.0,
+"atlag": 20.74
 }
 ],
 "napi": {
-"szoveg": "A mai kulcsszó-adatok között több kifejezés is jelentős napi csökkenést mutat, míg csak egy kifejezés, az 'albérlet' emelkedik érdemben.",
+"szoveg": "A mai napi kulcsszó-adatok vegyes képet mutatnak: több pénzügyi és hétköznapi témájú kifejezés csökkenő tendenciát mutat, míg az 'eladó lakás' emelkedik.",
 "megfigyelesek": [
-"A 'nyugdíj' meredeksége -4.486, ez a legnagyobb csökkenés a listában, mai értéke 7, ami messze a 8.9-es átlag és a 22-es csúcs alatt van.",
-"A 'hitel' meredeksége -3.787, mai értéke 17, közel az átlaghoz (16.83), de a 23-as csúcstól elmarad.",
-"A 'benzin' meredeksége -1.737, mai értéke 23, jelentősen a 47-es csúcs és a 30.38-as átlag alatt.",
-"Az 'akciós újság' meredeksége -1.562, ugyanakkor mai értéke 44, ami a megadott csúcsérték (44.0) is egyben.",
-"Az 'albérlet' az egyetlen érdemben növekvő kifejezés, meredeksége 1.149, mai értéke 37, közel a 41-es csúcshoz és az átlag (30.21) fölött.",
-"A többi kulcsszó ('betegség', 'eladó lakás', 'kormányablak', 'kórház', 'napelem', 'nyaralás', 'állás') stagnálónak van jelölve, kis abszolút meredekségekkel.",
-"A 'tüntetés' kifejezés érvénytelen (ervenyes: hamis), mai értéke nem elérhető, csak csúcs (64.0) és átlag (49.8) adata van."
+"Az 'eladó lakás' mai értéke 72, ami a megadott csúcshoz (92) közeli, és növekvő irányt mutat (meredekség 1.141).",
+"A 'hitel' mai értéke 34, jelentős csökkenő meredekséggel (-4.016) az átlaghoz (44.89) képest.",
+"A 'kormányablak' mai értéke mindössze 5, erősen csökkenő trenddel (-4.148), messze az átlag (15.81) alatt.",
+"A 'benzin' mai értéke 21, csökkenő irányban (-2.24), az átlag (25.9) alatt.",
+"A 'nyugdíj' mai értéke 62, ami meghaladja a megadott csúcsértéket (31) és átlagot (12.68) is, miközben az irány csökkenőként van jelölve - ez ellentmondásos adat.",
+"A 'tüntetés' kifejezés érvénytelen adatot kapott (ervenyes: false), mai érték nem elérhető.",
+"Az 'állás' mai értéke 16, csökkenő trenddel (-1.514), az átlag (20.74) alatt."
 ],
 "elmeleti": [
-"Feltételezés: a 'nyugdíj', 'hitel' és 'benzin' csökkenése esetleg szezonális vagy hírciklushoz köthető, de ennek okára a payload nem ad támpontot.",
-"Feltételezés: az 'akciós újság' egyidejű csúcsértéke és negatív meredeksége arra utalhat, hogy a mérési időszak elején magasabb volt az érték, majd korábban csökkent, de ez csak feltételezés."
+"Feltételezés: az 'eladó lakás' emelkedése az ingatlanpiaci érdeklődés szezonális vagy piaci okaival függhet össze, de ennek konkrét oka a payloadból nem állapítható meg.",
+"Feltételezés: a 'nyugdíj' adatainak ellentmondása (mai érték > csúcs) mérési vagy adatfeldolgozási anomáliára utalhat."
 ]
 },
 "teljes_kep": {
-"szoveg": "Az átlaghoz és csúcshoz viszonyítva több kulcsszó jelentősen elmarad korábbi maximumától, míg mások közel állnak hozzá.",
+"szoveg": "Az összes vizsgált kulcsszó közül a többség csökkenő tendenciát mutat, csupán egy kifejezés növekszik, kettő pedig stagnál vagy értékelhetetlen.",
 "megfigyelesek": [
-"Az 'állás' mai értéke (16) drasztikusan elmarad a 100-as csúcstól, bár nagyjából megfelel a 25.04-es átlagnak.",
-"A 'betegség' mai értéke (33) közel az átlaghoz (33.79), de messze a 70-es csúcstól.",
-"Az 'eladó lakás' mai értéke (72) közel van a 87-es csúcshoz és meghaladja a 70.7-es átlagot.",
-"A 'napelem' mai értéke (37) jóval a 75-ös csúcs és az 53.5-ös átlag alatt van.",
-"A 'nyaralás' mai értéke (35) a 89-es csúcstól és a 43.88-as átlagtól is elmarad.",
-"A 'kórház' mai értéke (14) messze a 32-es csúcs alatt, és az átlagnál (22.1) is alacsonyabb."
+"13 kulcsszóból 8 csökkenő irányú, 1 növekvő ('eladó lakás'), 2 stagnáló ('akciós újság', 'albérlet'), 1 érvénytelen ('tüntetés').",
+"A legnagyobb csökkenő meredekség a 'kormányablak' (-4.148) és a 'hitel' (-4.016) esetében figyelhető meg."
 ],
 "elmeleti": [
-"Feltételezés: az 'eladó lakás' viszonylag magas, csúcshoz közeli szintje folyamatos érdeklődésre utalhat, de ennek okát a payload nem tartalmazza."
+"Feltételezés: az általános csökkenő trend nyári időszaki keresési mintázatokkal is összefüggésben lehet, de ez a payload alapján nem igazolható."
 ]
 },
 "het": {
-"szoveg": "A kulcsszavakra vonatkozó heti bontású adat (kulcsszo_het) üres a payloadban, így heti trendabout nem áll rendelkezésre.",
+"szoveg": "A heti kulcsszó-bontásra vonatkozó külön adat (kulcsszo_het) üres, így heti szintű elemzés nem végezhető a kulcsszavakra.",
 "megfigyelesek": [
-"A kulcsszo_het mező üres objektum, konkrét heti adatpont nem szerepel benne."
+"A kulcsszo_het mező üres objektumot tartalmaz, konkrét heti adat nem áll rendelkezésre."
 ],
 "elmeleti": []
 }
@@ -180,8 +175,17 @@
 "felkapott": {
 "top": [
 {
-"kifejezes": "viharos szél",
-"volumen": "50000",
+"kifejezes": "vihar",
+"volumen": "20000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "víz",
+"volumen": "20000",
 "novekedes_pct": "1000",
 "temak": [
 "Other"
@@ -189,77 +193,88 @@
 "hirek": []
 },
 {
-"kifejezes": "holnapi időjárás",
+"kifejezes": "autóbusz",
 "volumen": "20000",
-"novekedes_pct": "100",
+"novekedes_pct": "1000",
 "temak": [
-"Climate"
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "hull city afc vs manchester united tabella",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "nagy attila tibor",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Politics",
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "espanyol–real madrid",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
 ],
 "hirek": [
 {
-"hir_cim": "Viharos széllel érkezik a lehűlés – ilyen lesz a holnapi időjárás Hevesben",
-"hir_forras": "HEOL",
-"hir_url": "https://www.heol.hu/helyi-idojaras/2026/08/holnapi-idojaras-hidegfront-zapor-zivatar",
+"hir_cim": "Espanyol - Real Madrid hoy, en directo: última hora de la vuelta de Mourinho a LaLiga EA Sports",
+"hir_forras": "Diario AS",
+"hir_url": "https://as.com/futbol/primera/espanyol-real-madrid-hoy-en-directo-previa-y-ultima-hora-de-la-vuelta-de-mourinho-a-laliga-ea-sports-f202608-d/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBkpFwBtzPu0vzxZEVVx3LfjkAijITPjtJnyP3MBsaOuXzGHLq35pN_kqw5qo",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRIwtSiFeIVUI97GCptC8gQdLUQr-qyMGR6Gdp92IlWrO3a6AgTwyvMsnzEdT4",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Odalett a nyári meleg: meglepetést tartogat az időjárás holnap Heves vármegyében!",
-"hir_forras": "Hirnavigator",
-"hir_url": "https://hirnavigator.hu/hir/10651360-odalett-a-nyari-meleg-meglepetest-tartogat-az-idojaras-holnap-heves-varmegyeben",
+"hir_cim": "Primer examen para Mourinho… con siete bajas y un mensaje a la cantera",
+"hir_forras": "MARCA",
+"hir_url": "https://www.marca.com/futbol/real-madrid/2026/08/21/primer-examen-mourinho-seis-bajas-mensaje-cantera.html",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRAhPGLEqnJfeXVKeV2dQ3jv9hkvgQN112Ua1BrQIJ8j-qICU_gOmrsYGea-nI",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTULYolDzZbaquMcw0Hf0RRhodA96O8k-9hKTwCyOniICeA1SRgUUdpNwbJm98",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Odalett a nyári meleg: meglepetést tartogat az időjárás holnap Heves vármegyében!",
-"hir_forras": "HEOL",
-"hir_url": "https://www.heol.hu/helyi-idojaras/2026/08/idojaras-holnap-elorejelzes-huvos-heves",
+"hir_cim": "ESPN Deportes EN VIVO — canal de transmisión Real Madrid - RCD Espanyol por Fútbol TV y ESPN Select Online",
+"hir_forras": "El Comercio Perú",
+"hir_url": "https://elcomercio.pe/mag/usa/en-vivo-us/espn-deportes-en-vivo-donde-ver-partido-real-madrid-rcd-espanyol-por-futbol-tv-y-espn-select-online-nnda-nnrt-noticia/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRs8W8dhDNxxp63tPqmW1S4R4ZnT6gWGCR77A5uOdvEaykXH4wdirAWTm13yvk",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQUETn0SMEKVK9Qy4bH3XDLCdnPUO-w1Y2s1LjhzL4AgoxXqogW8-nj3LQztDI",
 "hir_kivonat": ""
 }
 ]
 },
 {
-"kifejezes": "országház",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "m3",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "műanyag",
+"kifejezes": "florent manaudou",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
-"Autos and Vehicles"
+"Sports",
+"Hobbies and Leisure"
 ],
 "hirek": []
 },
 {
-"kifejezes": "kárpáti tamás",
+"kifejezes": "parkolás",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
-"Other"
+"Travel and Transportation"
 ],
 "hirek": []
 },
 {
-"kifejezes": "paks–újpest",
+"kifejezes": "lakat t károly",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
@@ -268,35 +283,78 @@
 "hirek": []
 },
 {
-"kifejezes": "ausztria",
+"kifejezes": "felhőszakadás",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
-"Law and Government"
+"Other"
 ],
 "hirek": []
 },
 {
-"kifejezes": "termékvisszahívás",
+"kifejezes": "paks",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
-"Food and Drink"
+"Other"
 ],
 "hirek": []
 },
 {
-"kifejezes": "2026",
+"kifejezes": "m4 élő",
 "volumen": "5000",
-"novekedes_pct": "800",
+"novekedes_pct": "400",
 "temak": [
 "Sports"
 ],
 "hirek": []
 },
 {
-"kifejezes": "üldözés",
-"volumen": "5000",
+"kifejezes": "dortmund–bayern münchen",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": [
+{
+"hir_cim": "Liveticker | Borussia Dortmund - Bayern München 0:2 | Finale | Franz-Beckenbauer-Supercup 2026",
+"hir_forras": "Kicker",
+"hir_url": "https://www.kicker.de/dortmund-gegen-bayern-2026-dfl-supercup-5202610/ticker",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOZVkwtlollOa3jjI79Sfw2aXLUJGdhhZUlE1DHuNZ9HNAG6scGy9pHmv3R_A",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Kompany überrascht mit Musiala-Ersatz gegen den BVB",
+"hir_forras": "Absolut Fussball",
+"hir_url": "https://www.absolutfussball.com/deutschland/fc-bayern-muenchen/entscheidung-bayern-aufstellung-gegen-bvb-kompany-faellt-musiala-zr-94454146.html",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSHaKzAsM5l0NRXV6swKvALtnp54Jcey6PQjIomDSWHIW81yvIkXIivMqlMoOI",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "📸 Kompany-Experiment geht auf! Brown trifft direkt als Bayern-Zehner",
+"hir_forras": "OneFootball",
+"hir_url": "https://onefootball.com/de/news/kompany-experiment-geht-auf-brown-trifft-direkt-als-bayern-zehner-43321226",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8ZnMftkviNbWS2p6XGUfByoizvmDX6sCaaqTmK8MLbBFheOxew2gQSWkRYh8",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "élelmiszer",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "nemzeti vagyonvisszaszerzési és vagyonvédelmi hivatal",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Law and Government"
@@ -304,130 +362,90 @@
 "hirek": []
 },
 {
-"kifejezes": "meghan sussexi hercegné",
+"kifejezes": "szeged365",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
-"Law and Government",
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "európa",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "vasas–pafc",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "mtk–nyíregyháza",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "wolf kati",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
 "Entertainment"
 ],
 "hirek": []
 },
 {
-"kifejezes": "gelencsér tímea",
+"kifejezes": "arsenal vs coventry city fc tabella",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
-"Entertainment"
+"Sports"
 ],
 "hirek": []
 },
 {
-"kifejezes": "f1",
+"kifejezes": "m4 sport élő",
 "volumen": "2000",
 "novekedes_pct": "300",
 "temak": [
 "Sports"
 ],
 "hirek": []
-},
-{
-"kifejezes": "tűz",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "kivégzés",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "tiborcz istván",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Politics"
-],
-"hirek": []
-},
-{
-"kifejezes": "marsi anikó",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "ausztrália",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "robbanás",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Hobbies and Leisure"
-],
-"hirek": []
-},
-{
-"kifejezes": "varga mihály",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
-},
-{
-"kifejezes": "időkép",
-"volumen": "2000",
-"novekedes_pct": "200",
-"temak": [
-"Other"
-],
-"hirek": []
 }
 ],
 "napi": {
-"szoveg": "A mai felkapott keresések élén időjárással kapcsolatos kifejezések állnak, emellett több politikai, sport- és bulvártémájú kifejezés is megjelenik.",
+"szoveg": "A mai felkapott keresések között sport, szórakoztatás és időjárás témák dominálnak, kiemelkedő hírmegjelenéssel a spanyol és német labdarúgás köréből.",
 "megfigyelesek": [
-"A 'viharos szél' a legnagyobb volumenű (50000) és 1000%-os növekedésű kifejezés, 'Other' témabesorolással, hír nélkül.",
-"A 'holnapi időjárás' 20000-es volumennel és 100%-os növekedéssel szerepel, 'Climate' témával, három kapcsolódó hírrel (HEOL, Hirnavigator) viharos szélről és lehűlésről Heves vármegyében.",
-"Az 'országház' és az 'm3' egyaránt 10000-es volumennel és 1000%-os növekedéssel szerepelnek, 'Other' témával, hír nélkül.",
-"Több kifejezés (pl. 'műanyag', 'kárpáti tamás', 'paks–újpest', 'ausztria', 'termékvisszahívás', 'üldözés') 5000-es volumennel és 1000%-os (a '2026' esetén 800%-os) növekedéssel jelenik meg, különböző témákban (Autos and Vehicles, Sports, Law and Government, Food and Drink).",
-"A kisebb volumenű (2000) tételek közt politikai (tiborcz istván, varga mihály), bulvár (meghan sussexi hercegné, marsi anikó, gelencsér tímea) és egyéb (tűz, kivégzés, robbanás, f1, időkép, ausztrália) kifejezések találhatók."
+"A 'vihar', 'víz' és 'autóbusz' kifejezések 20000-es volumennel és 1000%-os növekedéssel a lista élén állnak, de nincs hozzájuk kapcsolódó hír a payloadban.",
+"Az 'espanyol–real madrid' kifejezéshez három hír is tartozik, köztük a Diario AS és a MARCA cikkei Mourinho első meccséről a Real Madrid kispadján.",
+"A 'dortmund–bayern münchen' kifejezéshez szintén három hír kapcsolódik, a Kicker élő közvetítése és a Bayern München 2:0-s vezetéséről szóló beszámolók szerepelnek köztük.",
+"Az 'm4 élő' és 'm4 sport élő' kifejezések alacsonyabb, 400% és 300%-os növekedést mutatnak a többi felkapott kifejezéshez képest."
 ],
 "elmeleti": [
-"Feltételezés: a 'viharos szél' és 'holnapi időjárás' magas volumene és a mellékelt hírek alapján ezek a kifejezések feltehetően egy közelgő időjárási fronttal (lehűlés, szél) függhetnek össze, amit a HEOL és Hirnavigator cikkei is jeleznek.",
-"Feltételezés: az 'országház', 'm3' és más hír nélküli kifejezések mögötti konkrét esemény nem állapítható meg a rendelkezésre álló adatokból."
+"Feltételezés: a 'vihar', 'víz' és 'felhőszakadás' kifejezések együttes megjelenése aznapi időjárási eseményre utalhat, bár erről konkrét hír nem szerepel a payloadban."
 ]
 },
 "het": {
-"szoveg": "A heti visszatérő kifejezések között a 'holnapi időjárás' a leggyakoribb, emellett néhány politikai és sport témájú kifejezés is több napon át felbukkant, a lista túlnyomó része azonban egyszeri megjelenésű, sokféle témát lefedő kifejezésekből áll.",
+"szoveg": "A heti visszatérő keresések között az időjárási és politikai témák, valamint néhány sport esemény ismétlődnek több napon keresztül.",
 "megfigyelesek": [
-"A 'holnapi időjárás' 3 napon szerepelt a héten, ez a legtöbbször visszatérő kifejezés.",
-"A '2026', 'elnök', 'kormány' és 'lionel messi' kifejezések egyaránt 2-2 napon jelentek meg.",
-"A többi mintegy száz kifejezés (pl. 'ausztria', 'f1', 'rogán antal', 'tiborcz istván', 'marsi anikó', 'ukrajna', 'zászló', 'tűzijáték') csak 1 napon szerepelt a héten.",
-"A visszatérő lista rendkívül heterogén, politikai (pl. 'sulyok tamás', 'navracsics tibor'), sport (pl. 'f1', 'trabzonspor–ftc', 'zalaegerszeg–ftc'), bulvár (pl. 'hayden panettiere', 'radics gigi') és egyéb hétköznapi (pl. 'bankkártya', 'palack visszaváltás', 'víz') témákat is tartalmaz."
+"A 'holnapi időjárás' kifejezés 3 napon át szerepelt a visszatérő keresések között, ez a leggyakoribb elem a listában.",
+"A '2026', 'elnök', 'felhőszakadás', 'lionel messi' és 'víz' kifejezések egyaránt 2-2 napon jelentek meg.",
+"A lista túlnyomó többsége (több mint 100 kifejezés) csak egyetlen napon szerepelt, ami széles és szórt témakört jelez."
 ],
 "elmeleti": [
-"Feltételezés: a 'holnapi időjárás' többszöri visszatérése arra utalhat, hogy a hét folyamán tartósan aktuális volt az időjárási helyzet, de a konkrét okról a payload nem ad részletet."
+"Feltételezés: az 'elnök' és 'lionel messi' kifejezések ismétlődő megjelenése folyamatban lévő eseményekhez (pl. politikai fejlemények vagy sportesemények) kapcsolódhat, de ennek pontos hátterét a payload nem tartalmazza."
 ]
 },
 "het_valos": {
@@ -446,7 +464,7 @@
 "napok_szama": 2
 },
 {
-"kifejezes": "kormány",
+"kifejezes": "felhőszakadás",
 "napok_szama": 2
 },
 {
@@ -454,19 +472,19 @@
 "napok_szama": 2
 },
 {
+"kifejezes": "víz",
+"napok_szama": 2
+},
+{
 "kifejezes": "4ig",
 "napok_szama": 1
 },
 {
-"kifejezes": "4ig nyrt",
-"napok_szama": 1
-},
-{
-"kifejezes": "adam driver marvel",
-"napok_szama": 1
-},
-{
 "kifejezes": "amszterdam",
+"napok_szama": 1
+},
+{
+"kifejezes": "arsenal vs coventry city fc tabella",
 "napok_szama": 1
 },
 {
@@ -490,6 +508,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "autóbusz",
+"napok_szama": 1
+},
+{
 "kifejezes": "bankjegy",
 "napok_szama": 1
 },
@@ -503,10 +525,6 @@
 },
 {
 "kifejezes": "biztonsági öv",
-"napok_szama": 1
-},
-{
-"kifejezes": "bochkor gábor",
 "napok_szama": 1
 },
 {
@@ -534,6 +552,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "dortmund–bayern münchen",
+"napok_szama": 1
+},
+{
 "kifejezes": "dvsc–eto",
 "napok_szama": 1
 },
@@ -542,7 +564,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "espanyol–real madrid",
+"napok_szama": 1
+},
+{
 "kifejezes": "eszenyi enikő",
+"napok_szama": 1
+},
+{
+"kifejezes": "európa",
 "napok_szama": 1
 },
 {
@@ -558,11 +588,11 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "felhőszakadás",
+"kifejezes": "film",
 "napok_szama": 1
 },
 {
-"kifejezes": "film",
+"kifejezes": "florent manaudou",
 "napok_szama": 1
 },
 {
@@ -610,15 +640,11 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "hitel",
+"kifejezes": "hull city afc vs manchester united tabella",
 "napok_szama": 1
 },
 {
 "kifejezes": "időkép",
-"napok_szama": 1
-},
-{
-"kifejezes": "kazincbarcika",
 "napok_szama": 1
 },
 {
@@ -627,6 +653,10 @@
 },
 {
 "kifejezes": "klímaváltozás",
+"napok_szama": 1
+},
+{
+"kifejezes": "kormány",
 "napok_szama": 1
 },
 {
@@ -650,7 +680,7 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "külügyminisztérium",
+"kifejezes": "lakat t károly",
 "napok_szama": 1
 },
 {
@@ -678,6 +708,14 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "m4 sport élő",
+"napok_szama": 1
+},
+{
+"kifejezes": "m4 élő",
+"napok_szama": 1
+},
+{
 "kifejezes": "magyar közlöny",
 "napok_szama": 1
 },
@@ -702,11 +740,11 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "milan–man utd",
+"kifejezes": "miskolc",
 "napok_szama": 1
 },
 {
-"kifejezes": "miskolc",
+"kifejezes": "mtk–nyíregyháza",
 "napok_szama": 1
 },
 {
@@ -718,6 +756,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "nagy attila tibor",
+"napok_szama": 1
+},
+{
 "kifejezes": "navracsics tibor",
 "napok_szama": 1
 },
@@ -726,7 +768,7 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "népszava",
+"kifejezes": "nemzeti vagyonvisszaszerzési és vagyonvédelmi hivatal",
 "napok_szama": 1
 },
 {
@@ -746,7 +788,7 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "otp bankkártya",
+"kifejezes": "paks",
 "napok_szama": 1
 },
 {
@@ -755,6 +797,10 @@
 },
 {
 "kifejezes": "palack visszaváltás",
+"napok_szama": 1
+},
+{
+"kifejezes": "parkolás",
 "napok_szama": 1
 },
 {
@@ -786,10 +832,6 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "rendőrség",
-"napok_szama": 1
-},
-{
 "kifejezes": "robbanás",
 "napok_szama": 1
 },
@@ -814,11 +856,11 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "sulyok tamás",
+"kifejezes": "szabó álmos",
 "napok_szama": 1
 },
 {
-"kifejezes": "szabó álmos",
+"kifejezes": "szeged365",
 "napok_szama": 1
 },
 {
@@ -838,10 +880,6 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "tihanyi péter",
-"napok_szama": 1
-},
-{
 "kifejezes": "trabzonspor–ftc",
 "napok_szama": 1
 },
@@ -851,14 +889,6 @@
 },
 {
 "kifejezes": "támogatás",
-"napok_szama": 1
-},
-{
-"kifejezes": "tényi istván",
-"napok_szama": 1
-},
-{
-"kifejezes": "tóth máté",
 "napok_szama": 1
 },
 {
@@ -886,7 +916,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "vasas–pafc",
+"napok_szama": 1
+},
+{
 "kifejezes": "vidnyánszky attila",
+"napok_szama": 1
+},
+{
+"kifejezes": "vihar",
 "napok_szama": 1
 },
 {
@@ -894,11 +932,11 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "víz",
+"kifejezes": "webáruház",
 "napok_szama": 1
 },
 {
-"kifejezes": "webáruház",
+"kifejezes": "wolf kati",
 "napok_szama": 1
 },
 {
@@ -918,11 +956,11 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "ókovács szilveszter",
+"kifejezes": "élelmiszer",
 "napok_szama": 1
 },
 {
-"kifejezes": "újpest–mtk",
+"kifejezes": "ókovács szilveszter",
 "napok_szama": 1
 },
 {
