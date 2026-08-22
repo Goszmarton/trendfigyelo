@@ -5,8 +5,14 @@ kizárólag a payloadban kapott számokból ír (spec §2.1). Ok-okozat tényké
 hipotézis = külön ELMÉLETI mező (spec §2.2).
 """
 
+import json
+import logging
+from pathlib import Path
+
 from trendfigyelo import seged
 
+
+_log = logging.getLogger(__name__)
 
 MODELL = "claude-sonnet-5"
 
@@ -184,3 +190,74 @@ def valasz_to_artefakt(ai_valasz, payload, nap, modell):
             "het": ai_valasz["felkapott"]["het"],
         },
     }
+
+
+def _betolt(fajl):
+    p = Path(fajl)
+    if not p.exists():
+        return None
+    return json.loads(p.read_text(encoding="utf-8"))
+
+
+def _utolso_napok_trendek(docs_data, hany=7):
+    idx = _betolt(Path(docs_data) / "napok" / "index.json") or {"napok": []}
+    ki = {}
+    for datum in idx["napok"][-hany:]:
+        nap_adat = _betolt(Path(docs_data) / "napok" / f"{datum}.json")
+        if nap_adat:
+            ki[datum] = nap_adat.get("trendek", [])
+    return ki
+
+
+def _index_frissit(elemzesek_dir, nap):
+    idx_fajl = elemzesek_dir / "index.json"
+    idx = _betolt(idx_fajl) or {"napok": []}
+    if nap not in idx["napok"]:
+        idx["napok"].append(nap)
+        idx["napok"].sort()
+    seged.atomi_ir_szoveg(idx_fajl, json.dumps(idx, ensure_ascii=False, indent=0))
+
+
+def _elozo_archivum(docs_data, nap):
+    """A legutolsó, `nap`-nál korábbi archivált elemzés (a nap-diffhez)."""
+    idx = _betolt(Path(docs_data) / "elemzesek" / "index.json") or {"napok": []}
+    korabbi = [d for d in idx["napok"] if d < nap]
+    if not korabbi:
+        return None
+    return _betolt(Path(docs_data) / "elemzesek" / f"{max(korabbi)}.json")
+
+
+def futtat(docs_data, nap, kliens=None):
+    docs_data = Path(docs_data)
+    adatok = {
+        "regresszio": _betolt(docs_data / "kulcsszo_regresszio.json") or {},
+        "tortenet": _betolt(docs_data / "tortenet.json") or {},
+        "legfrissebb": _betolt(docs_data / "legfrissebb.json") or {},
+        "napok_trendek": _utolso_napok_trendek(docs_data),
+    }
+    tegnapi = _elozo_archivum(docs_data, nap)
+    payload = epit_payload(
+        adatok,
+        tegnapi_szamok=(tegnapi or {}).get("kulcsszavak", {}).get("szamok") if tegnapi else None,
+        tegnapi_top=(tegnapi or {}).get("felkapott", {}).get("top") if tegnapi else None,
+    )
+    try:
+        ai_valasz = elemez(payload, kliens=kliens)
+    except Exception as e:                       # noqa: BLE001 — fail-soft: az elemzés nem pótolhatatlan
+        _log.warning("FIGYELEM: az AI-elemzés elhasalt (%s) — az előző elemzes.json marad.", e)
+        return 2
+    art = valasz_to_artefakt(ai_valasz, payload, nap=nap, modell=MODELL)
+    szoveg = json.dumps(art, ensure_ascii=False, indent=0)
+    elemzesek_dir = docs_data / "elemzesek"
+    elemzesek_dir.mkdir(exist_ok=True)
+    seged.atomi_ir_szoveg(elemzesek_dir / f"{nap}.json", szoveg)
+    seged.atomi_ir_szoveg(docs_data / "elemzes.json", szoveg)
+    _index_frissit(elemzesek_dir, nap)
+    return 0
+
+
+def main():
+    import os
+    nap = os.environ.get("ELEMZES_NAP") or seged.bp_idobelyeg(seged.most_utc())[:10]
+    docs_data = Path(__file__).resolve().parent.parent / "docs" / "data"
+    return futtat(docs_data, nap=nap)

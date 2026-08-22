@@ -189,6 +189,64 @@ def test_elemez_a_varrat_mogott_nem_hiv_halozatot():
     assert valasz["valtozas"]["elmeleti"] == ["e"]
 
 
+import json
+from pathlib import Path
+
+
+def _minimal_docs_data(tmp_path):
+    dd = tmp_path / "data"
+    (dd / "napok").mkdir(parents=True)
+    (dd / "kulcsszo_regresszio.json").write_text(json.dumps(
+        _regresszio_egy_szo("emelkedik", 1.0, True, 10.0)), encoding="utf-8")
+    (dd / "tortenet.json").write_text(json.dumps(
+        {"napok": [{"nap": "2026-08-22", "kulcsszavak": [{"kulcsszo": "állás", "atlag": 25.0, "csucs": 100.0}]}]}),
+        encoding="utf-8")
+    (dd / "legfrissebb.json").write_text(json.dumps({"top_trendek": [{"kifejezes": "eső"}]}), encoding="utf-8")
+    (dd / "napok" / "index.json").write_text(json.dumps({"napok": ["2026-08-22"]}), encoding="utf-8")
+    (dd / "napok" / "2026-08-22.json").write_text(json.dumps({"nap": "2026-08-22", "trendek": [{"kifejezes": "eső"}]}),
+                                                  encoding="utf-8")
+    return dd
+
+
+def test_futtat_sikeres_ut_ir_artefaktot_archivumot_indexet(tmp_path):
+    dd = _minimal_docs_data(tmp_path)
+    kod = elemzo.futtat(dd, nap="2026-08-22", kliens=KamuKliens(_ai_valasz()))
+    assert kod == 0
+    art = json.loads((dd / "elemzes.json").read_text(encoding="utf-8"))
+    assert art["nap"] == "2026-08-22"
+    assert art["kulcsszavak"]["napi"]["szoveg"] == "sz"
+    # archívum + index
+    assert (dd / "elemzesek" / "2026-08-22.json").exists()
+    idx = json.loads((dd / "elemzesek" / "index.json").read_text(encoding="utf-8"))
+    assert idx["napok"] == ["2026-08-22"]
+
+
+class HibasKliens:
+    def uzenet(self, payload, modell):
+        raise RuntimeError("429 szimulált")
+
+
+def test_futtat_fail_soft_megorzi_az_elozo_elemzest(tmp_path):
+    dd = _minimal_docs_data(tmp_path)
+    regi = json.dumps({"nap": "2026-08-21", "modell": "regi"}, ensure_ascii=False)
+    (dd / "elemzes.json").write_text(regi, encoding="utf-8")
+    kod = elemzo.futtat(dd, nap="2026-08-22", kliens=HibasKliens())
+    assert kod == 2
+    # a LEMEZEN a régi maradt (SZANDEKOS-ZOLD-VAK: a lemezt nézzük, nem a visszatérést)
+    a_lemezen = json.loads((dd / "elemzes.json").read_text(encoding="utf-8"))
+    assert a_lemezen["nap"] == "2026-08-21"
+    assert not (dd / "elemzesek" / "2026-08-22.json").exists()
+
+
+def test_main_env_nappal_fut(tmp_path, monkeypatch):
+    # a main a docs/data-t a repo gyökérből veszi; itt csak azt igazoljuk, hogy az env-nap átmegy
+    hivott = {}
+    monkeypatch.setattr(elemzo, "futtat", lambda docs_data, nap, kliens=None: hivott.setdefault("nap", nap) and 0)
+    monkeypatch.setenv("ELEMZES_NAP", "2026-08-22")
+    assert elemzo.main() == 0
+    assert hivott["nap"] == "2026-08-22"
+
+
 def test_valasz_to_artefakt_valos_reteg_es_ai_narrativa():
     payload = {
         "kulcsszavak": {"szamok": [{"szo": "állás", "irany": "emelkedik", "meredekseg": 1.0,
