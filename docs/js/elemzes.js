@@ -66,6 +66,24 @@ function valos_felkapott_csempek(top) {
   return wrap;
 }
 
+// VALÓS heti felkapott-visszatérés csempék (het_valos.visszateroek — Pythonból számolt
+// „hány külön napon szerepelt" lista, NEM az AI het-narratívája). Ugyanaz a tile-osztály,
+// mint a napi felkapott-top csempéké (.elemzes-felkapott-csempe) — a SAME VALÓS stílus.
+// Guard: hiányzó/üres het_valos esetén nem dob, nem rajzol semmit.
+function valos_felkapott_het_csempek(hetValos) {
+  const wrap = document.createElement("div");
+  wrap.className = "elemzes-csempek";
+  wrap.id = "felkapott-het-valos";
+  const visszateroek = (hetValos && hetValos.visszateroek) || [];
+  visszateroek.forEach((v) => {
+    const c = document.createElement("div");
+    c.className = "elemzes-felkapott-csempe";
+    c.textContent = `${v.kifejezes} — ${v.napok_szama} nap`;
+    wrap.appendChild(c);
+  });
+  return wrap;
+}
+
 function rajzol(art) {
   const t = document.getElementById("elemzes-tartalom");
   t.textContent = "";
@@ -84,6 +102,15 @@ function rajzol(art) {
     ? `Irányt váltott: ${d.irany_valtok.map((v) => v.szo).join(", ") || "–"} · új felkapott: ${d.felkapott_uj.join(", ") || "–"} · eltűnt: ${d.felkapott_eltunt.join(", ") || "–"}`
     : "Nincs összevethető előző nap.";
   valt.appendChild(diffOsszegzes);
+  // legnagyobb mozgók (VALÓS, a nap-diffből — d.mozgok) — csak ha van előző nap ÉS van mozgás
+  if (d.van_elozo && Array.isArray(d.mozgok) && d.mozgok.length) {
+    const mozgokP = document.createElement("p");
+    mozgokP.className = "elemzes-diff-mozgok elemzes-megfigyeles";   // VALÓS réteg (diff-számítás)
+    mozgokP.textContent = "legnagyobb mozgók: " + d.mozgok
+      .map((m) => `${m.szo} (${m.valtozas > 0 ? "+" : ""}${m.valtozas})`)
+      .join(", ");
+    valt.appendChild(mozgokP);
+  }
   t.appendChild(valt);
 
   // Kulcsszavak
@@ -96,6 +123,11 @@ function rajzol(art) {
   t.appendChild(valos_felkapott_csempek(art.felkapott.top));
   t.appendChild(szekcio_elem("Felkapott — napi", art.felkapott.napi));
   t.appendChild(szekcio_elem("Felkapott — heti összesítés", art.felkapott.het));
+  // VALÓS heti visszatérés-csempék (het_valos) — guard: hiányzó/üres esetén nem rajzol semmit
+  const hetValos = art.felkapott.het_valos;
+  if (hetValos && Array.isArray(hetValos.visszateroek) && hetValos.visszateroek.length) {
+    t.appendChild(valos_felkapott_het_csempek(hetValos));
+  }
 }
 
 // ── archívum nap-választó — a naptar_epit (app.js:454) VALÓS interfészét használja:

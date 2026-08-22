@@ -64,6 +64,7 @@ def _felkapott(legfrissebb, napok_trendek):
         top.append({
             "kifejezes": t.get("kifejezes"), "volumen": t.get("volumen"),
             "novekedes_pct": t.get("novekedes_pct"), "temak": t.get("temak", []),
+            "hirek": t.get("hirek", []),
         })
     # gördülő hét: hány KÜLÖN NAPON szerepelt egy kifejezés (napok_trendek = utolsó ≤7 nap).
     # Napon belül minden kifejezés LEGFELJEBB egyszer számít (dedup) — a szerződés
@@ -188,6 +189,7 @@ def valasz_to_artefakt(ai_valasz, payload, nap, modell):
             "top": payload["felkapott"]["top"],
             "napi": ai_valasz["felkapott"]["napi"],
             "het": ai_valasz["felkapott"]["het"],
+            "het_valos": payload["felkapott"]["het"],
         },
     }
 

@@ -62,6 +62,22 @@ def test_felkapott_top_es_gordulo_het():
     assert het["eső"] == 1
 
 
+def test_felkapott_top_tovabbitja_a_hireket():
+    # A RENDSZER_PROMPT megengedi az AI-nak a 'hirek' mező használatát — de csak akkor
+    # jut el hozzá, ha a _felkapott ténylegesen továbbadja a legfrissebb.top_trendek 'hirek' listáját.
+    adatok = {
+        "regresszio": {"kulcsszavak": {}},
+        "tortenet": {"napok": []},
+        "legfrissebb": {"top_trendek": [
+            {"kifejezes": "viharos szél", "volumen": "50000", "novekedes_pct": "1000",
+             "temak": ["Other"], "hirek": [{"cim": "Vihar közeleg", "forras": "hvg.hu"}]},
+        ]},
+        "napok_trendek": {},
+    }
+    payload = elemzo.epit_payload(adatok)
+    assert payload["felkapott"]["top"][0]["hirek"] == [{"cim": "Vihar közeleg", "forras": "hvg.hu"}]
+
+
 def test_gordulo_het_napon_beluli_dedup():
     # Ha egy kifejezés EGY napon belül kétszer szerepel, az akkor is CSAK
     # egy nap (a "hány külön napon" szerződés — nem bejegyzés-számláló).
@@ -265,3 +281,20 @@ def test_valasz_to_artefakt_valos_reteg_es_ai_narrativa():
     # AI-narratíva a helyén:
     assert art["kulcsszavak"]["napi"]["szoveg"] == "sz"
     assert art["felkapott"]["het"]["elmeleti"] == ["e"]
+
+
+def test_valasz_to_artefakt_megorzi_a_heti_valos_reteget():
+    # A payload felkapott.het (VALÓS, determinisztikus heti visszatérés) NE vesszen el —
+    # az AI narratíva felülírja a felkapott.het-et, de a VALÓS számoknak sibling het_valos
+    # mezőben meg kell maradniuk (nem-törő bővítés).
+    payload = {
+        "kulcsszavak": {"szamok": []},
+        "felkapott": {"top": [],
+                      "het": {"napok": 3, "visszateroek": [{"kifejezes": "eső", "napok_szama": 2}]}},
+        "valtozas": {"irany_valtok": [], "mozgok": [], "felkapott_uj": [], "felkapott_eltunt": [], "van_elozo": False},
+    }
+    art = elemzo.valasz_to_artefakt(_ai_valasz(), payload, nap="2026-08-22", modell="claude-sonnet-5")
+    assert art["felkapott"]["het_valos"]["visszateroek"] == [{"kifejezes": "eső", "napok_szama": 2}]
+    assert art["felkapott"]["het_valos"]["napok"] == 3
+    # az AI-narratíva a het mezőben marad, változatlanul:
+    assert art["felkapott"]["het"]["szoveg"] == "sz"
