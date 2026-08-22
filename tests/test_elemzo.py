@@ -60,3 +60,34 @@ def test_felkapott_top_es_gordulo_het():
     het = {e["kifejezes"]: e["napok_szama"] for e in felk["het"]["visszateroek"]}
     assert het["viharos szél"] == 2      # 08-21 és 08-22
     assert het["eső"] == 1
+
+
+def test_gordulo_het_napon_beluli_dedup():
+    # Ha egy kifejezés EGY napon belül kétszer szerepel, az akkor is CSAK
+    # egy nap (a "hány külön napon" szerződés — nem bejegyzés-számláló).
+    adatok = {
+        "regresszio": {"kulcsszavak": {}},
+        "tortenet": {"napok": []},
+        "legfrissebb": {"top_trendek": []},
+        "napok_trendek": {
+            "2026-08-22": [{"kifejezes": "eső", "volumen": "20000", "temak": ["Weather"]},
+                           {"kifejezes": "eső", "volumen": "10000", "temak": ["Weather"]}],
+        },
+    }
+    payload = elemzo.epit_payload(adatok)
+    het = {e["kifejezes"]: e["napok_szama"] for e in payload["felkapott"]["het"]["visszateroek"]}
+    assert het["eső"] == 1               # egy napon belüli duplikátum → 1 nap
+
+
+def test_gordulo_het_none_napok_trendek_guard():
+    # Explicit None napok_trendek esetén ne AttributeError-özzön, adjon üres eredményt.
+    adatok = {
+        "regresszio": {"kulcsszavak": {}},
+        "tortenet": {"napok": []},
+        "legfrissebb": {"top_trendek": []},
+        "napok_trendek": None,
+    }
+    payload = elemzo.epit_payload(adatok)
+    het = payload["felkapott"]["het"]
+    assert het["napok"] == 0
+    assert het["visszateroek"] == []

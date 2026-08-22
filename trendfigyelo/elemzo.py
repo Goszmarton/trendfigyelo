@@ -43,13 +43,16 @@ def _felkapott(legfrissebb, napok_trendek):
             "kifejezes": t.get("kifejezes"), "volumen": t.get("volumen"),
             "novekedes_pct": t.get("novekedes_pct"), "temak": t.get("temak", []),
         })
-    # gördülő hét: hány külön napon szerepelt egy kifejezés (napok_trendek = utolsó ≤7 nap)
+    # gördülő hét: hány KÜLÖN NAPON szerepelt egy kifejezés (napok_trendek = utolsó ≤7 nap).
+    # Napon belül minden kifejezés LEGFELJEBB egyszer számít (dedup) — a szerződés
+    # a "hány külön nap", nem a bejegyzés-szám.
+    napok_trendek = napok_trendek if isinstance(napok_trendek, dict) else {}
     szamlalo = {}
     for _datum, trendek in sorted(napok_trendek.items()):
-        for t in trendek:
-            kif = t.get("kifejezes")
-            if kif:
-                szamlalo[kif] = szamlalo.get(kif, 0) + 1
+        napi_kifejezesek = {t.get("kifejezes") for t in trendek}
+        napi_kifejezesek.discard(None)
+        for kif in napi_kifejezesek:
+            szamlalo[kif] = szamlalo.get(kif, 0) + 1
     visszateroek = sorted(
         ({"kifejezes": k, "napok_szama": n} for k, n in szamlalo.items()),
         key=lambda e: (-e["napok_szama"], e["kifejezes"]),
