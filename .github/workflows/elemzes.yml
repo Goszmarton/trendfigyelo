@@ -1,0 +1,65 @@
+name: Napi AI-elemzés
+
+on:
+  workflow_run:
+    workflows: ["Napi trendgyűjtés"]   # a napi.yml `name`-je
+    types: [completed]
+  workflow_dispatch: {}                # kézi teszt
+
+permissions:
+  contents: write
+
+concurrency:
+  group: napi-futtatas                 # NE fusson a gyűjtéssel párban
+  cancel-in-progress: false
+
+jobs:
+  elemzes:
+    # csak a napi.yml SIKERES lefutása után (kézi indításnál a feltétel átugorható)
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (a friss, épp commitolt adat)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Python beállítása
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Függőségek telepítése
+        run: pip install -r requirements.txt
+
+      - name: Elemzés futtatása
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          set -o pipefail
+          python elemzes.py 2>&1 | tee elemzes.log
+
+      - name: Változások commitolása (CSAK az elemzés-fájlok, KÜLÖN commit)
+        if: always() && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase --autostash || true
+          git add docs/data/elemzes.json docs/data/elemzesek
+          if git diff --staged --quiet; then
+            echo "Nincs elemzés-változás — nincs commit."
+          else
+            git commit -m "adat: napi AI-elemzés ($(date -u +%Y-%m-%dT%H:%MZ))"
+            git push
+          fi
+
+      - name: Artefakt (a log + az elemzés-fájlok — mindig)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: elemzes-${{ github.run_id }}
+          retention-days: 14
+          path: |
+            elemzes.log
+            docs/data/elemzes.json
+            docs/data/elemzesek/**
