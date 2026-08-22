@@ -1,0 +1,935 @@
+{
+"frissitve": "2026-08-22T19:02:17+00:00",
+"modell": "claude-sonnet-5",
+"nap": "2026-08-22",
+"valtozas": {
+"diff": {
+"irany_valtok": [],
+"mozgok": [],
+"felkapott_uj": [],
+"felkapott_eltunt": [],
+"van_elozo": false
+},
+"szoveg": "Nincs elérhető korábbi időszakra vonatkozó összehasonlító adat (van_elozo: hamis), így a mai adatokból kiinduló változásokat nem lehet korábbi állapothoz viszonyítani.",
+"megfigyelesek": [
+"Az irany_valtok, mozgok, felkapott_uj és felkapott_eltunt listák üresek a kapott payloadban.",
+"A van_elozo mező értéke hamis, tehát nincs bázisadat az összevetéshez."
+],
+"elmeleti": [
+"Feltételezés: az üres listák és a van_elozo=hamis arra utalhat, hogy ez az első mért időszak, vagy a rendszer még nem gyűjtött össze elegendő korábbi adatot az összehasonlításhoz."
+]
+},
+"kulcsszavak": {
+"szamok": [
+{
+"szo": "akciós újság",
+"irany": "csokken",
+"meredekseg": -1.562,
+"ervenyes": true,
+"mai_ertek": 44,
+"csucs": 44.0,
+"atlag": 34.33
+},
+{
+"szo": "albérlet",
+"irany": "novekszik",
+"meredekseg": 1.149,
+"ervenyes": true,
+"mai_ertek": 37,
+"csucs": 41.0,
+"atlag": 30.21
+},
+{
+"szo": "benzin",
+"irany": "csokken",
+"meredekseg": -1.737,
+"ervenyes": true,
+"mai_ertek": 23,
+"csucs": 47.0,
+"atlag": 30.38
+},
+{
+"szo": "betegség",
+"irany": "stagnal",
+"meredekseg": -0.671,
+"ervenyes": true,
+"mai_ertek": 33,
+"csucs": 70.0,
+"atlag": 33.79
+},
+{
+"szo": "eladó lakás",
+"irany": "stagnal",
+"meredekseg": 0.421,
+"ervenyes": true,
+"mai_ertek": 72,
+"csucs": 87.0,
+"atlag": 70.7
+},
+{
+"szo": "hitel",
+"irany": "csokken",
+"meredekseg": -3.787,
+"ervenyes": true,
+"mai_ertek": 17,
+"csucs": 23.0,
+"atlag": 16.83
+},
+{
+"szo": "kormányablak",
+"irany": "stagnal",
+"meredekseg": 0.393,
+"ervenyes": true,
+"mai_ertek": 8,
+"csucs": 17.0,
+"atlag": 11.83
+},
+{
+"szo": "kórház",
+"irany": "stagnal",
+"meredekseg": 0.456,
+"ervenyes": true,
+"mai_ertek": 14,
+"csucs": 32.0,
+"atlag": 22.1
+},
+{
+"szo": "napelem",
+"irany": "stagnal",
+"meredekseg": -0.016,
+"ervenyes": true,
+"mai_ertek": 37,
+"csucs": 75.0,
+"atlag": 53.5
+},
+{
+"szo": "nyaralás",
+"irany": "stagnal",
+"meredekseg": -0.973,
+"ervenyes": true,
+"mai_ertek": 35,
+"csucs": 89.0,
+"atlag": 43.88
+},
+{
+"szo": "nyugdíj",
+"irany": "csokken",
+"meredekseg": -4.486,
+"ervenyes": true,
+"mai_ertek": 7,
+"csucs": 22.0,
+"atlag": 8.9
+},
+{
+"szo": "tüntetés",
+"irany": null,
+"meredekseg": null,
+"ervenyes": false,
+"mai_ertek": null,
+"csucs": 64.0,
+"atlag": 49.8
+},
+{
+"szo": "állás",
+"irany": "stagnal",
+"meredekseg": -0.407,
+"ervenyes": true,
+"mai_ertek": 16,
+"csucs": 100.0,
+"atlag": 25.04
+}
+],
+"napi": {
+"szoveg": "A mai kulcsszó-adatok között több kifejezés is jelentős napi csökkenést mutat, míg csak egy kifejezés, az 'albérlet' emelkedik érdemben.",
+"megfigyelesek": [
+"A 'nyugdíj' meredeksége -4.486, ez a legnagyobb csökkenés a listában, mai értéke 7, ami messze a 8.9-es átlag és a 22-es csúcs alatt van.",
+"A 'hitel' meredeksége -3.787, mai értéke 17, közel az átlaghoz (16.83), de a 23-as csúcstól elmarad.",
+"A 'benzin' meredeksége -1.737, mai értéke 23, jelentősen a 47-es csúcs és a 30.38-as átlag alatt.",
+"Az 'akciós újság' meredeksége -1.562, ugyanakkor mai értéke 44, ami a megadott csúcsérték (44.0) is egyben.",
+"Az 'albérlet' az egyetlen érdemben növekvő kifejezés, meredeksége 1.149, mai értéke 37, közel a 41-es csúcshoz és az átlag (30.21) fölött.",
+"A többi kulcsszó ('betegség', 'eladó lakás', 'kormányablak', 'kórház', 'napelem', 'nyaralás', 'állás') stagnálónak van jelölve, kis abszolút meredekségekkel.",
+"A 'tüntetés' kifejezés érvénytelen (ervenyes: hamis), mai értéke nem elérhető, csak csúcs (64.0) és átlag (49.8) adata van."
+],
+"elmeleti": [
+"Feltételezés: a 'nyugdíj', 'hitel' és 'benzin' csökkenése esetleg szezonális vagy hírciklushoz köthető, de ennek okára a payload nem ad támpontot.",
+"Feltételezés: az 'akciós újság' egyidejű csúcsértéke és negatív meredeksége arra utalhat, hogy a mérési időszak elején magasabb volt az érték, majd korábban csökkent, de ez csak feltételezés."
+]
+},
+"teljes_kep": {
+"szoveg": "Az átlaghoz és csúcshoz viszonyítva több kulcsszó jelentősen elmarad korábbi maximumától, míg mások közel állnak hozzá.",
+"megfigyelesek": [
+"Az 'állás' mai értéke (16) drasztikusan elmarad a 100-as csúcstól, bár nagyjából megfelel a 25.04-es átlagnak.",
+"A 'betegség' mai értéke (33) közel az átlaghoz (33.79), de messze a 70-es csúcstól.",
+"Az 'eladó lakás' mai értéke (72) közel van a 87-es csúcshoz és meghaladja a 70.7-es átlagot.",
+"A 'napelem' mai értéke (37) jóval a 75-ös csúcs és az 53.5-ös átlag alatt van.",
+"A 'nyaralás' mai értéke (35) a 89-es csúcstól és a 43.88-as átlagtól is elmarad.",
+"A 'kórház' mai értéke (14) messze a 32-es csúcs alatt, és az átlagnál (22.1) is alacsonyabb."
+],
+"elmeleti": [
+"Feltételezés: az 'eladó lakás' viszonylag magas, csúcshoz közeli szintje folyamatos érdeklődésre utalhat, de ennek okát a payload nem tartalmazza."
+]
+},
+"het": {
+"szoveg": "A kulcsszavakra vonatkozó heti bontású adat (kulcsszo_het) üres a payloadban, így heti trendabout nem áll rendelkezésre.",
+"megfigyelesek": [
+"A kulcsszo_het mező üres objektum, konkrét heti adatpont nem szerepel benne."
+],
+"elmeleti": []
+}
+},
+"felkapott": {
+"top": [
+{
+"kifejezes": "viharos szél",
+"volumen": "50000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "holnapi időjárás",
+"volumen": "20000",
+"novekedes_pct": "100",
+"temak": [
+"Climate"
+],
+"hirek": [
+{
+"hir_cim": "Viharos széllel érkezik a lehűlés – ilyen lesz a holnapi időjárás Hevesben",
+"hir_forras": "HEOL",
+"hir_url": "https://www.heol.hu/helyi-idojaras/2026/08/holnapi-idojaras-hidegfront-zapor-zivatar",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBkpFwBtzPu0vzxZEVVx3LfjkAijITPjtJnyP3MBsaOuXzGHLq35pN_kqw5qo",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Odalett a nyári meleg: meglepetést tartogat az időjárás holnap Heves vármegyében!",
+"hir_forras": "Hirnavigator",
+"hir_url": "https://hirnavigator.hu/hir/10651360-odalett-a-nyari-meleg-meglepetest-tartogat-az-idojaras-holnap-heves-varmegyeben",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRAhPGLEqnJfeXVKeV2dQ3jv9hkvgQN112Ua1BrQIJ8j-qICU_gOmrsYGea-nI",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Odalett a nyári meleg: meglepetést tartogat az időjárás holnap Heves vármegyében!",
+"hir_forras": "HEOL",
+"hir_url": "https://www.heol.hu/helyi-idojaras/2026/08/idojaras-holnap-elorejelzes-huvos-heves",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRs8W8dhDNxxp63tPqmW1S4R4ZnT6gWGCR77A5uOdvEaykXH4wdirAWTm13yvk",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "országház",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "m3",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "műanyag",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Autos and Vehicles"
+],
+"hirek": []
+},
+{
+"kifejezes": "kárpáti tamás",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "paks–újpest",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "ausztria",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "termékvisszahívás",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Food and Drink"
+],
+"hirek": []
+},
+{
+"kifejezes": "2026",
+"volumen": "5000",
+"novekedes_pct": "800",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "üldözés",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "meghan sussexi hercegné",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government",
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "gelencsér tímea",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "f1",
+"volumen": "2000",
+"novekedes_pct": "300",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "tűz",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "kivégzés",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "tiborcz istván",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Politics"
+],
+"hirek": []
+},
+{
+"kifejezes": "marsi anikó",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "ausztrália",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "robbanás",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Hobbies and Leisure"
+],
+"hirek": []
+},
+{
+"kifejezes": "varga mihály",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "időkép",
+"volumen": "2000",
+"novekedes_pct": "200",
+"temak": [
+"Other"
+],
+"hirek": []
+}
+],
+"napi": {
+"szoveg": "A mai felkapott keresések élén időjárással kapcsolatos kifejezések állnak, emellett több politikai, sport- és bulvártémájú kifejezés is megjelenik.",
+"megfigyelesek": [
+"A 'viharos szél' a legnagyobb volumenű (50000) és 1000%-os növekedésű kifejezés, 'Other' témabesorolással, hír nélkül.",
+"A 'holnapi időjárás' 20000-es volumennel és 100%-os növekedéssel szerepel, 'Climate' témával, három kapcsolódó hírrel (HEOL, Hirnavigator) viharos szélről és lehűlésről Heves vármegyében.",
+"Az 'országház' és az 'm3' egyaránt 10000-es volumennel és 1000%-os növekedéssel szerepelnek, 'Other' témával, hír nélkül.",
+"Több kifejezés (pl. 'műanyag', 'kárpáti tamás', 'paks–újpest', 'ausztria', 'termékvisszahívás', 'üldözés') 5000-es volumennel és 1000%-os (a '2026' esetén 800%-os) növekedéssel jelenik meg, különböző témákban (Autos and Vehicles, Sports, Law and Government, Food and Drink).",
+"A kisebb volumenű (2000) tételek közt politikai (tiborcz istván, varga mihály), bulvár (meghan sussexi hercegné, marsi anikó, gelencsér tímea) és egyéb (tűz, kivégzés, robbanás, f1, időkép, ausztrália) kifejezések találhatók."
+],
+"elmeleti": [
+"Feltételezés: a 'viharos szél' és 'holnapi időjárás' magas volumene és a mellékelt hírek alapján ezek a kifejezések feltehetően egy közelgő időjárási fronttal (lehűlés, szél) függhetnek össze, amit a HEOL és Hirnavigator cikkei is jeleznek.",
+"Feltételezés: az 'országház', 'm3' és más hír nélküli kifejezések mögötti konkrét esemény nem állapítható meg a rendelkezésre álló adatokból."
+]
+},
+"het": {
+"szoveg": "A heti visszatérő kifejezések között a 'holnapi időjárás' a leggyakoribb, emellett néhány politikai és sport témájú kifejezés is több napon át felbukkant, a lista túlnyomó része azonban egyszeri megjelenésű, sokféle témát lefedő kifejezésekből áll.",
+"megfigyelesek": [
+"A 'holnapi időjárás' 3 napon szerepelt a héten, ez a legtöbbször visszatérő kifejezés.",
+"A '2026', 'elnök', 'kormány' és 'lionel messi' kifejezések egyaránt 2-2 napon jelentek meg.",
+"A többi mintegy száz kifejezés (pl. 'ausztria', 'f1', 'rogán antal', 'tiborcz istván', 'marsi anikó', 'ukrajna', 'zászló', 'tűzijáték') csak 1 napon szerepelt a héten.",
+"A visszatérő lista rendkívül heterogén, politikai (pl. 'sulyok tamás', 'navracsics tibor'), sport (pl. 'f1', 'trabzonspor–ftc', 'zalaegerszeg–ftc'), bulvár (pl. 'hayden panettiere', 'radics gigi') és egyéb hétköznapi (pl. 'bankkártya', 'palack visszaváltás', 'víz') témákat is tartalmaz."
+],
+"elmeleti": [
+"Feltételezés: a 'holnapi időjárás' többszöri visszatérése arra utalhat, hogy a hét folyamán tartósan aktuális volt az időjárási helyzet, de a konkrét okról a payload nem ad részletet."
+]
+},
+"het_valos": {
+"napok": 7,
+"visszateroek": [
+{
+"kifejezes": "holnapi időjárás",
+"napok_szama": 3
+},
+{
+"kifejezes": "2026",
+"napok_szama": 2
+},
+{
+"kifejezes": "elnök",
+"napok_szama": 2
+},
+{
+"kifejezes": "kormány",
+"napok_szama": 2
+},
+{
+"kifejezes": "lionel messi",
+"napok_szama": 2
+},
+{
+"kifejezes": "4ig",
+"napok_szama": 1
+},
+{
+"kifejezes": "4ig nyrt",
+"napok_szama": 1
+},
+{
+"kifejezes": "adam driver marvel",
+"napok_szama": 1
+},
+{
+"kifejezes": "amszterdam",
+"napok_szama": 1
+},
+{
+"kifejezes": "arsenal–manchester city",
+"napok_szama": 1
+},
+{
+"kifejezes": "atlético madrid–málaga",
+"napok_szama": 1
+},
+{
+"kifejezes": "augusztus 20 programok budapest",
+"napok_szama": 1
+},
+{
+"kifejezes": "ausztria",
+"napok_szama": 1
+},
+{
+"kifejezes": "ausztrália",
+"napok_szama": 1
+},
+{
+"kifejezes": "bankjegy",
+"napok_szama": 1
+},
+{
+"kifejezes": "bankkártya",
+"napok_szama": 1
+},
+{
+"kifejezes": "barcelona–al-ahly",
+"napok_szama": 1
+},
+{
+"kifejezes": "biztonsági öv",
+"napok_szama": 1
+},
+{
+"kifejezes": "bochkor gábor",
+"napok_szama": 1
+},
+{
+"kifejezes": "buszbaleset m3 as",
+"napok_szama": 1
+},
+{
+"kifejezes": "buszbaleset m3 ason",
+"napok_szama": 1
+},
+{
+"kifejezes": "cink",
+"napok_szama": 1
+},
+{
+"kifejezes": "cser palkovics andrás",
+"napok_szama": 1
+},
+{
+"kifejezes": "cserhalmi györgy",
+"napok_szama": 1
+},
+{
+"kifejezes": "cserpes sajtműhely",
+"napok_szama": 1
+},
+{
+"kifejezes": "dvsc–eto",
+"napok_szama": 1
+},
+{
+"kifejezes": "energiakrízis",
+"napok_szama": 1
+},
+{
+"kifejezes": "eszenyi enikő",
+"napok_szama": 1
+},
+{
+"kifejezes": "f1",
+"napok_szama": 1
+},
+{
+"kifejezes": "falusi mariann",
+"napok_szama": 1
+},
+{
+"kifejezes": "fc cfr 1907 cluj",
+"napok_szama": 1
+},
+{
+"kifejezes": "felhőszakadás",
+"napok_szama": 1
+},
+{
+"kifejezes": "film",
+"napok_szama": 1
+},
+{
+"kifejezes": "folyó",
+"napok_szama": 1
+},
+{
+"kifejezes": "formula 1 holland nagydíj",
+"napok_szama": 1
+},
+{
+"kifejezes": "gelencsér tímea",
+"napok_szama": 1
+},
+{
+"kifejezes": "gerendai károly",
+"napok_szama": 1
+},
+{
+"kifejezes": "gyomaendrőd",
+"napok_szama": 1
+},
+{
+"kifejezes": "gázolaj",
+"napok_szama": 1
+},
+{
+"kifejezes": "gömöri ottó",
+"napok_szama": 1
+},
+{
+"kifejezes": "hajó",
+"napok_szama": 1
+},
+{
+"kifejezes": "havasi bertalan",
+"napok_szama": 1
+},
+{
+"kifejezes": "hayden panettiere",
+"napok_szama": 1
+},
+{
+"kifejezes": "hayden panettiere meghalt",
+"napok_szama": 1
+},
+{
+"kifejezes": "hitel",
+"napok_szama": 1
+},
+{
+"kifejezes": "időkép",
+"napok_szama": 1
+},
+{
+"kifejezes": "kazincbarcika",
+"napok_szama": 1
+},
+{
+"kifejezes": "kivégzés",
+"napok_szama": 1
+},
+{
+"kifejezes": "klímaváltozás",
+"napok_szama": 1
+},
+{
+"kifejezes": "kálmán olga",
+"napok_szama": 1
+},
+{
+"kifejezes": "kárpáti tamás",
+"napok_szama": 1
+},
+{
+"kifejezes": "köret",
+"napok_szama": 1
+},
+{
+"kifejezes": "kötvény",
+"napok_szama": 1
+},
+{
+"kifejezes": "közhang",
+"napok_szama": 1
+},
+{
+"kifejezes": "külügyminisztérium",
+"napok_szama": 1
+},
+{
+"kifejezes": "lannert judit",
+"napok_szama": 1
+},
+{
+"kifejezes": "lattmann tamás",
+"napok_szama": 1
+},
+{
+"kifejezes": "lázár jános lemondott",
+"napok_szama": 1
+},
+{
+"kifejezes": "m1",
+"napok_szama": 1
+},
+{
+"kifejezes": "m1 élő",
+"napok_szama": 1
+},
+{
+"kifejezes": "m3",
+"napok_szama": 1
+},
+{
+"kifejezes": "magyar közlöny",
+"napok_szama": 1
+},
+{
+"kifejezes": "marsi anikó",
+"napok_szama": 1
+},
+{
+"kifejezes": "max verstappen",
+"napok_szama": 1
+},
+{
+"kifejezes": "meghan sussexi hercegné",
+"napok_szama": 1
+},
+{
+"kifejezes": "megtakarítás",
+"napok_szama": 1
+},
+{
+"kifejezes": "melléthei-barna márton",
+"napok_szama": 1
+},
+{
+"kifejezes": "milan–man utd",
+"napok_szama": 1
+},
+{
+"kifejezes": "miskolc",
+"napok_szama": 1
+},
+{
+"kifejezes": "mészáros lőrinc",
+"napok_szama": 1
+},
+{
+"kifejezes": "műanyag",
+"napok_szama": 1
+},
+{
+"kifejezes": "navracsics tibor",
+"napok_szama": 1
+},
+{
+"kifejezes": "nemzeti kulturális alap",
+"napok_szama": 1
+},
+{
+"kifejezes": "népszava",
+"napok_szama": 1
+},
+{
+"kifejezes": "orbán győző",
+"napok_szama": 1
+},
+{
+"kifejezes": "ország tortája 2026",
+"napok_szama": 1
+},
+{
+"kifejezes": "országház",
+"napok_szama": 1
+},
+{
+"kifejezes": "orvos",
+"napok_szama": 1
+},
+{
+"kifejezes": "otp bankkártya",
+"napok_szama": 1
+},
+{
+"kifejezes": "paks–újpest",
+"napok_szama": 1
+},
+{
+"kifejezes": "palack visszaváltás",
+"napok_szama": 1
+},
+{
+"kifejezes": "pilóta nélküli repülőgép",
+"napok_szama": 1
+},
+{
+"kifejezes": "polietilén-tereftalát",
+"napok_szama": 1
+},
+{
+"kifejezes": "port tv",
+"napok_szama": 1
+},
+{
+"kifejezes": "pénz",
+"napok_szama": 1
+},
+{
+"kifejezes": "pénzcentrum.hu",
+"napok_szama": 1
+},
+{
+"kifejezes": "pénzmosás",
+"napok_szama": 1
+},
+{
+"kifejezes": "radics gigi",
+"napok_szama": 1
+},
+{
+"kifejezes": "rendőrség",
+"napok_szama": 1
+},
+{
+"kifejezes": "robbanás",
+"napok_szama": 1
+},
+{
+"kifejezes": "rogán antal",
+"napok_szama": 1
+},
+{
+"kifejezes": "rtl",
+"napok_szama": 1
+},
+{
+"kifejezes": "rtl híradó",
+"napok_szama": 1
+},
+{
+"kifejezes": "sebestyén balázs",
+"napok_szama": 1
+},
+{
+"kifejezes": "stellantis",
+"napok_szama": 1
+},
+{
+"kifejezes": "sulyok tamás",
+"napok_szama": 1
+},
+{
+"kifejezes": "szabó álmos",
+"napok_szama": 1
+},
+{
+"kifejezes": "tanév",
+"napok_szama": 1
+},
+{
+"kifejezes": "tanítási nap",
+"napok_szama": 1
+},
+{
+"kifejezes": "termékvisszahívás",
+"napok_szama": 1
+},
+{
+"kifejezes": "tiborcz istván",
+"napok_szama": 1
+},
+{
+"kifejezes": "tihanyi péter",
+"napok_szama": 1
+},
+{
+"kifejezes": "trabzonspor–ftc",
+"napok_szama": 1
+},
+{
+"kifejezes": "tv műsor",
+"napok_szama": 1
+},
+{
+"kifejezes": "támogatás",
+"napok_szama": 1
+},
+{
+"kifejezes": "tényi istván",
+"napok_szama": 1
+},
+{
+"kifejezes": "tóth máté",
+"napok_szama": 1
+},
+{
+"kifejezes": "tűz",
+"napok_szama": 1
+},
+{
+"kifejezes": "tűzijáték",
+"napok_szama": 1
+},
+{
+"kifejezes": "tűzijáték 2026",
+"napok_szama": 1
+},
+{
+"kifejezes": "ufc 330",
+"napok_szama": 1
+},
+{
+"kifejezes": "ukrajna",
+"napok_szama": 1
+},
+{
+"kifejezes": "varga mihály",
+"napok_szama": 1
+},
+{
+"kifejezes": "vidnyánszky attila",
+"napok_szama": 1
+},
+{
+"kifejezes": "viharos szél",
+"napok_szama": 1
+},
+{
+"kifejezes": "víz",
+"napok_szama": 1
+},
+{
+"kifejezes": "webáruház",
+"napok_szama": 1
+},
+{
+"kifejezes": "zalaegerszeg–ftc",
+"napok_szama": 1
+},
+{
+"kifejezes": "zenész",
+"napok_szama": 1
+},
+{
+"kifejezes": "zsilip",
+"napok_szama": 1
+},
+{
+"kifejezes": "zászló",
+"napok_szama": 1
+},
+{
+"kifejezes": "ókovács szilveszter",
+"napok_szama": 1
+},
+{
+"kifejezes": "újpest–mtk",
+"napok_szama": 1
+},
+{
+"kifejezes": "üldözés",
+"napok_szama": 1
+}
+]
+}
+}
+}
