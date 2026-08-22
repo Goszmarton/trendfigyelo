@@ -60,13 +60,42 @@ def _felkapott(legfrissebb, napok_trendek):
     return {"top": top, "het": {"napok": len(napok_trendek), "visszateroek": visszateroek}}
 
 
-def epit_payload(adatok, tegnapi_szamok=None):
+def nap_diff(mai_szamok, tegnapi_szamok, mai_top, tegnapi_top):
+    if not tegnapi_szamok and not tegnapi_top:
+        return {"irany_valtok": [], "mozgok": [], "felkapott_uj": [],
+                "felkapott_eltunt": [], "van_elozo": False}
+    tegnap = {s["szo"]: s for s in (tegnapi_szamok or [])}
+    irany_valtok, mozgok = [], []
+    for s in mai_szamok:
+        elozo = tegnap.get(s["szo"])
+        if not elozo:
+            continue
+        if elozo.get("irany") != s.get("irany"):
+            irany_valtok.append({"szo": s["szo"], "elozo": elozo.get("irany"), "mai": s.get("irany")})
+        m_mai, m_teg = s.get("meredekseg"), elozo.get("meredekseg")
+        if isinstance(m_mai, (int, float)) and isinstance(m_teg, (int, float)):
+            mozgok.append({"szo": s["szo"], "valtozas": round(m_mai - m_teg, 3)})
+    mozgok.sort(key=lambda e: -abs(e["valtozas"]))
+    mai_kif = {t.get("kifejezes") for t in (mai_top or [])}
+    teg_kif = {t.get("kifejezes") for t in (tegnapi_top or [])}
+    return {
+        "irany_valtok": irany_valtok,
+        "mozgok": mozgok[:5],
+        "felkapott_uj": sorted(mai_kif - teg_kif),
+        "felkapott_eltunt": sorted(teg_kif - mai_kif),
+        "van_elozo": True,
+    }
+
+
+def epit_payload(adatok, tegnapi_szamok=None, tegnapi_top=None):
     regresszio = adatok.get("regresszio", {})
     tortenet = adatok.get("tortenet", {})
     szamok = _kulcsszo_szamok(regresszio, tortenet)
     felkapott = _felkapott(adatok.get("legfrissebb", {}), adatok.get("napok_trendek", {}))
+    valtozas = nap_diff(szamok, tegnapi_szamok, felkapott["top"], tegnapi_top)
     return {
         "kulcsszavak": {"szamok": szamok},
         "felkapott": felkapott,
+        "valtozas": valtozas,
         "kulcsszo_het": {},
     }

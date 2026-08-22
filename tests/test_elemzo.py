@@ -91,3 +91,42 @@ def test_gordulo_het_none_napok_trendek_guard():
     het = payload["felkapott"]["het"]
     assert het["napok"] == 0
     assert het["visszateroek"] == []
+
+
+def test_nap_diff_iranyvaltas_es_felkapott_valtozas():
+    mai = [{"szo": "állás", "irany": "emelkedik", "meredekseg": 2.0},
+           {"szo": "benzin", "irany": "stagnal", "meredekseg": 0.0}]
+    tegnapi = [{"szo": "állás", "irany": "csokken", "meredekseg": -1.0},
+               {"szo": "benzin", "irany": "stagnal", "meredekseg": 0.1}]
+    mai_top = [{"kifejezes": "eső"}, {"kifejezes": "viharos szél"}]
+    tegnapi_top = [{"kifejezes": "eső"}, {"kifejezes": "hőség"}]
+    diff = elemzo.nap_diff(mai, tegnapi, mai_top, tegnapi_top)
+    assert diff["van_elozo"] is True
+    assert {"szo": "állás", "elozo": "csokken", "mai": "emelkedik"} in diff["irany_valtok"]
+    assert all(v["szo"] != "benzin" for v in diff["irany_valtok"])   # benzin nem váltott irányt
+    assert "viharos szél" in diff["felkapott_uj"]
+    assert "hőség" in diff["felkapott_eltunt"]
+
+
+def test_nap_diff_elso_futas_nincs_elozo():
+    diff = elemzo.nap_diff([{"szo": "állás", "irany": "emelkedik", "meredekseg": 1.0}], None,
+                           [{"kifejezes": "eső"}], None)
+    assert diff["van_elozo"] is False
+    assert diff["irany_valtok"] == []
+    assert diff["felkapott_uj"] == []
+    assert diff["felkapott_eltunt"] == []
+
+
+def test_epit_payload_beepiti_a_valtozast_ha_van_tegnapi():
+    adatok = {
+        "regresszio": _regresszio_egy_szo("emelkedik", 1.0, True, 10.0),
+        "tortenet": {"napok": []},
+        "legfrissebb": {"top_trendek": [{"kifejezes": "eső"}]},
+        "napok_trendek": {},
+    }
+    tegnapi_szamok = [{"szo": "állás", "irany": "csokken", "meredekseg": -1.0}]
+    tegnapi_top = [{"kifejezes": "hőség"}]
+    payload = elemzo.epit_payload(adatok, tegnapi_szamok=tegnapi_szamok, tegnapi_top=tegnapi_top)
+    assert payload["valtozas"]["van_elozo"] is True
+    assert payload["valtozas"]["irany_valtok"][0]["szo"] == "állás"
+    assert "eső" in payload["valtozas"]["felkapott_uj"]
