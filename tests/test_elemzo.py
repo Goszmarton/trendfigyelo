@@ -162,3 +162,48 @@ def test_nap_diff_nem_szam_meredekseg_kihagyva():
     tegnapi = [{"szo": "állás", "irany": "emelkedik", "meredekseg": 1.0}]
     diff = elemzo.nap_diff(mai, tegnapi, [], [])
     assert all(m["szo"] != "állás" for m in diff["mozgok"])
+
+
+class KamuKliens:
+    def __init__(self, valasz):
+        self._valasz = valasz
+        self.hivasok = []
+
+    def uzenet(self, payload, modell):
+        self.hivasok.append((payload, modell))
+        return self._valasz
+
+
+def _ai_valasz():
+    szekcio = {"szoveg": "sz", "megfigyelesek": ["m"], "elmeleti": ["e"]}
+    return {"valtozas": szekcio, "kulcsszavak": {"napi": szekcio, "teljes_kep": szekcio, "het": szekcio},
+            "felkapott": {"napi": szekcio, "het": szekcio}}
+
+
+def test_elemez_a_varrat_mogott_nem_hiv_halozatot():
+    kliens = KamuKliens(_ai_valasz())
+    payload = {"kulcsszavak": {"szamok": []}, "felkapott": {"top": []}, "valtozas": {}}
+    valasz = elemzo.elemez(payload, kliens=kliens)
+    assert kliens.hivasok[0][1] == "claude-sonnet-5"      # a modell átment
+    assert valasz["kulcsszavak"]["napi"]["szoveg"] == "sz"
+    assert valasz["valtozas"]["elmeleti"] == ["e"]
+
+
+def test_valasz_to_artefakt_valos_reteg_es_ai_narrativa():
+    payload = {
+        "kulcsszavak": {"szamok": [{"szo": "állás", "irany": "emelkedik", "meredekseg": 1.0,
+                                    "ervenyes": True, "mai_ertek": 10.0, "csucs": 100.0, "atlag": 25.0}]},
+        "felkapott": {"top": [{"kifejezes": "eső", "volumen": "20000", "novekedes_pct": "500", "temak": ["W"]}],
+                      "het": {"napok": 2, "visszateroek": []}},
+        "valtozas": {"irany_valtok": [], "mozgok": [], "felkapott_uj": [], "felkapott_eltunt": [], "van_elozo": False},
+    }
+    art = elemzo.valasz_to_artefakt(_ai_valasz(), payload, nap="2026-08-22", modell="claude-sonnet-5")
+    assert art["nap"] == "2026-08-22"
+    assert art["modell"] == "claude-sonnet-5"
+    # VALÓS réteg átvéve a payloadból (nem az AI-tól):
+    assert art["kulcsszavak"]["szamok"][0]["csucs"] == 100.0
+    assert art["felkapott"]["top"][0]["kifejezes"] == "eső"
+    assert art["valtozas"]["diff"]["van_elozo"] is False
+    # AI-narratíva a helyén:
+    assert art["kulcsszavak"]["napi"]["szoveg"] == "sz"
+    assert art["felkapott"]["het"]["elmeleti"] == ["e"]

@@ -5,6 +5,22 @@ kizárólag a payloadban kapott számokból ír (spec §2.1). Ok-okozat tényké
 hipotézis = külön ELMÉLETI mező (spec §2.2).
 """
 
+from trendfigyelo import seged
+
+
+MODELL = "claude-sonnet-5"
+
+RENDSZER_PROMPT = (
+    "Magyar nyelvű elemző vagy egy magyar Google Trends figyelő oldalhoz. "
+    "SZABÁLYOK, kivétel nélkül: (1) SOHA nem találsz ki számot — kizárólag a kapott "
+    "payload számaiból dolgozol. (2) Ok-okozatot TÉNYKÉNT SOHA nem állítasz; a "
+    "megfigyelés (mit mutatnak a számok) és a magyarázat (miért) külön mezőben van. "
+    "(3) Minden feltételezést az 'elmeleti' mezőbe teszel, 'feltételezés' megfogalmazással; "
+    "a tényszerű leolvasásokat a 'megfigyelesek' mezőbe. (4) A felkapott hírekről csak a "
+    "kapott 'temak'/'hirek' alapján írsz, hírt/forrást/eseményt nem találsz ki. "
+    "Tömör, óvatos, magyar mondatok."
+)
+
 # A kulcsszó VALÓS iránya/meredeksége az 1_het (órás, napi frissülő) intervallumból jön.
 KULCSSZO_IV = "1_het"
 
@@ -98,4 +114,73 @@ def epit_payload(adatok, tegnapi_szamok=None, tegnapi_top=None):
         "felkapott": felkapott,
         "valtozas": valtozas,
         "kulcsszo_het": {},
+    }
+
+
+# Az AI válaszának sémája (szekciónként szöveg + megfigyelések + elméleti).
+def _szekcio_sema():
+    return {"type": "object", "additionalProperties": False,
+            "required": ["szoveg", "megfigyelesek", "elmeleti"],
+            "properties": {"szoveg": {"type": "string"},
+                           "megfigyelesek": {"type": "array", "items": {"type": "string"}},
+                           "elmeleti": {"type": "array", "items": {"type": "string"}}}}
+
+
+def _valasz_sema():
+    sz = _szekcio_sema()
+    return {"type": "object", "additionalProperties": False,
+            "required": ["valtozas", "kulcsszavak", "felkapott"],
+            "properties": {
+                "valtozas": sz,
+                "kulcsszavak": {"type": "object", "additionalProperties": False,
+                                "required": ["napi", "teljes_kep", "het"],
+                                "properties": {"napi": sz, "teljes_kep": sz, "het": sz}},
+                "felkapott": {"type": "object", "additionalProperties": False,
+                              "required": ["napi", "het"],
+                              "properties": {"napi": sz, "het": sz}}}}
+
+
+class _AnthropicKliens:
+    """Alap kliens-varrat: az anthropic SDK-t hívja strukturált kimenettel."""
+
+    def uzenet(self, payload, modell):
+        import json
+        import anthropic
+        kliens = anthropic.Anthropic()   # ANTHROPIC_API_KEY a környezetből
+        valasz = kliens.messages.create(
+            model=modell, max_tokens=16000,
+            thinking={"type": "adaptive"},
+            output_config={"effort": "medium",
+                           "format": {"type": "json_schema", "schema": _valasz_sema()}},
+            system=RENDSZER_PROMPT,
+            messages=[{"role": "user", "content":
+                       "Elemezd az alábbi VALÓS számokat (JSON). Csak ezekből dolgozz:\n"
+                       + json.dumps(payload, ensure_ascii=False)}],
+        )
+        szoveg = next(b.text for b in valasz.content if b.type == "text")
+        return json.loads(szoveg)
+
+
+def elemez(payload, kliens=None, modell=MODELL):
+    kliens = kliens or _AnthropicKliens()
+    return kliens.uzenet(payload, modell)
+
+
+def valasz_to_artefakt(ai_valasz, payload, nap, modell):
+    return {
+        "frissitve": seged.idopont_iso(seged.most_utc()),
+        "modell": modell,
+        "nap": nap,
+        "valtozas": {"diff": payload["valtozas"], **ai_valasz["valtozas"]},
+        "kulcsszavak": {
+            "szamok": payload["kulcsszavak"]["szamok"],
+            "napi": ai_valasz["kulcsszavak"]["napi"],
+            "teljes_kep": ai_valasz["kulcsszavak"]["teljes_kep"],
+            "het": ai_valasz["kulcsszavak"]["het"],
+        },
+        "felkapott": {
+            "top": payload["felkapott"]["top"],
+            "napi": ai_valasz["felkapott"]["napi"],
+            "het": ai_valasz["felkapott"]["het"],
+        },
     }
