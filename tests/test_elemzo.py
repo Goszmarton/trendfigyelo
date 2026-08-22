@@ -130,3 +130,35 @@ def test_epit_payload_beepiti_a_valtozast_ha_van_tegnapi():
     assert payload["valtozas"]["van_elozo"] is True
     assert payload["valtozas"]["irany_valtok"][0]["szo"] == "állás"
     assert "eső" in payload["valtozas"]["felkapott_uj"]
+
+
+def test_nap_diff_mozgok_rendezes_es_delta():
+    # A mozgok listát az abszolút meredekség-változás szerint CSÖKKENŐEN rendezi,
+    # és a valtozas mező a helyes delta (mai − tegnapi, kerekítve).
+    mai = [{"szo": "állás", "irany": "emelkedik", "meredekseg": 3.0},
+           {"szo": "benzin", "irany": "emelkedik", "meredekseg": 0.5}]
+    tegnapi = [{"szo": "állás", "irany": "emelkedik", "meredekseg": 1.0},
+               {"szo": "benzin", "irany": "emelkedik", "meredekseg": 0.4}]
+    diff = elemzo.nap_diff(mai, tegnapi, [], [])
+    assert diff["mozgok"][0]["szo"] == "állás"       # nagyobb abszolút változás elöl
+    assert diff["mozgok"][0]["valtozas"] == 2.0      # 3.0 − 1.0
+    assert diff["mozgok"][1]["szo"] == "benzin"
+    assert diff["mozgok"][1]["valtozas"] == 0.1      # 0.5 − 0.4, kerekítve
+
+
+def test_nap_diff_mai_only_szo_kihagyva():
+    # Ha egy szó a maiban van, de a tegnapiban NINCS → kihagyva (nem dob, nem kerül be).
+    mai = [{"szo": "állás", "irany": "emelkedik", "meredekseg": 2.0},
+           {"szo": "új_szo", "irany": "emelkedik", "meredekseg": 5.0}]
+    tegnapi = [{"szo": "állás", "irany": "csokken", "meredekseg": 1.0}]
+    diff = elemzo.nap_diff(mai, tegnapi, [], [])
+    assert all(v["szo"] != "új_szo" for v in diff["irany_valtok"])
+    assert all(m["szo"] != "új_szo" for m in diff["mozgok"])
+
+
+def test_nap_diff_nem_szam_meredekseg_kihagyva():
+    # Ha egy szó meredeksége None (vagy hiányzik) → ne dobjon, ne kerüljön mozgok-ba.
+    mai = [{"szo": "állás", "irany": "emelkedik", "meredekseg": None}]
+    tegnapi = [{"szo": "állás", "irany": "emelkedik", "meredekseg": 1.0}]
+    diff = elemzo.nap_diff(mai, tegnapi, [], [])
+    assert all(m["szo"] != "állás" for m in diff["mozgok"])
