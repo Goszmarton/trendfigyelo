@@ -80,9 +80,8 @@ function rajzol(art) {
   document.getElementById("elemzes-fejlec").textContent =
     `Elemzés — ${art.nap} (${art.modell})`;
 
-  // Mi változott ma? — a szekció (AI-szöveg + VALÓS megfigyelések + ELMÉLETI feltételezések) ELŐBB,
-  // a diff-összegzés (VALÓS, közvetlenül a nap-diffből, nem AI-szöveg) UTÁNA — hogy a VALÓS
-  // megfigyelés-réteg elsőként a szekció tényszerű tételeit mutassa.
+  // Mi változott ma? — a szekció (folyó AI-próza) ELŐBB, a VALÓS diff-összegzés
+  // (a nap-diffből, csak van_elozo esetén) UTÁNA.
   const valt = document.createElement("div");
   const d = art.valtozas.diff;
   valt.appendChild(szekcio_elem("Mi változott ma?", art.valtozas));

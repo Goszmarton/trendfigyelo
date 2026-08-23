@@ -78,13 +78,19 @@ meredekség mint fogalom) használhatók a szövegben.
 ### 3.4 Payload — `_kulcsszo_het(lanc)` + `epit_payload` + `futtat`
 Új helper: `_kulcsszo_het(lanc)` a `kulcsszo_lanc.json`-ból heti pályát számol.
 
-- Horgony (`anchor`) = a szavak legkésőbbi `ablak_veg_utc`-je (a legfrissebb lánc-vég).
+- Horgony (`anchor`) = a legfrissebb szó utolsó lánc-pontjának időpontja
+  (`pontok[-1].idopont_utc`) — nem az `ablak_veg_utc`. Ez SZÁNDÉKOS: így a horgony
+  egy alapon áll a frissességi küszöbbel (az is pont-alapú), így egy elavult végű
+  szó pontjai és a küszöb konzisztensen zárják ki azt. Az élő láncban ez egybeesik
+  az `ablak_veg_utc`-vel.
 - Ablak = `[anchor - 7 nap, anchor]`.
 - Egy szó BENNE VAN, ha a lánca eléri az ablakot (a szó utolsó `pontok` időpontja
   `>= anchor - 1 nap`). Ez természetesen KIZÁRJA a szakasz-törött szót (pl. tüntetés,
   amelynek vége 08-17), így a ~12 egészséges szó marad.
 - Szavanként: `kezdo` = az ablak első pontjának értéke, `veg` = az utolsóé,
-  `min`/`max` az ablakon belül, `valtozas = round(veg - kezdo, 3)`.
+  `min`/`max` az ablakon belül, `valtozas = veg - kezdo`. Mind az öt szám
+  (`kezdo`/`veg`/`valtozas`/`min`/`max`) 1 tizedesre kerekítve (`round(x, 1)`) a
+  tiszta megjelenítés érdekében.
 - Visszatérés: `{"ablak_napok": 7, "szavak": [{"szo","kezdo","veg","valtozas","min","max"}, ...]}`
   (a `szavak` a `valtozas` abszolút értéke szerint csökkenőn rendezve).
 
