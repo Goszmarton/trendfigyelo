@@ -7,6 +7,7 @@ hipotézis = külön ELMÉLETI mező (spec §2.2).
 
 import json
 import logging
+from datetime import datetime, timedelta
 from pathlib import Path
 
 from trendfigyelo import seged
@@ -56,6 +57,44 @@ def _kulcsszo_szamok(regresszio, tortenet):
             "atlag": t.get("atlag"),
         })
     return ki
+
+
+HET_ABLAK_NAPOK = 7
+
+
+def _kulcsszo_het(lanc):
+    """A lánc utolsó HET_ABLAK_NAPOK napos ablakából valós heti pálya szavanként.
+    A szakasz-törött (elavult végű) szavak kimaradnak — így a ~12 egészséges szó marad."""
+    szavak_dict = (lanc or {}).get("kulcsszavak", {}) if isinstance(lanc, dict) else {}
+
+    def _veg(rec):
+        p = (rec or {}).get("pontok") or []
+        return p[-1]["idopont_utc"] if p else None
+
+    vegek = [v for v in (_veg(r) for r in szavak_dict.values()) if v]
+    if not vegek:
+        return {"ablak_napok": HET_ABLAK_NAPOK, "szavak": []}
+    anchor = max(datetime.fromisoformat(v) for v in vegek)
+    ablak_kezdet = anchor - timedelta(days=HET_ABLAK_NAPOK)
+    frissessegi_kuszob = anchor - timedelta(days=1)   # ennél régebbi vég = szakasz-törött → kimarad
+    szavak = []
+    for szo, rec in szavak_dict.items():
+        pontok = (rec or {}).get("pontok") or []
+        if not pontok:
+            continue
+        if datetime.fromisoformat(pontok[-1]["idopont_utc"]) < frissessegi_kuszob:
+            continue
+        ablakban = [pt for pt in pontok
+                    if datetime.fromisoformat(pt["idopont_utc"]) >= ablak_kezdet]
+        if not ablakban:
+            continue
+        ertekek = [pt["ertek"] for pt in ablakban]
+        kezdo, veg = round(ertekek[0], 1), round(ertekek[-1], 1)
+        szavak.append({"szo": szo, "kezdo": kezdo, "veg": veg,
+                       "valtozas": round(veg - kezdo, 1),
+                       "min": round(min(ertekek), 1), "max": round(max(ertekek), 1)})
+    szavak.sort(key=lambda s: -abs(s["valtozas"]))
+    return {"ablak_napok": HET_ABLAK_NAPOK, "szavak": szavak}
 
 
 def _felkapott(legfrissebb, napok_trendek):

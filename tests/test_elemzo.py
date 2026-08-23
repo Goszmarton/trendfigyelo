@@ -298,3 +298,36 @@ def test_valasz_to_artefakt_megorzi_a_heti_valos_reteget():
     assert art["felkapott"]["het_valos"]["napok"] == 3
     # az AI-narratíva a het mezőben marad, változatlanul:
     assert art["felkapott"]["het"]["szoveg"] == "sz"
+
+
+def test_kulcsszo_het_valos_palya():
+    lanc = {"kulcsszavak": {
+        "állás": {"ablak_kezdet_utc": "2026-08-01T00:00:00+00:00",
+                   "ablak_veg_utc": "2026-08-22T18:00:00+00:00",
+                   "pontok": [
+                       {"idopont_utc": "2026-08-14T18:00:00+00:00", "ertek": 40},  # ablakon KÍVÜL (< 08-15T18:00)
+                       {"idopont_utc": "2026-08-15T18:00:00+00:00", "ertek": 42},  # ablak eleje = kezdo
+                       {"idopont_utc": "2026-08-18T18:00:00+00:00", "ertek": 55},  # max
+                       {"idopont_utc": "2026-08-22T18:00:00+00:00", "ertek": 51},  # veg
+                   ]},
+        "tüntetés": {"ablak_kezdet_utc": "2026-08-01T00:00:00+00:00",
+                      "ablak_veg_utc": "2026-08-17T18:00:00+00:00",
+                      "pontok": [
+                          {"idopont_utc": "2026-08-16T18:00:00+00:00", "ertek": 5},
+                          {"idopont_utc": "2026-08-17T18:00:00+00:00", "ertek": 0},  # elavult vég → KIMARAD
+                      ]},
+    }}
+    ki = elemzo._kulcsszo_het(lanc)
+    assert ki["ablak_napok"] == 7
+    assert [s["szo"] for s in ki["szavak"]] == ["állás"]   # a szakasz-törött tüntetés kimaradt
+    allas = ki["szavak"][0]
+    assert allas["kezdo"] == 42     # az ablak első pontja (08-15); a 08-14 KÍVÜL van
+    assert allas["veg"] == 51
+    assert allas["valtozas"] == 9   # 51 - 42
+    assert allas["min"] == 42
+    assert allas["max"] == 55
+
+
+def test_kulcsszo_het_ures_lanc():
+    assert elemzo._kulcsszo_het({}) == {"ablak_napok": 7, "szavak": []}
+    assert elemzo._kulcsszo_het({"kulcsszavak": {}}) == {"ablak_napok": 7, "szavak": []}
