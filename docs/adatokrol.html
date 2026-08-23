@@ -3,22 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Az adatokról – Trendfigyelő</title>
+  <title>Infó – Trendfigyelő</title>
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
   <nav id="fomenu" aria-label="Fő menü">
     <a href="index.html">Trendek</a>
     <a href="elemzes.html">Elemzés</a>
-    <a href="adatokrol.html" class="aktiv" aria-current="page">Az adatokról</a>
+    <a href="adatokrol.html" class="aktiv" aria-current="page">Infó</a>
   </nav>
 
   <header class="fejlec-doboz">
-    <h1>Az adatokról</h1>
-    <p class="halvany">Honnan jönnek az adatok, mikor és hogyan gyűjtjük őket.</p>
+    <h1>Infó</h1>
+    <p class="halvany">Honnan jönnek az adatok, és hogyan készül a napi elemzés.</p>
   </header>
 
   <main id="adatokrol">
+    <h2 class="adat-csoport">Az adatok</h2>
     <section class="adat-doboz">
       <p><strong>Honnan?</strong> Minden adat a Google Trends nyilvános szolgáltatásából származik, kizárólag Magyarországra (<code>geo=HU</code>). Kétféle dolgot mutatunk: a Google <strong>aznap felkapott kereséseit</strong>, és <strong>13 általunk figyelt kulcsszó</strong> keresési érdeklődését.</p>
       <p><strong>Mikor kérjük le?</strong> Naponta egyszer, automatikusan: 19:07 UTC-kor (kb. 21:07 nyári / 20:07 téli budapesti idő). Egy futás néhány percig tart.</p>
@@ -63,6 +64,25 @@
         <li><strong>Rotációs frissítés (2 szó/nap).</strong> A hívás-korlát miatt a hosszú sorozatok rotációban frissülnek; egy szó heti adata kb. 11 naponta újul meg. Amelyik szót régebben gyűjtöttük, annak a vége régebbi - de <strong>frissülni fog</strong> (a legrégebbieket priorizáljuk).</li>
       </ol>
       <p class="adat-magyarazat">A <strong>friss napi adat megvan</strong>: minden szónak van naprakész „1 hét" (órás) nézete. A Teljes nézet csak azért mutathat régebbi véget, mert a leghosszabb (heti/napi) időszakot választja.</p>
+    </section>
+
+    <h2 class="adat-csoport">Az elemzés (napi AI-összefoglaló)</h2>
+    <section class="adat-doboz">
+      <h2>Hogyan készül a napi elemzés?</h2>
+      <p>Az „Elemzés" fülön látható szöveget minden nap egy <strong>AI, a Claude</strong> írja - a friss, aznapi adatból. A használt modell a Claude legújabb, legerősebb modellje, az <strong>Opus 4.8</strong> (azonosítója: <code>claude-opus-4-8</code>).</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Mit számol a gép, és mit ír az AI?</h2>
+      <p><strong>Minden számot</strong> (az irányt, a csúcsot, az átlagot, a heti pályát, a „mi változott ma" összevetést) <strong>a saját kódunk (Python) számolja ki</strong>, determinisztikusan, a lementett adatból. A Claude ezekből a számokból <strong>kizárólag a szöveges összefoglalót</strong> írja meg - <strong>számot nem talál ki</strong>, és hírt vagy eseményt sem: a felkapott témákról is csak a hozzájuk mentett adatból dolgozik.</p>
+      <p class="adat-magyarazat">Az AI <strong>nem állít ok-okozatot tényként</strong>. Ahol magyarázatot feltételez, azt a mondatban óvatosan jelzi (pl. „feltehetően", „ezt az adat önmagában nem igazolja"), így a leolvasott tények és a puha magyarázatok elkülönülnek.</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Mit elemez, és mikor fut?</h2>
+      <p>Külön veszi a <strong>13 figyelt kulcsszót</strong> (a mai kép, a teljes kép és az „1 hét" bontásban) és külön a <strong>Google napi felkapott kereséseit</strong> (napi elemzés + heti összesítés); végül összeveti az előző nappal („mi változott ma?").</p>
+      <p>Minden nap <strong>automatikusan</strong> fut, közvetlenül a napi adatgyűjtés után. Ha az AI-hívás bármiért nem sikerül, <strong>az előző napi elemzés változatlanul megmarad</strong> - sosem jelenik meg félkész szöveg.</p>
+      <p class="adat-magyarazat">Minden nap elemzése elmentődik; az „Elemzés" fül naptárából bármelyik korábbi nap <strong>visszalapozható</strong>.</p>
     </section>
   </main>
 

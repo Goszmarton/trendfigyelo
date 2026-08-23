@@ -67,6 +67,9 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 
 /* „Az adatokról" oldal — tematikus dobozok (mint a főoldal szekciói) */
 #adatokrol { max-width: 44rem; }
+.adat-csoport { font-size: 1.25rem; margin: 1.8rem 0 .8rem; padding-bottom: .3rem;
+  border-bottom: 2px solid #d4d4d4; color: #222; }
+.adat-csoport:first-child { margin-top: 0; }
 .adat-doboz { background: #fff; border: 1px solid #e3e3e3; border-radius: 6px;
   padding: .8rem 1.2rem; margin: 0 0 1rem; }
 .adat-doboz h2 { font-size: 1.05rem; margin: 0 0 .4rem; }
