@@ -10,30 +10,19 @@ async function elemzes_betolt(datum) {
   return r.json();
 }
 
-// egy „szekció" (szöveg + VALÓS megfigyelések + ELMÉLETI feltételezések) dobozzá építése
+// egy „szekció" (folyó próza, \n\n-nal elválasztott bekezdésekkel) dobozzá építése
 function szekcio_elem(cim, szekcio) {
   const box = document.createElement("section");
   box.className = "elemzes-szekcio";
   const h = document.createElement("h3");
   h.textContent = cim;
   box.appendChild(h);
-  if (szekcio && szekcio.szoveg) {
+  const szoveg = (szekcio && szekcio.szoveg) || "";
+  szoveg.split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean).forEach((bek) => {
     const p = document.createElement("p");
     p.className = "elemzes-szoveg";
-    p.textContent = szekcio.szoveg;
+    p.textContent = bek;
     box.appendChild(p);
-  }
-  (szekcio && szekcio.megfigyelesek || []).forEach((m) => {
-    const li = document.createElement("div");
-    li.className = "elemzes-megfigyeles";        // VALÓS/tényszerű réteg
-    li.textContent = m;
-    box.appendChild(li);
-  });
-  (szekcio && szekcio.elmeleti || []).forEach((e) => {
-    const li = document.createElement("div");
-    li.className = "elemzes-elmeleti";           // ELMÉLETI — feltételezés, külön jelölés
-    li.textContent = "feltételezés: " + e;
-    box.appendChild(li);
   });
   return box;
 }
@@ -96,12 +85,13 @@ function rajzol(art) {
   const valt = document.createElement("div");
   const d = art.valtozas.diff;
   valt.appendChild(szekcio_elem("Mi változott ma?", art.valtozas));
-  const diffOsszegzes = document.createElement("p");
-  diffOsszegzes.className = "elemzes-diff-osszegzes elemzes-megfigyeles";   // VALÓS réteg (diff-számítás)
-  diffOsszegzes.textContent = d.van_elozo
-    ? `Irányt váltott: ${d.irany_valtok.map((v) => v.szo).join(", ") || "–"} · új felkapott: ${d.felkapott_uj.join(", ") || "–"} · eltűnt: ${d.felkapott_eltunt.join(", ") || "–"}`
-    : "Nincs összevethető előző nap.";
-  valt.appendChild(diffOsszegzes);
+  if (d.van_elozo) {
+    const diffOsszegzes = document.createElement("p");
+    diffOsszegzes.className = "elemzes-diff-osszegzes elemzes-megfigyeles";   // VALÓS réteg (diff-számítás)
+    diffOsszegzes.textContent =
+      `Irányt váltott: ${d.irany_valtok.map((v) => v.szo).join(", ") || "–"} · új felkapott: ${d.felkapott_uj.join(", ") || "–"} · eltűnt: ${d.felkapott_eltunt.join(", ") || "–"}`;
+    valt.appendChild(diffOsszegzes);
+  }
   // legnagyobb mozgók (VALÓS, a nap-diffből — d.mozgok) — csak ha van előző nap ÉS van mozgás
   if (d.van_elozo && Array.isArray(d.mozgok) && d.mozgok.length) {
     const mozgokP = document.createElement("p");
