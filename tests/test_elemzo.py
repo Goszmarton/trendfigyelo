@@ -330,6 +330,37 @@ def test_valasz_to_artefakt_megorzi_a_heti_valos_reteget():
     assert art["felkapott"]["het"]["szoveg"] == "sz"
 
 
+def _mini_payload(van_elozo):
+    return {"kulcsszavak": {"szamok": []},
+            "felkapott": {"top": [], "het": {"napok": 0, "visszateroek": []}},
+            "valtozas": {"van_elozo": van_elozo, "irany_valtok": [], "mozgok": [],
+                         "felkapott_uj": [], "felkapott_eltunt": []},
+            "kulcsszo_het": {"ablak_napok": 7, "szavak": []}}
+
+
+def _mini_ai(valtozas_szoveg):
+    sz = {"szoveg": "sz"}
+    return {"valtozas": {"szoveg": valtozas_szoveg},
+            "kulcsszavak": {"napi": sz, "teljes_kep": sz, "het": sz},
+            "felkapott": {"napi": sz, "het": sz}}
+
+
+def test_artefakt_ures_nap_python_szoveg():
+    art = elemzo.valasz_to_artefakt(_mini_ai("AI-SZÖVEG-NE-JELENJEN-MEG"),
+                                    _mini_payload(van_elozo=False),
+                                    nap="2026-08-22", modell="claude-opus-4-8")
+    assert "nincs korábbi nap" in art["valtozas"]["szoveg"].lower()
+    assert "AI-SZÖVEG-NE-JELENJEN-MEG" not in art["valtozas"]["szoveg"]
+    assert art["valtozas"]["diff"]["van_elozo"] is False
+
+
+def test_artefakt_van_elozo_ai_szoveg_marad():
+    art = elemzo.valasz_to_artefakt(_mini_ai("Az AI napi összefoglalója."),
+                                    _mini_payload(van_elozo=True),
+                                    nap="2026-08-22", modell="claude-opus-4-8")
+    assert art["valtozas"]["szoveg"] == "Az AI napi összefoglalója."
+
+
 def test_kulcsszo_het_valos_palya():
     lanc = {"kulcsszavak": {
         "állás": {"ablak_kezdet_utc": "2026-08-01T00:00:00+00:00",

@@ -2,7 +2,8 @@
 
 A számokat MINDIG ez a modul számolja; az AI (elemez) SOHA nem talál ki számot,
 kizárólag a payloadban kapott számokból ír (spec §2.1). Ok-okozat tényként tilos;
-hipotézis = külön ELMÉLETI mező (spec §2.2).
+a hipotézist az AI a folyó szövegbe ágyazva, óvatosan jelezve írja le — nincs
+külön ELMÉLETI mező (spec §2.2).
 """
 
 import json
@@ -25,7 +26,7 @@ RENDSZER_PROMPT = (
     "(2) FOLYÓ, összefüggő magyar BEKEZDÉSEKET írsz. SOHA nem használsz felsorolást, "
     "bullet-pontot, címkét, kulcs–érték párt vagy szakszót. Ha egy szekcióhoz több "
     "gondolat tartozik, azokat külön BEKEZDÉSBE (üres sorral elválasztva) fűzöd. "
-    "(3) SOHA nem említesz mezőnevet, technikai kulcsot, sem a „payload\", „adat­struktúra\" "
+    "(3) SOHA nem említesz mezőnevet, technikai kulcsot, sem a „payload\", „adatstruktúra\" "
     "vagy hasonló szót. A felhasználó nem tudja, milyen mezőkből dolgozol. Ha valamiről "
     "nincs adatod, azt természetes magyar mondattal írod le (pl. „ma még nincs mihez "
     "hasonlítani\"), NEM a hiányzó mezőt nevezed meg. "
@@ -221,11 +222,16 @@ def elemez(payload, kliens=None, modell=MODELL):
 
 
 def valasz_to_artefakt(ai_valasz, payload, nap, modell):
+    valtozas_szoveg = ai_valasz["valtozas"]["szoveg"]
+    if not payload["valtozas"].get("van_elozo"):
+        valtozas_szoveg = ("Ma nincs korábbi nap, amivel összevethetnénk, így a napi "
+                           "elmozdulás egyelőre nem értékelhető. A friss kép a lenti "
+                           "szekciókban olvasható.")
     return {
         "frissitve": seged.idopont_iso(seged.most_utc()),
         "modell": modell,
         "nap": nap,
-        "valtozas": {"diff": payload["valtozas"], **ai_valasz["valtozas"]},
+        "valtozas": {"diff": payload["valtozas"], "szoveg": valtozas_szoveg},
         "kulcsszavak": {
             "szamok": payload["kulcsszavak"]["szamok"],
             "napi": ai_valasz["kulcsszavak"]["napi"],
