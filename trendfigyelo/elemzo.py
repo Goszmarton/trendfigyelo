@@ -15,17 +15,27 @@ from trendfigyelo import seged
 
 _log = logging.getLogger(__name__)
 
-MODELL = "claude-sonnet-5"
+MODELL = "claude-opus-4-8"
 
 RENDSZER_PROMPT = (
-    "Magyar nyelvű elemző vagy egy magyar Google Trends figyelő oldalhoz. "
-    "SZABÁLYOK, kivétel nélkül: (1) SOHA nem találsz ki számot — kizárólag a kapott "
-    "payload számaiból dolgozol. (2) Ok-okozatot TÉNYKÉNT SOHA nem állítasz; a "
-    "megfigyelés (mit mutatnak a számok) és a magyarázat (miért) külön mezőben van. "
-    "(3) Minden feltételezést az 'elmeleti' mezőbe teszel, 'feltételezés' megfogalmazással; "
-    "a tényszerű leolvasásokat a 'megfigyelesek' mezőbe. (4) A felkapott hírekről csak a "
-    "kapott 'temak'/'hirek' alapján írsz, hírt/forrást/eseményt nem találsz ki. "
-    "Tömör, óvatos, magyar mondatok."
+    "Magyar nyelvű elemző vagy egy magyar Google Trends figyelő oldalhoz. A közönség "
+    "laikus olvasó, aki NEM lát JSON-t, mezőneveket vagy technikai részleteket. "
+    "SZABÁLYOK, kivétel nélkül: "
+    "(1) KIZÁRÓLAG a kapott számokból dolgozol; számot SOHA nem találsz ki. "
+    "(2) FOLYÓ, összefüggő magyar BEKEZDÉSEKET írsz. SOHA nem használsz felsorolást, "
+    "bullet-pontot, címkét, kulcs–érték párt vagy szakszót. Ha egy szekcióhoz több "
+    "gondolat tartozik, azokat külön BEKEZDÉSBE (üres sorral elválasztva) fűzöd. "
+    "(3) SOHA nem említesz mezőnevet, technikai kulcsot, sem a „payload\", „adat­struktúra\" "
+    "vagy hasonló szót. A felhasználó nem tudja, milyen mezőkből dolgozol. Ha valamiről "
+    "nincs adatod, azt természetes magyar mondattal írod le (pl. „ma még nincs mihez "
+    "hasonlítani\"), NEM a hiányzó mezőt nevezed meg. "
+    "(4) Ok-okozatot TÉNYKÉNT nem állítasz. Ahol magyarázatot feltételezel, a mondatban "
+    "óvatosan jelzed („feltehetően\", „elképzelhető\", „ezt az adat önmagában nem igazolja\") "
+    "— külön „feltételezés\" felirat NÉLKÜL, a fogalmazás maga hordozza az óvatosságot. "
+    "(5) Hírt, forrást vagy eseményt nem találsz ki; a felkapott témákról csak a kapott "
+    "témák és hírek alapján írsz. "
+    "(6) Tömör, óvatos, DE ÉRDEMI: mondd el, mit látunk ma, milyen irányba mozdul a kép, "
+    "és mit lehet ebből óvatosan leszűrni."
 )
 
 # A kulcsszó VALÓS iránya/meredeksége az 1_het (órás, napi frissülő) intervallumból jön.
@@ -163,13 +173,11 @@ def epit_payload(adatok, tegnapi_szamok=None, tegnapi_top=None):
     }
 
 
-# Az AI válaszának sémája (szekciónként szöveg + megfigyelések + elméleti).
+# Az AI válaszának sémája (szekciónként csak folyó szöveg).
 def _szekcio_sema():
     return {"type": "object", "additionalProperties": False,
-            "required": ["szoveg", "megfigyelesek", "elmeleti"],
-            "properties": {"szoveg": {"type": "string"},
-                           "megfigyelesek": {"type": "array", "items": {"type": "string"}},
-                           "elmeleti": {"type": "array", "items": {"type": "string"}}}}
+            "required": ["szoveg"],
+            "properties": {"szoveg": {"type": "string"}}}
 
 
 def _valasz_sema():

@@ -78,6 +78,25 @@ def test_felkapott_top_tovabbitja_a_hireket():
     assert payload["felkapott"]["top"][0]["hirek"] == [{"cim": "Vihar közeleg", "forras": "hvg.hu"}]
 
 
+def test_szekcio_sema_csak_szoveg():
+    s = elemzo._szekcio_sema()
+    assert s["required"] == ["szoveg"]
+    assert set(s["properties"]) == {"szoveg"}
+    assert "megfigyelesek" not in s["properties"]
+    assert "elmeleti" not in s["properties"]
+
+
+def test_modell_opus():
+    assert elemzo.MODELL == "claude-opus-4-8"
+
+
+def test_rendszer_prompt_folyo_proza_es_tiltas():
+    p = elemzo.RENDSZER_PROMPT.lower()
+    assert "bekezdés" in p          # folyó bekezdéseket kér
+    assert "payload" in p           # explicit tiltja a „payload" szót
+    assert "mező" in p              # tiltja a mezőnév-hivatkozást
+
+
 def test_gordulo_het_napon_beluli_dedup():
     # Ha egy kifejezés EGY napon belül kétszer szerepel, az akkor is CSAK
     # egy nap (a "hány külön napon" szerződés — nem bejegyzés-számláló).
@@ -191,7 +210,7 @@ class KamuKliens:
 
 
 def _ai_valasz():
-    szekcio = {"szoveg": "sz", "megfigyelesek": ["m"], "elmeleti": ["e"]}
+    szekcio = {"szoveg": "sz"}
     return {"valtozas": szekcio, "kulcsszavak": {"napi": szekcio, "teljes_kep": szekcio, "het": szekcio},
             "felkapott": {"napi": szekcio, "het": szekcio}}
 
@@ -200,9 +219,9 @@ def test_elemez_a_varrat_mogott_nem_hiv_halozatot():
     kliens = KamuKliens(_ai_valasz())
     payload = {"kulcsszavak": {"szamok": []}, "felkapott": {"top": []}, "valtozas": {}}
     valasz = elemzo.elemez(payload, kliens=kliens)
-    assert kliens.hivasok[0][1] == "claude-sonnet-5"      # a modell átment
+    assert kliens.hivasok[0][1] == "claude-opus-4-8"      # a modell átment
     assert valasz["kulcsszavak"]["napi"]["szoveg"] == "sz"
-    assert valasz["valtozas"]["elmeleti"] == ["e"]
+    assert valasz["valtozas"]["szoveg"] == "sz"
 
 
 import json
@@ -280,7 +299,7 @@ def test_valasz_to_artefakt_valos_reteg_es_ai_narrativa():
     assert art["valtozas"]["diff"]["van_elozo"] is False
     # AI-narratíva a helyén:
     assert art["kulcsszavak"]["napi"]["szoveg"] == "sz"
-    assert art["felkapott"]["het"]["elmeleti"] == ["e"]
+    assert art["felkapott"]["het"]["szoveg"] == "sz"
 
 
 def test_valasz_to_artefakt_megorzi_a_heti_valos_reteget():
