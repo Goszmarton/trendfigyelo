@@ -1,7 +1,8 @@
 "use strict";
 // „Elemzés" fül — a napi AI-elemzés (docs/data/elemzes.json) renderelése + archívum-nap-választó.
-// A VALÓS (tényszerű, a diff/kulcsszó-adatokból számolt) és az ELMÉLETI (AI-feltételezés) réteg
-// KÜLÖN DOM-elemként, megkülönböztető osztállyal jelenik meg (.elemzes-megfigyeles / .elemzes-elmeleti).
+// A VALÓS (tényszerű, a diff/kulcsszó-adatokból számolt) réteg csempékként + diff-összegzésként
+// jelenik meg (.elemzes-megfigyeles); az AI narratíva folyó prózaként, <p class="elemzes-szoveg">
+// bekezdésekben — nincs külön ELMÉLETI/feltételezés-réteg.
 
 async function elemzes_betolt(datum) {
   const url = datum ? `data/elemzesek/${datum}.json` : "data/elemzes.json";

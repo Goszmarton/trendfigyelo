@@ -33,3 +33,18 @@ test("Elemzés fül: folyó próza <p>-ként, nincs feltételezés-réteg, VALÓ
   await expect(page.locator(".elemzes-diff-osszegzes")).toContainText("állás");
   await expect(page.locator(".elemzes-diff-mozgok")).toContainText("benzin");
 });
+
+test("Elemzés elrendezés: naptár bal, elemzés jobb; mobilon egymás alá", async ({ page }) => {
+  await page.route("**/data/elemzes.json", (r) => r.fulfill({ json: FIXTURE }));
+  await page.route("**/data/elemzesek/index.json", (r) => r.fulfill({ json: { napok: ["2026-08-22"] } }));
+  await page.setViewportSize({ width: 1200, height: 900 });
+  await page.goto("/elemzes.html");
+  await expect(page.locator("#elemzes-naptar .nap-cella").first()).toBeVisible();
+  const nap = await page.locator("#elemzes-naptar").boundingBox();
+  const tart = await page.locator("#elemzes-tartalom").boundingBox();
+  expect(nap.x + nap.width).toBeLessThanOrEqual(tart.x + 1);        // naptár a tartalomtól BALRA
+  await page.setViewportSize({ width: 480, height: 900 });
+  const nap2 = await page.locator("#elemzes-naptar").boundingBox();
+  const tart2 = await page.locator("#elemzes-tartalom").boundingBox();
+  expect(tart2.y).toBeGreaterThan(nap2.y + nap2.height - 1);         // tartalom a naptár ALATT
+});
