@@ -45,6 +45,16 @@ ATADAS-2026-08-18.txt untracked (SOHA ne add-eld). A pótolhatatlan órás ág (
   paramétert → fail-soft miatt az előző elemzes.json marad (nincs adatvesztés), a javítás a
   `_AnthropicKliens.uzenet` varratban (külön, mérve). A tesztek NEM hívnak éles API-t, ezt csak élesben látni.
 
+*** INFO-FUL bővítés (08-23, LESZÁLLÍTVA — a MENU-INFO-OLDAL enhance-e, nem új leltár-tétel) ***
+  „Az adatokról" fül → „Infó" mindhárom oldal menüjében (+ H1 + <title>); a fájlnév marad adatokrol.html.
+  Az Infó-oldal két csoportra tagolva („Az adatok" / „Az elemzés", .adat-csoport csoportcímek). A meglévő 8
+  Google-adat-doboz VÁLTOZATLAN; +3 elemzés-doboz: (1) hogyan készül + melyik modell (claude-opus-4-8);
+  (2) mit számol a Python (MINDEN szám) vs mit ír az AI (CSAK narratíva, óvatos jelöléssel, számot/hírt nem
+  talál ki); (3) mit elemez (kulcsszavak: mai/teljes/1 hét; felkapott: napi/heti; „mi változott ma") + mikor
+  fut (naponta, automatikusan, adatgyűjtés után) + fail-soft + visszakereshető. menu.spec.js frissítve (Infó
+  link, 11 doboz, 2 csoport, claude-opus-4-8/Python asszertek). Leltár: NEM-SZÁMOLÓ note, invariáns TART 72.
+  Commit bb14721 (frontend), a doc-jegyzet KÜLÖN.
+
 *** NYITOTT / KÖVETKEZŐ (fast-follow, NEM sürgős) ***
   1) A próza HANGNEME/MÉLYSÉGE további finomhangolása több éles Opus-kimenet után (a szerkezeti szivárgás
      már megoldva; ez már tartalmi ízlés-csiszolás).
