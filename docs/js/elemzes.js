@@ -41,38 +41,9 @@ function valos_kulcsszo_csempek(szamok) {
   return wrap;
 }
 
-// VALÓS felkapott-top csempék (kifejezés + volumen — a Google Trends listából, nem AI-szöveg).
-// KÜLÖN osztály (nem .elemzes-csempe), hogy a kulcsszó-mérőszám-csempéktől megkülönböztethető
-// maradjon (más adatforrás: a napi felkapott-lista, nem a 13 figyelt kulcsszó).
-function valos_felkapott_csempek(top) {
-  const wrap = document.createElement("div");
-  wrap.className = "elemzes-csempek";
-  (top || []).forEach((f) => {
-    const c = document.createElement("div");
-    c.className = "elemzes-felkapott-csempe";
-    c.textContent = `${f.kifejezes} (volumen: ${f.volumen ?? "–"})`;
-    wrap.appendChild(c);
-  });
-  return wrap;
-}
-
-// VALÓS heti felkapott-visszatérés csempék (het_valos.visszateroek — Pythonból számolt
-// „hány külön napon szerepelt" lista, NEM az AI het-narratívája). Ugyanaz a tile-osztály,
-// mint a napi felkapott-top csempéké (.elemzes-felkapott-csempe) — a SAME VALÓS stílus.
-// Guard: hiányzó/üres het_valos esetén nem dob, nem rajzol semmit.
-function valos_felkapott_het_csempek(hetValos) {
-  const wrap = document.createElement("div");
-  wrap.className = "elemzes-csempek";
-  wrap.id = "felkapott-het-valos";
-  const visszateroek = (hetValos && hetValos.visszateroek) || [];
-  visszateroek.forEach((v) => {
-    const c = document.createElement("div");
-    c.className = "elemzes-felkapott-csempe";
-    c.textContent = `${v.kifejezes} — ${v.napok_szama} nap`;
-    wrap.appendChild(c);
-  });
-  return wrap;
-}
+// Megjegyzés: a nyers felkapott-csempesorok (napi top „(volumen: …)" + heti visszatérés
+// „— N nap") KIVÉVE (user-döntés 2026-08-23) — a felkapottat az AI-próza foglalja össze.
+// A het_valos VALÓS réteg az artefaktban MARAD (fail-safe adat), csak nem rajzoljuk csempeként.
 
 function rajzol(art) {
   const t = document.getElementById("elemzes-tartalom");
@@ -109,15 +80,9 @@ function rajzol(art) {
   t.appendChild(szekcio_elem("Kulcsszavak — teljes kép", art.kulcsszavak.teljes_kep));
   t.appendChild(szekcio_elem("Kulcsszavak — 1 hét", art.kulcsszavak.het));
 
-  // Felkapott
-  t.appendChild(valos_felkapott_csempek(art.felkapott.top));
+  // Felkapott — CSAK az AI-próza (a nyers csempesorok kivéve; lásd a fenti megjegyzést)
   t.appendChild(szekcio_elem("Felkapott — napi", art.felkapott.napi));
   t.appendChild(szekcio_elem("Felkapott — heti összesítés", art.felkapott.het));
-  // VALÓS heti visszatérés-csempék (het_valos) — guard: hiányzó/üres esetén nem rajzol semmit
-  const hetValos = art.felkapott.het_valos;
-  if (hetValos && Array.isArray(hetValos.visszateroek) && hetValos.visszateroek.length) {
-    t.appendChild(valos_felkapott_het_csempek(hetValos));
-  }
 }
 
 // ── archívum nap-választó — a naptar_epit (app.js:454) VALÓS interfészét használja:
