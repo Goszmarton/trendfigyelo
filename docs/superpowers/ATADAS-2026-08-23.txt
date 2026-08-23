@@ -55,6 +55,13 @@ ATADAS-2026-08-18.txt untracked (SOHA ne add-eld). A pótolhatatlan órás ág (
   link, 11 doboz, 2 csoport, claude-opus-4-8/Python asszertek). Leltár: NEM-SZÁMOLÓ note, invariáns TART 72.
   Commit bb14721 (frontend), a doc-jegyzet KÜLÖN.
 
+*** ELEMZES-FELKAPOTT-CSEMPE-KIVET (08-23, UI-preferencia, LESZÁLLÍTVA — nem-számoló) ***
+  Az Elemzés-oldalról kivéve a KÉT nyers felkapott-csempesor: a napi felkapott-top („kifejezés (volumen: N)")
+  és a heti visszatérő-lista („kifejezés — N nap"). A felkapottat mostantól CSAK az AI-próza foglalja össze
+  (Felkapott — napi / heti összesítés szekciók). A kulcsszó-csempék + a diff-összegzés/mozgók MARADNAK.
+  A 2 holt render-függvény törölve; a `het_valos` VALÓS réteg az artefaktban MARAD (fail-safe adat, csak nem
+  rajzolt). e2e valódi RED→GREEN (.elemzes-felkapott-csempe count 0). Commit 2a436ce. Invariáns TART 72.
+
 *** NYITOTT / KÖVETKEZŐ (fast-follow, NEM sürgős) ***
   1) A próza HANGNEME/MÉLYSÉGE további finomhangolása több éles Opus-kimenet után (a szerkezeti szivárgás
      már megoldva; ez már tartalmi ízlés-csiszolás).
