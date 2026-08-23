@@ -1,0 +1,68 @@
+ÁTADÓ — 2026-08-23 (trendfigyelo, Phase 4) — ELEMZÉS-CSISZOLÁS LESZÁLLÍTVA (folyó próza + Opus + kulcsszo_het valós heti pálya + kétoszlopos elrendezés)
+================================================================================
+(A tágabb RUTIN / baseline-hez lásd ATADAS-2026-08-21.txt; az ELEMZES-FUL alap-leszállításhoz ATADAS-2026-08-22.txt.)
+
+ZÁRÓ ÁLLAPOT (2026-08-23)
+------------------------
+A NAPI RUTIN lefutott (mérés, kód nélkül): minden zöld, nincs STOP. Az esti 08-22 éles kör MAGÁTÓL futott
+(napi trendgyűjtés 3921424 → AI-elemzés db285d8), az elemzés-ág fail-soft nélkül, friss valós narratívával.
+Baseline gördült: nyers 180 pont (7-napos ablak 08-22-re), lánc 12 szó 571 pont/08-22T18:00 (+48=+2 nap),
+tüntetés marad 168/08-17 (szakasz-törés), másodlagos 18 cella, regresszió 2_het ervenyes a 12 szónál.
+
+Ezután az ELEMZÉS-CSISZOLÁS feature leszállítva (SDD, brainstorm→spec→terv→SDD 6 task + záró fix-hullám).
+A feature-kód: f22516e..c53ef91 (7 commit) a main-en, LOKÁLISAN — a push külön kör (user-jóváhagyással).
+Suite a leszálláskor: pytest 386 + Playwright 130 (SOROS), MUTÁCIÓ==1. Munkafa: csak a régi ROOT
+ATADAS-2026-08-18.txt untracked (SOHA ne add-eld). A pótolhatatlan órás ág (kulcsszo_nyers/lanc) ÉRINTETLEN.
+
+*** ELEMZÉS-CSISZOLÁS — LESZÁLLÍTVA (a 08-22 éles kimenet hibáira) ***
+  Az ELEMZES-FUL tartalmi/minőségi csiszolása. Amit a user kért és megkapott:
+  1) FOLYÓ PRÓZA felsorolás helyett: az AI-szekció séma mostantól CSAK `szoveg` (a megfigyelesek[]/elmeleti[]
+     tömbök törölve); a frontend `\n\n` mentén <p class="elemzes-szoveg"> bekezdésekre bont (textContent, XSS).
+     A régi bullet + „feltételezés:" prefix render TÖRÖLVE (a dupla „Feltételezés: Feltételezés:" megszűnt).
+  2) NINCS MEZŐNÉV-/„payload"-SZIVÁRGÁS: a RENDSZER_PROMPT tiltja a mezőnév/technikai kulcs/„payload" említést,
+     folyó bekezdéseket kér, a hipotézist a MONDATBAN hedge-eli („feltehetően"/„ezt az adat nem igazolja"),
+     külön „Feltételezés:" felirat nélkül. Ha nincs adat → természetes mondat, nem a mezőt nevezi meg.
+  3) MODELL → OPUS: `claude-sonnet-5` → `claude-opus-4-8` (a hívás-paraméterek — thinking:adaptive,
+     effort:medium, json_schema, max_tokens 16000 — VÁLTOZATLANOK).
+  4) kulcsszo_het VALÓS heti pálya: az eddig ÜRES {} szekció feltöltve — `_kulcsszo_het(lanc)` a
+     kulcsszo_lanc.json-ból Pythonban számol {szo,kezdo,veg,valtozas,min,max}-ot (legfrissebb lánc-pont a
+     horgony, 7 napos ablak, valtozas abszolút szerint rendezve; a szakasz-törött/elavult végű szó — pl.
+     tüntetés — KIMARAD). A `futtat` a láncot CSAK OLVASSA.
+  5) ÜRES-NAP „mi változott ma": ha nincs korábbi nap, a `valasz_to_artefakt` a valtozas.szoveg-et FIX magyar
+     mondattal írja (az AI szövegét eldobja) → determinisztikus, szivárgásmentes, függetlenül az AI-tól.
+  6) KÉTOSZLOPOS ELRENDEZÉS: naptár BAL (sticky, minmax(15rem,20rem)) / elemzés JOBB (1fr); ~760px alatt
+     egymás alá csúszik. A `.elemzes-elmeleti` halott CSS-szabály törölve (.elemzes-megfigyeles MARAD, a
+     VALÓS diff-összegzés/mozgók használják).
+  - A két SÉRTHETETLEN (MINDEN szám Pythonból; fail-soft — a `try` CSAK az `elemez` körül, `return 2` írás
+    előtt, az előző elemzes.json bit-azonos marad) az OPUS ZÁRÓ-SZEMLÉN IGAZOLVA. A pótolhatatlan lánc CSAK
+    olvasva; docs/data ÉRINTETLEN; git add végig névvel; minden review tiszta, TDD VALÓDI (elkapott) RED-del.
+  - Spec: docs/superpowers/specs/2026-08-23-elemzes-csiszolas-design.md · Terv: plans/2026-08-23-elemzes-csiszolas.md.
+
+*** FIGYELEM AZ ELSŐ ÉLES OPUS-FUTÁSKOR (implementációs kockázat a specből) ***
+  A modell Opusra váltott, a hívás-paraméterek változatlanok. Az ELSŐ automata/kézi elemzés-futás után
+  ELLENŐRIZD: (a) az artefakt `modell: claude-opus-4-8`; (b) a hívás nem hasalt el paraméter-elutasításon
+  (thinking:adaptive / output_config.effort / json_schema mind elfogadott Opus 4.8-on). HA Opus elutasít egy
+  paramétert → fail-soft miatt az előző elemzes.json marad (nincs adatvesztés), a javítás a
+  `_AnthropicKliens.uzenet` varratban (külön, mérve). A tesztek NEM hívnak éles API-t, ezt csak élesben látni.
+
+*** NYITOTT / KÖVETKEZŐ (fast-follow, NEM sürgős) ***
+  1) A próza HANGNEME/MÉLYSÉGE további finomhangolása több éles Opus-kimenet után (a szerkezeti szivárgás
+     már megoldva; ez már tartalmi ízlés-csiszolás).
+  2) indent=0 → indent=2 az elemzés-JSON-írásoknál (konzisztencia).
+  3) JS mozgók tizedes-formázás (2 → 2.0).
+
+*** LELTÁR-FRISSÍTÉS KÉSZ (ebben a záró doc-commitban) ***
+  docs/superpowers/leltar.md: „ELEMZÉS-CSISZOLÁS — LESZÁLLÍTVA" új tábla-sor + delta-log (08-23);
+  kész 39→40, törzs 71→72; fejléc (39)→(40). Invariáns FIZIKAILAG MÉRVE: 40 adatsor a LESZÁLLÍTVA-táblában
+  → aktív 3 + kész 40 + rekord 29 = 72 ✓, LEZÁRT 18. (Az aritmetikai csúszást elkerülve, sorszámlálással.)
+
+*** RUTIN (változatlan; az elemzés-ág már benne) ***
+  Az esti éles-futás ellenőrzésébe az ELEMZÉS-ÁG beleveendő: futott-e az elemzes.yml (zöld?), kiírta-e a napi
+  elemzes.json + elemzesek/<nap>.json + index-et (KÜLÖN commit), fail-soft-e egy esetleges Claude-hiba
+  (előző elemzes.json maradt-e). MOSTANTÓL a modell OPUS — lásd a fenti „első éles futás" figyelmet.
+
+MUNKAMÓDSZER (változatlan): magyar; Co-Authored-By: Claude Opus 4.8 + Claude-Session; KÜLÖN adat-commit;
+SOROS suite; MUTÁCIÓ==1; commit CSAK jóváhagyott üzenettel; git add NÉVVEL (a ROOT ATADAS-2026-08-18.txt SOHA);
+DOC-COMMIT a kód ELŐTT; TDD valódi RED-del (elkapott pytest/Playwright-kimenet, nem előrejelzés); a szándékos-zöld
+fedését MÉRNI; a DOM-belső egyetlen őre a vizuális szemle; git checkout uncommitted kódra TILOS; push KÜLÖN kör
+(fetch → HEAD..origin/main → ha nem üres: pull --rebase + TELJES SOROS suite ÚJRA → push → rev-list 0 0).
