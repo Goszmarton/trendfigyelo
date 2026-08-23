@@ -167,6 +167,17 @@ def test_epit_payload_beepiti_a_valtozast_ha_van_tegnapi():
     assert "eső" in payload["valtozas"]["felkapott_uj"]
 
 
+def test_epit_payload_kulcsszo_het_a_lancbol():
+    adatok = {"regresszio": {}, "tortenet": {}, "legfrissebb": {}, "napok_trendek": {},
+              "lanc": {"kulcsszavak": {"állás": {"pontok": [
+                  {"idopont_utc": "2026-08-15T18:00:00+00:00", "ertek": 42},
+                  {"idopont_utc": "2026-08-22T18:00:00+00:00", "ertek": 51}]}}}}
+    p = elemzo.epit_payload(adatok)
+    assert p["kulcsszo_het"]["szavak"], "a kulcsszo_het NEM lehet üres, ha van lánc"
+    assert p["kulcsszo_het"]["szavak"][0]["szo"] == "állás"
+    assert p["kulcsszo_het"]["szavak"][0]["valtozas"] == 9
+
+
 def test_nap_diff_mozgok_rendezes_es_delta():
     # A mozgok listát az abszolút meredekség-változás szerint CSÖKKENŐEN rendezi,
     # és a valtozas mező a helyes delta (mai − tegnapi, kerekítve).

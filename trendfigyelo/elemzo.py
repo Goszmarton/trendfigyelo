@@ -169,7 +169,7 @@ def epit_payload(adatok, tegnapi_szamok=None, tegnapi_top=None):
         "kulcsszavak": {"szamok": szamok},
         "felkapott": felkapott,
         "valtozas": valtozas,
-        "kulcsszo_het": {},
+        "kulcsszo_het": _kulcsszo_het(adatok.get("lanc", {})),
     }
 
 
@@ -283,6 +283,7 @@ def futtat(docs_data, nap, kliens=None):
         "tortenet": _betolt(docs_data / "tortenet.json") or {},
         "legfrissebb": _betolt(docs_data / "legfrissebb.json") or {},
         "napok_trendek": _utolso_napok_trendek(docs_data),
+        "lanc": _betolt(docs_data / "kulcsszo_lanc.json") or {},
     }
     tegnapi = _elozo_archivum(docs_data, nap)
     payload = epit_payload(
