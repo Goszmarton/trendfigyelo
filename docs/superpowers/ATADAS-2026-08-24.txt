@@ -1,0 +1,69 @@
+ÁTADÓ — 2026-08-24 (trendfigyelo, Phase 4) — NAPI RUTIN + ONHOST-DEPLOY (saját Hetzner-szerver, Caddy+HTTPS, DuckDNS, cron git-pull)
+================================================================================
+(A feature-történethez: ELEMZES-FUL alap → ATADAS-2026-08-22.txt; ELEMZÉS-CSISZOLÁS + Opus + INFO-FUL + felkapott-csempe-kivét → ATADAS-2026-08-23.txt; a tágabb RUTIN/baseline → ATADAS-2026-08-21.txt.)
+
+ZÁRÓ ÁLLAPOT (2026-08-24)
+------------------------
+A NAPI RUTIN lefutott (mérés, kód nélkül): minden zöld, nincs STOP. Ezután a felhasználó kérésére LESZÁLLÍTVA az
+ONHOST-DEPLOY: az oldal mostantól a SAJÁT Hetzner-szerverén is él (https://trendfigyelo.duckdns.org), a GitHub Pages
+mellett. Ez INFRA, NEM repo-kód — a repóban SEMMI forrás/teszt nem változott (csak ez az átadó + a leltár-jegyzet).
+A munkafa a záráskor: csak a régi ROOT ATADAS-2026-08-18.txt untracked (SOHA ne add-eld). A pótolhatatlan órás ág ÉRINTETLEN.
+
+*** NAPI RUTIN (2026-08-24, csak mérés) ***
+  - Állapot: origin/main 2-vel ELŐRE volt (az esti éles futás: 651789a napi HU trendgyűjtés 08-23T19:34Z + 04dada2
+    napi AI-elemzés 08-23T19:36Z). Lokál 0 előre → tiszta fast-forward, `git pull --rebase` → szinkron (0 0).
+  - Suite: pytest 386 + Playwright 130 (SOROS) ZÖLD; MUTÁCIÓ==1 (kulcsszo.spec.js:1230).
+  - ⭐ ELSŐ ÉLES OPUS PRODUKCIÓBAN — TISZTA (a 08-23 átadó figyelme): elemzes.json modell=`claude-opus-4-8`,
+    frissitve 19:36 (NEM fail-soft), van_elozo=True; 6 folyó-próza szekció NULLA tiltott tokennel (payload/mezőnév);
+    kulcsszo_het feltöltve (760 kar.). A hívás-paraméterek (thinking:adaptive/effort/json_schema) átmentek Opus 4.8-on.
+  - Data-baseline (regresszió-őrzés): nyers 13 szó / 180 rekord (= baseline, NEM csökkent); lánc 12 egészséges szó
+    595 pont/szó @ 08-23T18:00 (gördült 571→595 = +24 = +1 nap), tüntetés 168 pont @ 08-17T18:00 (szakasz-törés,
+    változatlan), lánc rekord-alak VÁLTOZATLAN; másodlagos 11 szó / 20 cella (18→+2, várt); 2_het ÉRVÉNYES 12/12
+    egészséges szónál (tüntetés kizárva: `esemenyjelzo`); esti gyűjtő-ágak mind `siker` (429 nincs; idosor_rekesz
+    korlat:4 ismert forward-only jegyzet); .tmp szemét NINCS.
+  - Leltár-invariáns FIZIKAILAG: aktív 3 + kész 40 + rekord 29 = 72 ✓, LEZÁRT 18 (nem szállt le SZÁMOLÓ tétel).
+
+*** ONHOST-DEPLOY — LESZÁLLÍTVA (INFRA, NEM-SZÁMOLÓ; brainstorm A-út → lépésenkénti telepítés a felhasználóval) ***
+  CÉL: a csúnya github.io/trendfigyelo/ URL helyett saját, szép cím + saját HTTPS, a felhasználó Hetzner-gépén.
+  DÖNTÉS (brainstorm): „A) Szerver csak kiszolgál" — a napi pipeline VÁLTOZATLANUL a GitHub Actions-ön marad+commitol
+  a publikus repóba; a szerver csak lehúzza és kiszolgálja. (B=minden a szerverre / C=domain a Pages-en elvetve.)
+  A szerveren a hirfigyelo egy MÁSIK, független projekt (Postgres konténer hirfigyeles-db @127.0.0.1:5432) — ÉRINTETLEN.
+
+  Ami elkészült (mind ellenőrizve, élőben igazolva):
+  1) KÜLÖN BEJÁRAT: új `trendfigyelo` OS-user (uid 1001, sudo-csoport + jelszó beállítva; a hirfigyelo authorized_keys
+     átmásolva → ugyanaz a passphrase-védett kulcs lép be). Windows ~/.ssh/config alias: `Host trendfigyelo` →
+     91.107.204.62, User trendfigyelo. Belépés: `ssh trendfigyelo` (jelszó nélkül, kulccsal).
+  2) SITE: `git clone` a publikus repóból → /home/trendfigyelo/trendfigyelo (~20 MB). MINDEN útvonal relatív az
+     oldalon (nincs /trendfigyelo/ abszolút, nincs <base>) → a gyökérből (/) is működik, semmit nem kellett átírni.
+  3) DOMAIN: ingyenes DuckDNS aldomain `trendfigyelo.duckdns.org` (fiók Goszmarton@github) → A-rekord 91.107.204.62
+     (a DuckDNS auto-kitöltötte az OTTHONI IP-t, kézzel a szerver IP-jére javítva). A szerver getent-tel feloldja.
+  4) WEBSZERVER + HTTPS: Caddy 2.11.4 (hivatalos apt-repo), rendszer-service. /etc/caddy/Caddyfile:
+       trendfigyelo.duckdns.org { root * /home/trendfigyelo/trendfigyelo/docs ; file_server ; encode gzip }
+     Automatikus Let's Encrypt (http-01) — a naplóban „validations succeeded" (a 80/443 kívülről nyitva, nincs
+     Hetzner-tűzfal; ufw inaktív). Jogosultság: `caddy` user a trendfigyelo csoportban + home 750 → olvashatja a docs/-ot.
+  5) AUTO-FRISSÜLÉS: cron (trendfigyelo user) `*/30 19-23 * * * git -C /home/trendfigyelo/trendfigyelo pull --ff-only
+     --quiet`. A szerver TZ Europe/Budapest (CEST); az esti éles futás ~21:07–21:36 helyi idő → az esti ablak elkapja.
+     A felhasználó JOGGAL kérdezte, minek 10 percenként — a github naponta egyszer frissül; ezért csak esti ablak,
+     félóránként (a GitHub-futás befejezése ingadozhat, így aznap biztosan elkapjuk, mégis takarékos).
+  - ÉLŐBEN IGAZOLVA: https://trendfigyelo.duckdns.org betölt, 🔒 érvényes HTTPS, a teljes Trendfigyelő (Trendek/Elemzés/
+    Infó) renderel. Részletek: memória `trendfigyelo-onhost-deploy`.
+
+*** NYITOTT / KÖVETKEZŐ ***
+  SZERVER-oldal (a felhasználóé, ráérős):
+  1) A Hetzner-gép „restart required"-et jelez (kernel-frissítés). Egy reboot elintézi — DE a hirfigyelo DB-t is pár
+     percre leállítja, ezért alkalmas időben. Utána ellenőrizni, hogy a Caddy + a hirfigyelo-konténer feljött-e.
+  2) HOLNAP (08-25) reggel érdemes ránézni: megjelent-e az aznap esti friss adat a duckdns-címen → a teljes lánc
+     (GitHub push → cron pull → Caddy) bizonyítottan megy.
+  3) Később szebb/saját domain triviális: Caddyfile domain + DNS átírás (a DuckDNS marad tartaléknak). A régi
+     github.io/trendfigyelo/ továbbra is él — meghagyható tartaléknak vagy kikapcsolható.
+  REPÓ-oldal (korábbról, NEM sürgős): a próza HANGNEME/MÉLYSÉGE további finomhangolása több éles Opus-kimenet után;
+  indent=0→2 az elemzés-JSON-írásoknál; JS mozgók tizedes-formázás (2→2.0). (A szerkezeti szivárgás már megoldva.)
+
+*** LELTÁR-FRISSÍTÉS KÉSZ (ebben a doc-commitban) ***
+  docs/superpowers/leltar.md: +1 NEM-SZÁMOLÓ delta-log jegyzet (08-24, ONHOST-DEPLOY, INFRA). SZÁMOK VÁLTOZATLANOK:
+  aktív 3 + kész 40 + rekord 29 = 72 ✓, LEZÁRT 18 (nincs vödörmozgás; a deploy nem repo-kód, nulla forrás/teszt-változás).
+
+MUNKAMÓDSZER (változatlan): magyar; Co-Authored-By: Claude Opus 4.8 + Claude-Session; KÜLÖN adat-commit; SOROS suite;
+MUTÁCIÓ==1; commit CSAK jóváhagyott üzenettel; git add NÉVVEL (a ROOT ATADAS-2026-08-18.txt SOHA); DOC-COMMIT a kód
+ELŐTT; TDD valódi RED-del; push KÜLÖN kör (fetch → HEAD..origin/main → ha nem üres: pull --rebase + TELJES SOROS suite
+ÚJRA → push → rev-list 0 0). A pótolhatatlan órás ág (kulcsszo_nyers/lanc) CSAK OLVASVA; docs/data ÉRINTETLEN.
