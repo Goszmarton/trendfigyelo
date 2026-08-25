@@ -1,4 +1,5 @@
 from datetime import date, datetime, timezone
+from types import SimpleNamespace
 
 import pandas as pd
 import pytest
@@ -262,3 +263,46 @@ def test_ures_esemenyjelzo_NEM_pirosit(capsys):
     kulcsszavak.gyujt(KemKliens(df_gyar=gyar), _config(), most=FIX_MOST)
     ki = capsys.readouterr().out
     assert "tüntetés" not in ki   # NINCS FIGYELEM az esemenyjelzo üresre
+
+
+# ── gyujt_egy_masodlagos: gprop + ag paraméter (YouTube-fül, Task 2) ─────────────
+class _RogzitoKliens:
+    """A hivas() argumentumait rögzíti; egy fabrikált df-et ad vissza."""
+    def __init__(self, df):
+        self._df = df
+        self.hivasok = []
+        self.tr = SimpleNamespace(interest_over_time="IOT_SENTINEL")
+    def hivas(self, ag, fn, *args, **kwargs):
+        self.hivasok.append({"ag": ag, "fn": fn, "args": args, "kwargs": kwargs})
+        return self._df
+
+def _napi_df():
+    import pandas as pd
+    from datetime import datetime, timezone, timedelta
+    kezd = datetime(2026, 5, 20, tzinfo=timezone.utc)
+    idx = [kezd + timedelta(days=i) for i in range(92)]
+    return pd.DataFrame({"edzés": [40]*92, "isPartial": [False]*91 + [True]}, index=idx)
+
+def test_gyujt_egy_masodlagos_gprop_es_ag_tovabbitas():
+    cfg = SimpleNamespace(geo="HU")
+    tetel = SimpleNamespace(kifejezes="edzés", domen="egeszseg", tipus="szintmero", racs="nap")
+    most = __import__("datetime").datetime(2026, 8, 20, 9, tzinfo=__import__("datetime").timezone.utc)
+    k = _RogzitoKliens(_napi_df())
+    rek = kulcsszavak.gyujt_egy_masodlagos(k, cfg, tetel, most, "today 3-m",
+                                           gprop="youtube", ag="youtube")
+    assert rek is not None and rek["timeframe"] == "today 3-m"
+    hiv = k.hivasok[0]
+    assert hiv["ag"] == "youtube"
+    assert hiv["kwargs"]["gprop"] == "youtube"
+    assert hiv["kwargs"]["geo"] == "HU" and hiv["kwargs"]["timeframe"] == "today 3-m"
+
+def test_gyujt_egy_masodlagos_alap_gprop_ures_es_ag_valtozatlan():
+    # REGRESSZIÓ-ŐR: alapból a Google-viselkedés — ag="kulcsszo_masodlagos", gprop=""
+    cfg = SimpleNamespace(geo="HU")
+    tetel = SimpleNamespace(kifejezes="edzés", domen="egeszseg", tipus="szintmero", racs="nap")
+    most = __import__("datetime").datetime(2026, 8, 20, 9, tzinfo=__import__("datetime").timezone.utc)
+    k = _RogzitoKliens(_napi_df())
+    kulcsszavak.gyujt_egy_masodlagos(k, cfg, tetel, most, "today 3-m")
+    hiv = k.hivasok[0]
+    assert hiv["ag"] == "kulcsszo_masodlagos"
+    assert hiv["kwargs"]["gprop"] == ""

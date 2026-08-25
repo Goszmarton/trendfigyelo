@@ -212,17 +212,18 @@ def gyujt(kliens, config, most=None):
     return pontok, napi_pontok, nyers_sorozatok
 
 
-def gyujt_egy_masodlagos(kliens, config, tetel, most, timeframe):
+def gyujt_egy_masodlagos(kliens, config, tetel, most, timeframe, gprop="", ag="kulcsszo_masodlagos"):
     """EGY nap/het szó másodlagos (RACS_IDOKERET szerinti) lekérdezése → egy rekord vagy None.
 
-    A `kulcsszo_masodlagos` ág-néven megy (külön Kliens-számláló + napló-címke). Üres/oszlop
-    nélküli df → None (a szó kimarad). AgFeladva (429) NEM itt fogódik el — a hívó (a másodlagos
-    ág) csendesen feladja, de a MÁR kiírt szavak megmaradnak (spec 7.4 mintája, pótolható adaton).
+    Az `ag` ág-néven megy (külön Kliens-számláló + napló-címke; alapból `kulcsszo_masodlagos`).
+    A `gprop`: Google-tulajdon ('' = web [Google-viselkedés bájt-azonos], 'youtube' = YouTube).
+    Üres/oszlop nélküli df → None (a szó kimarad). AgFeladva (429) NEM itt fogódik el — a hívó (a
+    másodlagos ág) csendesen feladja, de a MÁR kiírt szavak megmaradnak (spec 7.4 mintája, pótolható adaton).
     """
     from .config import TIMEFRAME_RACS
     df = kliens.hivas(
-        "kulcsszo_masodlagos", kliens.tr.interest_over_time,
-        [tetel.kifejezes], geo=config.geo, timeframe=timeframe)
+        ag, kliens.tr.interest_over_time,
+        [tetel.kifejezes], geo=config.geo, timeframe=timeframe, gprop=gprop)
     if df is None or len(df) == 0:
         return None
     oszlop = _ertek_oszlop(df, tetel.kifejezes)

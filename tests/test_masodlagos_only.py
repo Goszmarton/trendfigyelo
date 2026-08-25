@@ -51,7 +51,7 @@ class _FakeKliens:
         self.hivott = []
         self.tr = type("T", (), {"interest_over_time": None})()
 
-    def hivas(self, ag, fn, szavak, geo=None, timeframe=None):
+    def hivas(self, ag, fn, szavak, geo=None, timeframe=None, gprop=""):
         self.hivott.append((ag, szavak[0], timeframe))
         return _df_for_tf(szavak[0], timeframe, self.most, self.csonka)
 

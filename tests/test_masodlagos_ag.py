@@ -150,7 +150,7 @@ class _RogzitoKliens:
         self.ag = None
         self.tr = type("T", (), {"interest_over_time": None})()
 
-    def hivas(self, ag, fn, szavak, geo=None, timeframe=None):
+    def hivas(self, ag, fn, szavak, geo=None, timeframe=None, gprop=""):
         self.ag = ag
         self.timeframe = timeframe
         return self.df_gyar(szavak[0])
@@ -224,7 +224,7 @@ class _MasodlagosBukoKliens:
         self.tr = type("T", (), {"interest_over_time": None})()
         self.hivott = []
 
-    def hivas(self, ag, fn, szavak, geo=None, timeframe=None):
+    def hivas(self, ag, fn, szavak, geo=None, timeframe=None, gprop=""):
         self.hivott.append(szavak[0])
         if szavak[0] == "szo1":
             raise AgFeladva(ag, ["429", "429", "429", "429"])
@@ -257,7 +257,7 @@ class _MasodlagosPlafonKliens:
     def __init__(self):
         self.tr = type("T", (), {"interest_over_time": None})()
         self.n = 0
-    def hivas(self, ag, fn, szavak, geo=None, timeframe=None):
+    def hivas(self, ag, fn, szavak, geo=None, timeframe=None, gprop=""):
         self.n += 1
         raise PlafonTullepve(ag, 121, 120)
     def hivasszam(self, ag):
