@@ -1,0 +1,60 @@
+ÁTADÓ — 2026-08-25 (trendfigyelo, Phase 4) — YOUTUBE-FUL LESZÁLLÍTVA (társadalmi videó-igény-monitor, 12 szó × 3-m+12-m, NINCS órás/lánc, trend Google-paritásban, külön 15:00 UTC workflow)
+================================================================================
+(A feature-történethez: ELEMZES-FUL alap → ATADAS-2026-08-22.txt; ELEMZÉS-CSISZOLÁS + Opus + INFO-FUL → ATADAS-2026-08-23.txt; NAPI RUTIN + ONHOST-DEPLOY → ATADAS-2026-08-24.txt.)
+
+ZÁRÓ ÁLLAPOT (2026-08-25)
+------------------------
+LESZÁLLÍTVA a YouTube-fül a `youtube-ful` ágon: SDD 11 task (brainstorm→spec→terv→SDD), 10 feature-commit
+c568841..2abc04c (+ 2 doc-commit: bf34d86 spec, 908f2f0 terv). Az ág MÉG NEM mergelve/pusholva — a finishing-branch
+KÜLÖN kör, a felhasználó explicit jóváhagyásával (ez a doc-commit a leltár + átadó, még mindig a `youtube-ful` ágon).
+A munkafa a záráskor: csak a régi ROOT ATADAS-2026-08-18.txt untracked (SOHA ne add-eld). A pótolhatatlan órás
+Google-ág (kulcsszo_nyers/lanc) ÉRINTETLEN — a YouTube-ág külön adatfájlokba, külön workflow-val ír.
+
+*** A FEATURE — YOUTUBE-FUL (társadalmi videó-igény-monitor) ***
+  MÉRÉS-ALAP: a monitorozott 12 szó ÉLŐ validációja (a YouTube-on más a szóhasználat, mint a webes keresésben —
+  pl. klíma=„légkondi"); a 12 szó 8 kosárba rendezve (config.yaml `youtube:` szekció + `osszes_youtube_kulcsszo`,
+  hiány → []). NINCS órás, NINCS lánc, NINCS rising, NINCS AI (YAGNI, spec §10) — a webes kulcsszó-fül pótolhatatlan
+  órás ágától teljesen FÜGGETLEN, más ágat NEM indít.
+
+  Backend `trendfigyelo/youtube.py`: minden szó × KÉT hosszú sorozat — `today 3-m` (napi rács) ÉS `today 12-m`
+  (heti rács), `gprop="youtube"`, `geo=HU`. A gyűjtő a meglévő `gyujt_egy_masodlagos(…, gprop, ag)` paraméterezésével
+  (alap `gprop=''`/`ag='kulcsszo_masodlagos'` → a Google-ág BÁJT-AZONOS marad, 0 regresszió a webes ágon). Saját SZŰK
+  plafon (a napi Google-kvótát nem viheti el). Kimenet `ir_youtube` → `youtube_nyers.json` (szó×timeframe retenció,
+  atomi írás). TREND KÖTELEZŐ, GOOGLE-PARITÁSBAN: `regresszio_ir_youtube` a másodlagos-számoló SHIM-újrahasznosításával
+  (`regresszio_masodlagos_szamit`; a számoló MAG változatlan) → `youtube_regresszio.json`. Új adatfájlok:
+  youtube_nyers.json, youtube_regresszio.json.
+
+  Workflow `.github/workflows/youtube.yml`: KÜLÖN napi cron `0 15 * * *` (17:00/16:00 budapesti, a nyári/téli idő
+  szerint), KÜLÖN adat-commit CSAK a youtube-fájlokra (a napi HU/AI-elemzés commitjait nem keveri).
+
+  Frontend: új `docs/youtube.html` váz + 4. menüpont MINDEN lapon (a `menu.spec` 3→4 frissült) + `docs/js/youtube.js` —
+  az app.js leaf-jeit (gombsor / kosár-csoportok / trend-render, `nyers_ablak` a `_forras="youtube_nyers.json"`-nal)
+  ÚJRAHASZNÁLVA; reg-egyesítés CSAK a másodlagos ágon (nincs primer/órás/lánc/esemenyjelzo-ág). Az app.js ÉRINTETLEN.
+  A #youtube-* blokkok a kulcsszó-fül CSS-ét öröklik (szelektor-bővítés). Infó-oldal YouTube-doboz (videó-igény, rács,
+  0–100 relatív, VALÓS trend). Spec: specs/2026-08-25-youtube-ful-design.md · Terv: plans/2026-08-25-youtube-ful.md.
+
+*** TESZT-STÁTUSZ ***
+  395 pytest + 132 Playwright ZÖLD (a full-suite ritka TELJES-NEZET-FLAKE ismert, parkolt, nem youtube-ful; tiszta
+  re-run 132/132). MUTÁCIÓ==1 (kulcsszo.spec.js:1230). A TELJES-NEZET-FLAKE bizonyítottan pre-existing: egyetlen
+  feature-commit sem érintette a `kulcsszo.spec.js`-t (git: `main..youtube-ful -- e2e/kulcsszo.spec.js` ÜRES; a fájl
+  utolsó módosítója 6286cac a branch-pont ŐSE); izolált `-g "teljes-nezet"` → 5/5 ZÖLD.
+
+*** NYITOTT / KÖVETKEZŐ ***
+  1) ⭐ AZ ELSŐ ÉLES 15:00 UTC `youtube.yml` FUTÁS FIGYELME: (a) fut-e a cron + helyes-e a KÜLÖN adat-commit (csak a
+     youtube-fájlok, a napi/AI commitokat nem keverve); (b) a duckdns-cím + a GitHub Pages MEGJELENÍTI-E az új 4.
+     fület élő adattal (a teljes lánc: gyűjtés → commit → cron pull/Pages → render).
+  2) >1 év „Teljes időszak" akkumuláció — a `today 12-m` heti sorozat 12 hónapnál nem lát régebbre; a >1 év
+     halmozás (mint a webes lánc) KÉSŐBBI kör (spec §11), most SZÁNDÉKOSAN nincs.
+  3) `meres_kezdete` kezdetben None (üres tortenet-shim), a mérések gyűlésével töltődik — az első pár futásnál
+     üres/None mező VÁRT, nem hiba.
+  4) Parkolt/deferred minorok (mind ALACSONY kockázat, a szemléken MÉRVE): a `youtube.yml` if:always/main-ref guard;
+     a naplóban hivasok_szama=len(letoltve); az esemenyjelzo-ág kihagyása youtube.js-ben. Egyik sem blokkoló.
+
+*** LELTÁR-FRISSÍTÉS KÉSZ (ebben a doc-commitban) ***
+  docs/superpowers/leltar.md: +1 LESZÁLLÍTVA tétel (YOUTUBE-FUL, ÚJ, nem aktívból) + delta-log jegyzet. Fejléc:
+  kész 40→41, törzs 72→73; aktív 3 / nem-task rekord 29 / LEZÁRT 18 VÁLTOZATLAN. Invariáns: 3+41+29=73 ✓, LEZÁRT 18.
+
+MUNKAMÓDSZER (változatlan): magyar; Co-Authored-By: Claude Opus 4.8 + Claude-Session; KÜLÖN adat-commit; SOROS suite;
+MUTÁCIÓ==1; commit CSAK jóváhagyott üzenettel; git add NÉVVEL (a ROOT ATADAS-2026-08-18.txt SOHA); DOC-COMMIT a kód
+ELŐTT; TDD valódi RED-del; push KÜLÖN kör (fetch → HEAD..origin/main → ha nem üres: pull --rebase + TELJES SOROS suite
+ÚJRA → push → rev-list 0 0). A pótolhatatlan órás Google-ág (kulcsszo_nyers/lanc) CSAK OLVASVA; docs/data ÉRINTETLEN.
