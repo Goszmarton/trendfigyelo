@@ -1,0 +1,32 @@
+name: YouTube-gyűjtés (napi)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 15 * * *"   # 15:00 UTC — 17:00 nyár / 16:00 tél budapesti idő (a Google-futás 19:07 UTC ELŐTT)
+permissions:
+  contents: write
+jobs:
+  youtube:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Függőségek
+        run: pip install -r requirements.txt
+      - name: YouTube-gyűjtés
+        run: |
+          set -o pipefail
+          python -m trendfigyelo.youtube 2>&1 | tee youtube.log
+      - name: Commit (külön adat-commit)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/data/youtube_nyers.json docs/data/youtube_regresszio.json adatok/naplo.csv
+          if git diff --cached --quiet; then
+            echo "Nincs változás — nincs commit."
+          else
+            git commit -m "adat: napi YouTube-gyűjtés ($(date -u +%Y-%m-%dT%H:%MZ))"
+            git push
+          fi
