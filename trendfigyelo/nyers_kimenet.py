@@ -321,6 +321,37 @@ def ir_masodlagos(docs_data, sorozatok: dict, megtartott_db: int = 3) -> Path:
     return fajl
 
 
+def ir_youtube(docs_data, sorozatok: dict, megtartott_db: int = 3) -> Path:
+    """A youtube_nyers.json: szó × timeframe (3-m/12-m) YouTube-sorozatok, retencióval.
+    Az ir_masodlagos rekord-sémáját és validációját (ervenyes_masodlagos_rekord) újrahasználja."""
+    fajl = Path(docs_data) / "youtube_nyers.json"
+    if fajl.exists():
+        adat = json.loads(fajl.read_text(encoding="utf-8"))
+    else:
+        adat = {"kulcsszavak": {}}
+    kulcsszavak = adat.setdefault("kulcsszavak", {})
+
+    for kifejezes, rek in sorozatok.items():
+        rendezett = _rendezett(rek)
+        hibak = ervenyes_masodlagos_rekord(rendezett)
+        if hibak:
+            raise ValueError(f"{kifejezes}: érvénytelen friss YouTube-rekord: {hibak}")
+        kulcsszavak.setdefault(kifejezes, []).append(rendezett)
+
+    for kif in list(kulcsszavak):
+        tf_csoport = {}
+        for r in kulcsszavak[kif]:
+            tf_csoport.setdefault(r.get("timeframe"), []).append(r)
+        megtartott = []
+        for rekk in tf_csoport.values():
+            megtartott.extend(sorted(rekk, key=lambda r: _aware_dt(r.get("lekerdezes_utc")) or _MIN_DT,
+                                     reverse=True)[:megtartott_db])
+        kulcsszavak[kif] = megtartott
+
+    seged.atomi_ir_szoveg(fajl, json.dumps(adat, ensure_ascii=False, indent=2))
+    return fajl
+
+
 def elavult_masodlagos_szavak(sorozatok, most, kuszob_nap=10):
     """A `sorozatok` (szó→rekordlista) azon szavai, amelyek legfrissebb `lekerdezes_utc`-je
     kora `> kuszob_nap` nap — kor szerint CSÖKKENŐ, tie-break ábécé. Alak: [(kif, napok), ...].
