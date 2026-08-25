@@ -20,7 +20,7 @@ test("Elemzés fül: folyó próza <p>-ként, nincs feltételezés-réteg; kulcs
   await page.route("**/data/elemzes.json", (r) => r.fulfill({ json: FIXTURE }));
   await page.route("**/data/elemzesek/index.json", (r) => r.fulfill({ status: 404, body: "" }));
   await page.goto("/elemzes.html");
-  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Elemzés");
+  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Elemzések");
   await expect(page.locator("#elemzes-fejlec")).toContainText("2026-08-22");
   // folyó próza: a „Kulcsszavak — mit látunk ma" szekció 2 bekezdést renderel <p>-ként
   await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Kulcsszavak — mit látunk ma")) .elemzes-szoveg')).toHaveCount(2);

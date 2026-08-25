@@ -8,9 +8,9 @@
 </head>
 <body>
   <nav id="fomenu" aria-label="Fő menü">
-    <a href="index.html">Trendek</a>
-    <a href="elemzes.html">Elemzés</a>
-    <a href="youtube.html">YouTube</a>
+    <a href="elemzes.html">Elemzések</a>
+    <a href="index.html">Google Trendek</a>
+    <a href="youtube.html">YouTube Trendek</a>
     <a href="adatokrol.html" class="aktiv" aria-current="page">Infó</a>
   </nav>
 
@@ -20,7 +20,7 @@
   </header>
 
   <main id="adatokrol">
-    <h2 class="adat-csoport">Az adatok</h2>
+    <h2 class="adat-csoport">Google Trend adatok</h2>
     <section class="adat-doboz">
       <p><strong>Honnan?</strong> Minden adat a Google Trends nyilvános szolgáltatásából származik, kizárólag Magyarországra (<code>geo=HU</code>). Kétféle dolgot mutatunk: a Google <strong>aznap felkapott kereséseit</strong>, és <strong>13 általunk figyelt kulcsszó</strong> keresési érdeklődését.</p>
       <p><strong>Mikor kérjük le?</strong> Naponta egyszer, automatikusan: 19:07 UTC-kor (kb. 21:07 nyári / 20:07 téli budapesti idő). Egy futás néhány percig tart.</p>
@@ -67,11 +67,32 @@
       <p class="adat-magyarazat">A <strong>friss napi adat megvan</strong>: minden szónak van naprakész „1 hét" (órás) nézete. A Teljes nézet csak azért mutathat régebbi véget, mert a leghosszabb (heti/napi) időszakot választja.</p>
     </section>
 
+    <h2 class="adat-csoport">YouTube Trend adatok</h2>
     <section class="adat-doboz" id="adatokrol-youtube">
       <h2>Mit mér a YouTube fül?</h2>
-      <p>A <strong>YouTube</strong> fül nem információs keresést mér, mint a Trendek fül, hanem <strong>videó-igényt</strong>: „meg akarom nézni / meg akarom tanulni / ki akarok kapcsolni". <strong>12 örökzöld szót</strong> figyelünk, <strong>8 tartalmi kosárba</strong> sorolva (pl. egészség, pénzügy, közélet, háztartás, család, szabadidő, tanulás, otthon). Minden szó a <strong>saját 0–100 relatív skáláján</strong> áll - ahogy a Trendek fülnél is, a szavak <strong>egymással itt sem összemérhetők</strong>.</p>
-      <p>Szavanként van egy <strong>megjelenítési alapértelmezés</strong>: napi vagy heti rács. Ezen a fülön <strong>nincs órás nézet és nincs láncolás</strong> - csak a napi (3 hónapos) és a heti (12 hónapos) sorozatot gyűjtjük. Ha egy heti rácsú szónál a rövidebb ablakok (pl. „1 hét") üresnek tűnnek, az <strong>szerkezeti</strong>: egy heti bontású sorozatból egy pár napos ablak strukturálisan nem tud pontot adni - ez nem hiba és nem adatkiesés.</p>
-      <p class="adat-magyarazat">A trend itt is <strong>determinisztikusan, Pythonból</strong> számolt (VALÓS), nem AI által becsült. A YouTube-adatokat <strong>külön, napi</strong> gyűjtésben kérjük le, kb. <strong>17:00-kor</strong> (15:00 UTC) - a Google-fül esti (19:07 UTC) futása előtt.</p>
+      <p>A <strong>YouTube Trendek</strong> fül nem információs keresést mér, mint a Google Trendek fül, hanem <strong>videó-igényt</strong>: „meg akarom nézni / meg akarom tanulni / ki akarok kapcsolni". Ugyanaz a magyarországi (<code>geo=HU</code>) Google Trends adatforrás, de a YouTube-ra szűrve (<code>gprop=youtube</code>) - így a webes keresés helyett azt látjuk, mire van <strong>nézési / tanulási</strong> igény.</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Mik a követett szavak?</h2>
+      <p><strong>12 örökzöld szót</strong> figyelünk, <strong>8 tartalmi kosárba</strong> sorolva: egészség / jóllét (<em>szorongás, edzés, meditáció</em>), pénzügy (<em>befektetés, bitcoin</em>), közélet / hír (<em>hírek, magyar péter</em>), háztartás (<em>recept</em>), család (<em>mese</em>), szabadidő (<em>nyaralás</em>), tanulás (<em>tanulás</em>), otthon / energia (<em>klíma</em>). A YouTube-on más a szóhasználat, mint a webes keresésben, ezért ez külön, dedikált lista.</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Honnan és mikor?</h2>
+      <p>A YouTube-adatokat <strong>külön, napi</strong> gyűjtésben kérjük le, kb. <strong>17:00-kor</strong> (15:00 UTC) - a Google-fül esti (19:07 UTC) futása előtt, külön adat-mentéssel. Így a kétféle gyűjtés nem torlódik, és a YouTube-görbék már délután frissülnek.</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Napi és heti sorozatok</h2>
+      <p>Ezen a fülön <strong>nincs órás nézet és nincs láncolás</strong> (a magyar YouTube-keresés túl ritka az órás bontáshoz) - minden szóra a <strong>napi (3 hónapos)</strong> és a <strong>heti (12 hónapos)</strong> sorozatot gyűjtjük. Szavanként van egy <strong>megjelenítési alapértelmezés</strong> (napi vagy heti rács), de mindkét idősor elérhető a gombokkal.</p>
+      <p class="adat-magyarazat">Ha egy heti rácsú szónál a rövidebb ablakok (pl. „1 hét") üresnek tűnnek, az <strong>szerkezeti</strong>: egy heti bontású sorozatból egy pár napos ablak nem tud pontot adni - ez nem hiba és nem adatkiesés.</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Trend és skála</h2>
+      <p>A trend itt is <strong>determinisztikusan, Pythonból</strong> számolt (VALÓS), nem AI által becsült - ugyanúgy egyenest illesztünk, mint a Google Trendek fülön (irány + R²).</p>
+      <p class="adat-magyarazat">Minden szó a <strong>saját 0–100 relatív skáláján</strong> áll - ahogy a Google Trendek fülnél is, a szavak <strong>egymással itt sem összemérhetők</strong>; csak az egy szón belüli mozgás olvasható.</p>
     </section>
 
     <h2 class="adat-csoport">Az elemzés (napi AI-összefoglaló)</h2>
