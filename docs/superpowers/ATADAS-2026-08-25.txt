@@ -1,14 +1,24 @@
-ÁTADÓ — 2026-08-25 (trendfigyelo, Phase 4) — YOUTUBE-FUL LESZÁLLÍTVA (társadalmi videó-igény-monitor, 12 szó × 3-m+12-m, NINCS órás/lánc, trend Google-paritásban, külön 15:00 UTC workflow)
+ÁTADÓ — 2026-08-25 (trendfigyelo, Phase 4) — YOUTUBE-FUL LESZÁLLÍTVA + ÉLESÍTVE (társadalmi videó-igény-monitor, 12 szó × 3-m+12-m, NINCS órás/lánc, trend Google-paritásban, külön 15:00 UTC workflow; pusholva + első éles gyűjtés kész)
 ================================================================================
 (A feature-történethez: ELEMZES-FUL alap → ATADAS-2026-08-22.txt; ELEMZÉS-CSISZOLÁS + Opus + INFO-FUL → ATADAS-2026-08-23.txt; NAPI RUTIN + ONHOST-DEPLOY → ATADAS-2026-08-24.txt.)
 
 ZÁRÓ ÁLLAPOT (2026-08-25)
 ------------------------
-LESZÁLLÍTVA a YouTube-fül a `youtube-ful` ágon: SDD 11 task (brainstorm→spec→terv→SDD), 10 feature-commit
-c568841..2abc04c (+ 2 doc-commit: bf34d86 spec, 908f2f0 terv). Az ág MÉG NEM mergelve/pusholva — a finishing-branch
-KÜLÖN kör, a felhasználó explicit jóváhagyásával (ez a doc-commit a leltár + átadó, még mindig a `youtube-ful` ágon).
-A munkafa a záráskor: csak a régi ROOT ATADAS-2026-08-18.txt untracked (SOHA ne add-eld). A pótolhatatlan órás
-Google-ág (kulcsszo_nyers/lanc) ÉRINTETLEN — a YouTube-ág külön adatfájlokba, külön workflow-val ír.
+ÉL: a YouTube-fül LESZÁLLÍTVA, MERGELVE és PUSHOLVA. SDD-folyamat (brainstorm→spike→spec→terv→subagent-vezérelt
+végrehajtás): 11 task + 1 final-review fix, mind review-zött; 12 feature-commit c568841..f252cf2 (+ 2 doc-commit:
+bf34d86 spec, 908f2f0 terv). A `youtube-ful` ág FF-mergelve a main-be, az ág törölve; `git push` → origin/main @
+f252cf2 (rev-list 0 0). A záró teljes-ág opus-review a két nem-alkudható invariánst IGAZOLTA (pótolhatatlan órás
+Google-ág érintetlen; app.js BÁJT-AZONOS, a Trendek-fül regressziómentes), és elkapott EGY valós, load-bearing hibát:
+a kosár-csoportosítás összeomlott, mert a youtube.js az app.js `DOMEN_MAGYAR`-ját használta, amiből a 6 YouTube-domén
+hiányzott → 7/12 szó „Egyéb"-be esett. FIX (f252cf2): saját `YT_DOMEN_MAGYAR`/`YT_DOMEN_SORREND` mind a 8 kosárra,
+a scoped re-review ADDRESSED, app.js továbbra is érintetlen.
+
+⭐ ELSŐ ÉLES GYŰJTÉS KÉSZ: mivel a napi 15:00 UTC ütem már elmúlt, kézzel (`gh workflow run youtube.yml`, workflow_dispatch)
+indítva → `3cf4014 adat: napi YouTube-gyűjtés (2026-08-25T15:34Z)`. A commit PONTOSAN a 3 várt fájlt érinti (youtube_nyers.json
+[új], youtube_regresszio.json [új], naplo.csv [+1]); napló `youtube;siker;24` (24/24 cella, 25 hívás, 0 eldobva, 0 429);
+a pótolhatatlan órás Google-ág (kulcsszo_nyers/lanc) ÉRINTETLEN. A lokál pull-lal szinkron (0 0). Élesben: a GitHub Pages
+újraépül (a 4. fül élő görbékkel); a Hetzner/duckdns az esti pull-ablakban húzza le. A munkafa tiszta: csak a régi ROOT
+ATADAS-2026-08-18.txt untracked (SOHA ne add-eld).
 
 *** A FEATURE — YOUTUBE-FUL (társadalmi videó-igény-monitor) ***
   MÉRÉS-ALAP: a monitorozott 12 szó ÉLŐ validációja (a YouTube-on más a szóhasználat, mint a webes keresésben —
@@ -40,9 +50,9 @@ Google-ág (kulcsszo_nyers/lanc) ÉRINTETLEN — a YouTube-ág külön adatfájl
   utolsó módosítója 6286cac a branch-pont ŐSE); izolált `-g "teljes-nezet"` → 5/5 ZÖLD.
 
 *** NYITOTT / KÖVETKEZŐ ***
-  1) ⭐ AZ ELSŐ ÉLES 15:00 UTC `youtube.yml` FUTÁS FIGYELME: (a) fut-e a cron + helyes-e a KÜLÖN adat-commit (csak a
-     youtube-fájlok, a napi/AI commitokat nem keverve); (b) a duckdns-cím + a GitHub Pages MEGJELENÍTI-E az új 4.
-     fület élő adattal (a teljes lánc: gyűjtés → commit → cron pull/Pages → render).
+  1) ✅ ELSŐ ÉLES FUTÁS KÉSZ (kézzel indítva ma, 3cf4014 — csak youtube-fájlok, siker;24, órás ág érintetlen). MARADT
+     ellenőrzés (holnap/este): a GitHub Pages + a duckdns-cím RENDERELI-E az új 4. fület élő görbékkel (a teljes lánc
+     vége: cron pull/Pages → render). A NAPI automatizmus mostantól magától megy (youtube.yml, 15:00 UTC).
   2) >1 év „Teljes időszak" akkumuláció — a `today 12-m` heti sorozat 12 hónapnál nem lát régebbre; a >1 év
      halmozás (mint a webes lánc) KÉSŐBBI kör (spec §11), most SZÁNDÉKOSAN nincs.
   3) `meres_kezdete` kezdetben None (üres tortenet-shim), a mérések gyűlésével töltődik — az első pár futásnál
