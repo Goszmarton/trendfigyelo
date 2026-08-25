@@ -28,7 +28,7 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
    [d86af56] felülírva — a szürke rosszabb volt). A négy nagy blokk (2 vezerlo-sav + 2 tartalom) így KÜLÖNÜL. */
 .vezerlo-sav { flex: 0 0 14rem; position: sticky; top: 1rem; align-self: flex-start;
   background: #fff; border: 1px solid #e3e3e3; border-radius: 6px; padding: .75rem; box-sizing: border-box; }
-#kulcsszo-blokk, #trend-blokk, #heti-blokk, #idosor-blokk { flex: 1; min-width: 0;
+#kulcsszo-blokk, #trend-blokk, #heti-blokk, #idosor-blokk, #youtube-blokk { flex: 1; min-width: 0;
   background: #fff; border: 1px solid #e3e3e3; border-radius: 6px; padding: 1rem; box-sizing: border-box; }
 
 /* KATEGÓRIA-IDŐSOR kétdobozos: bal #idosor-legend (kattintható HTML-legend, a Chart.js belső legend reprodukciója),
@@ -87,24 +87,33 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 /* Task 6 vezérlők + 8b-utáni layout-javítás: a gomb + ok-szöveg párok wrapper nélkül INLINE összefolytak
    (a „2 hét"/„1 hó" a szövegek KÖZÉ ékelődött). Fix: a konténer flex-column (intervallumok egymás alatt),
    minden .intervallum-tetel flex-row (a gomb + a saját .ok egy sorban). A gombköz margin-right → wrapper-gap. */
-#intervallum-vezerlo { display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; }
+#intervallum-vezerlo,
+#youtube-intervallum-vezerlo { display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; }
 /* item 2: a tétel OSZLOP (gomb-sor + magyarázat alatta); a gomb-sor a régi flex-row (gomb + .ok egy sorban) */
-#intervallum-vezerlo .intervallum-tetel { display: flex; flex-direction: column; align-items: flex-start; gap: .1rem; }
-#intervallum-vezerlo .intervallum-gomb-sor { display: flex; align-items: baseline; gap: .5rem; }
+#intervallum-vezerlo .intervallum-tetel,
+#youtube-intervallum-vezerlo .intervallum-tetel { display: flex; flex-direction: column; align-items: flex-start; gap: .1rem; }
+#intervallum-vezerlo .intervallum-gomb-sor,
+#youtube-intervallum-vezerlo .intervallum-gomb-sor { display: flex; align-items: baseline; gap: .5rem; }
 /* kék vonal a kísérő szöveg elé (ⓘ nélkül); FIX magasságú sáv (pseudo), hogy MIND egyforma hosszú legyen,
    függetlenül attól, hogy a szöveg 1 vagy 2 sorra tördel */
-#intervallum-vezerlo .gomb-magyarazat { font-size: .7rem; color: #888; line-height: 1.1;
+#intervallum-vezerlo .gomb-magyarazat,
+#youtube-intervallum-vezerlo .gomb-magyarazat { font-size: .7rem; color: #888; line-height: 1.1;
   position: relative; padding-left: .5rem; }
-#intervallum-vezerlo .gomb-magyarazat::before {
+#intervallum-vezerlo .gomb-magyarazat::before,
+#youtube-intervallum-vezerlo .gomb-magyarazat::before {
   content: ""; position: absolute; left: 0; top: .05rem; width: 3px; height: .8rem;
   background: #3366cc; border-radius: 1px; }
-#intervallum-vezerlo button { padding: .3rem .7rem; cursor: pointer;
+#intervallum-vezerlo button,
+#youtube-intervallum-vezerlo button { padding: .3rem .7rem; cursor: pointer;
   background: #fff; border: 1px solid #ccc; border-radius: 4px; color: #222;
   min-width: 3.5rem; box-sizing: border-box; white-space: nowrap; }
 
-#intervallum-vezerlo button[aria-pressed="true"] { font-weight: bold; background: #e8e8e8; }
-#intervallum-vezerlo button[disabled] { cursor: not-allowed; color: #6b6b6b; background: #f0f0f0; }
-#intervallum-vezerlo .ok { color: #666; font-size: .85rem; }
+#intervallum-vezerlo button[aria-pressed="true"],
+#youtube-intervallum-vezerlo button[aria-pressed="true"] { font-weight: bold; background: #e8e8e8; }
+#intervallum-vezerlo button[disabled],
+#youtube-intervallum-vezerlo button[disabled] { cursor: not-allowed; color: #6b6b6b; background: #f0f0f0; }
+#intervallum-vezerlo .ok,
+#youtube-intervallum-vezerlo .ok { color: #666; font-size: .85rem; }
 
 /* Task 10 §2: a dátum-<select> érintési célmérete AA-ra (19px → >=24px, kényelmes 32px); egérrel is bukó volt.
    MIN-CSS (08-18): a #intervallum-vezerlo szabályblokk KÖZÜL kiemelve (a gomb- és a date-select-szabály közé
@@ -150,25 +159,36 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 
 /* Task 9b kulcsszó-blokk — szavankénti chartok, domen-csoportokban (rács, small multiples).
    A kártya-magasság KELL a lusta rendereléshez: enélkül a canvasok összeesnek és nem lóg túl a viewporton. */
-#kulcsszo-blokk .frissesseg { color: #666; font-style: italic; font-size: .9rem; margin: .25rem 0 1rem; }
+#kulcsszo-blokk .frissesseg,
+#youtube-blokk .frissesseg { color: #666; font-style: italic; font-size: .9rem; margin: .25rem 0 1rem; }
 /* H2a: EXPLICIT 2 oszlop (nem auto-fill minmax — az a konténer-szélességtől függött, 3-at is adott);
    a minmax(0,1fr) engedi a kártyát a konténer FELÉRE zsugorodni (a canvas min-content nélkül). <900px → 1 oszlop. */
-#kulcsszo-blokk .domen-csoport { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0; }
-@media (max-width: 900px) { #kulcsszo-blokk .domen-csoport { grid-template-columns: 1fr; } }
-#kulcsszo-blokk .domen-fejlec { grid-column: 1 / -1; font-size: 1rem; margin: .5rem 0 0; }
-#kulcsszo-blokk .kulcsszo-chart { border: 1px solid #d0d0d0; border-radius: 4px; padding: .5rem;
+#kulcsszo-blokk .domen-csoport,
+#youtube-blokk .domen-csoport { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+@media (max-width: 900px) { #kulcsszo-blokk .domen-csoport, #youtube-blokk .domen-csoport { grid-template-columns: 1fr; } }
+#kulcsszo-blokk .domen-fejlec,
+#youtube-blokk .domen-fejlec { grid-column: 1 / -1; font-size: 1rem; margin: .5rem 0 0; }
+#kulcsszo-blokk .kulcsszo-chart,
+#youtube-blokk .kulcsszo-chart { border: 1px solid #d0d0d0; border-radius: 4px; padding: .5rem;
   box-shadow: 0 1px 2px rgba(0,0,0,.06); }
 /* H1: látható kulcsszó-címke a canvas fölött (visszafogott: félkövér, kis alsó margó) */
-#kulcsszo-blokk .kulcsszo-cimke { font-size: .9rem; font-weight: 600; margin: 0 0 .3rem; }
+#kulcsszo-blokk .kulcsszo-cimke,
+#youtube-blokk .kulcsszo-cimke { font-size: .9rem; font-weight: 600; margin: 0 0 .3rem; }
 /* item 3: felbontás-felirat (óránkénti/napi/heti) — visszafogott, a címke alatt, minden kártyán */
-#kulcsszo-blokk .felbontas { font-size: .72rem; color: #888; margin: 0 0 .4rem; }
+#kulcsszo-blokk .felbontas,
+#youtube-blokk .felbontas { font-size: .72rem; color: #888; margin: 0 0 .4rem; }
 /* H2b: a Chart.js kanonikus wrapper — fix magasság + position:relative, a canvas ezt tölti ki 100%-ban */
-#kulcsszo-blokk .chart-doboz { position: relative; height: 250px; }
-#kulcsszo-blokk .merteszamok { font-size: .8rem; margin: .4rem 0 0; }
-#kulcsszo-blokk .tengely-felirat { font-size: .7rem; color: #666; margin: .1rem 0 0; }
-#kulcsszo-blokk .csupa-nulla, #kulcsszo-blokk .elettartam { font-size: .75rem; color: #666; margin: .2rem 0 0; }
+#kulcsszo-blokk .chart-doboz,
+#youtube-blokk .chart-doboz { position: relative; height: 250px; }
+#kulcsszo-blokk .merteszamok,
+#youtube-blokk .merteszamok { font-size: .8rem; margin: .4rem 0 0; }
+#kulcsszo-blokk .tengely-felirat,
+#youtube-blokk .tengely-felirat { font-size: .7rem; color: #666; margin: .1rem 0 0; }
+#kulcsszo-blokk .csupa-nulla, #kulcsszo-blokk .elettartam,
+#youtube-blokk .csupa-nulla, #youtube-blokk .elettartam { font-size: .75rem; color: #666; margin: .2rem 0 0; }
 /* TELJES-NEZET: a kártya forrás-felirata (honnan van adata) — a felbontás-sorral egyező halvány stílus */
-#kulcsszo-blokk .teljes-forras-felirat { font-size: .72rem; color: #888; margin: .2rem 0 0; }
+#kulcsszo-blokk .teljes-forras-felirat,
+#youtube-blokk .teljes-forras-felirat { font-size: .72rem; color: #888; margin: .2rem 0 0; }
 
 /* Task 7 trend-blokk — napi felkapott trendlista + kategória-eloszlás chart + kategória-szűrő.
    Az összefoglaló (chart+magyarázat+szűrő) a lista FÖLÖTT (áttekintés → részletek). Csak saját stílus. */
@@ -211,19 +231,23 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
    kék bal-szegély (#3366cc) + ⓘ ikon (::before, nem kézzel a szövegbe) + dőlt. Minden „hogyan olvasd" magyarázat
    egyformán néz ki. A meglévő szabályok UTÁN áll → azonos specificitásnál ez nyer a közös tulajdonságokra. */
 #kulcsszo-blokk .frissesseg,
+#youtube-blokk .frissesseg,
 #trend-blokk .kategoria-magyarazat,
 #idosor-blokk .idosor-magyarazat,
 #trend-blokk .trend-normalizalas-magyarazat,
 .attekinto-panel .attekinto-magyarazat,
+#youtube-attekinto .attekinto-magyarazat,
 #adatokrol .adat-magyarazat {
   font-style: italic; color: #555; font-size: .85rem;   /* ne legyen nagyobb, mint a többi honlap-szöveg */
   border-left: 3px solid #3366cc; padding: .3rem 0 .3rem .6rem;
 }
 #kulcsszo-blokk .frissesseg::before,
+#youtube-blokk .frissesseg::before,
 #trend-blokk .kategoria-magyarazat::before,
 #idosor-blokk .idosor-magyarazat::before,
 #trend-blokk .trend-normalizalas-magyarazat::before,
 .attekinto-panel .attekinto-magyarazat::before,
+#youtube-attekinto .attekinto-magyarazat::before,
 #adatokrol .adat-magyarazat::before {
   content: "ⓘ ";   /* az ⓘ CSS-ből (nem a szövegben) — így egységes és a szövegek nem duplázzák */
 }
@@ -231,6 +255,7 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 /* Task 10 §3: látható billentyűzet-fókusz (eddig nem volt focus-CSS; az A2 explicit gomb-háttere mellett
    a natív ring inkonzisztens). :focus-visible → csak billentyűzetnél, egérkattintásnál nem villan. */
 #intervallum-vezerlo button:focus-visible,
+#youtube-intervallum-vezerlo button:focus-visible,
 #trend-blokk .kategoria-gomb:focus-visible,
 #datum-valaszto .nap-cella:focus-visible,
 #datum-valaszto .honap-lep:focus-visible { outline: 2px solid #3366cc; outline-offset: 2px; }
@@ -239,45 +264,62 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
    A pill/szögletes forma megmarad — csak a magasság nő. */
 @media (pointer: coarse) {
   #intervallum-vezerlo button,
+  #youtube-intervallum-vezerlo button,
   #trend-blokk .kategoria-gomb,
   #datum-valaszto .nap-cella { min-height: 44px; }
 }
 
 /* A panel EGY keretes box, ugyanaz a minta, mint a többi szekció (#kulcsszo-blokk stb., 21-22. sor). */
-.attekinto-panel { background: #fff; border: 1px solid #e3e3e3; border-radius: 6px; padding: 1rem; box-sizing: border-box; }
+.attekinto-panel,
+#youtube-attekinto { background: #fff; border: 1px solid #e3e3e3; border-radius: 6px; padding: 1rem; box-sizing: border-box; }
 
 /* TÖMÖR ELRENDEZÉS: a kategória-cellák FIX oszlop-rácsban, a nagy kategóriák egymás MELLETT, a teljes
    szélességben; az oszlopok közt vékony elválasztó csík (border-left a nem-első oszlopon). Cellán belül a
    domén-címke balra (fix szélesség), a szó-chipek jobbra (wrap). */
-.attekinto-panel .attekinto-lista { display: grid; grid-template-columns: repeat(3, 1fr); gap: .15rem 0; max-width: 100%; }
-.attekinto-panel .attekinto-sor { display: flex; flex-wrap: wrap; align-items: baseline; gap: .35rem .6rem;
+.attekinto-panel .attekinto-lista,
+#youtube-attekinto .attekinto-lista { display: grid; grid-template-columns: repeat(3, 1fr); gap: .15rem 0; max-width: 100%; }
+.attekinto-panel .attekinto-sor,
+#youtube-attekinto .attekinto-sor { display: flex; flex-wrap: wrap; align-items: baseline; gap: .35rem .6rem;
   padding: .25rem 1.3rem; min-width: 0; }
-.attekinto-panel .attekinto-sor:not(:nth-child(3n+1)) { border-left: 1px solid #eee; }   /* csík az oszlopok közt */
-.attekinto-panel .attekinto-domen { flex: 0 0 8.5rem; font-weight: 600; font-size: .85rem; }
-.attekinto-panel .attekinto-chipek { display: flex; flex-wrap: wrap; gap: .3rem .4rem; flex: 1 1 0; min-width: 0; }
-.attekinto-panel .attekinto-kartya { display: inline-flex; align-items: center; gap: .3rem;
+.attekinto-panel .attekinto-sor:not(:nth-child(3n+1)),
+#youtube-attekinto .attekinto-sor:not(:nth-child(3n+1)) { border-left: 1px solid #eee; }   /* csík az oszlopok közt */
+.attekinto-panel .attekinto-domen,
+#youtube-attekinto .attekinto-domen { flex: 0 0 8.5rem; font-weight: 600; font-size: .85rem; }
+.attekinto-panel .attekinto-chipek,
+#youtube-attekinto .attekinto-chipek { display: flex; flex-wrap: wrap; gap: .3rem .4rem; flex: 1 1 0; min-width: 0; }
+.attekinto-panel .attekinto-kartya,
+#youtube-attekinto .attekinto-kartya { display: inline-flex; align-items: center; gap: .3rem;
   padding: .1rem .5rem; border: 1px solid #e2e2e2; border-radius: 999px; font-size: .85rem; white-space: nowrap;
   cursor: pointer; }
-.attekinto-panel .attekinto-kartya:hover { border-color: #3366cc; background: #f5f8ff; }
-.attekinto-panel .attekinto-kartya:focus-visible { outline: 2px solid #3366cc; outline-offset: 1px; }
+.attekinto-panel .attekinto-kartya:hover,
+#youtube-attekinto .attekinto-kartya:hover { border-color: #3366cc; background: #f5f8ff; }
+.attekinto-panel .attekinto-kartya:focus-visible,
+#youtube-attekinto .attekinto-kartya:focus-visible { outline: 2px solid #3366cc; outline-offset: 1px; }
 /* a MAI ELTÉRÉS ikonja a szó ELŐTT: ▲ felette ZÖLD · ▼ alatta PIROS · • illeszkedik SZÜRKE (trendkövető, semleges) */
-.attekinto-panel .attekinto-ikon[data-illeszkedes="felette"]::before     { content: "▲"; color: #2e7d32; }
-.attekinto-panel .attekinto-ikon[data-illeszkedes="alatta"]::before      { content: "▼"; color: #b23c3c; }
-.attekinto-panel .attekinto-ikon[data-illeszkedes="illeszkedik"]::before { content: "•"; color: #777; }
+.attekinto-panel .attekinto-ikon[data-illeszkedes="felette"]::before,
+#youtube-attekinto .attekinto-ikon[data-illeszkedes="felette"]::before     { content: "▲"; color: #2e7d32; }
+.attekinto-panel .attekinto-ikon[data-illeszkedes="alatta"]::before,
+#youtube-attekinto .attekinto-ikon[data-illeszkedes="alatta"]::before      { content: "▼"; color: #b23c3c; }
+.attekinto-panel .attekinto-ikon[data-illeszkedes="illeszkedik"]::before,
+#youtube-attekinto .attekinto-ikon[data-illeszkedes="illeszkedik"]::before { content: "•"; color: #777; }
 /* TREND-panel ikonjai: ▲ növekvő ZÖLD · ▼ csökkenő PIROS · ■ stagnáló/esemény SZÜRKE NÉGYZET */
-.attekinto-panel .attekinto-ikon[data-trend="novekszik"]::before { content: "▲"; color: #2e7d32; }
-.attekinto-panel .attekinto-ikon[data-trend="csokken"]::before   { content: "▼"; color: #b23c3c; }
-.attekinto-panel .attekinto-ikon[data-trend="stagnal"]::before   { content: "■"; color: #777; font-size: .8em; }
-.attekinto-panel .attekinto-ikon[data-trend="esemeny"]::before   { content: "■"; color: #777; font-size: .8em; }
+.attekinto-panel .attekinto-ikon[data-trend="novekszik"]::before,
+#youtube-attekinto .attekinto-ikon[data-trend="novekszik"]::before { content: "▲"; color: #2e7d32; }
+.attekinto-panel .attekinto-ikon[data-trend="csokken"]::before,
+#youtube-attekinto .attekinto-ikon[data-trend="csokken"]::before   { content: "▼"; color: #b23c3c; }
+.attekinto-panel .attekinto-ikon[data-trend="stagnal"]::before,
+#youtube-attekinto .attekinto-ikon[data-trend="stagnal"]::before   { content: "■"; color: #777; font-size: .8em; }
+.attekinto-panel .attekinto-ikon[data-trend="esemeny"]::before,
+#youtube-attekinto .attekinto-ikon[data-trend="esemeny"]::before   { content: "■"; color: #777; font-size: .8em; }
 
 /* reszponzív oszlopszám: 3 → 2 → 1, a csík mindig a nem-első oszlopon (a keskeny nézet 1 oszlop, csík nélkül) */
 @media (max-width: 1100px) {
-  .attekinto-panel .attekinto-lista { grid-template-columns: repeat(2, 1fr); }
-  .attekinto-panel .attekinto-sor { border-left: none; }
-  .attekinto-panel .attekinto-sor:not(:nth-child(2n+1)) { border-left: 1px solid #eee; }
+  .attekinto-panel .attekinto-lista, #youtube-attekinto .attekinto-lista { grid-template-columns: repeat(2, 1fr); }
+  .attekinto-panel .attekinto-sor, #youtube-attekinto .attekinto-sor { border-left: none; }
+  .attekinto-panel .attekinto-sor:not(:nth-child(2n+1)), #youtube-attekinto .attekinto-sor:not(:nth-child(2n+1)) { border-left: 1px solid #eee; }
 }
 @media (max-width: 700px) {
-  .attekinto-panel .attekinto-lista { grid-template-columns: 1fr; }
-  .attekinto-panel .attekinto-sor { border-left: none; padding-left: 0; }
-  .attekinto-panel .attekinto-domen { flex-basis: 100%; }
+  .attekinto-panel .attekinto-lista, #youtube-attekinto .attekinto-lista { grid-template-columns: 1fr; }
+  .attekinto-panel .attekinto-sor, #youtube-attekinto .attekinto-sor { border-left: none; padding-left: 0; }
+  .attekinto-panel .attekinto-domen, #youtube-attekinto .attekinto-domen { flex-basis: 100%; }
 }
