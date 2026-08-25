@@ -3,11 +3,26 @@
 // A gombsor/kártya/áttekintő render az app.js megfelelő render-függvényeinek (intervallum_vezerlo_render,
 // kulcsszo_blokk_render, attekinto_blokk_render — ~313-403 / 1173-1241 / 1071-1086) LEHATÁROLT átvétele
 // a #youtube-* id-kre; a rajzoló/formázó leaf-eket (nyers_ablak, racs_epit, kartya_letrehoz, chart_letrehoz,
-// teljes_valaszt, INTERVALLUMOK, OK_MAGYAR, TREND_SZOVEG, DOMEN_MAGYAR, ...) közvetlenül újrahasznosítja.
+// teljes_valaszt, INTERVALLUMOK, OK_MAGYAR, TREND_SZOVEG, EGYEB_KULCS, ...) közvetlenül újrahasznosítja.
+// A domén-kosarazás (DOMEN_MAGYAR/DOMEN_SORREND) NEM közös az app.js-szel: a Google-fül 9 doménjéből csak
+// egeszseg+kozelet fedi a YouTube 8 doménjét, ezért a fájl SAJÁT YT_DOMEN_MAGYAR/YT_DOMEN_SORREND térképet
+// definiál mind a 8 config-doménre (lásd lentebb) — a final-review kosár-összeomlás FINDING javítása.
 "use strict";
 (function () {
   const YT_REG = "youtube_regresszio.json", YT_NYERS = "youtube_nyers.json";
   const BLOKK = "youtube-blokk", VEZ = "youtube-intervallum-vezerlo", ATT = "youtube-attekinto";
+
+  // YouTube-fül SAJÁT domén-térképe (a config.yaml youtube: blokk mind a 8 doménjére) — az app.js globális
+  // DOMEN_MAGYAR/DOMEN_SORREND-je a Google-fül 9 doménjét ismeri, ebből csak egeszseg+kozelet fedi a YouTube
+  // 8 doménjét; a maradék 6 (penzugy/haztartas/csalad/szabadido/tanulas/otthon) rájuk esne az "Egyéb" kosárba
+  // (kosár-összeomlás, final-review FINDING). Az app.js EGYÉB_KULCS-át (üres-kosár tartófiók) újrahasznosítjuk,
+  // de a címke/sorrend itt SAJÁT — app.js NEM módosul.
+  const YT_DOMEN_MAGYAR = {
+    egeszseg: "Egészség / jóllét", penzugy: "Pénzügy", kozelet: "Közélet / hír",
+    haztartas: "Háztartás / megélhetés", csalad: "Család", szabadido: "Szabadidő / utazás",
+    tanulas: "Tanulás", otthon: "Otthon / energia",
+  };
+  const YT_DOMEN_SORREND = ["egeszseg", "penzugy", "kozelet", "haztartas", "csalad", "szabadido", "tanulas", "otthon", null];
 
   async function yt_init() {
     // fájlonkénti izoláció (app.js blokk_betolt mintája, Task 5): egy hiányzó fájl se akassza meg a másikat
@@ -158,13 +173,13 @@
     const csoportok = {};
     Object.keys(reg).forEach(function (szo) {
       const d = reg[szo].domen;
-      const kulcs = DOMEN_MAGYAR[d] ? d : EGYEB_KULCS;
+      const kulcs = YT_DOMEN_MAGYAR[d] ? d : EGYEB_KULCS;
       (csoportok[kulcs] = csoportok[kulcs] || []).push(szo);
     });
 
     const rajzolhatok = [];
     let adat_veg = null;
-    DOMEN_SORREND.forEach(function (d) {
+    YT_DOMEN_SORREND.forEach(function (d) {
       const kulcs = d === null ? EGYEB_KULCS : d;
       const szavak = csoportok[kulcs];
       if (!szavak || !szavak.length) return;
@@ -173,7 +188,7 @@
       cs.setAttribute("data-domen", d === null ? "egyeb" : d);
       const h3 = document.createElement("h3");
       h3.className = OSZT.fejlec;
-      h3.textContent = d === null ? "Egyéb" : DOMEN_MAGYAR[d];
+      h3.textContent = d === null ? "Egyéb" : YT_DOMEN_MAGYAR[d];
       cs.appendChild(h3);
       szavak.forEach(function (szo) {
         const k = kartya_letrehoz(szo, reg[szo], aktiv);
@@ -215,13 +230,13 @@
     const csoportok = {};
     Object.keys(reg || {}).forEach(function (szo) {
       const d = reg[szo].domen;
-      const kulcs = DOMEN_MAGYAR[d] ? d : EGYEB_KULCS;
+      const kulcs = YT_DOMEN_MAGYAR[d] ? d : EGYEB_KULCS;
       (csoportok[kulcs] = csoportok[kulcs] || []).push(szo);
     });
     if (reg && Object.keys(reg).length) {
       const lista = document.createElement("div");
       lista.className = "attekinto-lista";
-      DOMEN_SORREND.forEach(function (d) {
+      YT_DOMEN_SORREND.forEach(function (d) {
         const kulcs = d === null ? EGYEB_KULCS : d;
         const szavak = csoportok[kulcs];
         if (!szavak || !szavak.length) return;
@@ -230,7 +245,7 @@
         sor.setAttribute("data-domen", d === null ? "egyeb" : d);
         const cimke = document.createElement("span");
         cimke.className = "attekinto-domen";
-        cimke.textContent = d === null ? "Egyéb" : DOMEN_MAGYAR[d];
+        cimke.textContent = d === null ? "Egyéb" : YT_DOMEN_MAGYAR[d];
         sor.appendChild(cimke);
         const chipek = document.createElement("span");
         chipek.className = "attekinto-chipek";

@@ -37,6 +37,9 @@ test("YouTube-fül: kosár-csoportok + napi szó rajzol + trend", async ({ page 
       "klíma": { racs: "het", aktiv: true, domen: "otthon", tipus: "szintmero",
                  intervallumok: { "1_het": ivRovidHet(), "2_het": ivRovidHet(),
                                   "1_ho": ivErvenyes(), "3_ho": ivErvenyes(), "1_ev": ivErvenyes() } },
+      "bitcoin": { racs: "het", aktiv: true, domen: "penzugy", tipus: "szintmero",
+                 intervallumok: { "1_het": ivErvenyes(), "2_het": ivErvenyes(),
+                                  "1_ho": ivErvenyes(), "3_ho": ivErvenyes(), "1_ev": ivErvenyes() } },
     }},
     nyers: { kulcsszavak: {
       "edzés": [{ kulcsszo:"edzés", racs:"nap", timeframe:"today 3-m",
@@ -45,13 +48,17 @@ test("YouTube-fül: kosár-csoportok + napi szó rajzol + trend", async ({ page 
       "klíma": [{ kulcsszo:"klíma", racs:"het", timeframe:"today 12-m",
                   ablak_kezdet_utc: iso(Date.UTC(2025,7,20)), ablak_veg_utc: iso(Date.UTC(2026,7,20)),
                   pontok: napiPontok(53) }],
+      "bitcoin": [{ kulcsszo:"bitcoin", racs:"het", timeframe:"today 12-m",
+                  ablak_kezdet_utc: iso(Date.UTC(2025,7,20)), ablak_veg_utc: iso(Date.UTC(2026,7,20)),
+                  pontok: napiPontok(53) }],
     }},
   });
   await page.goto("/youtube.html");
-  await expect(page.locator(`${Y} .domen-csoport`)).toHaveCount(2);       // 2 kosár
-  await expect(page.locator(`${Y} .kulcsszo-chart`)).toHaveCount(2);
+  await expect(page.locator(`${Y} .domen-csoport`)).toHaveCount(3);       // 3 kosár (egeszseg/otthon/penzugy — külön doménenkénti csoport, nincs Egyéb-összeomlás)
+  await expect(page.locator(`${Y} .domen-fejlec`, { hasText: "Pénzügy" })).toBeVisible();
+  await expect(page.locator(`${Y} .kulcsszo-chart`)).toHaveCount(3);
   // váltás 1 hét ablakra: az edzés (napi) rajzol, a klíma (heti) a "túl rövid" üzenetet hozza
   await page.locator('#youtube-intervallum-vezerlo button', { hasText: "1 hét" }).click();
-  await expect(page.locator(`${Y} .kulcsszo-chart[data-drawable="true"]`)).toHaveCount(1);
+  await expect(page.locator(`${Y} .kulcsszo-chart[data-drawable="true"]`)).toHaveCount(2);
   await expect(page.locator(`${Y} .kulcsszo-chart .ok`)).toContainText("túl rövid");
 });
