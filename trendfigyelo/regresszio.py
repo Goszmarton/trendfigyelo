@@ -424,3 +424,10 @@ def regresszio_masodlagos_szamit(masodlagos_nyers, tortenet, config, szamitva_ut
 
 def regresszio_ir_masodlagos(docs_data, adat) -> Path:
     return json_export._ir_json(Path(docs_data) / "kulcsszo_masodlagos_regresszio.json", adat)
+
+
+def regresszio_ir_youtube(docs_data, adat) -> Path:
+    """YouTube-regresszió írása (Task 4): a `regresszio_masodlagos_szamit` mag VÁLTOZATLAN,
+    a YouTube-modul [Task 5] egy config-shimmel hívja (osszes_kulcsszo → YouTube-tételek,
+    modszertan_valtas=None). Ez a függvény csak a kimenetet írja külön fájlba."""
+    return json_export._ir_json(Path(docs_data) / "youtube_regresszio.json", adat)
