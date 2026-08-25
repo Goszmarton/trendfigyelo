@@ -33,3 +33,20 @@ kulcsszavak:
   - {kifejezes: "nyugdíj",      domen: jovedelem,          tipus: hibrid,       racs: ora}
   - {kifejezes: "hitel",        domen: haztartasi_penzugy, tipus: szintmero,    racs: nap}
   - {kifejezes: "tüntetés",     domen: kozelet,            tipus: esemenyjelzo, racs: het}
+
+# YouTube-fül (Phase 4, 2026-08-25): társadalmi videó-igény-monitor, gprop=youtube, geo=HU.
+# A racs a MEGJELENÍTÉSI alapértelmezés (napi/heti); a gyűjtés MINDKÉT timeframe-et (3-m + 12-m) bekéri.
+# tipus mindenhol szintmero (a trend minden szóra számolódik). A domének ékezet nélküliek.
+youtube:
+  - {kifejezes: "szorongás",    domen: egeszseg,  tipus: szintmero, racs: het}
+  - {kifejezes: "edzés",        domen: egeszseg,  tipus: szintmero, racs: nap}
+  - {kifejezes: "meditáció",    domen: egeszseg,  tipus: szintmero, racs: nap}
+  - {kifejezes: "befektetés",   domen: penzugy,   tipus: szintmero, racs: het}
+  - {kifejezes: "bitcoin",      domen: penzugy,   tipus: szintmero, racs: het}
+  - {kifejezes: "hírek",        domen: kozelet,   tipus: szintmero, racs: het}
+  - {kifejezes: "magyar péter", domen: kozelet,   tipus: szintmero, racs: nap}
+  - {kifejezes: "recept",       domen: haztartas, tipus: szintmero, racs: nap}
+  - {kifejezes: "mese",         domen: csalad,    tipus: szintmero, racs: nap}
+  - {kifejezes: "nyaralás",     domen: szabadido, tipus: szintmero, racs: het}
+  - {kifejezes: "tanulás",      domen: tanulas,   tipus: szintmero, racs: het}
+  - {kifejezes: "klíma",        domen: otthon,    tipus: szintmero, racs: het}

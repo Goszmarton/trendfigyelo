@@ -317,3 +317,38 @@ def test_modszertan_valtas_datetime_konfighibat_dob(tmp_path):
     rossz = JO + "modszertan_valtas: 2026-08-01 12:00:00\n"
     with pytest.raises(config.KonfigHiba):
         config.betolt(_ir(tmp_path, rossz))
+
+
+# --- YouTube-fül (Phase 4, 2026-08-25): youtube: szekció, opcionális (hiány → []) ---
+
+def test_youtube_szekcio_12_szo_es_racs():
+    c = config.betolt("config.yaml")
+    yt = c.osszes_youtube_kulcsszo()
+    kifejezesek = [t.kifejezes for t in yt]
+    assert len(yt) == 12
+    assert kifejezesek == [
+        "szorongás", "edzés", "meditáció", "befektetés", "bitcoin", "hírek",
+        "magyar péter", "recept", "mese", "nyaralás", "tanulás", "klíma",
+    ]
+    racs = {t.kifejezes: t.racs for t in yt}
+    assert racs["edzés"] == "nap" and racs["meditáció"] == "nap" and racs["recept"] == "nap"
+    assert racs["mese"] == "nap" and racs["magyar péter"] == "nap"
+    assert racs["szorongás"] == "het" and racs["bitcoin"] == "het" and racs["klíma"] == "het"
+    # a Google-kulcsszavak ÉRINTETLENEK
+    assert len(c.osszes_kulcsszo()) == 13
+
+
+def test_youtube_szekcio_hianyzik_ures_lista():
+    # ha nincs youtube: szekció, a betöltés NEM bukik, üres listát ad
+    import yaml
+    nyers = yaml.safe_load(open("config.yaml", encoding="utf-8"))
+    nyers.pop("youtube", None)
+    import tempfile, os
+    with tempfile.NamedTemporaryFile("w", suffix=".yaml", delete=False, encoding="utf-8") as f:
+        yaml.safe_dump(nyers, f, allow_unicode=True)
+        utvonal = f.name
+    try:
+        c = config.betolt(utvonal)
+        assert c.osszes_youtube_kulcsszo() == []
+    finally:
+        os.unlink(utvonal)

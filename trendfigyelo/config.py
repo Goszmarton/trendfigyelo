@@ -51,10 +51,15 @@ class Config:
     modszertan_valtas: object = None  # kanonikus ISO 'YYYY-MM-DD' | None — töréspont-jelölő (CSAK jelöl)
     trend_megjelenites_max: int = 25  # a megjelenített trendlista felső korlátja (holtverseny-kiterjesztés, spec §7.3 D3)
     trend_idosor_rekesz_max: int = 5  # GORBE-B: hány holtverseny-rekesz trend kapjon idősort (forward-only, LEGUTOLSÓ ág); NEM-MÉRT, 14-nap újramérés
+    youtube_kulcsszavak: list = field(default_factory=list)  # [KulcsszoTetel, ...] a YouTube-fülhöz
 
     def osszes_kulcsszo(self):
         """[KulcsszoTetel(kifejezes, domen, tipus), ...] a beolvasás sorrendjében."""
         return list(self.kulcsszavak)
+
+    def osszes_youtube_kulcsszo(self):
+        """A YouTube-fül követett szavai a beolvasás sorrendjében."""
+        return list(self.youtube_kulcsszavak)
 
 
 def _kell(d: dict, kulcs: str, hol: str):
@@ -126,6 +131,34 @@ def _kulcsszavak_beolvas(nyers) -> list:
     return ki
 
 
+def _youtube_kulcsszavak_beolvas(nyers) -> list:
+    """A 'youtube' listát KulcsszoTetel-ekké alakítja és validálja — OPCIONÁLIS (hiány → [])."""
+    tetelek = nyers.get("youtube")
+    if tetelek is None:
+        return []
+    if not isinstance(tetelek, list) or not tetelek:
+        raise KonfigHiba("A 'youtube' szekció (ha megadott) nem lehet üres — per-szó rekordok listája kell.")
+    ki, latott = [], set()
+    for i, t in enumerate(tetelek):
+        if not isinstance(t, dict):
+            raise KonfigHiba(f"youtube[{i}]: dict kell (kifejezes/domen/tipus/racs)")
+        kifejezes = t.get("kifejezes")
+        domen = t.get("domen")
+        tipus = t.get("tipus")
+        if not (isinstance(kifejezes, str) and kifejezes.strip()):
+            raise KonfigHiba(f"youtube[{i}]: 'kifejezes' nem üres string kell")
+        if tipus not in TIPUSOK:
+            raise KonfigHiba(f"youtube[{i}] ({kifejezes!r}): 'tipus' ∈ {sorted(TIPUSOK)} kell")
+        racs = t.get("racs", "ora")
+        if racs not in RACSOK:
+            raise KonfigHiba(f"youtube[{i}] ({kifejezes!r}): 'racs' ∈ {sorted(RACSOK)} kell")
+        if kifejezes in latott:
+            raise KonfigHiba(f"youtube: duplikált kifejezes: {kifejezes!r}")
+        latott.add(kifejezes)
+        ki.append(KulcsszoTetel(kifejezes, domen, tipus, racs))
+    return ki
+
+
 def _modszertan_valtas_beolvas(nyers):
     """A töréspont-jelölő normalizálása kanonikus ISO 'YYYY-MM-DD' stringgé (vagy None).
 
@@ -162,6 +195,7 @@ def betolt(utvonal="config.yaml") -> Config:
 
     kp = nyers.get("kerespont") or {}
     kulcsszavak = _kulcsszavak_beolvas(nyers)
+    youtube_kulcsszavak = _youtube_kulcsszavak_beolvas(nyers)
 
     szoras = _kell(kp, "szoras_mp", "kerespont.")
     _ellenoriz_szamlista(szoras, "kerespont.szoras_mp", 2)
@@ -190,6 +224,7 @@ def betolt(utvonal="config.yaml") -> Config:
         trend_idosor_max=_szam_tartomany(_kell(nyers, "trend_idosor_max", ""), "trend_idosor_max", 1),
         proxy=nyers.get("proxy"),
         kulcsszavak=kulcsszavak,
+        youtube_kulcsszavak=youtube_kulcsszavak,
         kulcsszo_idokeret=nyers.get("kulcsszo_idokeret", "now 7-d"),
         naplo_max_sor=_szam_tartomany(nyers.get("naplo_max_sor", 2000), "naplo_max_sor", 1),
         trend_megjelenites_max=_szam_tartomany(nyers.get("trend_megjelenites_max", 25), "trend_megjelenites_max", 1),
