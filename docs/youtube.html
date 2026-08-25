@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trendfigyelő – magyarországi keresési trendek</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <nav id="fomenu" aria-label="Fő menü">
+    <a href="index.html">Trendek</a>
+    <a href="elemzes.html">Elemzés</a>
+    <a href="youtube.html" class="aktiv" aria-current="page">YouTube</a>
+    <a href="adatokrol.html">Infó</a>
+  </nav>
+  <header class="fejlec-doboz">
+    <h1>YouTube — mit néznek Magyarországon</h1>
+    <p class="fogalmi-keret">A YouTube-keresés VIDEÓ-IGÉNYT mér (meg akarom nézni / megtanulni /
+      kikapcsolni) — nem információs keresést, mint a Trendek fül. Örökzöld kategória-szavakat
+      követünk; minden szó a SAJÁT 0–100 skáláján. Napi frissítés.</p>
+  </header>
+  <main>
+    <section class="szekcio">
+      <div class="vezerlo-sav"><span class="vezerlo-cim">Idő-ablak</span>
+        <div id="youtube-intervallum-vezerlo"></div></div>
+      <div id="youtube-blokk" data-aktiv-intervallum="teljes"></div>
+    </section>
+    <section id="youtube-attekinto"></section>
+  </main>
+  <footer id="labresz"></footer>
+  <script src="vendor/chartjs/chart.umd.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/youtube.js"></script>
+</body>
+</html>
