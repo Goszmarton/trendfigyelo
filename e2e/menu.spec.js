@@ -21,7 +21,7 @@ test("youtube.html: a fül betölt, a YouTube menüpont aktív", async ({ page }
 test("Infó oldal: adat + elemzés dobozok, csoportcímek, aktív fül + üres lábléc", async ({ page }) => {
   await page.goto("/adatokrol.html");
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Infó");
-  await expect(page.locator("#adatokrol .adat-doboz")).toHaveCount(11);  // 8 adat + 3 elemzés egység
+  await expect(page.locator("#adatokrol .adat-doboz")).toHaveCount(12);  // 9 adat (+YouTube-doboz) + 3 elemzés egység
   await expect(page.locator("#adatokrol .adat-csoport")).toHaveCount(2);  // „Az adatok" + „Az elemzés" csoportcím
   await expect(page.locator("#adatokrol")).toContainText("Google Trends");
   await expect(page.locator("#adatokrol")).toContainText("52 hét heti mediánjához");   // tüntetés-medián
@@ -29,6 +29,8 @@ test("Infó oldal: adat + elemzés dobozok, csoportcímek, aktív fül + üres l
   await expect(page.locator("#adatokrol")).toContainText("claude-opus-4-8");
   await expect(page.locator("#adatokrol")).toContainText("Python");
   await expect(page.locator("#labresz")).toBeAttached();
+  // YouTube-doboz: a fül fogalmi kerete (videó-igény, 12 szó/8 kosár, napi/heti rács, VALÓS Python-trend)
+  await expect(page.locator("#adatokrol-youtube")).toBeAttached();
 });
 
 test("navigáció: a Trendek főoldalról az Az adatokról oldalra és vissza", async ({ page }) => {
