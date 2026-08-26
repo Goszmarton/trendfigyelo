@@ -108,6 +108,52 @@ def _kulcsszo_het(lanc):
     return {"ablak_napok": HET_ABLAK_NAPOK, "szavak": szavak}
 
 
+def _nyers_heti_sorozat(youtube_nyers, szo):
+    """A szó LEGKORÁBBI ablak_kezdetű nyers sorozata = a 12-m heti sáv (a legteljesebb tartomány)."""
+    kw = (youtube_nyers or {}).get("kulcsszavak", {}) if isinstance(youtube_nyers, dict) else {}
+    lista = kw.get(szo) or []
+    if not lista:
+        return None
+    return min(lista, key=lambda s: s.get("ablak_kezdet_utc", ""))
+
+
+def _csucs_atlag(series):
+    pontok = (series or {}).get("pontok") or []
+    ertekek = [p["ertek"] for p in pontok if not p.get("reszleges")]
+    if not ertekek:
+        return None, None
+    return max(ertekek), round(sum(ertekek) / len(ertekek), 1)
+
+
+def _yt_teljes_intervallum(rec):
+    """A regressziós rekord leghosszabb ÉRVÉNYES intervalluma = legkorábbi ablak_kezdet_utc
+    (a frontend teljes_valaszt mintája, app.js:290)."""
+    ivk = (rec or {}).get("intervallumok", {})
+    ervenyesek = [iv for iv in ivk.values() if iv.get("ervenyes") and iv.get("ablak_kezdet_utc")]
+    if not ervenyesek:
+        return None
+    return min(ervenyesek, key=lambda iv: iv["ablak_kezdet_utc"])
+
+
+def _youtube_szamok(youtube_regresszio, youtube_nyers):
+    szavak = (youtube_regresszio or {}).get("kulcsszavak", {}) if isinstance(youtube_regresszio, dict) else {}
+    ki = []
+    for szo, rec in szavak.items():
+        iv = _yt_teljes_intervallum(rec) or {}
+        csucs, atlag = _csucs_atlag(_nyers_heti_sorozat(youtube_nyers, szo))
+        ki.append({
+            "szo": szo,
+            "domen": rec.get("domen"),
+            "irany": iv.get("irany"),
+            "meredekseg": iv.get("meredekseg_nap"),
+            "ervenyes": bool(iv.get("ervenyes")),
+            "mai_ertek": iv.get("mai_ertek"),
+            "csucs": csucs,
+            "atlag": atlag,
+        })
+    return ki
+
+
 def _felkapott(legfrissebb, napok_trendek):
     top = []
     for t in (legfrissebb.get("top_trendek", []) if isinstance(legfrissebb, dict) else []):

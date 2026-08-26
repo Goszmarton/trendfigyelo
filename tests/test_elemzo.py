@@ -392,3 +392,61 @@ def test_kulcsszo_het_valos_palya():
 def test_kulcsszo_het_ures_lanc():
     assert elemzo._kulcsszo_het({}) == {"ablak_napok": 7, "szavak": []}
     assert elemzo._kulcsszo_het({"kulcsszavak": {}}) == {"ablak_napok": 7, "szavak": []}
+
+
+def _yt_reg_egy_szo():
+    # 1_het érvénytelen (mint az éles youtube_regresszio-ban), 2_het és 1_ev érvényes;
+    # a leghosszabb érvényes = 1_ev (legkorábbi ablak_kezdet_utc).
+    return {"kulcsszavak": {"szorongás": {
+        "domen": "egeszseg", "racs": "nap", "aktiv": True, "tipus": "szintmero",
+        "intervallumok": {
+            "1_het": {"ervenyes": False, "ok": "keves_pont"},
+            "2_het": {"ervenyes": True, "irany": "csokken", "meredekseg_nap": -0.97,
+                       "mai_ertek": 78, "ablak_kezdet_utc": "2026-08-11T00:00:00+00:00"},
+            "1_ev": {"ervenyes": True, "irany": "novekszik", "meredekseg_nap": 0.05,
+                      "mai_ertek": 43, "ablak_kezdet_utc": "2025-08-24T00:00:00+00:00"},
+        }}}}
+
+
+def _yt_nyers_egy_szo():
+    # két sorozat: napi (3-m) + heti (12-m, legkorábbi kezdet) — a csúcs/átlag a hetiből jön
+    return {"kulcsszavak": {"szorongás": [
+        {"ablak_kezdet_utc": "2026-05-25T00:00:00+00:00", "ablak_veg_utc": "2026-08-25T00:00:00+00:00",
+         "pontok": [{"idopont_utc": "2026-08-24T00:00:00+00:00", "ertek": 90, "reszleges": False}]},
+        {"ablak_kezdet_utc": "2025-08-24T00:00:00+00:00", "ablak_veg_utc": "2026-08-23T00:00:00+00:00",
+         "pontok": [{"idopont_utc": "2025-08-24T00:00:00+00:00", "ertek": 40, "reszleges": False},
+                    {"idopont_utc": "2026-08-16T00:00:00+00:00", "ertek": 50, "reszleges": False},
+                    {"idopont_utc": "2026-08-23T00:00:00+00:00", "ertek": 88, "reszleges": True}]},
+    ]}}
+
+
+def test_youtube_szamok_leghosszabb_ervenyes_intervallum_es_nyers_csucs_atlag():
+    szamok = elemzo._youtube_szamok(_yt_reg_egy_szo(), _yt_nyers_egy_szo())
+    assert len(szamok) == 1
+    s = szamok[0]
+    assert s["szo"] == "szorongás"
+    assert s["domen"] == "egeszseg"
+    # a leghosszabb ÉRVÉNYES = 1_ev (2025-08-24 a legkorábbi kezdet), NEM a 2_het
+    assert s["irany"] == "novekszik"
+    assert s["meredekseg"] == 0.05
+    assert s["mai_ertek"] == 43
+    assert s["ervenyes"] is True
+    # csúcs/átlag a HETI nyers sorozatból, csak a nem-részleges pontok (40, 50; a 88 részleges kimarad)
+    assert s["csucs"] == 50
+    assert s["atlag"] == 45.0
+
+
+def test_youtube_szamok_nincs_ervenyes_intervallum_fail_soft():
+    reg = {"kulcsszavak": {"klíma": {"domen": "otthon", "intervallumok": {
+        "1_het": {"ervenyes": False, "ok": "keves_pont"}}}}}
+    szamok = elemzo._youtube_szamok(reg, {"kulcsszavak": {}})
+    assert szamok[0]["szo"] == "klíma"
+    assert szamok[0]["irany"] is None
+    assert szamok[0]["ervenyes"] is False
+    assert szamok[0]["csucs"] is None
+    assert szamok[0]["atlag"] is None
+
+
+def test_youtube_szamok_hianyzo_adat_ures_lista():
+    assert elemzo._youtube_szamok(None, None) == []
+    assert elemzo._youtube_szamok({}, {}) == []
