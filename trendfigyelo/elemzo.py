@@ -305,7 +305,7 @@ def valasz_to_artefakt(ai_valasz, payload, nap, modell):
         valtozas_szoveg = ("Ma nincs korábbi nap, amivel összevethetnénk, így a napi "
                            "elmozdulás egyelőre nem értékelhető. A friss kép a lenti "
                            "szekciókban olvasható.")
-    return {
+    art = {
         "frissitve": seged.idopont_iso(seged.most_utc()),
         "modell": modell,
         "nap": nap,
@@ -323,6 +323,15 @@ def valasz_to_artefakt(ai_valasz, payload, nap, modell):
             "het_valos": payload["felkapott"]["het"],
         },
     }
+    if "youtube" in payload:
+        art["youtube"] = {
+            "szamok": payload["youtube"]["szamok"],
+            "het_valos": payload["youtube"]["het_valos"],
+            "napi": ai_valasz["youtube"]["napi"],
+            "teljes_kep": ai_valasz["youtube"]["teljes_kep"],
+            "het": ai_valasz["youtube"]["het"],
+        }
+    return art
 
 
 def _betolt(fajl):

@@ -527,3 +527,36 @@ def test_rendszer_prompt_youtube_keret():
     p = elemzo.RENDSZER_PROMPT.lower()
     assert "youtube" in p                 # a YouTube-keret jelen van
     assert "payload" in p and "mező" in p  # a meglévő tiltások VÁLTOZATLANUL érvényben
+
+
+def _ai_valasz_youtubebal():
+    sz = {"szoveg": "sz"}
+    return {"valtozas": sz, "kulcsszavak": {"napi": sz, "teljes_kep": sz, "het": sz},
+            "felkapott": {"napi": sz, "het": sz},
+            "youtube": {"napi": {"szoveg": "yt-napi"}, "teljes_kep": {"szoveg": "yt-teljes"},
+                        "het": {"szoveg": "yt-het"}}}
+
+
+def test_valasz_to_artefakt_youtube_blokk_valos_es_ai():
+    payload = {
+        "kulcsszavak": {"szamok": []},
+        "felkapott": {"top": [], "het": {"napok": 0, "visszateroek": []}},
+        "valtozas": {"irany_valtok": [], "mozgok": [], "felkapott_uj": [], "felkapott_eltunt": [], "van_elozo": False},
+        "youtube": {"szamok": [{"szo": "szorongás", "domen": "egeszseg", "irany": "novekszik",
+                                "meredekseg": 0.05, "ervenyes": True, "mai_ertek": 43, "csucs": 50, "atlag": 45.0}],
+                    "het_valos": [{"szo": "bitcoin", "kezdo": 30, "veg": 57, "valtozas": 27}]},
+    }
+    art = elemzo.valasz_to_artefakt(_ai_valasz_youtubebal(), payload, nap="2026-08-26", modell="claude-opus-4-8")
+    # VALÓS a payloadból
+    assert art["youtube"]["szamok"][0]["csucs"] == 50
+    assert art["youtube"]["het_valos"][0]["valtozas"] == 27
+    # AI-próza a válaszból
+    assert art["youtube"]["napi"]["szoveg"] == "yt-napi"
+    assert art["youtube"]["teljes_kep"]["szoveg"] == "yt-teljes"
+    assert art["youtube"]["het"]["szoveg"] == "yt-het"
+
+
+def test_valasz_to_artefakt_nincs_youtube_ha_nincs_payloadban():
+    payload = _mini_payload(van_elozo=True)   # nincs "youtube" kulcs
+    art = elemzo.valasz_to_artefakt(_mini_ai("napi"), payload, nap="2026-08-26", modell="claude-opus-4-8")
+    assert "youtube" not in art
