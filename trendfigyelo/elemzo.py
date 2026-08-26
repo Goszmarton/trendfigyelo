@@ -226,12 +226,17 @@ def epit_payload(adatok, tegnapi_szamok=None, tegnapi_top=None):
     szamok = _kulcsszo_szamok(regresszio, tortenet)
     felkapott = _felkapott(adatok.get("legfrissebb", {}), adatok.get("napok_trendek", {}))
     valtozas = nap_diff(szamok, tegnapi_szamok, felkapott["top"], tegnapi_top)
-    return {
+    payload = {
         "kulcsszavak": {"szamok": szamok},
         "felkapott": felkapott,
         "valtozas": valtozas,
         "kulcsszo_het": _kulcsszo_het(adatok.get("lanc", {})),
     }
+    yt_szamok = _youtube_szamok(adatok.get("youtube_regresszio"), adatok.get("youtube_nyers"))
+    if yt_szamok:
+        payload["youtube"] = {"szamok": yt_szamok,
+                              "het_valos": _youtube_het(adatok.get("youtube_nyers"))["szavak"]}
+    return payload
 
 
 # Az AI válaszának sémája (szekciónként csak folyó szöveg).
@@ -350,6 +355,8 @@ def futtat(docs_data, nap, kliens=None):
         "legfrissebb": _betolt(docs_data / "legfrissebb.json") or {},
         "napok_trendek": _utolso_napok_trendek(docs_data),
         "lanc": _betolt(docs_data / "kulcsszo_lanc.json") or {},
+        "youtube_regresszio": _betolt(docs_data / "youtube_regresszio.json"),
+        "youtube_nyers": _betolt(docs_data / "youtube_nyers.json"),
     }
     tegnapi = _elozo_archivum(docs_data, nap)
     payload = epit_payload(

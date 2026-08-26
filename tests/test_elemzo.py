@@ -485,3 +485,24 @@ def test_youtube_het_keves_pont_kimarad():
 def test_youtube_het_hianyzo_adat():
     assert elemzo._youtube_het(None) == {"szavak": []}
     assert elemzo._youtube_het({}) == {"szavak": []}
+
+
+def test_epit_payload_youtube_kulcs_ha_van_adat():
+    adatok = {
+        "regresszio": _regresszio_egy_szo("emelkedik", 1.0, True, 10.0),
+        "tortenet": {"napok": []}, "legfrissebb": {"top_trendek": []}, "napok_trendek": {},
+        "youtube_regresszio": _yt_reg_egy_szo(), "youtube_nyers": _yt_nyers_egy_szo(),
+    }
+    payload = elemzo.epit_payload(adatok)
+    assert "youtube" in payload
+    assert payload["youtube"]["szamok"][0]["szo"] == "szorongás"
+    assert "het_valos" in payload["youtube"]
+    # a Google-kulcsok VÁLTOZATLANOK
+    assert payload["kulcsszavak"]["szamok"][0]["szo"] == "állás"
+
+
+def test_epit_payload_nincs_youtube_kulcs_ha_nincs_adat():
+    adatok = {"regresszio": _regresszio_egy_szo("emelkedik", 1.0, True, 10.0),
+              "tortenet": {"napok": []}, "legfrissebb": {"top_trendek": []}, "napok_trendek": {}}
+    payload = elemzo.epit_payload(adatok)
+    assert "youtube" not in payload
