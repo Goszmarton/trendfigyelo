@@ -45,6 +45,20 @@ function valos_kulcsszo_csempek(szamok) {
 // „— N nap") KIVÉVE (user-döntés 2026-08-23) — a felkapottat az AI-próza foglalja össze.
 // A het_valos VALÓS réteg az artefaktban MARAD (fail-safe adat), csak nem rajzoljuk csempeként.
 
+// YouTube VALÓS csempék — a Google-csempével azonos, de a második szám ÁTLAG (a csúcs a 12-m
+// normálás miatt szavanként triviálisan ~100). Külön függvény, hogy a Google-render érintetlen maradjon.
+function valos_youtube_csempek(szamok) {
+  const wrap = document.createElement("div");
+  wrap.className = "elemzes-csempek";
+  (szamok || []).forEach((s) => {
+    const c = document.createElement("div");
+    c.className = "elemzes-csempe irany-" + (s.irany || "ismeretlen");
+    c.textContent = `${s.szo}: ${s.irany} (mai ${s.mai_ertek ?? "–"}, átlag ${s.atlag ?? "–"})`;
+    wrap.appendChild(c);
+  });
+  return wrap;
+}
+
 // egy nevesített szegmens-cím (Google / YouTube)
 function szegmens_cim(szoveg) {
   const h = document.createElement("h2");
@@ -58,7 +72,7 @@ function youtube_szegmens(yt) {
   const box = document.createElement("section");
   box.id = "youtube-szegmens";
   box.appendChild(szegmens_cim("YouTube keresések napi elemzése"));
-  box.appendChild(valos_kulcsszo_csempek(yt.szamok));
+  box.appendChild(valos_youtube_csempek(yt.szamok));
   box.appendChild(szekcio_elem("YouTube — mit néznek ma", yt.napi));
   box.appendChild(szekcio_elem("YouTube — teljes kép", yt.teljes_kep));
   box.appendChild(szekcio_elem("YouTube — heti mozgás", yt.het));

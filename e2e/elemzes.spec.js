@@ -69,8 +69,10 @@ test("Elemzés: két nevesített szegmens + YouTube-csempék és 3 szekció, ha 
   // két szegmens-cím
   await expect(page.locator("h2.elemzes-szegmens")).toHaveText([
     "Google keresések napi elemzése", "YouTube keresések napi elemzése"]);
-  // YouTube VALÓS csempe a szóval + iránnyal
+  // YouTube VALÓS csempe: mai + ÁTLAG (nem csúcs — a 12-m normálás miatt a csúcs mindig ~100)
   await expect(page.locator("#youtube-szegmens .elemzes-csempe")).toContainText("szorongás");
+  await expect(page.locator("#youtube-szegmens .elemzes-csempe")).toContainText("átlag 45");
+  await expect(page.locator("#youtube-szegmens .elemzes-csempe")).not.toContainText("csúcs");
   // 3 YouTube AI-szekció renderel (folyó próza <p>-ként)
   await expect(page.locator("#youtube-szegmens .elemzes-szekcio")).toHaveCount(3);
   await expect(page.locator("#youtube-szegmens")).toContainText("YouTube napi próza.");
