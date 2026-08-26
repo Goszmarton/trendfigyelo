@@ -506,3 +506,24 @@ def test_epit_payload_nincs_youtube_kulcs_ha_nincs_adat():
               "tortenet": {"napok": []}, "legfrissebb": {"top_trendek": []}, "napok_trendek": {}}
     payload = elemzo.epit_payload(adatok)
     assert "youtube" not in payload
+
+
+def test_valasz_sema_google_alap_valtozatlan():
+    s = elemzo._valasz_sema()
+    assert set(s["required"]) == {"valtozas", "kulcsszavak", "felkapott"}
+    assert "youtube" not in s["properties"]
+
+
+def test_valasz_sema_youtube_szekcio_szigoru():
+    s = elemzo._valasz_sema(youtube=True)
+    assert "youtube" in s["required"]
+    yt = s["properties"]["youtube"]
+    assert yt["additionalProperties"] is False
+    assert set(yt["required"]) == {"napi", "teljes_kep", "het"}
+    assert set(yt["properties"]["napi"]["properties"]) == {"szoveg"}
+
+
+def test_rendszer_prompt_youtube_keret():
+    p = elemzo.RENDSZER_PROMPT.lower()
+    assert "youtube" in p                 # a YouTube-keret jelen van
+    assert "payload" in p and "mező" in p  # a meglévő tiltások VÁLTOZATLANUL érvényben

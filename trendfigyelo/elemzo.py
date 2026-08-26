@@ -36,7 +36,12 @@ RENDSZER_PROMPT = (
     "(5) Hírt, forrást vagy eseményt nem találsz ki; a felkapott témákról csak a kapott "
     "témák és hírek alapján írsz. "
     "(6) Tömör, óvatos, DE ÉRDEMI: mondd el, mit látunk ma, milyen irányba mozdul a kép, "
-    "és mit lehet ebből óvatosan leszűrni."
+    "és mit lehet ebből óvatosan leszűrni. "
+    "(7) Ha a bemenet YouTube-szegmenst is tartalmaz: az a magyarországi YouTube-keresések "
+    "videó-igénye (NEM a webes keresés), a videós figyelem közelítése. A YouTube-szavak "
+    "egymással NEM összemérhetők, mert mindegyik saját 0–100 skálán mozog — ne rangsorold "
+    "őket egymáshoz. UGYANEZEK a szabályok (folyó bekezdés, mezőnév/„payload\" tilalma, "
+    "óvatos ok-okozat) érvényesek a YouTube-prózára is."
 )
 
 # A kulcsszó VALÓS iránya/meredeksége az 1_het (órás, napi frissülő) intervallumból jön.
@@ -246,18 +251,25 @@ def _szekcio_sema():
             "properties": {"szoveg": {"type": "string"}}}
 
 
-def _valasz_sema():
+def _valasz_sema(youtube=False):
     sz = _szekcio_sema()
+    props = {
+        "valtozas": sz,
+        "kulcsszavak": {"type": "object", "additionalProperties": False,
+                        "required": ["napi", "teljes_kep", "het"],
+                        "properties": {"napi": sz, "teljes_kep": sz, "het": sz}},
+        "felkapott": {"type": "object", "additionalProperties": False,
+                      "required": ["napi", "het"],
+                      "properties": {"napi": sz, "het": sz}},
+    }
+    required = ["valtozas", "kulcsszavak", "felkapott"]
+    if youtube:
+        props["youtube"] = {"type": "object", "additionalProperties": False,
+                            "required": ["napi", "teljes_kep", "het"],
+                            "properties": {"napi": sz, "teljes_kep": sz, "het": sz}}
+        required = required + ["youtube"]
     return {"type": "object", "additionalProperties": False,
-            "required": ["valtozas", "kulcsszavak", "felkapott"],
-            "properties": {
-                "valtozas": sz,
-                "kulcsszavak": {"type": "object", "additionalProperties": False,
-                                "required": ["napi", "teljes_kep", "het"],
-                                "properties": {"napi": sz, "teljes_kep": sz, "het": sz}},
-                "felkapott": {"type": "object", "additionalProperties": False,
-                              "required": ["napi", "het"],
-                              "properties": {"napi": sz, "het": sz}}}}
+            "required": required, "properties": props}
 
 
 class _AnthropicKliens:
@@ -271,7 +283,8 @@ class _AnthropicKliens:
             model=modell, max_tokens=16000,
             thinking={"type": "adaptive"},
             output_config={"effort": "medium",
-                           "format": {"type": "json_schema", "schema": _valasz_sema()}},
+                           "format": {"type": "json_schema",
+                                      "schema": _valasz_sema(youtube="youtube" in payload)}},
             system=RENDSZER_PROMPT,
             messages=[{"role": "user", "content":
                        "Elemezd az alábbi VALÓS számokat (JSON). Csak ezekből dolgozz:\n"
