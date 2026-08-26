@@ -45,11 +45,33 @@ function valos_kulcsszo_csempek(szamok) {
 // „— N nap") KIVÉVE (user-döntés 2026-08-23) — a felkapottat az AI-próza foglalja össze.
 // A het_valos VALÓS réteg az artefaktban MARAD (fail-safe adat), csak nem rajzoljuk csempeként.
 
+// egy nevesített szegmens-cím (Google / YouTube)
+function szegmens_cim(szoveg) {
+  const h = document.createElement("h2");
+  h.className = "elemzes-szegmens";
+  h.textContent = szoveg;
+  return h;
+}
+
+// YouTube-szegmens: VALÓS csempék (a Google-render újrahasznosításával) + 3 AI-szekció
+function youtube_szegmens(yt) {
+  const box = document.createElement("section");
+  box.id = "youtube-szegmens";
+  box.appendChild(szegmens_cim("YouTube keresések napi elemzése"));
+  box.appendChild(valos_kulcsszo_csempek(yt.szamok));
+  box.appendChild(szekcio_elem("YouTube — mit néznek ma", yt.napi));
+  box.appendChild(szekcio_elem("YouTube — teljes kép", yt.teljes_kep));
+  box.appendChild(szekcio_elem("YouTube — heti mozgás", yt.het));
+  return box;
+}
+
 function rajzol(art) {
   const t = document.getElementById("elemzes-tartalom");
   t.textContent = "";
   document.getElementById("elemzes-fejlec").textContent =
     `Elemzés — ${art.nap} (${art.modell})`;
+
+  t.appendChild(szegmens_cim("Google keresések napi elemzése"));
 
   // Mi változott ma? — a szekció (folyó AI-próza) ELŐBB, a VALÓS diff-összegzés
   // (a nap-diffből, csak van_elozo esetén) UTÁNA.
@@ -83,6 +105,9 @@ function rajzol(art) {
   // Felkapott — CSAK az AI-próza (a nyers csempesorok kivéve; lásd a fenti megjegyzést)
   t.appendChild(szekcio_elem("Felkapott — napi", art.felkapott.napi));
   t.appendChild(szekcio_elem("Felkapott — heti összesítés", art.felkapott.het));
+
+  // YouTube-szegmens — fail-soft: régi archív-nap (nincs art.youtube) → nincs YouTube-rész
+  if (art.youtube) t.appendChild(youtube_szegmens(art.youtube));
 }
 
 // ── archívum nap-választó — a naptar_epit (app.js:454) VALÓS interfészét használja:

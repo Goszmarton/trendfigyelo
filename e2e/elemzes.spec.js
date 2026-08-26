@@ -50,3 +50,37 @@ test("Elemzés elrendezés: naptár bal, elemzés jobb; mobilon egymás alá", a
   const tart2 = await page.locator("#elemzes-tartalom").boundingBox();
   expect(tart2.y).toBeGreaterThan(nap2.y + nap2.height - 1);         // tartalom a naptár ALATT
 });
+
+const FIXTURE_YT = Object.assign({}, FIXTURE, {
+  youtube: {
+    szamok: [{ szo: "szorongás", domen: "egeszseg", irany: "novekszik", meredekseg: 0.05,
+               ervenyes: true, mai_ertek: 43, csucs: 50, atlag: 45.0 }],
+    het_valos: [{ szo: "bitcoin", kezdo: 30, veg: 57, valtozas: 27 }],
+    napi: { szoveg: "YouTube napi próza." },
+    teljes_kep: { szoveg: "YouTube teljes kép." },
+    het: { szoveg: "YouTube heti mozgás." },
+  },
+});
+
+test("Elemzés: két nevesített szegmens + YouTube-csempék és 3 szekció, ha van youtube blokk", async ({ page }) => {
+  await page.route("**/data/elemzes.json", (r) => r.fulfill({ json: FIXTURE_YT }));
+  await page.route("**/data/elemzesek/index.json", (r) => r.fulfill({ status: 404, body: "" }));
+  await page.goto("/elemzes.html");
+  // két szegmens-cím
+  await expect(page.locator("h2.elemzes-szegmens")).toHaveText([
+    "Google keresések napi elemzése", "YouTube keresések napi elemzése"]);
+  // YouTube VALÓS csempe a szóval + iránnyal
+  await expect(page.locator("#youtube-szegmens .elemzes-csempe")).toContainText("szorongás");
+  // 3 YouTube AI-szekció renderel (folyó próza <p>-ként)
+  await expect(page.locator("#youtube-szegmens .elemzes-szekcio")).toHaveCount(3);
+  await expect(page.locator("#youtube-szegmens")).toContainText("YouTube napi próza.");
+});
+
+test("Elemzés: régi archív-nap (nincs youtube blokk) → nincs YouTube-szegmens, a Google-rész ép", async ({ page }) => {
+  await page.route("**/data/elemzes.json", (r) => r.fulfill({ json: FIXTURE }));  // nincs youtube
+  await page.route("**/data/elemzesek/index.json", (r) => r.fulfill({ status: 404, body: "" }));
+  await page.goto("/elemzes.html");
+  await expect(page.locator("#youtube-szegmens")).toHaveCount(0);
+  await expect(page.locator("h2.elemzes-szegmens")).toHaveText(["Google keresések napi elemzése"]);
+  await expect(page.locator(".elemzes-csempe")).toContainText("állás");   // Google-rész változatlan
+});
