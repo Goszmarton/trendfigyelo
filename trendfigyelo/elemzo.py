@@ -154,6 +154,20 @@ def _youtube_szamok(youtube_regresszio, youtube_nyers):
     return ki
 
 
+def _youtube_het(youtube_nyers):
+    kw = (youtube_nyers or {}).get("kulcsszavak", {}) if isinstance(youtube_nyers, dict) else {}
+    szavak = []
+    for szo in kw:
+        pontok = [p for p in ((_nyers_heti_sorozat(youtube_nyers, szo) or {}).get("pontok") or [])
+                  if not p.get("reszleges")]
+        if len(pontok) < 2:
+            continue
+        kezdo, veg = round(pontok[-2]["ertek"], 1), round(pontok[-1]["ertek"], 1)
+        szavak.append({"szo": szo, "kezdo": kezdo, "veg": veg, "valtozas": round(veg - kezdo, 1)})
+    szavak.sort(key=lambda s: -abs(s["valtozas"]))
+    return {"szavak": szavak}
+
+
 def _felkapott(legfrissebb, napok_trendek):
     top = []
     for t in (legfrissebb.get("top_trendek", []) if isinstance(legfrissebb, dict) else []):

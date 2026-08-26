@@ -450,3 +450,38 @@ def test_youtube_szamok_nincs_ervenyes_intervallum_fail_soft():
 def test_youtube_szamok_hianyzo_adat_ures_lista():
     assert elemzo._youtube_szamok(None, None) == []
     assert elemzo._youtube_szamok({}, {}) == []
+
+
+def test_youtube_het_utolso_ket_nem_reszleges_heti_pont():
+    nyers = {"kulcsszavak": {
+        "bitcoin": [
+            {"ablak_kezdet_utc": "2025-08-24T00:00:00+00:00", "ablak_veg_utc": "2026-08-23T00:00:00+00:00",
+             "pontok": [{"idopont_utc": "2026-08-09T00:00:00+00:00", "ertek": 30, "reszleges": False},
+                        {"idopont_utc": "2026-08-16T00:00:00+00:00", "ertek": 57, "reszleges": False},
+                        {"idopont_utc": "2026-08-23T00:00:00+00:00", "ertek": 99, "reszleges": True}]}],
+        "mese": [
+            {"ablak_kezdet_utc": "2025-08-24T00:00:00+00:00", "ablak_veg_utc": "2026-08-23T00:00:00+00:00",
+             "pontok": [{"idopont_utc": "2026-08-09T00:00:00+00:00", "ertek": 90, "reszleges": False},
+                        {"idopont_utc": "2026-08-16T00:00:00+00:00", "ertek": 95, "reszleges": False}]}],
+    }}
+    het = elemzo._youtube_het(nyers)
+    szavak = {s["szo"]: s for s in het["szavak"]}
+    # a részleges (2026-08-23) pont kimarad → az utolsó két lezárt: 30 → 57
+    assert szavak["bitcoin"]["kezdo"] == 30
+    assert szavak["bitcoin"]["veg"] == 57
+    assert szavak["bitcoin"]["valtozas"] == 27
+    assert szavak["mese"]["valtozas"] == 5
+    # rendezés: a nagyobb abszolút mozgó elöl
+    assert het["szavak"][0]["szo"] == "bitcoin"
+
+
+def test_youtube_het_keves_pont_kimarad():
+    nyers = {"kulcsszavak": {"klíma": [
+        {"ablak_kezdet_utc": "2025-08-24T00:00:00+00:00", "ablak_veg_utc": "2026-08-23T00:00:00+00:00",
+         "pontok": [{"idopont_utc": "2026-08-16T00:00:00+00:00", "ertek": 7, "reszleges": False}]}]}}
+    assert elemzo._youtube_het(nyers)["szavak"] == []
+
+
+def test_youtube_het_hianyzo_adat():
+    assert elemzo._youtube_het(None) == {"szavak": []}
+    assert elemzo._youtube_het({}) == {"szavak": []}
