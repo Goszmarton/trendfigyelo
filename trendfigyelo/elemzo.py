@@ -41,7 +41,13 @@ RENDSZER_PROMPT = (
     "videó-igénye (NEM a webes keresés), a videós figyelem közelítése. A YouTube-szavak "
     "egymással NEM összemérhetők, mert mindegyik saját 0–100 skálán mozog — ne rangsorold "
     "őket egymáshoz. UGYANEZEK a szabályok (folyó bekezdés, mezőnév/„payload\" tilalma, "
-    "óvatos ok-okozat) érvényesek a YouTube-prózára is."
+    "óvatos ok-okozat) érvényesek a YouTube-prózára is. "
+    "(8) Ahol egy szó MAI értéke érdemben eltér a saját szokásos (átlagos) szintjétől, azt "
+    "emeld ki természetes szavakkal (pl. „a szokásosnál jóval élénkebb\", „a megszokott "
+    "szintje alatt van\") — ez a lényegi „önmagához képest\" olvasat, ezt keresd elsősorban. "
+    "Csak a SZEMBETŰNŐ eltéréseket hozd; ahol a mai érték a szokásos szint közelében van, ne "
+    "erőltesd. A „szokásos szint\" a szó SAJÁT átlaga, NEM a szavak közötti összevetés; ez a "
+    "Google- és a YouTube-szavakra egyaránt vonatkozik."
 )
 
 # A kulcsszó VALÓS iránya/meredeksége az 1_het (órás, napi frissülő) intervallumból jön.
