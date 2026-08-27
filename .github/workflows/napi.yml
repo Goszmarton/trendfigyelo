@@ -9,8 +9,12 @@ on:
         default: ""
   # Napi ütemezett futás. A kézi (workflow_dispatch) futások igazolták, hogy a
   # felhő-runner IP-je nem kap azonnali 429-et a cél-idősávban (Task 9 élesítve):
+  # Két AZONOS UTC-napi esti slot: ha a GitHub ingatag scheduler-e a fő futást
+  # elejti/nagyon késlelteti, a fallback ugyanaznap pótol. Az idempotencia-őr
+  # (lásd lentebb) miatt legfeljebb EGY gyűjt ténylegesen, a másik némán kilép.
   schedule:
-    - cron: "7 19 * * *"   # 19:07 UTC — 21:07 nyár / 20:07 tél budapesti idő
+    - cron: "7 19 * * *"    # 19:07 UTC — fő futás (21:07 nyár / 20:07 tél budapesti idő)
+    - cron: "0 23 * * *"    # 23:00 UTC — aznapi fallback (01:00 nyár / 00:00 tél Budapest), ha a fő kimaradt/nagyon késett
 
 permissions:
   contents: write
@@ -31,10 +35,28 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: "Idempotencia-őr (ütemezett fallback: ma már gyűjtöttünk?)"
+        id: guard
+        shell: bash
+        run: |
+          # Kézi (workflow_dispatch) futás MINDIG gyűjt — a felhasználó szándéka felülír.
+          # Ütemezett futásnál: ha a legfrissebb adat 'frissitve' dátuma a mai UTC-nap,
+          # ma már megvan az adat → a fallback slot némán kihagyja a gyűjtést (skip=true).
+          if [ "${{ github.event_name }}" != "schedule" ]; then
+            echo "Kézi (workflow_dispatch) futás — az őr nem aktív, gyűjtünk."
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          skip="$(python -m trendfigyelo.futas_orzo docs/data/legfrissebb.json)"
+          echo "Ütemezett futás — ma már gyűjtöttünk? skip=$skip"
+          echo "skip=$skip" >> "$GITHUB_OUTPUT"
+
       - name: Függőségek telepítése
+        if: steps.guard.outputs.skip != 'true'
         run: pip install -r requirements.txt
 
       - name: Trendfigyelő futtatása
+        if: steps.guard.outputs.skip != 'true'
         shell: bash
         env:
           # a plafon-override CSAK a workflow_dispatch triggeren létezik; a cron (schedule) ág
@@ -45,7 +67,7 @@ jobs:
           python top_keresesek.py 2>&1 | tee run.log
 
       - name: Változások commitolása (csak JSON + napló)
-        if: always() && github.ref == 'refs/heads/main'
+        if: always() && steps.guard.outputs.skip != 'true' && github.ref == 'refs/heads/main'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -58,7 +80,7 @@ jobs:
           fi
 
       - name: Artefakt feltöltése (napló + JSON + stdout)
-        if: always()
+        if: always() && steps.guard.outputs.skip != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: trendfutas-${{ github.run_id }}-${{ github.run_attempt }}
