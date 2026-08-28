@@ -7,14 +7,15 @@ on:
         description: "Hívás-plafon override (CSAK csökkent; pl. 0 = az L4 szelep piros-út igazolása, 0 valódi hívás). Üresen normál."
         required: false
         default: ""
-  # Napi ütemezett futás. A kézi (workflow_dispatch) futások igazolták, hogy a
-  # felhő-runner IP-je nem kap azonnali 429-et a cél-idősávban (Task 9 élesítve):
-  # Két AZONOS UTC-napi esti slot: ha a GitHub ingatag scheduler-e a fő futást
-  # elejti/nagyon késlelteti, a fallback ugyanaznap pótol. Az idempotencia-őr
-  # (lásd lentebb) miatt legfeljebb EGY gyűjt ténylegesen, a másik némán kilép.
+  # Napi gyűjtés. Az ELSŐDLEGES, időben-induló út a szerver-trigger (Hetzner-cron →
+  # workflow_dispatch, 19:10 UTC) — a GitHub ingatag best-effort ütemezése helyett
+  # garantált indítás. A GitHub saját schedule-cronjai a BACKUP: a szerver MÖGÉ időzítve
+  # (20:30 + 23:00 UTC), így az idempotencia-őr (lásd lentebb) dedup-olja őket, ha a
+  # szerver már gyűjtött ma. A GitHub-cron sosem tüzel korábban a tervezettnél (csak
+  # késhet), ezért a szerver mindig előbb ér ide → legfeljebb EGY gyűjt ténylegesen.
   schedule:
-    - cron: "7 19 * * *"    # 19:07 UTC — fő futás (21:07 nyár / 20:07 tél budapesti idő)
-    - cron: "0 23 * * *"    # 23:00 UTC — aznapi fallback (01:00 nyár / 00:00 tél Budapest), ha a fő kimaradt/nagyon késett
+    - cron: "30 20 * * *"   # 20:30 UTC — backup (22:30 nyár / 21:30 tél Budapest), ha a szerver-trigger kimaradt
+    - cron: "0 23 * * *"    # 23:00 UTC — késői backup (01:00 nyár / 00:00 tél Budapest)
 
 permissions:
   contents: write
