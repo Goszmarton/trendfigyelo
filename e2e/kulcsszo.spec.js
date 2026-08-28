@@ -319,6 +319,35 @@ test("2e. het-rácsú MÁSODLAGOS heti pontokkal → data-szakadas=0 (heti slot,
   await expect(c).toHaveAttribute("data-szakadas", "0");
 });
 
+// ── 2e-b. ÜTKÖZÉS: azonos ablak_veg-ű nap+het ablak → a HETI 1_ev a HET ablakot kapja ───────────
+// A másodlagos nyers rekord szavanként TÖBB ablakot tarthat (3-m nap + 12-m het), és a kettő
+// ablak_veg_utc-je EGYEZHET (mindkettő "ma" ér véget). A nyers_ablak-nak a FELBONTÁSRA (_racs) is
+// illesztenie kell, nem csak ablak_veg-re — különben a heti 1_ev a rövidebb NAPI ablakot kapja
+// (3 hó, hetekre csúszva) ÉS a heti trend-egyenes éves végpontja kiesik → data-vonal="false".
+function nap_ablak_eltolt(kulcsszo, kezd_nap, n) {   // n napi lezárt pont kezd_nap-tól + 1 részleges záró
+  const pts = [];
+  for (let i = 0; i < n; i++) pts.push({ idopont_utc: racs_iso(kezd_nap + i, 1), ertek: 50, reszleges: false });
+  pts.push({ idopont_utc: racs_iso(kezd_nap + n, 1), ertek: 0, reszleges: true });
+  return { kulcsszo, racs: "nap", ablak_kezdet_utc: racs_iso(kezd_nap, 1), ablak_veg_utc: racs_iso(kezd_nap + n, 1), pontok: pts };
+}
+test("2e-b. azonos ablak_veg-ű nap+het ablak → a heti 1_ev a HET ablakot kapja (trend-egyenes megvan)", async ({ page }) => {
+  // HET ablak: 52 hét (0..52), veg = racs_iso(52,7) = racs_iso(364,1); illesztes_vonal a teljes éven.
+  // NAP ablak: az UTOLSÓ 90 nap (274..364) — UGYANAZ az ablak_veg (racs_iso(364,1)), de rövidebb; ELÖL a listában.
+  await mock(page, {
+    regObj: reg({ "hitel": regSzo({ domen: "lakhatas" }) }),        // primer: 1_het órás valid, 1_ev nincs_lancolas
+    nyersObj: nyers({ "hitel": [nyersRekord("hitel")] }),
+    mpRegObj: mpReg({ "hitel": mpSzo("het", { "1_ev": hetIvErv(0, 52) }, { domen: "lakhatas" }) }),
+    mpNyersObj: mpNyers({ "hitel": [nap_ablak_eltolt("hitel", 274, 90),
+      Object.assign(racs_nyersRekord("hitel", 52, 7), { racs: "het" })] }),
+  });
+  await page.goto("/");
+  await page.click('#intervallum-vezerlo button[data-intervallum="1_ev"]');
+  const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="hitel"]`);
+  await expect(c).toHaveAttribute("data-drawable", "true");
+  await expect(c).toHaveAttribute("data-felbontas", "het");     // a HET ablakot rajzolja (nem a NAP-ot)
+  await expect(c).toHaveAttribute("data-vonal", "true");        // a heti trend-egyenes megvan (BUG előtt: "false")
+});
+
 // ── 2f. RACS rajzolás szándékos-zöld: órás szó (racs nélkül) → data-szakadas VÁLTOZATLAN ───────
 test("2f. órás szó teljes ablakkal → data-szakadas=0 (óra ág változatlan) — SZANDEKOS_ZOLD", async ({ page }) => {
   await mock(page, {

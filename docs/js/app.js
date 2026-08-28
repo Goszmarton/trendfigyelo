@@ -768,7 +768,7 @@ function elettartam_szoveg(szoreg, iv, ablak) {
 
 // a rajzolt nyers ablak kiválasztása: a regresszió intervallumának ablak_veg_utc-jével való EGYEZÉS
 // (spec 8.3/mod 8) — NEM "utolsó rekord" és NEM max(ablak_veg); egyezés hiánya → null (kirajzolhatatlan)
-function nyers_ablak(szo, veg, forras) {
+function nyers_ablak(szo, veg, forras, racs) {
   const kw = (adat[forras || "kulcsszo_nyers.json"] || {}).kulcsszavak || {};
   // LANC-ORAS Sz2: a lánc-forrás alakja EGY rekord (nem ablak-lista) — a 2_het+ órás ebből rajzol.
   // Egyezés az iv.ablak_veg_utc-vel (a backend a lanc["ablak_veg_utc"]-ig szeletelt); a lánc pontjai
@@ -783,6 +783,12 @@ function nyers_ablak(szo, veg, forras) {
   const ablakok = kw[szo] || [];
   for (let i = 0; i < ablakok.length; i++) {
     if (ablakok[i].ablak_veg_utc !== veg) continue;
+    // ÜTKÖZÉS-FIX: egy szónak TÖBB ablaka lehet AZONOS ablak_veg-gel (a másodlagos 3-m NAP + 12-m HET
+    // sorozat egyszerre "ma" ér véget) → a FELBONTÁSRA (racs) is illesztünk, különben a heti intervallum
+    // a rövidebb NAPI ablakot kapná (3 hó hetekre csúszva + a heti trendvonal éves végpontja kiesik).
+    // A primer nyers ablaknak NINCS racs mezője → ott a szűrő kimarad (backward-kompatibilis; az órás
+    // 1_het / a nap-config szavak napi útját nem érinti).
+    if (racs && ablakok[i].racs && ablakok[i].racs !== racs) continue;
     // J2: rajzolható CSAK ha van legalább egy LEZÁRT pont (§7.5 2. eset: üres/csupa-részleges lista
     // séma-érvényes, de nem rajzolható → data-drawable="false" + URES_NINCS_ABLAK, NEM racs_epit-kivétel)
     const van_lezart = (ablakok[i].pontok || []).some(function (p) { return !p.reszleges; });
@@ -884,7 +890,7 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs) {
   } else {
     iv = szoreg.intervallumok ? szoreg.intervallumok[aktiv_kulcs] : null;
   }
-  const ablak = (iv && iv.ervenyes) ? nyers_ablak(szo, iv.ablak_veg_utc, iv._forras) : null;
+  const ablak = (iv && iv.ervenyes) ? nyers_ablak(szo, iv.ablak_veg_utc, iv._forras, iv._racs) : null;
 
   // item 3 (2026-08-18): a szó FELBONTÁSA MINDEN kártyán (az ÜRES-en is) — rögtön látszik, miért nincs görbe
   // egy adott ablakon. Forrás: az intervallum _racs-a; üresnél a szó config-rácsa (szoreg.racs). Mindkét ág ELŐTT.
