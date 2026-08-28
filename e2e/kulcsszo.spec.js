@@ -387,6 +387,27 @@ test("2h. benzin (órás-only) hosszú intervallum → 'órás sorozat láncolá
   await expect(v).not.toContainText("összefűzött nap");             // az órás-láncolás régi felirat NEM
 });
 
+// ── 2h-b. órás-only hosszú ablak → placeholder + VÁRHATÓ elérhetőségi dátum (lánc.kezdet + hossz) ─
+test("2h-b. benzin (órás-only) 1_ho → 'Várhatóan <dátum>-től lesz elérhető' (lánc.kezdet + 30 nap)", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({
+      "benzin": regSzo({ domen: "fogyasztas", racs: "ora" }),        // órás-only: 1_ho oras_lanc_kell
+      "albérlet": regSzo({ domen: "lakhatas" }),                     // hogy az 1_ho gomb ENGEDÉLYEZETT legyen
+    }),
+    nyersObj: nyers({ "benzin": [nyersRekord("benzin")], "albérlet": [nyersRekord("albérlet")] }),
+    mpRegObj: mpReg({ "albérlet": mpSzo("nap", { "1_ho": racs_iv(30, 1) }) }),   // albérlet 1_ho érvényes
+    mpNyersObj: mpNyers({ "albérlet": [racs_nyersRekord("albérlet", 30, 1)] }),
+    lancObj: { kulcsszavak: { "benzin": {                            // a lánc kezdete 2026-08-01 (racs_iso(0,1))
+      ablak_kezdet_utc: racs_iso(0, 1), ablak_veg_utc: racs_iso(10, 1),
+      pontok: [{ idopont_utc: racs_iso(0, 1), ertek: 50 }] } } },
+  });
+  await page.goto("/");
+  await page.click('#intervallum-vezerlo button[data-intervallum="1_ho"]');
+  const u = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="benzin"] .ures`);
+  await expect(u).toContainText("Órás felbontású szó");
+  await expect(u).toContainText("Várhatóan 2026.08.31-től lesz elérhető.");   // 2026-08-01 + 30 nap
+});
+
 // ── 2i. Szelet 2 integráció: másodlagos szó a hosszú intervallumon → "nap nem-nulla" ────────────
 test("2i. másodlagos szó 1_ho-ra váltva → kártya drawable, 'nap nem-nulla'", async ({ page }) => {
   await mock(page, {

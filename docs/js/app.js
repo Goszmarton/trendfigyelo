@@ -270,7 +270,17 @@ function egyesitett_reg() {
         } else {
           ok = miv.ok;                                               // keves_pont (nap), esemenyjelzo — már rács-megfelelő
         }
-        ivk[X] = { ervenyes: false, ok: ok };
+        const ures = { ervenyes: false, ok: ok };
+        // oras_lanc_kell: a VÁRHATÓ elérhetőségi dátum a betöltött láncból (ablak_kezdet + hossz nap) —
+        // a lánc akkor fedi le a hossz napos ablakot. Ha nincs lánc/kezdet, marad a dátum nélküli üzenet.
+        if (ok === "oras_lanc_kell") {
+          const lrek = ((adat["kulcsszo_lanc.json"] || {}).kulcsszavak || {})[szo];
+          const it_hossz = (INTERVALLUMOK.find(function (i) { return i.kulcs === X; }) || {}).hossz;
+          if (lrek && lrek.ablak_kezdet_utc && it_hossz) {
+            ures.varhato_datum = varhato_datum_szamit(lrek.ablak_kezdet_utc, it_hossz);
+          }
+        }
+        ivk[X] = ures;
       }
     });
     // 6c: az esemenyjelzo szint (heti medián) a MÁSODLAGOS entryn él (m), az órás o-n nincs → átvezetjük,
@@ -671,6 +681,22 @@ function slot_index(iso, racs) {
 function iso_ms(iso) {   // "YYYY-MM-DDTHH:..." → epoch-ms (UTC); nap/het pont 00:00 → óra-rész 0
   return napok_civil(+iso.slice(0, 4), +iso.slice(5, 7), +iso.slice(8, 10)) * 86400000 + (+iso.slice(11, 13) || 0) * 3600000;
 }
+
+// órás-only szó hosszú ablakának VÁRHATÓ elérhetőségi dátuma: a lánc akkor fedi le a `hossz` napos ablakot,
+// amikor a span (veg − kezdet) eléri a hosszt → várható = lánc.ablak_kezdet + hossz nap. Determinisztikus
+// (explicit Date.UTC, NEM "most"-Date — mint a napok_civil-környéki dátum-aritmetika). Visszaad: "YYYY-MM-DD".
+function varhato_datum_szamit(kezdet_iso, hossz_nap) {
+  const d = new Date(Date.UTC(+kezdet_iso.slice(0, 4), +kezdet_iso.slice(5, 7) - 1, +kezdet_iso.slice(8, 10)) + hossz_nap * 86400000);
+  return d.getUTCFullYear() + "-" + String(d.getUTCMonth() + 1).padStart(2, "0") + "-" + String(d.getUTCDate()).padStart(2, "0");
+}
+
+// egy ÜRES (nem-rajzolható) intervallum magyar ok-szövege; oras_lanc_kell-nél a várható elérhetőség dátumával
+// egészül ki (ha a láncból számolható). A dátum "YYYY.MM.DD" alakban (a felhasználó „év.hónap.nap" kérése).
+function ok_szoveg(iv) {
+  const alap = OK_MAGYAR[iv.ok] || iv.ok;
+  if (!iv.varhato_datum) return alap;
+  return alap + " Várhatóan " + iv.varhato_datum.replace(/-/g, ".") + "-től lesz elérhető.";
+}
 function slot_ms(i, racs) {   // slot-index → ms (a hiányzó slotok null-pontjának x-e; a rajzolt pontok iso_ms-t kapnak)
   if (racs === "nap") return i * 86400000;
   if (racs === "het") return i * 7 * 86400000;
@@ -909,7 +935,7 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs) {
     const p = document.createElement("p");
     p.className = OSZT.ures;
     p.textContent = teljes_ures ? OK_MAGYAR["teljes_nincs_sorozat"]
-      : ((iv && !iv.ervenyes) ? (OK_MAGYAR[iv.ok] || iv.ok) : URES_NINCS_ABLAK);
+      : ((iv && !iv.ervenyes) ? ok_szoveg(iv) : URES_NINCS_ABLAK);
     kartya.appendChild(p);
     return kartya;
   }
