@@ -1,5 +1,5 @@
 {
-  "szamitva_utc": "2026-08-29T17:10:28+00:00",
+  "szamitva_utc": "2026-08-30T01:02:56+00:00",
   "meredekseg_egyseg": "relatív pont / nap",
   "irany_kuszob": 1.0,
   "megjegyzes": "Az R² autokorrelált órás soron számolt — MÁSODLAGOS; az elsődleges a meredekség és az irány (spec 4.1). Az r2_masodlagos_autokorrelacio ezt jelzi. A se_meredekseg (OLS standard hiba) UGYANEZEN autokorreláció miatt szintén MÁSODLAGOS és torzított (lefelé) — a se_masodlagos_autokorrelacio jelzi; a felület NEM írja ki konfidencia-sávként.",
@@ -14,89 +14,89 @@
       "intervallumok": {
         "1_het": {
           "ervenyes": true,
-          "meredekseg_nap": 2.158,
-          "se_meredekseg": 0.6698,
+          "meredekseg_nap": 0.638,
+          "se_meredekseg": 0.7157,
           "se_masodlagos_autokorrelacio": true,
-          "irany": "novekszik",
-          "r2": 0.059,
+          "irany": "stagnal",
+          "r2": 0.005,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-22T17:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T17:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-23T01:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T01:00:00+00:00",
           "pontok_hasznalt": 168,
-          "pontok_nem_nulla": 154,
+          "pontok_nem_nulla": 157,
           "pontok_kihagyva_reszleges": 1,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-22T17:00:00+00:00",
-              "ertek": 30.83114961961116
+              "idopont_utc": "2026-08-23T01:00:00+00:00",
+              "ertek": 39.570301493378416
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 45.84742180896027
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 44.01303183995492
             }
           ],
-          "mai_ertek": 37,
-          "mai_reziduum": -8.85,
-          "reziduum_szokasos": 9.12,
+          "mai_ertek": 28,
+          "mai_reziduum": -16.01,
+          "reziduum_szokasos": 9.83,
           "illeszkedes": "illeszkedik"
         },
         "2_het": {
           "ervenyes": true,
-          "meredekseg_nap": 0.37,
-          "se_meredekseg": 0.2116,
+          "meredekseg_nap": 0.196,
+          "se_meredekseg": 0.213,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
-          "r2": 0.009,
+          "r2": 0.003,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-15T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-16T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 337,
           "pontok_nem_nulla": 313,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-15T16:00:00+00:00",
-              "ertek": 30.25546313802609
+              "idopont_utc": "2026-08-16T00:00:00+00:00",
+              "ertek": 31.380791161132866
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 35.43849887977806
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 34.120234358154974
             }
           ],
-          "mai_ertek": 31.67,
-          "mai_reziduum": -3.77,
-          "reziduum_szokasos": 8.24,
+          "mai_ertek": 22.16,
+          "mai_reziduum": -11.96,
+          "reziduum_szokasos": 8.68,
           "illeszkedes": "illeszkedik"
         },
         "1_ho": {
           "ervenyes": true,
-          "meredekseg_nap": -0.246,
-          "se_meredekseg": 0.0721,
+          "meredekseg_nap": -0.3,
+          "se_meredekseg": 0.0718,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
-          "r2": 0.016,
+          "r2": 0.024,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-07-30T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-07-31T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 721,
-          "pontok_nem_nulla": 670,
+          "pontok_nem_nulla": 671,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-07-30T16:00:00+00:00",
-              "ertek": 39.43602511093779
+              "idopont_utc": "2026-07-31T00:00:00+00:00",
+              "ertek": 40.228065591802704
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 32.06682509710659
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 31.22004259127635
             }
           ],
-          "mai_ertek": 31.67,
-          "mai_reziduum": -0.4,
-          "reziduum_szokasos": 9.09,
+          "mai_ertek": 22.16,
+          "mai_reziduum": -9.06,
+          "reziduum_szokasos": 8.89,
           "illeszkedes": "illeszkedik"
         },
         "3_ho": {
@@ -119,90 +119,90 @@
       "intervallumok": {
         "1_het": {
           "ervenyes": true,
-          "meredekseg_nap": -0.361,
-          "se_meredekseg": 0.835,
+          "meredekseg_nap": -0.908,
+          "se_meredekseg": 0.7601,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
-          "r2": 0.001,
+          "r2": 0.009,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-22T17:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T17:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-23T01:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T01:00:00+00:00",
           "pontok_hasznalt": 168,
-          "pontok_nem_nulla": 138,
+          "pontok_nem_nulla": 141,
           "pontok_kihagyva_reszleges": 1,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-22T17:00:00+00:00",
-              "ertek": 43.196604677373905
+              "idopont_utc": "2026-08-23T01:00:00+00:00",
+              "ertek": 43.07621865314173
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 40.68434770357847
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 36.757114680191606
             }
           ],
-          "mai_ertek": 56,
-          "mai_reziduum": 15.32,
-          "reziduum_szokasos": 7.16,
+          "mai_ertek": 63,
+          "mai_reziduum": 26.24,
+          "reziduum_szokasos": 6.08,
           "illeszkedes": "felette"
         },
         "2_het": {
           "ervenyes": true,
-          "meredekseg_nap": 0.232,
-          "se_meredekseg": 0.3539,
+          "meredekseg_nap": 0.254,
+          "se_meredekseg": 0.3519,
+          "se_masodlagos_autokorrelacio": true,
+          "irany": "stagnal",
+          "r2": 0.002,
+          "r2_masodlagos_autokorrelacio": true,
+          "ablak_kezdet_utc": "2026-08-16T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
+          "pontok_hasznalt": 337,
+          "pontok_nem_nulla": 279,
+          "pontok_kihagyva_reszleges": 0,
+          "pontok_hianyzo": 0,
+          "illesztes_vonal": [
+            {
+              "idopont_utc": "2026-08-16T00:00:00+00:00",
+              "ertek": 46.19183128544589
+            },
+            {
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 49.75171174126034
+            }
+          ],
+          "mai_ertek": 74.7,
+          "mai_reziduum": 24.95,
+          "reziduum_szokasos": 10.01,
+          "illeszkedes": "felette"
+        },
+        "1_ho": {
+          "ervenyes": true,
+          "meredekseg_nap": 0.082,
+          "se_meredekseg": 0.1108,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
           "r2": 0.001,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-15T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
-          "pontok_hasznalt": 337,
-          "pontok_nem_nulla": 278,
-          "pontok_kihagyva_reszleges": 0,
-          "pontok_hianyzo": 0,
-          "illesztes_vonal": [
-            {
-              "idopont_utc": "2026-08-15T16:00:00+00:00",
-              "ertek": 46.18829170719716
-            },
-            {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 49.442510073218266
-            }
-          ],
-          "mai_ertek": 61.45,
-          "mai_reziduum": 12.01,
-          "reziduum_szokasos": 9.96,
-          "illeszkedes": "illeszkedik"
-        },
-        "1_ho": {
-          "ervenyes": true,
-          "meredekseg_nap": 0.053,
-          "se_meredekseg": 0.1112,
-          "se_masodlagos_autokorrelacio": true,
-          "irany": "stagnal",
-          "r2": 0.0,
-          "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-07-30T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-07-31T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 721,
-          "pontok_nem_nulla": 590,
+          "pontok_nem_nulla": 591,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-07-30T16:00:00+00:00",
-              "ertek": 46.83671383043711
+              "idopont_utc": "2026-07-31T00:00:00+00:00",
+              "ertek": 46.359600210541686
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 48.423866197302154
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 48.81602697392434
             }
           ],
-          "mai_ertek": 61.45,
-          "mai_reziduum": 13.03,
-          "reziduum_szokasos": 10.36,
-          "illeszkedes": "illeszkedik"
+          "mai_ertek": 74.7,
+          "mai_reziduum": 25.88,
+          "reziduum_szokasos": 10.22,
+          "illeszkedes": "felette"
         },
         "3_ho": {
           "ervenyes": false,
@@ -224,89 +224,89 @@
       "intervallumok": {
         "1_het": {
           "ervenyes": true,
-          "meredekseg_nap": 4.712,
-          "se_meredekseg": 0.7099,
+          "meredekseg_nap": 3.722,
+          "se_meredekseg": 0.7324,
           "se_masodlagos_autokorrelacio": true,
           "irany": "novekszik",
-          "r2": 0.21,
+          "r2": 0.135,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-22T17:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T17:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-23T01:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T01:00:00+00:00",
           "pontok_hasznalt": 168,
           "pontok_nem_nulla": 164,
           "pontok_kihagyva_reszleges": 1,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-22T17:00:00+00:00",
-              "ertek": 12.158072696534237
+              "idopont_utc": "2026-08-23T01:00:00+00:00",
+              "ertek": 16.13531980839673
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 44.94907016060861
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 42.031346858269934
             }
           ],
-          "mai_ertek": 31,
-          "mai_reziduum": -13.95,
-          "reziduum_szokasos": 7.14,
-          "illeszkedes": "illeszkedik"
+          "mai_ertek": 15,
+          "mai_reziduum": -27.03,
+          "reziduum_szokasos": 6.86,
+          "illeszkedes": "alatta"
         },
         "2_het": {
           "ervenyes": true,
-          "meredekseg_nap": 1.953,
-          "se_meredekseg": 0.2384,
+          "meredekseg_nap": 1.841,
+          "se_meredekseg": 0.2404,
           "se_masodlagos_autokorrelacio": true,
           "irany": "novekszik",
-          "r2": 0.167,
+          "r2": 0.149,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-15T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-16T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 337,
           "pontok_nem_nulla": 310,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-15T16:00:00+00:00",
-              "ertek": 11.463515681351293
+              "idopont_utc": "2026-08-16T00:00:00+00:00",
+              "ertek": 12.52373464611171
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 38.809216069390544
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 38.29922618474883
             }
           ],
-          "mai_ertek": 35.23,
-          "mai_reziduum": -3.58,
-          "reziduum_szokasos": 8.52,
-          "illeszkedes": "illeszkedik"
+          "mai_ertek": 17.05,
+          "mai_reziduum": -21.25,
+          "reziduum_szokasos": 8.29,
+          "illeszkedes": "alatta"
         },
         "1_ho": {
           "ervenyes": true,
-          "meredekseg_nap": -0.182,
+          "meredekseg_nap": -0.18,
           "se_meredekseg": 0.0995,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
           "r2": 0.005,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-07-30T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-07-31T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 721,
           "pontok_nem_nulla": 679,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-07-30T16:00:00+00:00",
-              "ertek": 32.79697895121042
+              "idopont_utc": "2026-07-31T00:00:00+00:00",
+              "ertek": 32.65908865994829
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 27.33504629150802
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 27.255380965571824
             }
           ],
-          "mai_ertek": 35.23,
-          "mai_reziduum": 7.9,
-          "reziduum_szokasos": 8.61,
+          "mai_ertek": 17.05,
+          "mai_reziduum": -10.21,
+          "reziduum_szokasos": 8.46,
           "illeszkedes": "illeszkedik"
         },
         "3_ho": {
@@ -329,90 +329,90 @@
       "intervallumok": {
         "1_het": {
           "ervenyes": true,
-          "meredekseg_nap": -1.637,
-          "se_meredekseg": 0.6648,
+          "meredekseg_nap": -2.508,
+          "se_meredekseg": 0.6031,
           "se_masodlagos_autokorrelacio": true,
           "irany": "csokken",
-          "r2": 0.035,
+          "r2": 0.094,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-22T17:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T17:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-23T01:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T01:00:00+00:00",
           "pontok_hasznalt": 168,
-          "pontok_nem_nulla": 133,
+          "pontok_nem_nulla": 130,
           "pontok_kihagyva_reszleges": 1,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-22T17:00:00+00:00",
-              "ertek": 32.56889264581572
+              "idopont_utc": "2026-08-23T01:00:00+00:00",
+              "ertek": 31.831360946745562
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 21.181107354184277
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 14.382924767540153
             }
           ],
-          "mai_ertek": 28,
-          "mai_reziduum": 6.82,
-          "reziduum_szokasos": 7.36,
-          "illeszkedes": "illeszkedik"
+          "mai_ertek": 0,
+          "mai_reziduum": -14.38,
+          "reziduum_szokasos": 6.28,
+          "illeszkedes": "alatta"
         },
         "2_het": {
           "ervenyes": true,
-          "meredekseg_nap": -0.095,
-          "se_meredekseg": 0.2036,
+          "meredekseg_nap": -0.159,
+          "se_meredekseg": 0.2044,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
-          "r2": 0.001,
+          "r2": 0.002,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-15T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-16T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 337,
-          "pontok_nem_nulla": 257,
+          "pontok_nem_nulla": 255,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-15T16:00:00+00:00",
-              "ertek": 21.446525958246273
+              "idopont_utc": "2026-08-16T00:00:00+00:00",
+              "ertek": 21.726507114638387
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 20.11624199427598
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 19.501825823047074
             }
           ],
-          "mai_ertek": 22.13,
-          "mai_reziduum": 2.01,
-          "reziduum_szokasos": 6.84,
-          "illeszkedes": "illeszkedik"
+          "mai_ertek": 0.0,
+          "mai_reziduum": -19.5,
+          "reziduum_szokasos": 6.62,
+          "illeszkedes": "alatta"
         },
         "1_ho": {
           "ervenyes": true,
-          "meredekseg_nap": 0.024,
-          "se_meredekseg": 0.065,
+          "meredekseg_nap": 0.035,
+          "se_meredekseg": 0.0647,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
           "r2": 0.0,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-07-30T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-07-31T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 721,
-          "pontok_nem_nulla": 551,
+          "pontok_nem_nulla": 548,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-07-30T16:00:00+00:00",
-              "ertek": 20.31242871857723
+              "idopont_utc": "2026-07-31T00:00:00+00:00",
+              "ertek": 19.94809936261195
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 21.03197294577783
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 20.995629902297903
             }
           ],
-          "mai_ertek": 22.13,
-          "mai_reziduum": 1.1,
-          "reziduum_szokasos": 6.33,
-          "illeszkedes": "illeszkedik"
+          "mai_ertek": 0.0,
+          "mai_reziduum": -21.0,
+          "reziduum_szokasos": 6.4,
+          "illeszkedes": "alatta"
         },
         "3_ho": {
           "ervenyes": false,
@@ -434,90 +434,90 @@
       "intervallumok": {
         "1_het": {
           "ervenyes": true,
-          "meredekseg_nap": -1.174,
-          "se_meredekseg": 1.1465,
+          "meredekseg_nap": -1.38,
+          "se_meredekseg": 0.9211,
           "se_masodlagos_autokorrelacio": true,
           "irany": "csokken",
-          "r2": 0.006,
+          "r2": 0.013,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-22T17:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T17:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-23T01:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T01:00:00+00:00",
           "pontok_hasznalt": 168,
-          "pontok_nem_nulla": 139,
+          "pontok_nem_nulla": 138,
           "pontok_kihagyva_reszleges": 1,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-22T17:00:00+00:00",
-              "ertek": 64.66680755142293
+              "idopont_utc": "2026-08-23T01:00:00+00:00",
+              "ertek": 51.884263172724715
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 56.49985911524373
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 42.282403493941956
             }
           ],
-          "mai_ertek": 73,
-          "mai_reziduum": 16.5,
-          "reziduum_szokasos": 10.12,
-          "illeszkedes": "illeszkedik"
+          "mai_ertek": 0,
+          "mai_reziduum": -42.28,
+          "reziduum_szokasos": 8.24,
+          "illeszkedes": "alatta"
         },
         "2_het": {
           "ervenyes": true,
-          "meredekseg_nap": -0.277,
-          "se_meredekseg": 0.3057,
+          "meredekseg_nap": -0.367,
+          "se_meredekseg": 0.3062,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
-          "r2": 0.002,
+          "r2": 0.004,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-15T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-16T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 337,
-          "pontok_nem_nulla": 272,
+          "pontok_nem_nulla": 271,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-15T16:00:00+00:00",
-              "ertek": 44.95885853422998
+              "idopont_utc": "2026-08-16T00:00:00+00:00",
+              "ertek": 45.16775854125331
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 41.07711238565133
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 40.023107334117604
             }
           ],
-          "mai_ertek": 50.98,
-          "mai_reziduum": 9.91,
-          "reziduum_szokasos": 9.14,
-          "illeszkedes": "illeszkedik"
+          "mai_ertek": 0.0,
+          "mai_reziduum": -40.02,
+          "reziduum_szokasos": 9.41,
+          "illeszkedes": "alatta"
         },
         "1_ho": {
           "ervenyes": true,
-          "meredekseg_nap": -0.246,
+          "meredekseg_nap": -0.269,
           "se_meredekseg": 0.102,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
-          "r2": 0.008,
+          "r2": 0.01,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-07-30T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-07-31T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 721,
-          "pontok_nem_nulla": 583,
+          "pontok_nem_nulla": 582,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-07-30T16:00:00+00:00",
-              "ertek": 48.776514680672044
+              "idopont_utc": "2026-07-31T00:00:00+00:00",
+              "ertek": 48.90889279278933
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 41.40747006273988
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 40.825130508181545
             }
           ],
-          "mai_ertek": 50.98,
-          "mai_reziduum": 9.58,
-          "reziduum_szokasos": 9.51,
-          "illeszkedes": "illeszkedik"
+          "mai_ertek": 0.0,
+          "mai_reziduum": -40.83,
+          "reziduum_szokasos": 9.6,
+          "illeszkedes": "alatta"
         },
         "3_ho": {
           "ervenyes": false,
@@ -539,90 +539,90 @@
       "intervallumok": {
         "1_het": {
           "ervenyes": true,
-          "meredekseg_nap": -0.373,
-          "se_meredekseg": 1.0957,
+          "meredekseg_nap": -1.27,
+          "se_meredekseg": 0.8402,
           "se_masodlagos_autokorrelacio": true,
-          "irany": "stagnal",
-          "r2": 0.001,
+          "irany": "csokken",
+          "r2": 0.014,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-22T17:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T17:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-23T01:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T01:00:00+00:00",
           "pontok_hasznalt": 168,
-          "pontok_nem_nulla": 139,
+          "pontok_nem_nulla": 133,
           "pontok_kihagyva_reszleges": 1,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-22T17:00:00+00:00",
-              "ertek": 55.346224288531985
+              "idopont_utc": "2026-08-23T01:00:00+00:00",
+              "ertek": 41.84051845590307
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 52.74901380670612
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 33.00471963933502
             }
           ],
-          "mai_ertek": 41,
-          "mai_reziduum": -11.75,
-          "reziduum_szokasos": 14.24,
-          "illeszkedes": "illeszkedik"
+          "mai_ertek": 0,
+          "mai_reziduum": -33.0,
+          "reziduum_szokasos": 10.36,
+          "illeszkedes": "alatta"
         },
         "2_het": {
           "ervenyes": true,
-          "meredekseg_nap": -0.545,
-          "se_meredekseg": 0.1963,
+          "meredekseg_nap": -0.473,
+          "se_meredekseg": 0.1917,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
-          "r2": 0.022,
+          "r2": 0.018,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-15T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-16T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 337,
-          "pontok_nem_nulla": 267,
+          "pontok_nem_nulla": 265,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-15T16:00:00+00:00",
-              "ertek": 28.437326463926393
+              "idopont_utc": "2026-08-16T00:00:00+00:00",
+              "ertek": 27.20874396958896
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 20.809019530138883
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 20.58327680192439
             }
           ],
-          "mai_ertek": 18.63,
-          "mai_reziduum": -2.17,
-          "reziduum_szokasos": 7.12,
-          "illeszkedes": "illeszkedik"
+          "mai_ertek": 0.0,
+          "mai_reziduum": -20.58,
+          "reziduum_szokasos": 6.93,
+          "illeszkedes": "alatta"
         },
         "1_ho": {
           "ervenyes": true,
-          "meredekseg_nap": -0.228,
-          "se_meredekseg": 0.078,
+          "meredekseg_nap": -0.28,
+          "se_meredekseg": 0.0779,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
-          "r2": 0.012,
+          "r2": 0.018,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-07-30T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-07-31T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 721,
-          "pontok_nem_nulla": 585,
+          "pontok_nem_nulla": 584,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-07-30T16:00:00+00:00",
-              "ertek": 31.842559005843682
+              "idopont_utc": "2026-07-31T00:00:00+00:00",
+              "ertek": 32.5329499859767
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 25.001033504558535
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 24.12593212220639
             }
           ],
-          "mai_ertek": 18.63,
-          "mai_reziduum": -6.37,
-          "reziduum_szokasos": 7.86,
-          "illeszkedes": "illeszkedik"
+          "mai_ertek": 0.0,
+          "mai_reziduum": -24.13,
+          "reziduum_szokasos": 7.81,
+          "illeszkedes": "alatta"
         },
         "3_ho": {
           "ervenyes": false,
@@ -644,89 +644,89 @@
       "intervallumok": {
         "1_het": {
           "ervenyes": true,
-          "meredekseg_nap": -0.495,
-          "se_meredekseg": 1.08,
+          "meredekseg_nap": -2.695,
+          "se_meredekseg": 1.1068,
           "se_masodlagos_autokorrelacio": true,
-          "irany": "stagnal",
-          "r2": 0.001,
+          "irany": "csokken",
+          "r2": 0.034,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-22T17:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T17:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-23T01:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T01:00:00+00:00",
           "pontok_hasznalt": 168,
-          "pontok_nem_nulla": 136,
+          "pontok_nem_nulla": 135,
           "pontok_kihagyva_reszleges": 1,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-22T17:00:00+00:00",
-              "ertek": 34.03036066497605
+              "idopont_utc": "2026-08-23T01:00:00+00:00",
+              "ertek": 43.65772048464356
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 30.588686954071573
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 24.901803324880248
             }
           ],
-          "mai_ertek": 10,
-          "mai_reziduum": -20.59,
-          "reziduum_szokasos": 23.37,
+          "mai_ertek": 0,
+          "mai_reziduum": -24.9,
+          "reziduum_szokasos": 18.28,
           "illeszkedes": "illeszkedik"
         },
         "2_het": {
           "ervenyes": true,
-          "meredekseg_nap": 0.163,
-          "se_meredekseg": 0.3011,
+          "meredekseg_nap": -0.217,
+          "se_meredekseg": 0.3016,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
-          "r2": 0.001,
+          "r2": 0.002,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-15T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-16T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 337,
-          "pontok_nem_nulla": 254,
+          "pontok_nem_nulla": 252,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-15T16:00:00+00:00",
-              "ertek": 20.863328100363457
+              "idopont_utc": "2026-08-16T00:00:00+00:00",
+              "ertek": 23.464218380067773
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 23.14113658806384
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 20.426471234175548
             }
           ],
-          "mai_ertek": 7.74,
-          "mai_reziduum": -15.4,
-          "reziduum_szokasos": 14.19,
+          "mai_ertek": 0.0,
+          "mai_reziduum": -20.43,
+          "reziduum_szokasos": 12.85,
           "illeszkedes": "illeszkedik"
         },
         "1_ho": {
           "ervenyes": true,
-          "meredekseg_nap": -0.311,
-          "se_meredekseg": 0.1043,
+          "meredekseg_nap": -0.374,
+          "se_meredekseg": 0.1044,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
-          "r2": 0.012,
+          "r2": 0.018,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-07-30T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-07-31T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 721,
-          "pontok_nem_nulla": 558,
+          "pontok_nem_nulla": 554,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-07-30T16:00:00+00:00",
-              "ertek": 30.343703682558466
+              "idopont_utc": "2026-07-31T00:00:00+00:00",
+              "ertek": 31.08271721524045
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 21.00017343255943
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 19.849201508754
             }
           ],
-          "mai_ertek": 7.74,
-          "mai_reziduum": -13.26,
-          "reziduum_szokasos": 15.19,
+          "mai_ertek": 0.0,
+          "mai_reziduum": -19.85,
+          "reziduum_szokasos": 14.53,
           "illeszkedes": "illeszkedik"
         },
         "3_ho": {
@@ -749,90 +749,90 @@
       "intervallumok": {
         "1_het": {
           "ervenyes": true,
-          "meredekseg_nap": 0.895,
-          "se_meredekseg": 0.9032,
+          "meredekseg_nap": -1.288,
+          "se_meredekseg": 0.8781,
           "se_masodlagos_autokorrelacio": true,
-          "irany": "stagnal",
-          "r2": 0.006,
+          "irany": "csokken",
+          "r2": 0.013,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-22T17:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T17:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-23T01:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T01:00:00+00:00",
           "pontok_hasznalt": 168,
-          "pontok_nem_nulla": 154,
+          "pontok_nem_nulla": 155,
           "pontok_kihagyva_reszleges": 1,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-22T17:00:00+00:00",
-              "ertek": 33.71794871794872
+              "idopont_utc": "2026-08-23T01:00:00+00:00",
+              "ertek": 41.20069033530572
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 39.948717948717956
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 32.239785855170474
             }
           ],
-          "mai_ertek": 17,
-          "mai_reziduum": -22.95,
-          "reziduum_szokasos": 12.51,
-          "illeszkedes": "illeszkedik"
+          "mai_ertek": 0,
+          "mai_reziduum": -32.24,
+          "reziduum_szokasos": 11.96,
+          "illeszkedes": "alatta"
         },
         "2_het": {
           "ervenyes": true,
-          "meredekseg_nap": 1.05,
-          "se_meredekseg": 0.2983,
+          "meredekseg_nap": 0.67,
+          "se_meredekseg": 0.3026,
           "se_masodlagos_autokorrelacio": true,
-          "irany": "novekszik",
-          "r2": 0.036,
+          "irany": "stagnal",
+          "r2": 0.014,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-15T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-16T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 337,
-          "pontok_nem_nulla": 302,
+          "pontok_nem_nulla": 301,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-15T16:00:00+00:00",
-              "ertek": 25.774301697891243
+              "idopont_utc": "2026-08-16T00:00:00+00:00",
+              "ertek": 28.346798955278913
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 40.47114934068442
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 37.724050896353134
             }
           ],
-          "mai_ertek": 17.95,
-          "mai_reziduum": -22.52,
-          "reziduum_szokasos": 10.0,
+          "mai_ertek": 0.0,
+          "mai_reziduum": -37.72,
+          "reziduum_szokasos": 9.75,
           "illeszkedes": "alatta"
         },
         "1_ho": {
           "ervenyes": true,
-          "meredekseg_nap": -0.055,
-          "se_meredekseg": 0.096,
+          "meredekseg_nap": -0.12,
+          "se_meredekseg": 0.0965,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
-          "r2": 0.0,
+          "r2": 0.002,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-07-30T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-07-31T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 721,
-          "pontok_nem_nulla": 654,
+          "pontok_nem_nulla": 652,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-07-30T16:00:00+00:00",
-              "ertek": 35.79530113146945
+              "idopont_utc": "2026-07-31T00:00:00+00:00",
+              "ertek": 36.60153678639624
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 34.14800233593693
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 33.000864045781285
             }
           ],
-          "mai_ertek": 17.95,
-          "mai_reziduum": -16.2,
-          "reziduum_szokasos": 9.44,
-          "illeszkedes": "illeszkedik"
+          "mai_ertek": 0.0,
+          "mai_reziduum": -33.0,
+          "reziduum_szokasos": 9.45,
+          "illeszkedes": "alatta"
         },
         "3_ho": {
           "ervenyes": false,
@@ -854,89 +854,89 @@
       "intervallumok": {
         "1_het": {
           "ervenyes": true,
-          "meredekseg_nap": 0.312,
-          "se_meredekseg": 0.715,
+          "meredekseg_nap": -1.315,
+          "se_meredekseg": 0.7203,
           "se_masodlagos_autokorrelacio": true,
-          "irany": "stagnal",
-          "r2": 0.001,
+          "irany": "csokken",
+          "r2": 0.02,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-22T17:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T17:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-23T01:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T01:00:00+00:00",
           "pontok_hasznalt": 168,
-          "pontok_nem_nulla": 124,
+          "pontok_nem_nulla": 126,
           "pontok_kihagyva_reszleges": 1,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-22T17:00:00+00:00",
-              "ertek": 25.77176669484362
+              "idopont_utc": "2026-08-23T01:00:00+00:00",
+              "ertek": 32.55600169061707
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 27.9425190194421
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 23.408284023668635
             }
           ],
-          "mai_ertek": 30,
-          "mai_reziduum": 2.06,
-          "reziduum_szokasos": 8.84,
-          "illeszkedes": "illeszkedik"
+          "mai_ertek": 0,
+          "mai_reziduum": -23.41,
+          "reziduum_szokasos": 8.0,
+          "illeszkedes": "alatta"
         },
         "2_het": {
           "ervenyes": true,
-          "meredekseg_nap": -0.076,
-          "se_meredekseg": 0.0505,
+          "meredekseg_nap": -0.088,
+          "se_meredekseg": 0.0503,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
-          "r2": 0.007,
+          "r2": 0.009,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-15T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-16T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 337,
-          "pontok_nem_nulla": 238,
+          "pontok_nem_nulla": 237,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-15T16:00:00+00:00",
-              "ertek": 5.711189069934859
+              "idopont_utc": "2026-08-16T00:00:00+00:00",
+              "ertek": 5.731154376415641
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 4.645432888522115
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 4.503723368391481
             }
           ],
-          "mai_ertek": 5.48,
-          "mai_reziduum": 0.84,
-          "reziduum_szokasos": 2.08,
-          "illeszkedes": "illeszkedik"
+          "mai_ertek": 0.0,
+          "mai_reziduum": -4.5,
+          "reziduum_szokasos": 2.05,
+          "illeszkedes": "alatta"
         },
         "1_ho": {
           "ervenyes": true,
-          "meredekseg_nap": -0.786,
-          "se_meredekseg": 0.0417,
+          "meredekseg_nap": -0.787,
+          "se_meredekseg": 0.0416,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
-          "r2": 0.33,
+          "r2": 0.332,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-07-30T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-07-31T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 721,
-          "pontok_nem_nulla": 548,
+          "pontok_nem_nulla": 546,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-07-30T16:00:00+00:00",
-              "ertek": 22.547577375605595
+              "idopont_utc": "2026-07-31T00:00:00+00:00",
+              "ertek": 22.419572009866258
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": -1.02164228545303
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": -1.2034216631256243
             }
           ],
-          "mai_ertek": 5.48,
-          "mai_reziduum": 6.51,
-          "reziduum_szokasos": 3.66,
+          "mai_ertek": 0.0,
+          "mai_reziduum": 1.2,
+          "reziduum_szokasos": 3.73,
           "illeszkedes": "illeszkedik"
         },
         "3_ho": {
@@ -959,88 +959,88 @@
       "intervallumok": {
         "1_het": {
           "ervenyes": true,
-          "meredekseg_nap": -2.833,
-          "se_meredekseg": 1.1098,
+          "meredekseg_nap": -3.722,
+          "se_meredekseg": 0.9716,
           "se_masodlagos_autokorrelacio": true,
           "irany": "csokken",
-          "r2": 0.038,
+          "r2": 0.081,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-22T17:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T17:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-23T01:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T01:00:00+00:00",
           "pontok_hasznalt": 168,
-          "pontok_nem_nulla": 116,
+          "pontok_nem_nulla": 118,
           "pontok_kihagyva_reszleges": 1,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-22T17:00:00+00:00",
-              "ertek": 50.00105663567202
+              "idopont_utc": "2026-08-23T01:00:00+00:00",
+              "ertek": 48.831501831501825
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 30.28465765004227
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 22.930402930402927
             }
           ],
-          "mai_ertek": 37,
-          "mai_reziduum": 6.72,
-          "reziduum_szokasos": 15.03,
+          "mai_ertek": 0,
+          "mai_reziduum": -22.93,
+          "reziduum_szokasos": 13.08,
           "illeszkedes": "illeszkedik"
         },
         "2_het": {
           "ervenyes": true,
-          "meredekseg_nap": -1.359,
-          "se_meredekseg": 0.2548,
+          "meredekseg_nap": -1.202,
+          "se_meredekseg": 0.2539,
           "se_masodlagos_autokorrelacio": true,
           "irany": "csokken",
-          "r2": 0.078,
+          "r2": 0.063,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-15T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-16T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 337,
-          "pontok_nem_nulla": 237,
+          "pontok_nem_nulla": 234,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-15T16:00:00+00:00",
-              "ertek": 35.71605755096307
+              "idopont_utc": "2026-08-16T00:00:00+00:00",
+              "ertek": 33.839535408143554
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 16.69229200393307
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 17.0156444138149
             }
           ],
-          "mai_ertek": 19.87,
-          "mai_reziduum": 3.18,
-          "reziduum_szokasos": 8.54,
+          "mai_ertek": 0.0,
+          "mai_reziduum": -17.02,
+          "reziduum_szokasos": 9.39,
           "illeszkedes": "illeszkedik"
         },
         "1_ho": {
           "ervenyes": true,
-          "meredekseg_nap": -1.265,
-          "se_meredekseg": 0.1019,
+          "meredekseg_nap": -1.271,
+          "se_meredekseg": 0.1017,
           "se_masodlagos_autokorrelacio": true,
           "irany": "csokken",
-          "r2": 0.176,
+          "r2": 0.179,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-07-30T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-07-31T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 721,
-          "pontok_nem_nulla": 531,
+          "pontok_nem_nulla": 529,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-07-30T16:00:00+00:00",
-              "ertek": 55.58987722768854
+              "idopont_utc": "2026-07-31T00:00:00+00:00",
+              "ertek": 55.29477842178261
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 17.643373535140874
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 17.15482768085262
             }
           ],
-          "mai_ertek": 19.87,
-          "mai_reziduum": 2.23,
+          "mai_ertek": 0.0,
+          "mai_reziduum": -17.15,
           "reziduum_szokasos": 10.37,
           "illeszkedes": "illeszkedik"
         },
@@ -1064,89 +1064,89 @@
       "intervallumok": {
         "1_het": {
           "ervenyes": true,
-          "meredekseg_nap": -3.158,
-          "se_meredekseg": 0.8013,
+          "meredekseg_nap": -3.906,
+          "se_meredekseg": 0.7928,
           "se_masodlagos_autokorrelacio": true,
           "irany": "csokken",
-          "r2": 0.086,
+          "r2": 0.128,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-22T17:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T17:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-23T01:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T01:00:00+00:00",
           "pontok_hasznalt": 168,
-          "pontok_nem_nulla": 160,
+          "pontok_nem_nulla": 158,
           "pontok_kihagyva_reszleges": 1,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-22T17:00:00+00:00",
-              "ertek": 40.81022823330515
+              "idopont_utc": "2026-08-23T01:00:00+00:00",
+              "ertek": 42.00732600732601
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 18.832628909551985
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 14.826007326007328
             }
           ],
-          "mai_ertek": 15,
-          "mai_reziduum": -3.83,
-          "reziduum_szokasos": 11.49,
+          "mai_ertek": 0,
+          "mai_reziduum": -14.83,
+          "reziduum_szokasos": 11.06,
           "illeszkedes": "illeszkedik"
         },
         "2_het": {
           "ervenyes": true,
-          "meredekseg_nap": -0.018,
-          "se_meredekseg": 0.1648,
+          "meredekseg_nap": -0.136,
+          "se_meredekseg": 0.1656,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
-          "r2": 0.0,
+          "r2": 0.002,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-15T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-16T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 337,
-          "pontok_nem_nulla": 305,
+          "pontok_nem_nulla": 304,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-15T16:00:00+00:00",
-              "ertek": 14.262486090284973
+              "idopont_utc": "2026-08-16T00:00:00+00:00",
+              "ertek": 14.880137745158288
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 14.007550111495444
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 12.9789732340702
             }
           ],
-          "mai_ertek": 8.13,
-          "mai_reziduum": -5.88,
-          "reziduum_szokasos": 7.04,
+          "mai_ertek": 0.0,
+          "mai_reziduum": -12.98,
+          "reziduum_szokasos": 7.29,
           "illeszkedes": "illeszkedik"
         },
         "1_ho": {
           "ervenyes": true,
-          "meredekseg_nap": -0.507,
-          "se_meredekseg": 0.0826,
+          "meredekseg_nap": -0.584,
+          "se_meredekseg": 0.0818,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
-          "r2": 0.05,
+          "r2": 0.066,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-07-30T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-07-31T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 721,
-          "pontok_nem_nulla": 668,
+          "pontok_nem_nulla": 670,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-07-30T16:00:00+00:00",
-              "ertek": 28.07787100902486
+              "idopont_utc": "2026-07-31T00:00:00+00:00",
+              "ertek": 29.248051429032465
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 12.861990849504958
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 11.725199888581955
             }
           ],
-          "mai_ertek": 8.13,
-          "mai_reziduum": -4.74,
-          "reziduum_szokasos": 10.28,
+          "mai_ertek": 0.0,
+          "mai_reziduum": -11.73,
+          "reziduum_szokasos": 10.5,
           "illeszkedes": "illeszkedik"
         },
         "3_ho": {
@@ -1199,90 +1199,90 @@
       "intervallumok": {
         "1_het": {
           "ervenyes": true,
-          "meredekseg_nap": -0.41,
-          "se_meredekseg": 0.5508,
+          "meredekseg_nap": -2.236,
+          "se_meredekseg": 0.4912,
           "se_masodlagos_autokorrelacio": true,
-          "irany": "stagnal",
-          "r2": 0.003,
+          "irany": "csokken",
+          "r2": 0.111,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-22T17:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T17:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-23T01:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T01:00:00+00:00",
           "pontok_hasznalt": 168,
           "pontok_nem_nulla": 168,
           "pontok_kihagyva_reszleges": 1,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-22T17:00:00+00:00",
-              "ertek": 53.451535643843336
+              "idopont_utc": "2026-08-23T01:00:00+00:00",
+              "ertek": 57.785855170470555
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 50.59608340377571
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 42.226049591434204
             }
           ],
-          "mai_ertek": 39,
-          "mai_reziduum": -11.6,
-          "reziduum_szokasos": 10.68,
+          "mai_ertek": 22,
+          "mai_reziduum": -20.23,
+          "reziduum_szokasos": 10.77,
           "illeszkedes": "illeszkedik"
         },
         "2_het": {
           "ervenyes": true,
-          "meredekseg_nap": 0.278,
-          "se_meredekseg": 0.1514,
+          "meredekseg_nap": 0.028,
+          "se_meredekseg": 0.153,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
-          "r2": 0.01,
+          "r2": 0.0,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-15T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-16T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 337,
           "pontok_nem_nulla": 335,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-15T16:00:00+00:00",
-              "ertek": 30.917096635822517
+              "idopont_utc": "2026-08-16T00:00:00+00:00",
+              "ertek": 32.605699634786575
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 34.80342502589855
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 32.99733953435288
             }
           ],
-          "mai_ertek": 26.44,
-          "mai_reziduum": -8.36,
-          "reziduum_szokasos": 7.37,
-          "illeszkedes": "illeszkedik"
+          "mai_ertek": 15.5,
+          "mai_reziduum": -17.49,
+          "reziduum_szokasos": 7.67,
+          "illeszkedes": "alatta"
         },
         "1_ho": {
           "ervenyes": true,
-          "meredekseg_nap": -0.082,
-          "se_meredekseg": 0.047,
+          "meredekseg_nap": -0.114,
+          "se_meredekseg": 0.0473,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
-          "r2": 0.004,
+          "r2": 0.008,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-07-30T16:00:00+00:00",
-          "ablak_veg_utc": "2026-08-29T16:00:00+00:00",
+          "ablak_kezdet_utc": "2026-07-31T00:00:00+00:00",
+          "ablak_veg_utc": "2026-08-30T00:00:00+00:00",
           "pontok_hasznalt": 721,
           "pontok_nem_nulla": 714,
           "pontok_kihagyva_reszleges": 0,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-07-30T16:00:00+00:00",
-              "ertek": 35.10471703428218
+              "idopont_utc": "2026-07-31T00:00:00+00:00",
+              "ertek": 35.43335630952701
             },
             {
-              "idopont_utc": "2026-08-29T16:00:00+00:00",
-              "ertek": 32.65245467168176
+              "idopont_utc": "2026-08-30T00:00:00+00:00",
+              "ertek": 32.00572524387104
             }
           ],
-          "mai_ertek": 26.44,
-          "mai_reziduum": -6.21,
-          "reziduum_szokasos": 7.18,
-          "illeszkedes": "illeszkedik"
+          "mai_ertek": 15.5,
+          "mai_reziduum": -16.5,
+          "reziduum_szokasos": 7.24,
+          "illeszkedes": "alatta"
         },
         "3_ho": {
           "ervenyes": false,
