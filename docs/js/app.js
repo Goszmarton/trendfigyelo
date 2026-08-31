@@ -1543,8 +1543,16 @@ function idosor_blokk_render() {
   legendEl.innerHTML = "";
   blokk.removeAttribute(ATTR_T.idosor_aktiv);
 
+  blokk.appendChild(idosor_szegmens_valto_epit());   // a váltó MINDIG látszik (üres szegmensnél is → vissza lehet váltani)
+
   const idosor = kategoria_idosor(adat["kategoriak.json"], idosor_szegmens);
-  if (!idosor.vonalak.length) return;   // nincs kategória-adat → csak a statikus cím marad
+  if (!idosor.vonalak.length) {   // ehhez a szegmenshez nincs adat → a váltó MARAD + rövid jelzés (nincs zsákutca)
+    const u = document.createElement("p");
+    u.className = OSZT_T.idosor_magyarazat;
+    u.textContent = "Ehhez a szegmenshez még nincs kategória-adat.";
+    blokk.appendChild(u);
+    return;   // a bal #idosor-legend üres marad (a takarítás már törölte)
+  }
 
   const doboz = document.createElement("div");
   doboz.className = OSZT_T.idosor_chart_doboz;
@@ -1552,8 +1560,6 @@ function idosor_blokk_render() {
   canvas.className = OSZT_T.idosor_chart;
   doboz.appendChild(canvas);
   blokk.appendChild(doboz);
-
-  blokk.appendChild(idosor_szegmens_valto_epit());
 
   blokk.appendChild(trend_idosor_tukor_epit(idosor));   // rejtett DOM-tükör (assertálható adat-modell)
 

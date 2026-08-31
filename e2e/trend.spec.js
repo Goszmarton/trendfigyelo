@@ -655,6 +655,27 @@ test("N. idősor: Reggel/Este váltó — alap Este, váltásra a reggeli számo
   await expect(page.locator("#idosor-blokk .idosor-adat")).toHaveAttribute("data-vonal-szam", "1");  // reggel: csak Sports
 });
 
+// ── #2 fix: üres szegmensre váltva a váltó MARAD (nincs zsákutca) + rövid jelzés; vissza-váltás újra chartot ad ──
+test("N. idősor: üres szegmensen a váltó látszik + vissza lehet váltani", async ({ page }) => {
+  const KJ = { napok: [
+    { nap: "2026-08-10", este: { kategoriak: { "Sports": 2 } } },   // CSAK esti adat; reggeli NINCS
+  ]};
+  await page.route(/kategoriak\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify(KJ) }));
+  await page.route(/legfrissebb\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ top_trendek: [] }) }));
+  await page.route(/napok\/index\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ napok: ["2026-08-10"] }) }));
+  await page.goto("/");
+  await expect(page.locator("#idosor-blokk .idosor-adat")).toHaveAttribute("data-vonal-szam", "1");   // este: van chart
+  // váltás reggelre → nincs adat, DE a váltó marad + jelzés
+  await page.locator('.idosor-szegmens-valto [data-szegmens="reggel"]').click();
+  await expect(page.locator(".idosor-szegmens-valto")).toHaveCount(1);                                 // a váltó NEM tűnt el
+  await expect(page.locator('.idosor-szegmens-valto [data-szegmens="reggel"]')).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator("#idosor-blokk .idosor-adat")).toHaveCount(0);                             // nincs tükör (üres)
+  await expect(page.locator("#idosor-blokk .idosor-magyarazat")).toContainText("nincs kategória-adat");
+  // vissza este-re → újra van chart
+  await page.locator('.idosor-szegmens-valto [data-szegmens="este"]').click();
+  await expect(page.locator("#idosor-blokk .idosor-adat")).toHaveAttribute("data-vonal-szam", "1");
+});
+
 // ── HTML-legend a BAL #idosor-legend dobozban (a Chart.js belső legend kikapcsolva) — DOM-assertálható ──
 test("idősor-legend: a bal #idosor-legend N kattintható elemet tartalmaz (data-kategoria), a jobb dobozban NINCS legend", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });   // A, B, C → 3 vonal
