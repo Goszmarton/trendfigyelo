@@ -642,3 +642,21 @@ def test_felkapott_szegmensek_csak_este():
     assert r["van_reggel"] is False and r["van_este"] is True
     assert r["reggel_top"] == []
     assert r["reggel_este_diff"]["uj_estere"] == ["e"]
+
+
+def test_epit_payload_felkapott_szegmensek(tmp_path):
+    # a ma_szegmensek az adatok-ból jön (futtat tölti); itt közvetlenül adjuk
+    adatok = {
+        "regresszio": {}, "tortenet": {},
+        "legfrissebb": {"top_trendek": [{"kifejezes": "e1"}]},
+        "napok_trendek": {},
+        "ma_szegmensek": {"reggel": [{"kifejezes": "r1"}], "este": [{"kifejezes": "e1"}]},
+        "lanc": {},
+    }
+    p = elemzo.epit_payload(adatok)
+    fk = p["felkapott"]
+    assert "top" in fk and "het" in fk                    # a régi kulcsok maradnak
+    assert [t["kifejezes"] for t in fk["reggel_top"]] == ["r1"]
+    assert [t["kifejezes"] for t in fk["este_top"]] == ["e1"]
+    assert fk["van_reggel"] is True and fk["van_este"] is True
+    assert fk["reggel_este_diff"]["uj_estere"] == ["e1"]  # e1 este-ben, reggel-ben nincs

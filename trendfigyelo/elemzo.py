@@ -282,6 +282,7 @@ def epit_payload(adatok, tegnapi_szamok=None, tegnapi_top=None):
     tortenet = adatok.get("tortenet", {})
     szamok = _kulcsszo_szamok(regresszio, tortenet)
     felkapott = _felkapott(adatok.get("legfrissebb", {}), adatok.get("napok_trendek", {}))
+    felkapott.update(_felkapott_szegmensek(adatok.get("ma_szegmensek", {}), adatok.get("legfrissebb", {})))
     valtozas = nap_diff(szamok, tegnapi_szamok, felkapott["top"], tegnapi_top)
     payload = {
         "kulcsszavak": {"szamok": szamok},
@@ -431,6 +432,7 @@ def futtat(docs_data, nap, kliens=None):
         "tortenet": _betolt(docs_data / "tortenet.json") or {},
         "legfrissebb": _betolt(docs_data / "legfrissebb.json") or {},
         "napok_trendek": _utolso_napok_trendek(docs_data),
+        "ma_szegmensek": _ma_szegmensek(docs_data, nap),
         "lanc": _betolt(docs_data / "kulcsszo_lanc.json") or {},
         "youtube_regresszio": _betolt(docs_data / "youtube_regresszio.json"),
         "youtube_nyers": _betolt(docs_data / "youtube_nyers.json"),
