@@ -230,3 +230,31 @@ def test_napi_ir_alap_szegmens_este(tmp_path):
     adat = json.loads((tmp_path / "napok" / "2026-08-10.json").read_text(encoding="utf-8"))
     assert "este" in adat and "reggel" not in adat
     assert adat["este"]["trendek"] == [{"kifejezes": "x"}]
+
+
+# --- Task 3: legfrissebb_ir kulcsszó-megőrzés (reggeli mód) ---
+
+def test_legfrissebb_kulcsszo_megorzes_olvas(tmp_path):
+    (tmp_path / "legfrissebb.json").write_text(json.dumps({
+        "kulcsszavak": {"hitel": {"pontok": [1]}},
+        "kulcsszo_osszesites": [{"kulcsszo": "hitel", "atlag": 5}],
+    }), encoding="utf-8")
+    m = json_export.legfrissebb_kulcsszo_megorzes(tmp_path)
+    assert m["kulcsszavak"] == {"hitel": {"pontok": [1]}}
+    assert m["kulcsszo_osszesites"] == [{"kulcsszo": "hitel", "atlag": 5}]
+
+
+def test_legfrissebb_kulcsszo_megorzes_hianyzo_fajl(tmp_path):
+    m = json_export.legfrissebb_kulcsszo_megorzes(tmp_path)
+    assert m == {"kulcsszavak": {}, "kulcsszo_osszesites": []}
+
+
+def test_legfrissebb_ir_megorzi_a_kulcsszot(tmp_path):
+    megorzes = {"kulcsszavak": {"hitel": {"pontok": [1]}},
+                "kulcsszo_osszesites": [{"kulcsszo": "hitel", "atlag": 5}]}
+    json_export.legfrissebb_ir(tmp_path, [{"kifejezes": "r"}], [], [],   # kulcsszo_pontok ÜRES (reggel)
+                               "2026-08-10T07:00:00+00:00", "HU", kulcsszo_megorzes=megorzes)
+    adat = json.loads((tmp_path / "legfrissebb.json").read_text(encoding="utf-8"))
+    assert adat["top_trendek"] == [{"kifejezes": "r"}]
+    assert adat["kulcsszavak"] == {"hitel": {"pontok": [1]}}       # NEM ürült ki
+    assert adat["kulcsszo_osszesites"] == [{"kulcsszo": "hitel", "atlag": 5}]

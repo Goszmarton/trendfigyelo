@@ -78,17 +78,38 @@ def _kulcsszo_idosorok(kulcsszo_pontok) -> dict:
     return ki
 
 
+def legfrissebb_kulcsszo_megorzes(docs_data) -> dict:
+    """A meglévő legfrissebb.json kulcsszó-részei (reggeli mód megőrzéséhez).
+
+    Hiányzó fájl / hibás JSON / hiányzó mező → üres alap ({} / []).
+    """
+    fajl = Path(docs_data) / "legfrissebb.json"
+    try:
+        adat = json.loads(fajl.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {"kulcsszavak": {}, "kulcsszo_osszesites": []}
+    return {
+        "kulcsszavak": adat.get("kulcsszavak", {}) or {},
+        "kulcsszo_osszesites": adat.get("kulcsszo_osszesites", []) or [],
+    }
+
+
 def legfrissebb_ir(docs_data, top_trendek, trend_idosorok, kulcsszo_pontok,
-                   frissitve_iso, geo, valtas_datum=None) -> Path:
+                   frissitve_iso, geo, valtas_datum=None, kulcsszo_megorzes=None) -> Path:
+    if kulcsszo_megorzes is not None:
+        kulcsszavak = kulcsszo_megorzes.get("kulcsszavak", {})
+        osszesites = kulcsszo_megorzes.get("kulcsszo_osszesites", [])
+    else:
+        kulcsszavak = _kulcsszo_idosorok(kulcsszo_pontok)
+        osszesites = kulcsszo_napi_osszesites(kulcsszo_pontok)
     adat = {
         "geo": geo,
         "frissitve": frissitve_iso,
         "top_trendek": top_trendek,
         "trend_idosorok": trend_idosorok,
-        "kulcsszavak": _kulcsszo_idosorok(kulcsszo_pontok),
-        "kulcsszo_osszesites": kulcsszo_napi_osszesites(kulcsszo_pontok),
+        "kulcsszavak": kulcsszavak,
+        "kulcsszo_osszesites": osszesites,
     }
-    # töréspont-jelölő: teljes újraírt fájl → a friss értéket kapja (None-nál a kulcs hiányzik)
     if valtas_datum is not None:
         adat["modszertan_valtas"] = valtas_datum
     return _ir_json(Path(docs_data) / "legfrissebb.json", adat)
