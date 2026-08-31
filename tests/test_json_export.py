@@ -188,6 +188,45 @@ def test_napi_ir_es_index(tmp_path):
     json_export.napi_ir(tmp_path, "2021-01-02", [{"kifejezes": "infláció", "volumen": "50000"}])
     json_export.napi_ir(tmp_path, "2021-01-01", [{"kifejezes": "benzinár", "volumen": "20000"}])
     napi = json.loads((tmp_path / "napok" / "2021-01-02.json").read_text(encoding="utf-8"))
-    assert napi["trendek"][0]["kifejezes"] == "infláció"
+    assert napi["este"]["trendek"][0]["kifejezes"] == "infláció"
     index = json.loads((tmp_path / "napok" / "index.json").read_text(encoding="utf-8"))
     assert index["napok"] == ["2021-01-01", "2021-01-02"]  # rendezett, egyedi
+
+
+def test_nap_szegmensek_regi_alak_este_lesz():
+    regi = {"nap": "2026-08-10", "trendek": [{"kifejezes": "a"}], "frissitve": "2026-08-10T19:00:00+00:00"}
+    szeg = json_export._nap_szegmensek(regi)
+    assert set(szeg) == {"este"}
+    assert szeg["este"]["trendek"] == [{"kifejezes": "a"}]
+    assert szeg["este"]["frissitve"] == "2026-08-10T19:00:00+00:00"
+
+
+def test_nap_szegmensek_uj_alak_atmegy():
+    uj = {"nap": "2026-08-10",
+          "reggel": {"trendek": [{"kifejezes": "r"}], "frissitve": "2026-08-10T07:00:00+00:00"},
+          "este": {"trendek": [{"kifejezes": "e"}], "frissitve": "2026-08-10T19:00:00+00:00"}}
+    szeg = json_export._nap_szegmensek(uj)
+    assert set(szeg) == {"reggel", "este"}
+    assert szeg["reggel"]["trendek"] == [{"kifejezes": "r"}]
+
+
+def test_napi_ir_reggel_majd_este_megorzi_a_reggelit(tmp_path):
+    d = tmp_path
+    json_export.napi_ir(d, "2026-08-10", [{"kifejezes": "r"}], szegmens="reggel",
+                        frissitve_iso="2026-08-10T07:00:00+00:00")
+    json_export.napi_ir(d, "2026-08-10", [{"kifejezes": "e"}], szegmens="este",
+                        frissitve_iso="2026-08-10T19:00:00+00:00")
+    adat = json.loads((d / "napok" / "2026-08-10.json").read_text(encoding="utf-8"))
+    assert adat["nap"] == "2026-08-10"
+    assert adat["reggel"]["trendek"] == [{"kifejezes": "r"}]      # a reggeli MEGMARADT
+    assert adat["este"]["trendek"] == [{"kifejezes": "e"}]
+    assert adat["reggel"]["frissitve"] == "2026-08-10T07:00:00+00:00"
+    idx = json.loads((d / "napok" / "index.json").read_text(encoding="utf-8"))
+    assert idx["napok"] == ["2026-08-10"]
+
+
+def test_napi_ir_alap_szegmens_este(tmp_path):
+    json_export.napi_ir(tmp_path, "2026-08-10", [{"kifejezes": "x"}])   # alap szegmens = este
+    adat = json.loads((tmp_path / "napok" / "2026-08-10.json").read_text(encoding="utf-8"))
+    assert "este" in adat and "reggel" not in adat
+    assert adat["este"]["trendek"] == [{"kifejezes": "x"}]

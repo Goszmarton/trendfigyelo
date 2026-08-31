@@ -133,10 +133,40 @@ def tortenet_frissit_napok(docs_data, napi_pontok, valtas_datum=None) -> Path:
     return _ir_json(fajl, adat)
 
 
-def napi_ir(docs_data, nap_iso, top_trendek) -> Path:
+def _nap_szegmensek(adat) -> dict:
+    """Meglévő napfájl dict → {szegmens: {trendek, frissitve}} normalizált alak.
+
+    Csak a jelenlévő (reggel/este) szegmenseket adja vissza. A régi {nap, trendek}
+    alakot 'este' szegmensként értelmezi (a nap beállt képe). Hibás/hiányos input → {}.
+    """
+    if not isinstance(adat, dict):
+        return {}
+    szeg = {}
+    for s in ("reggel", "este"):
+        v = adat.get(s)
+        if isinstance(v, dict) and isinstance(v.get("trendek"), list):
+            szeg[s] = {"trendek": v["trendek"], "frissitve": v.get("frissitve")}
+    if not szeg and isinstance(adat.get("trendek"), list):
+        szeg["este"] = {"trendek": adat["trendek"], "frissitve": adat.get("frissitve")}
+    return szeg
+
+
+def napi_ir(docs_data, nap_iso, top_trendek, szegmens="este", frissitve_iso=None) -> Path:
     napok_mappa = Path(docs_data) / "napok"
     fajl = napok_mappa / f"{nap_iso}.json"
-    _ir_json(fajl, {"nap": nap_iso, "trendek": top_trendek})
+    meglevo = {}
+    if fajl.exists():
+        try:
+            meglevo = json.loads(fajl.read_text(encoding="utf-8"))
+        except ValueError:
+            meglevo = {}
+    szeg = _nap_szegmensek(meglevo)
+    szeg[szegmens] = {"trendek": top_trendek, "frissitve": frissitve_iso}
+    ki = {"nap": nap_iso}
+    for s in ("reggel", "este"):
+        if s in szeg:
+            ki[s] = szeg[s]
+    _ir_json(fajl, ki)
 
     index_fajl = napok_mappa / "index.json"
     if index_fajl.exists():
