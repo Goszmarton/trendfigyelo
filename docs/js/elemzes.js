@@ -117,8 +117,16 @@ function rajzol(art) {
   t.appendChild(szekcio_elem("Kulcsszavak — 1 hét", art.kulcsszavak.het));
 
   // Felkapott — CSAK az AI-próza (a nyers csempesorok kivéve; lásd a fenti megjegyzést)
-  t.appendChild(szekcio_elem("Felkapott — napi", art.felkapott.napi));
-  t.appendChild(szekcio_elem("Felkapott — heti összesítés", art.felkapott.het));
+  // — új alak (reggel/este/teljes_nap/het) vagy régi (napi/het), visszafelé kompat
+  if (art.felkapott.reggel) {
+    t.appendChild(szekcio_elem("Felkapott — reggeli (9:00)", art.felkapott.reggel));
+    t.appendChild(szekcio_elem("Felkapott — esti (21:00)", art.felkapott.este));
+    t.appendChild(szekcio_elem("Felkapott — a nap íve", art.felkapott.teljes_nap));
+    t.appendChild(szekcio_elem("Felkapott — heti összesítés", art.felkapott.het));
+  } else {
+    t.appendChild(szekcio_elem("Felkapott — napi", art.felkapott.napi));
+    t.appendChild(szekcio_elem("Felkapott — heti összesítés", art.felkapott.het));
+  }
 
   // YouTube-szegmens — fail-soft: régi archív-nap (nincs art.youtube) → nincs YouTube-rész
   if (art.youtube) t.appendChild(youtube_szegmens(art.youtube));

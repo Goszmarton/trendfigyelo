@@ -86,3 +86,39 @@ test("Elemzés: régi archív-nap (nincs youtube blokk) → nincs YouTube-szegme
   await expect(page.locator("h2.elemzes-szegmens")).toHaveText(["Google keresések napi elemzése"]);
   await expect(page.locator(".elemzes-csempe")).toContainText("állás");   // Google-rész változatlan
 });
+
+test("Elemzés fül: ÚJ felkapott 4 szekció (reggeli/esti/nap íve/heti)", async ({ page }) => {
+  const UJ = {
+    nap: "2026-09-01", modell: "claude-opus-4-8",
+    valtozas: { diff: { irany_valtok: [], mozgok: [], felkapott_uj: [], felkapott_eltunt: [], van_elozo: false }, szoveg: "v" },
+    kulcsszavak: { szamok: [], napi: { szoveg: "k1" }, teljes_kep: { szoveg: "k2" }, het: { szoveg: "k3" } },
+    felkapott: {
+      top: [], reggel_top: [], este_top: [], reggel_este_diff: { uj_estere: [], eltunt_estere: [], megmaradt: [] },
+      reggel: { szoveg: "reggeli próza" }, este: { szoveg: "esti próza" },
+      teljes_nap: { szoveg: "a nap íve próza" }, het: { szoveg: "heti próza" }, het_valos: { napok: 0, visszateroek: [] },
+    },
+  };
+  await page.route("**/data/elemzes.json", (r) => r.fulfill({ json: UJ }));
+  await page.route("**/data/elemzesek/index.json", (r) => r.fulfill({ status: 404, body: "" }));
+  await page.goto("/elemzes.html");
+  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Felkapott — reggeli (9:00)")) .elemzes-szoveg')).toHaveText("reggeli próza");
+  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Felkapott — esti (21:00)")) .elemzes-szoveg')).toHaveText("esti próza");
+  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Felkapott — a nap íve")) .elemzes-szoveg')).toHaveText("a nap íve próza");
+  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Felkapott — heti összesítés")) .elemzes-szoveg')).toHaveText("heti próza");
+  // a régi „Felkapott — napi" cím NEM jelenik meg az új alaknál
+  await expect(page.locator('h3:text-is("Felkapott — napi")')).toHaveCount(0);
+});
+
+test("Elemzés fül: RÉGI felkapott {napi,het} → a mostani 2 szekció (visszafelé kompat)", async ({ page }) => {
+  const REGI = {
+    nap: "2026-08-22", modell: "m",
+    valtozas: { diff: { irany_valtok: [], mozgok: [], felkapott_uj: [], felkapott_eltunt: [], van_elozo: false }, szoveg: "v" },
+    kulcsszavak: { szamok: [], napi: { szoveg: "k1" }, teljes_kep: { szoveg: "k2" }, het: { szoveg: "k3" } },
+    felkapott: { top: [], napi: { szoveg: "régi napi" }, het: { szoveg: "régi heti" }, het_valos: { napok: 0, visszateroek: [] } },
+  };
+  await page.route("**/data/elemzes.json", (r) => r.fulfill({ json: REGI }));
+  await page.route("**/data/elemzesek/index.json", (r) => r.fulfill({ status: 404, body: "" }));
+  await page.goto("/elemzes.html");
+  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Felkapott — napi")) .elemzes-szoveg')).toHaveText("régi napi");
+  await expect(page.locator('h3:text-is("Felkapott — reggeli (9:00)")')).toHaveCount(0);
+});
