@@ -348,12 +348,15 @@ def _betolt(fajl):
 
 
 def _utolso_napok_trendek(docs_data, hany=7):
+    from . import json_export
     idx = _betolt(Path(docs_data) / "napok" / "index.json") or {"napok": []}
     ki = {}
     for datum in idx["napok"][-hany:]:
         nap_adat = _betolt(Path(docs_data) / "napok" / f"{datum}.json")
         if nap_adat:
-            ki[datum] = nap_adat.get("trendek", [])
+            szeg = json_export._nap_szegmensek(nap_adat)
+            forras = szeg.get("este") or szeg.get("reggel") or {}
+            ki[datum] = forras.get("trendek", [])
     return ki
 
 

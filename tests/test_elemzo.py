@@ -560,3 +560,36 @@ def test_valasz_to_artefakt_nincs_youtube_ha_nincs_payloadban():
     payload = _mini_payload(van_elozo=True)   # nincs "youtube" kulcs
     art = elemzo.valasz_to_artefakt(_mini_ai("napi"), payload, nap="2026-08-26", modell="claude-opus-4-8")
     assert "youtube" not in art
+
+
+def test_utolso_napok_trendek_szegmentalt_estit_ad(tmp_path):
+    napok = tmp_path / "napok"; napok.mkdir(parents=True)
+    (napok / "index.json").write_text(json.dumps({"napok": ["2026-08-31"]}), encoding="utf-8")
+    (napok / "2026-08-31.json").write_text(json.dumps({
+        "nap": "2026-08-31",
+        "reggel": {"trendek": [{"kifejezes": "reggeli"}], "frissitve": "2026-08-31T07:00:00+00:00"},
+        "este": {"trendek": [{"kifejezes": "esti"}], "frissitve": "2026-08-31T19:00:00+00:00"},
+    }), encoding="utf-8")
+    ki = elemzo._utolso_napok_trendek(tmp_path)
+    assert ki["2026-08-31"] == [{"kifejezes": "esti"}]   # az ESTI (beállt) kép
+
+
+def test_utolso_napok_trendek_csak_reggel_fallback(tmp_path):
+    napok = tmp_path / "napok"; napok.mkdir(parents=True)
+    (napok / "index.json").write_text(json.dumps({"napok": ["2026-08-31"]}), encoding="utf-8")
+    (napok / "2026-08-31.json").write_text(json.dumps({
+        "nap": "2026-08-31",
+        "reggel": {"trendek": [{"kifejezes": "reggeli"}], "frissitve": "2026-08-31T07:00:00+00:00"},
+    }), encoding="utf-8")
+    ki = elemzo._utolso_napok_trendek(tmp_path)
+    assert ki["2026-08-31"] == [{"kifejezes": "reggeli"}]   # nincs este → reggel fallback
+
+
+def test_utolso_napok_trendek_regi_alak(tmp_path):
+    napok = tmp_path / "napok"; napok.mkdir(parents=True)
+    (napok / "index.json").write_text(json.dumps({"napok": ["2026-08-20"]}), encoding="utf-8")
+    (napok / "2026-08-20.json").write_text(json.dumps({
+        "nap": "2026-08-20", "trendek": [{"kifejezes": "regi"}],
+    }), encoding="utf-8")
+    ki = elemzo._utolso_napok_trendek(tmp_path)
+    assert ki["2026-08-20"] == [{"kifejezes": "regi"}]   # régi = este-ként normalizálva
