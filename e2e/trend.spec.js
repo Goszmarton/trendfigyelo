@@ -637,6 +637,24 @@ test("idősor-chart: a cím a canvas ELŐTT, a magyarázat a canvas UTÁN (a job
   expect(sorrend).toBe(true);
 });
 
+// ── #2 Reggel/Este váltó — a kategória-idősor szegmentált kategoriak.json-t olvas, alap az Este szegmens ──
+test("N. idősor: Reggel/Este váltó — alap Este, váltásra a reggeli számok", async ({ page }) => {
+  const KJ = { napok: [
+    { nap: "2026-08-10",
+      reggel: { kategoriak: { "Sports": 3 } },
+      este:   { kategoriak: { "Sports": 1, "Politics": 2 } } },
+  ]};
+  await page.route(/kategoriak\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify(KJ) }));
+  await page.route(/legfrissebb\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ top_trendek: [] }) }));
+  await page.route(/napok\/index\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ napok: ["2026-08-10"] }) }));
+  await page.goto("/");
+  const tukor = page.locator("#idosor-blokk .idosor-adat");
+  await expect(tukor).toHaveAttribute("data-vonal-szam", "2");                 // este: Sports + Politics
+  await expect(page.locator('.idosor-szegmens-valto [data-szegmens="este"]')).toHaveAttribute("aria-pressed", "true");
+  await page.locator('.idosor-szegmens-valto [data-szegmens="reggel"]').click();
+  await expect(page.locator("#idosor-blokk .idosor-adat")).toHaveAttribute("data-vonal-szam", "1");  // reggel: csak Sports
+});
+
 // ── HTML-legend a BAL #idosor-legend dobozban (a Chart.js belső legend kikapcsolva) — DOM-assertálható ──
 test("idősor-legend: a bal #idosor-legend N kattintható elemet tartalmaz (data-kategoria), a jobb dobozban NINCS legend", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });   // A, B, C → 3 vonal

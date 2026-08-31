@@ -1318,6 +1318,7 @@ let trend_chart_peldanyok = [];    // 8a: sparkline Chart-példányok TÖMBJE (M
                                    // azonos kifejezésű trend különben felülírta egymást → árva Chart). KÜLÖN a
                                    // kulcsszó chart_peldanyok-tól. Csak destroy-all a rendeltetése (nincs kikeresés).
 let trend_esemeny_kotve = false;   // a dátumválasztó change-kötése egyszer
+let idosor_szegmens = "este";   // #2 Reggel/Este váltó — alap az esti (teljes) pillanatkép
 
 // a rendezett nap-lista + a legfrissebb nap (a napok/index.json-ból)
 function trend_napok() {
@@ -1369,11 +1370,17 @@ function kategoria_eloszlas(trendek) {
 // első adattól FOLYTONOSAN épül (nincs lebegő pont/üres oszlop). Érték-szabály: a kategória első megjelenése ELŐTT →
 // null (a vonal a feltűnéskor kezdődik, nem lapos nulla); jelen-nap-0-előfordulás → VALÓS 0. Vonal-készlet
 // ADAT-VEZÉRELT (csak az előfordult kategóriák). Sorrend: első-megjelenés, majd név.
-function kategoria_idosor(kj) {
-  const rekordok = ((kj && kj.napok) || []).filter(function (n) { return n && n.nap && n.kategoriak; });
+function kategoria_idosor(kj, szegmens) {
+  const szeg = szegmens || "este";
+  function kat(n) {   // a rekord kategoriak-ja a kért szegmensre; régi lapos rekord 'este'-ként
+    if (n[szeg] && n[szeg].kategoriak) return n[szeg].kategoriak;
+    if (szeg === "este" && n.kategoriak) return n.kategoriak;   // visszafelé kompat
+    return null;
+  }
+  const rekordok = ((kj && kj.napok) || []).filter(function (n) { return n && n.nap && kat(n); });
   if (!rekordok.length) return { napok: [], vonalak: [] };
   const jelen = {};
-  rekordok.forEach(function (n) { jelen[n.nap] = n.kategoriak; });
+  rekordok.forEach(function (n) { jelen[n.nap] = kat(n); });
   const napok = Object.keys(jelen).sort();   // CSAK a mért napok (hiányzó nap NINCS a tengelyen)
   const elso = {};
   napok.forEach(function (d) {
@@ -1500,6 +1507,26 @@ function idosor_legend_epit(idosor) {
   return frag;
 }
 
+// a #2 Reggel/Este váltó — az egész kategória-idősort átváltja (alap Este). Katt → idosor_szegmens + újrarender.
+function idosor_szegmens_valto_epit() {
+  const valto = document.createElement("div");
+  valto.className = "idosor-szegmens-valto";
+  [["reggel", "Reggeli 9:00"], ["este", "Esti 21:00"]].forEach(function (par) {
+    const g = document.createElement("button");
+    g.type = "button";
+    g.setAttribute("data-szegmens", par[0]);
+    g.setAttribute("aria-pressed", idosor_szegmens === par[0] ? "true" : "false");
+    g.textContent = par[1];
+    g.addEventListener("click", function () {
+      if (idosor_szegmens === par[0]) return;
+      idosor_szegmens = par[0];
+      idosor_blokk_render();
+    });
+    valto.appendChild(g);
+  });
+  return valto;
+}
+
 // a kategória-idősor ÖNÁLLÓ szekciója (kétdobozos): JOBB #idosor-blokk (statikus h2 → chart-doboz+canvas → rejtett
 // tükör → magyarázat) + BAL #idosor-legend (kattintható legend). NAP-FÜGGETLEN (kategoriak.json) → egyszer épül (init).
 function idosor_blokk_render() {
@@ -1510,12 +1537,13 @@ function idosor_blokk_render() {
   // idempotencia / re-render biztonság: a korábbi chart + generált elemek törlése (a statikus h2 MARAD)
   if (idosor_chart) { idosor_chart.destroy(); idosor_chart = null; }
   idosor_aktiv = "";
-  blokk.querySelectorAll("." + OSZT_T.idosor_chart_doboz + ", ." + OSZT_T.idosor_adat + ", ." + OSZT_T.idosor_magyarazat)
+  blokk.querySelectorAll("." + OSZT_T.idosor_chart_doboz + ", ." + OSZT_T.idosor_adat + ", ." + OSZT_T.idosor_magyarazat
+    + ", .idosor-szegmens-valto")
     .forEach(function (e) { e.remove(); });
   legendEl.innerHTML = "";
   blokk.removeAttribute(ATTR_T.idosor_aktiv);
 
-  const idosor = kategoria_idosor(adat["kategoriak.json"]);
+  const idosor = kategoria_idosor(adat["kategoriak.json"], idosor_szegmens);
   if (!idosor.vonalak.length) return;   // nincs kategória-adat → csak a statikus cím marad
 
   const doboz = document.createElement("div");
@@ -1524,6 +1552,8 @@ function idosor_blokk_render() {
   canvas.className = OSZT_T.idosor_chart;
   doboz.appendChild(canvas);
   blokk.appendChild(doboz);
+
+  blokk.appendChild(idosor_szegmens_valto_epit());
 
   blokk.appendChild(trend_idosor_tukor_epit(idosor));   // rejtett DOM-tükör (assertálható adat-modell)
 
