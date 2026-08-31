@@ -47,7 +47,12 @@ RENDSZER_PROMPT = (
     "szintje alatt van\") — ez a lényegi „önmagához képest\" olvasat, ezt keresd elsősorban. "
     "Csak a SZEMBETŰNŐ eltéréseket hozd; ahol a mai érték a szokásos szint közelében van, ne "
     "erőltesd. A „szokásos szint\" a szó SAJÁT átlaga, NEM a szavak közötti összevetés; ez a "
-    "Google- és a YouTube-szavakra egyaránt vonatkozik."
+    "Google- és a YouTube-szavakra egyaránt vonatkozik. "
+    "(9) A felkapott (napi Google trend-keresések) részt NÉGY külön bekezdésben írod: a "
+    "REGGELI pillanatkép (mi pörög reggel 9-kor), az ESTI pillanatkép (mi pörög este 9-kor), a "
+    "NAP ÍVE (mi lett estére új, mi halványult el, mi tartott ki egész nap — a nap dinamikája, "
+    "nem a két lista újramondása), és a HETI kép (a több napon vissza-visszatérő szavak). Ha "
+    "egy pillanatkép hiányzik, egy rövid tényszerű mondattal jelzed, nem találsz ki adatot."
 )
 
 # A kulcsszó VALÓS iránya/meredeksége az 1_het (órás, napi frissülő) intervallumból jön.
@@ -312,8 +317,8 @@ def _valasz_sema(youtube=False):
                         "required": ["napi", "teljes_kep", "het"],
                         "properties": {"napi": sz, "teljes_kep": sz, "het": sz}},
         "felkapott": {"type": "object", "additionalProperties": False,
-                      "required": ["napi", "het"],
-                      "properties": {"napi": sz, "het": sz}},
+                      "required": ["reggel", "este", "teljes_nap", "het"],
+                      "properties": {"reggel": sz, "este": sz, "teljes_nap": sz, "het": sz}},
     }
     required = ["valtozas", "kulcsszavak", "felkapott"]
     if youtube:

@@ -660,3 +660,15 @@ def test_epit_payload_felkapott_szegmensek(tmp_path):
     assert [t["kifejezes"] for t in fk["este_top"]] == ["e1"]
     assert fk["van_reggel"] is True and fk["van_este"] is True
     assert fk["reggel_este_diff"]["uj_estere"] == ["e1"]  # e1 este-ben, reggel-ben nincs
+
+
+def test_valasz_sema_felkapott_negy_mezo():
+    sema = elemzo._valasz_sema()
+    fk = sema["properties"]["felkapott"]
+    assert set(fk["required"]) == {"reggel", "este", "teljes_nap", "het"}
+    assert set(fk["properties"]) == {"reggel", "este", "teljes_nap", "het"}
+
+
+def test_rendszer_prompt_felkapott_negy_bekezdes():
+    p = elemzo.RENDSZER_PROMPT.lower()
+    assert "reggeli" in p and "esti" in p and "nap íve" in p
