@@ -149,7 +149,7 @@ def test_main_bekoti_a_plafon_override_ot(monkeypatch):
     monkeypatch.setattr(futtato, "Kliens",
                         lambda config, plafon=None: rogzitett.update(plafon=plafon) or object())
     monkeypatch.setattr(futtato, "futtat", lambda *a, **k: 0)
-    futtato.main()
+    futtato.main(argv=[])          # explicit üres argv (lásd test_main_beallitja_a_hivas_plafont)
     assert rogzitett["plafon"] == 1
 
 
@@ -651,7 +651,8 @@ def test_main_beallitja_a_hivas_plafont(monkeypatch):
 
     monkeypatch.setattr(futtato, "Kliens", recorder)
     monkeypatch.setattr(futtato, "futtat", lambda *a, **k: 0)
-    futtato.main()
+    futtato.main(argv=[])          # explicit üres argv: a main mostantól --mode-ot parse-ol
+                                    # (sys.argv-ból), ami pytest saját argumentumait tartalmazná
     cfg = betolt()
     vart = (futtato.tervezett_hivasszam(cfg) + futtato.MAX_MASODLAGOS_NAPI) * cfg.max_probak
     # Csak a DRÓTOZÁST asszertáljuk (tervezett * max_probak), config-agnosztikusan: a
@@ -1397,3 +1398,54 @@ def test_rekesz_naplo_korlat_es_429_kulon():
     b = [x for x in bejegyzesek if x["ag"] == "idosor_rekesz"][0]
     assert "korlat:2" in b["hibakodok"] and "429:3" in b["hibakodok"]   # KÜLÖN kód+szám, NEM összemosva
     assert b["eredmeny"] == "reszleges"                                 # 429 → részleges (a puszta korlát = siker)
+
+
+# --- Task 4 (reggeli/esti hasítás): futtat --mode reggel|este ---
+
+class _ModKliens:
+    """felkapott_api ad egy trendet (top_trendek nem üres); minden más ág üres —
+    a kulcsszo-ágat a kulcsszavak.gyujt monkeypatch fedi le (nem ezen a Kliensen megy át)."""
+    def __init__(self):
+        self.tr = _dummy_tr()
+    def hivas(self, ag, fn, *a, **k):
+        if ag == "felkapott_api":
+            return [_trend("alma", 50000)]
+        return []
+    def hivasszam(self, ag):
+        return 1
+    def osszes_hivas(self):
+        return 1
+
+
+def test_futtat_reggel_mod_szegmens_es_kihagyas(tmp_path, monkeypatch):
+    """Reggeli mód: napi_ir a 'reggel' szegmensbe ír, ÉS a kulcsszó-ág NEM fut."""
+    from trendfigyelo import kulcsszavak
+    hivott = {"kulcsszo": False}
+    monkeypatch.setattr(kulcsszavak, "gyujt",
+                        lambda *a, **k: (hivott.__setitem__("kulcsszo", True) or ([], {}, {})))
+    most = datetime(2021, 1, 4, 12, 0, tzinfo=timezone.utc)
+    docs = tmp_path / "docs" / "data"
+    futtato.futtat(_config(), _ModKliens(), tmp_path / "adatok", docs, most=most, mode="reggel")
+    adat = json.loads((docs / "napok" / "2021-01-04.json").read_text(encoding="utf-8"))
+    assert "reggel" in adat and "este" not in adat
+    assert hivott["kulcsszo"] is False           # a kulcsszó-ág KI volt hagyva
+
+
+def test_futtat_este_mod_szegmens_es_kulcsszo_fut(tmp_path, monkeypatch):
+    """Esti mód (alap): napi_ir az 'este' szegmensbe ír, ÉS a kulcsszó-ág FUT."""
+    from trendfigyelo import kulcsszavak
+    hivott = {"kulcsszo": False}
+    monkeypatch.setattr(kulcsszavak, "gyujt",
+                        lambda *a, **k: (hivott.__setitem__("kulcsszo", True) or ([], {}, {})))
+    most = datetime(2021, 1, 4, 12, 0, tzinfo=timezone.utc)
+    docs = tmp_path / "docs" / "data"
+    futtato.futtat(_config(), _ModKliens(), tmp_path / "adatok", docs, most=most, mode="este")
+    adat = json.loads((docs / "napok" / "2021-01-04.json").read_text(encoding="utf-8"))
+    assert "este" in adat
+    assert hivott["kulcsszo"] is True            # este módban FUT a kulcsszó-ág
+
+
+def test_main_mode_argparse_alap_este():
+    assert futtato._mode_parse([]) == "este"
+    assert futtato._mode_parse(["--mode", "reggel"]) == "reggel"
+    assert futtato._mode_parse(["--mode", "este"]) == "este"

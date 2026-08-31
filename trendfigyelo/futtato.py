@@ -296,8 +296,14 @@ def _ag(bejegyzesek, kliens, ag, fn):
         return None
 
 
-def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
-    """A teljes futás: négy ág, öt CSV, JSON-export, napló, kilépési kód."""
+def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None, mode="este") -> int:
+    """A teljes futás: négy ág, öt CSV, JSON-export, napló, kilépési kód.
+
+    `mode="reggel"`: csak a felkapott/idősor ágak futnak (a kulcsszó-ág és a belőle
+    származtatott lépések kimaradnak), a napi_ir a 'reggel' szegmensbe ír, a
+    legfrissebb.json kulcsszó-része megőrződik. `mode="este"` (alap) = a teljes futás.
+    """
+    csak_felkapott = (mode == "reggel")
     if most is None:
         most = seged.most_utc()
     adatok_mappa = Path(adatok_mappa)
@@ -325,9 +331,12 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
                           lambda: felkapott.gyujt_rss(kliens, config)) or []
         # a kulcsszo-ág az idosor ELŐTT fut: block-napon az idosor az olcsóbb veszteség
         # (a kulcsszó-adat a 24-órás horgony-nélküli mérés, az idosor a top-trend sparkline)
-        kulcsszo_eredmeny = _ag(bejegyzesek, kliens, "kulcsszo",
-                            lambda: kulcsszavak.gyujt(kliens, config, most))
-        kulcsszo_pontok, kulcsszo_napi_pontok, kulcsszo_nyers = kulcsszo_eredmeny or ([], {}, {})
+        if csak_felkapott:
+            kulcsszo_pontok, kulcsszo_napi_pontok, kulcsszo_nyers = [], {}, {}
+        else:
+            kulcsszo_eredmeny = _ag(bejegyzesek, kliens, "kulcsszo",
+                                lambda: kulcsszavak.gyujt(kliens, config, most))
+            kulcsszo_pontok, kulcsszo_napi_pontok, kulcsszo_nyers = kulcsszo_eredmeny or ([], {}, {})
         # a KÖZÖS rangsor kifejezéslistája (a megjelenítéssel azonos forrás → prefix-invariáns);
         # az idősor-ág belül vág trend_idosor_max-ra, a hívásköltség NEM nő
         top_kifejezesek = [getattr(t, "keyword", "") for t in rangsorolt_trendek(api_trendek)]
@@ -336,7 +345,8 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
         # másodlagos (nap/het) ág — LEGUTOLSÓ, pótolható; csendes feladás (saját try/except,
         # NEM block-stop). Ha egy korábbi ág block-stopol, ide nem jutunk → a lenti except
         # az AGAK-ban "kulcsszo_masodlagos"-t "kihagyva"-ra teszi.
-        _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most)
+        if not csak_felkapott:
+            _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most)
         # rekesz-idősor ág — LEGUTOLSÓ (GORBE-B, forward-only): a holtverseny-rekesz
         # trendjei is kapjanak sparkline-t; másodrendű, csendes feladás (nem block-stop/exit).
         # A pontokat a trend_idosorok-hoz fűzzük → a top_trend_struktura idosor_map-je fedi őket.
@@ -393,20 +403,24 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
     else:
         json_export.legfrissebb_ir(docs_data_mappa, top_trendek, trend_idosorok,
                                    kulcsszo_pontok, letoltve, config.geo,
-                                   valtas_datum=config.modszertan_valtas)
+                                   valtas_datum=config.modszertan_valtas,
+                                   kulcsszo_megorzes=(json_export.legfrissebb_kulcsszo_megorzes(docs_data_mappa)
+                                                      if csak_felkapott else None))
 
     van_adat = bool(api_trendek or rss_trendek or trend_idosorok or kulcsszo_pontok)
     # független feltételek: üres kulcsszó-napi adat NE írja felül a meglévő
     # (jó) tortenet.json-bejegyzéseket; üres top-trend NE hozzon üres napi fájlt
     # tortenet: a valós adat-napokra (utolsó N teljes nap), NEM a futás napjára —
     # a legfrissebb nap felülír, a régebbiek insert-if-absent (visszapótlás)
-    if kulcsszo_napi_pontok:
+    if kulcsszo_napi_pontok and not csak_felkapott:
         json_export.tortenet_frissit_napok(docs_data_mappa, kulcsszo_napi_pontok,
                                            valtas_datum=config.modszertan_valtas)
     if top_trendek:
-        json_export.napi_ir(docs_data_mappa, nap_iso, top_trendek)
+        json_export.napi_ir(docs_data_mappa, nap_iso, top_trendek,
+                            szegmens=("reggel" if csak_felkapott else "este"),
+                            frissitve_iso=letoltve)
     # nyers órás sorozat verziókövetett gördülő kimenete (üres sorozat NE írjon fájlt)
-    if kulcsszo_nyers:
+    if kulcsszo_nyers and not csak_felkapott:
         nyers_kimenet.ir_gordulo(docs_data_mappa, kulcsszo_nyers)
         # LANC-ORAS (§8.2): a perzisztens órás lánc frissítése a RETENÁLT ablakokból (a most kiírt fájlból);
         # bootstrap vagy napi bővítés + POTÓLHATATLANSÁG-guard. Származtatott, VÉDETT (hiba nem viszi el az adatmentést).
@@ -429,59 +443,62 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None) -> int:
                             "hivasok_szama": 0, "hibakodok": type(e).__name__})
         print(f"FIGYELEM: a kategória-aggregátum kimaradt — nem blokkolja az adatmentést ({e}).")
 
-    # ---------- regresszió (származtatott nézet, VÉDETTEN) ----------
-    # Nulla Google-hívás; egy hibája SOHA nem viheti el az adatmentést vagy az exit-kódot,
-    # de NEM néma (finding 6): hiba → FIGYELEM a run.log-ba + naplósor. A kulcsszo_nyers a
-    # regresszió bemenete (hiánya → kihagyva); a tortenet csak élettartam-kontextus, a
-    # hiánya NEM hiba (kecses degradáció: meres_kezdete=null, ezt a 9b kezeli).
-    nyers_fajl = docs_data_mappa / "kulcsszo_nyers.json"
-    if not nyers_fajl.exists():
-        bejegyzesek.append({"ag": "regresszio", "eredmeny": "kihagyva",
-                            "hivasok_szama": 0, "hibakodok": ""})
-        print("FIGYELEM: regresszió kihagyva — nincs kulcsszo_nyers.json.")
+    if csak_felkapott:
+        pass   # reggeli mód: a származtatott kulcsszó-regressziók KIMARADNAK (nincs friss kulcsszó-adat)
     else:
-        try:
-            # várt kivételek: FileNotFoundError, json.JSONDecodeError, KeyError, ValueError,
-            # TypeError, OSError — az Exception-backstop mindet elnyeli; a
-            # KeyboardInterrupt/SystemExit (BaseException) továbbmegy.
-            nyers = json.loads(nyers_fajl.read_text(encoding="utf-8"))
-            tortenet_fajl = docs_data_mappa / "tortenet.json"
-            tortenet = (json.loads(tortenet_fajl.read_text(encoding="utf-8"))
-                        if tortenet_fajl.exists() else {})
-            regresszio.regresszio_ir(
-                docs_data_mappa,
-                regresszio.regresszio_szamit(nyers, tortenet, config, letoltve,
-                                             lanc_map=lanc.betolt_lanc(docs_data_mappa)))
-            bejegyzesek.append({"ag": "regresszio", "eredmeny": "siker",
+        # ---------- regresszió (származtatott nézet, VÉDETTEN) ----------
+        # Nulla Google-hívás; egy hibája SOHA nem viheti el az adatmentést vagy az exit-kódot,
+        # de NEM néma (finding 6): hiba → FIGYELEM a run.log-ba + naplósor. A kulcsszo_nyers a
+        # regresszió bemenete (hiánya → kihagyva); a tortenet csak élettartam-kontextus, a
+        # hiánya NEM hiba (kecses degradáció: meres_kezdete=null, ezt a 9b kezeli).
+        nyers_fajl = docs_data_mappa / "kulcsszo_nyers.json"
+        if not nyers_fajl.exists():
+            bejegyzesek.append({"ag": "regresszio", "eredmeny": "kihagyva",
                                 "hivasok_szama": 0, "hibakodok": ""})
-        except Exception as e:
-            bejegyzesek.append({"ag": "regresszio", "eredmeny": "hiba",
-                                "hivasok_szama": 0, "hibakodok": type(e).__name__})
-            print(f"FIGYELEM: a regresszió kimaradt — nem blokkolja az adatmentést ({e}).")
+            print("FIGYELEM: regresszió kihagyva — nincs kulcsszo_nyers.json.")
+        else:
+            try:
+                # várt kivételek: FileNotFoundError, json.JSONDecodeError, KeyError, ValueError,
+                # TypeError, OSError — az Exception-backstop mindet elnyeli; a
+                # KeyboardInterrupt/SystemExit (BaseException) továbbmegy.
+                nyers = json.loads(nyers_fajl.read_text(encoding="utf-8"))
+                tortenet_fajl = docs_data_mappa / "tortenet.json"
+                tortenet = (json.loads(tortenet_fajl.read_text(encoding="utf-8"))
+                            if tortenet_fajl.exists() else {})
+                regresszio.regresszio_ir(
+                    docs_data_mappa,
+                    regresszio.regresszio_szamit(nyers, tortenet, config, letoltve,
+                                                 lanc_map=lanc.betolt_lanc(docs_data_mappa)))
+                bejegyzesek.append({"ag": "regresszio", "eredmeny": "siker",
+                                    "hivasok_szama": 0, "hibakodok": ""})
+            except Exception as e:
+                bejegyzesek.append({"ag": "regresszio", "eredmeny": "hiba",
+                                    "hivasok_szama": 0, "hibakodok": type(e).__name__})
+                print(f"FIGYELEM: a regresszió kimaradt — nem blokkolja az adatmentést ({e}).")
 
-    # ---------- másodlagos (nap/het) regresszió (származtatott, VÉDETTEN; Task 6a) ----------
-    # KÜLÖN fájl (kulcsszo_masodlagos_regresszio.json), hogy az órás nézet érintetlen legyen.
-    # Nulla Google-hívás; az órás regresszió mintája szerint egy hibája SOHA nem viheti el az
-    # adatmentést vagy az exit-kódot, de NEM néma (FIGYELEM + naplósor). A bemenet hiánya → kihagyva.
-    masodlagos_nyers_fajl = docs_data_mappa / "kulcsszo_masodlagos_nyers.json"
-    if not masodlagos_nyers_fajl.exists():
-        bejegyzesek.append({"ag": "regresszio_masodlagos", "eredmeny": "kihagyva",
-                            "hivasok_szama": 0, "hibakodok": ""})
-    else:
-        try:
-            masodlagos = json.loads(masodlagos_nyers_fajl.read_text(encoding="utf-8"))
-            tortenet_fajl = docs_data_mappa / "tortenet.json"
-            tortenet = (json.loads(tortenet_fajl.read_text(encoding="utf-8"))
-                        if tortenet_fajl.exists() else {})
-            regresszio.regresszio_ir_masodlagos(
-                docs_data_mappa,
-                regresszio.regresszio_masodlagos_szamit(masodlagos, tortenet, config, letoltve))
-            bejegyzesek.append({"ag": "regresszio_masodlagos", "eredmeny": "siker",
+        # ---------- másodlagos (nap/het) regresszió (származtatott, VÉDETTEN; Task 6a) ----------
+        # KÜLÖN fájl (kulcsszo_masodlagos_regresszio.json), hogy az órás nézet érintetlen legyen.
+        # Nulla Google-hívás; az órás regresszió mintája szerint egy hibája SOHA nem viheti el az
+        # adatmentést vagy az exit-kódot, de NEM néma (FIGYELEM + naplósor). A bemenet hiánya → kihagyva.
+        masodlagos_nyers_fajl = docs_data_mappa / "kulcsszo_masodlagos_nyers.json"
+        if not masodlagos_nyers_fajl.exists():
+            bejegyzesek.append({"ag": "regresszio_masodlagos", "eredmeny": "kihagyva",
                                 "hivasok_szama": 0, "hibakodok": ""})
-        except Exception as e:
-            bejegyzesek.append({"ag": "regresszio_masodlagos", "eredmeny": "hiba",
-                                "hivasok_szama": 0, "hibakodok": type(e).__name__})
-            print(f"FIGYELEM: a másodlagos regresszió kimaradt — nem blokkolja az adatmentést ({e}).")
+        else:
+            try:
+                masodlagos = json.loads(masodlagos_nyers_fajl.read_text(encoding="utf-8"))
+                tortenet_fajl = docs_data_mappa / "tortenet.json"
+                tortenet = (json.loads(tortenet_fajl.read_text(encoding="utf-8"))
+                            if tortenet_fajl.exists() else {})
+                regresszio.regresszio_ir_masodlagos(
+                    docs_data_mappa,
+                    regresszio.regresszio_masodlagos_szamit(masodlagos, tortenet, config, letoltve))
+                bejegyzesek.append({"ag": "regresszio_masodlagos", "eredmeny": "siker",
+                                    "hivasok_szama": 0, "hibakodok": ""})
+            except Exception as e:
+                bejegyzesek.append({"ag": "regresszio_masodlagos", "eredmeny": "hiba",
+                                    "hivasok_szama": 0, "hibakodok": type(e).__name__})
+                print(f"FIGYELEM: a másodlagos regresszió kimaradt — nem blokkolja az adatmentést ({e}).")
 
     # ---------- folytonosság-diagnosztika (B2, származtatott; CSAK naplóz, VÉDETTEN) ----------
     # A napi_ir ekkorra már beírta a mai nap_iso-t az index.json-ba. Az utolsó két rögzített
@@ -576,14 +593,24 @@ def _plafon(config, override=None):
     return eff
 
 
-def main() -> int:
-    """Belépő: config betöltése, Kliens felépítése, teljes futás."""
+def _mode_parse(argv):
+    """A --mode kapcsoló (reggel/este), alap 'este'. Ismeretlen érték → argparse-hiba."""
+    import argparse
+    p = argparse.ArgumentParser(description="Trendfigyelő napi/reggeli futtatás.")
+    p.add_argument("--mode", choices=["reggel", "este"], default="este")
+    return p.parse_args(argv).mode
+
+
+def main(argv=None) -> int:
+    """Belépő: config betöltése, Kliens felépítése, teljes futás a --mode szerint."""
+    import sys as _sys
+    mode = _mode_parse(_sys.argv[1:] if argv is None else argv)
     config = betolt()
     # hívás-plafon = a strukturális maximum (efölött már csak call-multiplying bug lehet →
     # azonnali leállás). A PLAFON_OVERRIDE env CSAK CSÖKKENTHETI (a (c) CI-igazoláshoz).
     kliens = Kliens(config, plafon=_plafon(config, _plafon_override_env()))
-    print(f"Várható Google-hívásszám (429 nélkül): ~{tervezett_hivasszam(config)}")
-    return futtat(config, kliens, Path("adatok"), Path("docs") / "data")
+    print(f"Mód: {mode} · Várható Google-hívásszám (429 nélkül): ~{tervezett_hivasszam(config)}")
+    return futtat(config, kliens, Path("adatok"), Path("docs") / "data", mode=mode)
 
 
 if __name__ == "__main__":
