@@ -589,6 +589,28 @@ test("N+1. napi: régi (nem szegmentált) nap egyetlen blokk, cím nélkül", as
   await expect(page.locator('#trend-blokk .trend-kartya')).toHaveCount(1);
 });
 
+test("N+2. napi: kék-vonalas gyűjtés-info a cím alatt + beszédes blokk-fejlécek (reggel/este lekérdezés)", async ({ page }) => {
+  const IDX = { napok: ["2026-08-31"] };
+  await page.route(/kategoriak\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ napok: [] }) }));
+  await page.route(/legfrissebb\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ top_trendek: [], kulcsszavak: {}, kulcsszo_osszesites: [] }) }));
+  await page.route(/napok\/index\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify(IDX) }));
+  await page.route(/napok\/2026-08-31\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({
+    nap: "2026-08-31",
+    reggel: { trendek: [trend("reggeli-szo", "5000", ["Sports"])], frissitve: "2026-08-31T07:00:00+00:00" },
+    este: { trendek: [trend("esti-szo", "9000", ["Politics"])], frissitve: "2026-08-31T19:00:00+00:00" },
+  }) }));
+  await page.goto("/");
+  // (1a) statikus kék-vonalas gyűjtés-info a szekció-cím alatt
+  const info = page.locator("#trend-blokk .trend-gyujtes-info");
+  await expect(info).toBeVisible();
+  await expect(info).toContainText("naponta kétszer");
+  await expect(info).toContainText("9:00");
+  await expect(info).toContainText("21:00");
+  // (1b) beszédes blokk-fejlécek a kártyák fölött
+  await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="reggel"] .trend-szegmens-cim')).toHaveText("Reggeli lekérdezés · 9:00");
+  await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="este"] .trend-szegmens-cim')).toHaveText("Esti lekérdezés · 21:00");
+});
+
 // ── KATEGÓRIA-IDŐSOR Szelet 1 — shaper + DOM-tükör (.idosor-adat). Canvast NEM érint, DOM-assertálható. ──
 // A tükör a null-rés / első-megjelenés / valós-0 szabályt hordozza (JSON-tömb data-ertekek, mint a data-kategoriak).
 test("idősor-adat: a tengely CSAK a mért napokat tartalmazza (08-06 hiányzó nap KIMARAD)", async ({ page }) => {

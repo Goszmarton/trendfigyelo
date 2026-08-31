@@ -1346,9 +1346,9 @@ function trend_szegmensek_nap(nap) {
     if (napi && (napi.reggel || napi.este)) {
       const ki = [];
       if (napi.reggel && Array.isArray(napi.reggel.trendek))
-        ki.push({ szegmens: "reggel", cimke: "Reggeli · 9:00", trendek: napi.reggel.trendek });
+        ki.push({ szegmens: "reggel", cimke: "Reggeli lekérdezés · 9:00", trendek: napi.reggel.trendek });
       if (napi.este && Array.isArray(napi.este.trendek))
-        ki.push({ szegmens: "este", cimke: "Esti · 21:00", trendek: napi.este.trendek });
+        ki.push({ szegmens: "este", cimke: "Esti lekérdezés · 21:00", trendek: napi.este.trendek });
       return ki;
     }
     if (napi && Array.isArray(napi.trendek))
