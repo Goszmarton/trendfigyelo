@@ -110,3 +110,23 @@ test("N. heti: szegmentált nap reggel/este elválasztóval, régi nap egy lista
   await expect(sor.locator('.heti-szegmens[data-szegmens="reggel"]')).toContainText("reg1, reg2");
   await expect(sor.locator('.heti-szegmens[data-szegmens="este"]')).toContainText("est1");
 });
+
+// ── N+1. napközben CSAK-REGGEL szegmens (nincs még `este`) → CÍMKÉZETT „Reggel:" lista, este-szegmens NINCS ──
+// spec §8 #3: a szegmentált nap akár egyetlen populált szegmenssel is címkézve jelenik meg (NEM lapul le).
+test("N+1. heti: csak-reggel szegmentált nap → címkézett Reggel lista, este nélkül", async ({ page }) => {
+  const IDX = { napok: ["2026-08-17"] };
+  await page.route(/kategoriak\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ napok: [] }) }));
+  await page.route(/legfrissebb\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ top_trendek: [] }) }));
+  await page.route(/napok\/index\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify(IDX) }));
+  await page.route(/napok\/2026-08-17\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({
+    nap: "2026-08-17",
+    reggel: { trendek: [{ kifejezes: "reg1" }, { kifejezes: "reg2" }], frissitve: "2026-08-17T07:00:00+00:00" },
+  }) }));
+  await page.goto("/");
+  const sor = page.locator('#heti-blokk .heti-nap-sor[data-nap="2026-08-17"]');
+  const reggel = sor.locator('.heti-szegmens[data-szegmens="reggel"]');
+  await expect(reggel).toBeVisible();
+  await expect(reggel).toContainText("Reggel:");
+  await expect(reggel).toContainText("reg1, reg2");
+  await expect(sor.locator('.heti-szegmens[data-szegmens="este"]')).toHaveCount(0);   // napközben még nincs este
+});
