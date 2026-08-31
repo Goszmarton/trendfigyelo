@@ -64,7 +64,13 @@ def kategoriak_ir(docs_data) -> Path:
         if not nap_fajl.exists():
             continue                                 # index-ben van, fájl nincs → nem reprezentáljuk
         nap = json.loads(nap_fajl.read_text(encoding="utf-8"))
-        rek = kategoria_aggregatum(nap_iso, nap.get("trendek", []))
+        # az összes szegmentből gyűjtsük a trendeket (reggel + este)
+        szeg = json_export._nap_szegmensek(nap)
+        trendek = []
+        for s in ("reggel", "este"):
+            if s in szeg:
+                trendek.extend(szeg[s].get("trendek", []))
+        rek = kategoria_aggregatum(nap_iso, trendek)
         if rek is not None:
             rekordok.append(rek)
     return json_export._ir_json(Path(docs_data) / "kategoriak.json", {"napok": rekordok})
