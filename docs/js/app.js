@@ -1900,6 +1900,21 @@ function hetek_index(napok) {
   });
 }
 
+// egy napfájl → megjelenítendő szegmensek [{szegmens, cimke, szavak}] (heti nézet).
+// Szegmentált nap → reggel/este (ahol van); régi {trendek} → egyetlen, címke nélküli lista.
+function heti_nap_szegmensek(napi) {
+  if (napi && (napi.reggel || napi.este)) {
+    const ki = [];
+    if (napi.reggel && Array.isArray(napi.reggel.trendek))
+      ki.push({ szegmens: "reggel", cimke: "Reggel", szavak: napi.reggel.trendek.map(function (t) { return t.kifejezes; }) });
+    if (napi.este && Array.isArray(napi.este.trendek))
+      ki.push({ szegmens: "este", cimke: "Este", szavak: napi.este.trendek.map(function (t) { return t.kifejezes; }) });
+    return ki;
+  }
+  const szavak = (napi && Array.isArray(napi.trendek)) ? napi.trendek.map(function (t) { return t.kifejezes; }) : [];
+  return [{ szegmens: "", cimke: "", szavak: szavak }];
+}
+
 // a kiválasztott hét táblázata: hétfő..min(vasárnap, legfrissebb elérhető nap); hiányzó nap → „nincs adat".
 async function heti_tabla_render(hetfo_iso) {
   const blokk = document.getElementById("heti-blokk");
@@ -1930,8 +1945,24 @@ async function heti_tabla_render(hetfo_iso) {
     const tdN = document.createElement("td"); tdN.className = "heti-nap"; tdN.textContent = heti_nap_cimke(d);
     const tdSz = document.createElement("td"); tdSz.className = "heti-szavak";
     const napi = adat["napok/" + d + ".json"];
-    const szavak = (napi && Array.isArray(napi.trendek)) ? napi.trendek.map(function (t) { return t.kifejezes; }) : [];
-    tdSz.textContent = szavak.length ? szavak.join(", ") : "nincs adat";
+    const szegmensek = heti_nap_szegmensek(napi).filter(function (s) { return s.szavak.length; });
+    if (!szegmensek.length) {
+      tdSz.textContent = "nincs adat";
+    } else if (szegmensek.length === 1 && !szegmensek[0].cimke) {
+      tdSz.textContent = szegmensek[0].szavak.join(", ");   // régi nap: változatlan
+    } else {
+      szegmensek.forEach(function (s) {
+        const div = document.createElement("div");
+        div.className = "heti-szegmens";
+        div.setAttribute("data-szegmens", s.szegmens);
+        const cimke = document.createElement("span");
+        cimke.className = "heti-szegmens-cimke";
+        cimke.textContent = s.cimke + ": ";
+        div.appendChild(cimke);
+        div.appendChild(document.createTextNode(s.szavak.join(", ")));
+        tdSz.appendChild(div);
+      });
+    }
     tr.appendChild(tdN); tr.appendChild(tdSz); tabla.appendChild(tr);
   });
   blokk.appendChild(tabla);

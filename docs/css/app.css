@@ -51,6 +51,8 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 #heti-blokk .heti-nap { white-space: nowrap; vertical-align: top; padding: .4rem .8rem .4rem 0; color: #333; font-weight: 600; }
 #heti-blokk .heti-szavak { vertical-align: top; padding: .4rem 0; color: #444; line-height: 1.4; }
 #heti-blokk .heti-nap-sor .heti-szavak:only-child, #heti-blokk .heti-ures { color: #999; }
+.heti-szegmens + .heti-szegmens { margin-top: .35rem; padding-top: .35rem; border-top: 1px solid #e6e6e6; }
+.heti-szegmens-cimke { font-weight: 600; color: #555; }
 @media (max-width: 900px) {
   .szekcio { flex-direction: column; }
   /* column módban a fő tengely FÜGGŐLEGES → a flex:0 0 14rem MAGASSÁGOT fixálna (üresen 224px, az első

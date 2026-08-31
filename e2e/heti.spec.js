@@ -93,3 +93,20 @@ test("6. hét-váltás FÜGGETLEN — a #datum-valaszto értéke és a trend-blo
   await expect(page.locator("#datum-valaszto")).toHaveAttribute("data-valasztott-nap", "2026-08-17");   // VÁLTOZATLAN
   await expect(page.locator("#trend-blokk")).toHaveAttribute("data-nap", "2026-08-17");
 });
+
+// ── N. szegmentált nap (reggel/este) → két .heti-szegmens; régi nap → egyetlen lista (VÁLTOZATLAN) ──
+test("N. heti: szegmentált nap reggel/este elválasztóval, régi nap egy lista", async ({ page }) => {
+  const IDX = { napok: ["2026-08-17"] };
+  await page.route(/kategoriak\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ napok: [] }) }));
+  await page.route(/legfrissebb\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ top_trendek: [] }) }));
+  await page.route(/napok\/index\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify(IDX) }));
+  await page.route(/napok\/2026-08-17\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({
+    nap: "2026-08-17",
+    reggel: { trendek: [{ kifejezes: "reg1" }, { kifejezes: "reg2" }], frissitve: "2026-08-17T07:00:00+00:00" },
+    este: { trendek: [{ kifejezes: "est1" }], frissitve: "2026-08-17T19:00:00+00:00" },
+  }) }));
+  await page.goto("/");
+  const sor = page.locator('#heti-blokk .heti-nap-sor[data-nap="2026-08-17"]');
+  await expect(sor.locator('.heti-szegmens[data-szegmens="reggel"]')).toContainText("reg1, reg2");
+  await expect(sor.locator('.heti-szegmens[data-szegmens="este"]')).toContainText("est1");
+});
