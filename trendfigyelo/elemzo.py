@@ -204,6 +204,52 @@ def _felkapott(legfrissebb, napok_trendek):
     return {"top": top, "het": {"napok": len(napok_trendek), "visszateroek": visszateroek}}
 
 
+def _ma_szegmensek(docs_data, nap):
+    """A mai nap (nap) reggel+este szegmenseinek trend-listái a napok/<nap>.json-ból.
+
+    A json_export._nap_szegmensek-kel normalizál (a régi {nap,trendek} este-ként).
+    Visszaad: {"reggel":[...], "este":[...]} — csak a JELENLÉVŐ szegmensekkel; hiányzó fájl → {}.
+    """
+    from . import json_export
+    nap_adat = _betolt(Path(docs_data) / "napok" / f"{nap}.json")
+    szeg = json_export._nap_szegmensek(nap_adat or {})
+    ki = {}
+    for s in ("reggel", "este"):
+        if s in szeg and isinstance(szeg[s].get("trendek"), list):
+            ki[s] = szeg[s]["trendek"]
+    return ki
+
+
+def _felkapott_szegmensek(ma_szegmensek, legfrissebb):
+    """A reggeli/esti pillanatkép trend-listái + a reggel↔este diff (a "nap íve"-hez).
+
+    este hiánya esetén a legfrissebb.top_trendek a settled esti kép (fallback).
+    """
+    def _top(trendek):
+        return [{"kifejezes": t.get("kifejezes"), "volumen": t.get("volumen"),
+                 "novekedes_pct": t.get("novekedes_pct"), "temak": t.get("temak", []),
+                 "hirek": t.get("hirek", [])} for t in (trendek or [])]
+    ms = ma_szegmensek if isinstance(ma_szegmensek, dict) else {}
+    reggel = ms.get("reggel")
+    este = ms.get("este")
+    if este is None:
+        este = legfrissebb.get("top_trendek", []) if isinstance(legfrissebb, dict) else []
+    reggel_top, este_top = _top(reggel), _top(este)
+    reggel_kif = {t["kifejezes"] for t in reggel_top if t.get("kifejezes")}
+    este_kif = {t["kifejezes"] for t in este_top if t.get("kifejezes")}
+    return {
+        "reggel_top": reggel_top,
+        "este_top": este_top,
+        "reggel_este_diff": {
+            "uj_estere": sorted(este_kif - reggel_kif),
+            "eltunt_estere": sorted(reggel_kif - este_kif),
+            "megmaradt": sorted(reggel_kif & este_kif),
+        },
+        "van_reggel": bool(reggel_top),
+        "van_este": bool(este_top),
+    }
+
+
 def nap_diff(mai_szamok, tegnapi_szamok, mai_top, tegnapi_top):
     if not tegnapi_szamok and not tegnapi_top:
         return {"irany_valtok": [], "mozgok": [], "felkapott_uj": [],

@@ -593,3 +593,52 @@ def test_utolso_napok_trendek_regi_alak(tmp_path):
     }), encoding="utf-8")
     ki = elemzo._utolso_napok_trendek(tmp_path)
     assert ki["2026-08-20"] == [{"kifejezes": "regi"}]   # régi = este-ként normalizálva
+
+
+def test_ma_szegmensek_reggel_este(tmp_path):
+    napok = tmp_path / "napok"; napok.mkdir()
+    (napok / "2026-08-31.json").write_text(json.dumps({
+        "nap": "2026-08-31",
+        "reggel": {"trendek": [{"kifejezes": "r1"}], "frissitve": "x"},
+        "este": {"trendek": [{"kifejezes": "e1"}, {"kifejezes": "e2"}], "frissitve": "y"},
+    }), encoding="utf-8")
+    ms = elemzo._ma_szegmensek(tmp_path, "2026-08-31")
+    assert [t["kifejezes"] for t in ms["reggel"]] == ["r1"]
+    assert [t["kifejezes"] for t in ms["este"]] == ["e1", "e2"]
+
+
+def test_ma_szegmensek_regi_lapos_este(tmp_path):
+    napok = tmp_path / "napok"; napok.mkdir()
+    (napok / "2026-08-20.json").write_text(json.dumps({"nap": "2026-08-20", "trendek": [{"kifejezes": "x"}]}), encoding="utf-8")
+    ms = elemzo._ma_szegmensek(tmp_path, "2026-08-20")
+    assert "reggel" not in ms
+    assert [t["kifejezes"] for t in ms["este"]] == ["x"]
+
+
+def test_ma_szegmensek_hianyzo_fajl(tmp_path):
+    assert elemzo._ma_szegmensek(tmp_path, "2026-08-31") == {}
+
+
+def test_felkapott_szegmensek_diff():
+    ms = {"reggel": [{"kifejezes": "a", "volumen": "5"}, {"kifejezes": "b"}],
+          "este": [{"kifejezes": "b"}, {"kifejezes": "c"}]}
+    r = elemzo._felkapott_szegmensek(ms, {})
+    assert [t["kifejezes"] for t in r["reggel_top"]] == ["a", "b"]
+    assert [t["kifejezes"] for t in r["este_top"]] == ["b", "c"]
+    assert r["reggel_este_diff"] == {"uj_estere": ["c"], "eltunt_estere": ["a"], "megmaradt": ["b"]}
+    assert r["van_reggel"] is True and r["van_este"] is True
+
+
+def test_felkapott_szegmensek_este_fallback_legfrissebb():
+    # nincs napfájl-este → a legfrissebb.top_trendek a settled esti kép
+    r = elemzo._felkapott_szegmensek({"reggel": [{"kifejezes": "a"}]},
+                                     {"top_trendek": [{"kifejezes": "z"}]})
+    assert [t["kifejezes"] for t in r["este_top"]] == ["z"]
+    assert r["van_reggel"] is True and r["van_este"] is True
+
+
+def test_felkapott_szegmensek_csak_este():
+    r = elemzo._felkapott_szegmensek({"este": [{"kifejezes": "e"}]}, {})
+    assert r["van_reggel"] is False and r["van_este"] is True
+    assert r["reggel_top"] == []
+    assert r["reggel_este_diff"]["uj_estere"] == ["e"]
