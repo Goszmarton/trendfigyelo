@@ -11,9 +11,10 @@
 #   felül: GH_TOKEN_FILE környezeti változóval
 # A token egy repo-scoped fine-grained PAT, KIZÁRÓLAG "Actions: Read and write" joggal.
 #
-# Cron-példa (CRON_TZ=UTC):
-#   10 19 * * *  bash /home/trendfigyelo/trendfigyelo/scripts/trigger_workflow.sh napi.yml    >> ~/trigger.log 2>&1
-#   0  15 * * *  bash /home/trendfigyelo/trendfigyelo/scripts/trigger_workflow.sh youtube.yml >> ~/trigger.log 2>&1
+# Cron-példa (szerver helyi ideje = Europe/Budapest; NINCS CRON_TZ):
+#   0 9  * * *  bash /home/trendfigyelo/trendfigyelo/scripts/trigger_workflow.sh reggeli.yml >> ~/trigger.log 2>&1
+#   0 21 * * *  bash /home/trendfigyelo/trendfigyelo/scripts/trigger_workflow.sh napi.yml    >> ~/trigger.log 2>&1
+#   0 15 * * *  bash /home/trendfigyelo/trendfigyelo/scripts/trigger_workflow.sh youtube.yml >> ~/trigger.log 2>&1
 set -euo pipefail
 
 wf="${1:-}"

@@ -1,0 +1,83 @@
+name: Reggeli felkapott-gyűjtés
+
+on:
+  workflow_dispatch:
+    inputs:
+      plafon_override:
+        description: "Hívás-plafon override (CSAK csökkent). Üresen normál."
+        required: false
+        default: ""
+  # ELSŐDLEGES út: szerver-trigger (Hetzner-cron → workflow_dispatch, 9:00 Budapest).
+  # A GitHub-cron a BACKUP, a szerver MÖGÉ időzítve; a szegmens-őr (reggel) dedup-olja.
+  schedule:
+    - cron: "30 8 * * *"    # 08:30 UTC — backup (10:30 nyár / 09:30 tél Budapest)
+    - cron: "0 11 * * *"    # 11:00 UTC — késői backup
+
+permissions:
+  contents: write
+
+concurrency:
+  group: reggeli-futtatas
+  cancel-in-progress: false
+
+jobs:
+  gyujtes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python beállítása
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: "Idempotencia-őr (ütemezett fallback: ma már gyűjtöttünk reggelit?)"
+        id: guard
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" != "schedule" ]; then
+            echo "Kézi (workflow_dispatch) futás — az őr nem aktív, gyűjtünk."
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          skip="$(python -m trendfigyelo.futas_orzo --szegmens reggel docs/data)"
+          echo "Ütemezett futás — ma már van reggeli? skip=$skip"
+          echo "skip=$skip" >> "$GITHUB_OUTPUT"
+
+      - name: Függőségek telepítése
+        if: steps.guard.outputs.skip != 'true'
+        run: pip install -r requirements.txt
+
+      - name: Reggeli felkapott-gyűjtés
+        if: steps.guard.outputs.skip != 'true'
+        shell: bash
+        env:
+          PLAFON_OVERRIDE: ${{ github.event_name == 'workflow_dispatch' && inputs.plafon_override || '' }}
+        run: |
+          set -o pipefail
+          python top_keresesek.py --mode reggel 2>&1 | tee run.log
+
+      - name: Változások commitolása (csak JSON + napló)
+        if: always() && steps.guard.outputs.skip != 'true' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data adatok/naplo.csv
+          if git diff --staged --quiet; then
+            echo "Nincs változás — nincs commit."
+          else
+            git commit -m "adat: reggeli HU felkapott-gyűjtés ($(date -u +%Y-%m-%dT%H:%MZ))"
+            git push
+          fi
+
+      - name: Artefakt feltöltése (napló + JSON + stdout)
+        if: always() && steps.guard.outputs.skip != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: reggeli-futas-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 14
+          path: |
+            adatok/naplo.csv
+            docs/data/**
+            run.log

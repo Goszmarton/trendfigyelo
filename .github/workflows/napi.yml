@@ -8,11 +8,12 @@ on:
         required: false
         default: ""
   # Napi gyűjtés. Az ELSŐDLEGES, időben-induló út a szerver-trigger (Hetzner-cron →
-  # workflow_dispatch, 19:10 UTC) — a GitHub ingatag best-effort ütemezése helyett
-  # garantált indítás. A GitHub saját schedule-cronjai a BACKUP: a szerver MÖGÉ időzítve
-  # (20:30 + 23:00 UTC), így az idempotencia-őr (lásd lentebb) dedup-olja őket, ha a
-  # szerver már gyűjtött ma. A GitHub-cron sosem tüzel korábban a tervezettnél (csak
-  # késhet), ezért a szerver mindig előbb ér ide → legfeljebb EGY gyűjt ténylegesen.
+  # workflow_dispatch, 21:00 Budapest) — a GitHub ingatag best-effort ütemezése helyett
+  # garantált indítás. A GitHub saját schedule-cronjai a BACKUP a 21:00 Budapest
+  # szerver-trigger MÖGÉ időzítve (20:30 + 23:00 UTC), így az idempotencia-őr (lásd
+  # lentebb) dedup-olja őket, ha a szerver már gyűjtött ma. A GitHub-cron sosem tüzel
+  # korábban a tervezettnél (csak késhet), ezért a szerver mindig előbb ér ide →
+  # legfeljebb EGY gyűjt ténylegesen.
   schedule:
     - cron: "30 20 * * *"   # 20:30 UTC — backup (22:30 nyár / 21:30 tél Budapest), ha a szerver-trigger kimaradt
     - cron: "0 23 * * *"    # 23:00 UTC — késői backup (01:00 nyár / 00:00 tél Budapest)
@@ -48,7 +49,7 @@ jobs:
             echo "skip=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          skip="$(python -m trendfigyelo.futas_orzo docs/data/legfrissebb.json)"
+          skip="$(python -m trendfigyelo.futas_orzo --szegmens este docs/data)"
           echo "Ütemezett futás — ma már gyűjtöttünk? skip=$skip"
           echo "skip=$skip" >> "$GITHUB_OUTPUT"
 
@@ -65,7 +66,7 @@ jobs:
           PLAFON_OVERRIDE: ${{ github.event_name == 'workflow_dispatch' && inputs.plafon_override || '' }}
         run: |
           set -o pipefail   # a python nem-nulla exitje (pl. L4 plafon = 2) NE vesszen el a `| tee` mögött
-          python top_keresesek.py 2>&1 | tee run.log
+          python top_keresesek.py --mode este 2>&1 | tee run.log
 
       - name: Változások commitolása (csak JSON + napló)
         if: always() && steps.guard.outputs.skip != 'true' && github.ref == 'refs/heads/main'
