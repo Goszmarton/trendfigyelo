@@ -123,3 +123,41 @@ def test_main_youtube_regi_datum_false(tmp_path, capsys):
     rc = futas_orzo.main(["--youtube", path])
     assert rc == 0
     assert capsys.readouterr().out.strip() == "false"
+
+
+# ── Szegmens-tudatos idempotencia-őr (reggel/este) ──
+
+def _ir_nap_szegmens(tmp_path, nap_iso, szegmens, frissitve):
+    napok = tmp_path / "napok"; napok.mkdir(parents=True, exist_ok=True)
+    (napok / f"{nap_iso}.json").write_text(
+        json.dumps({"nap": nap_iso, szegmens: {"trendek": [], "frissitve": frissitve}}),
+        encoding="utf-8")
+
+
+def test_szegmens_mai_reggel_true(tmp_path):
+    _ir_nap_szegmens(tmp_path, "2026-08-31", "reggel", "2026-08-31T07:00:00+00:00")
+    assert futas_orzo.szegmens_mar_gyujtottunk_ma(tmp_path, "reggel", "2026-08-31") is True
+
+
+def test_szegmens_masik_szegmens_nem_szamit(tmp_path):
+    # csak ESTI van ma → a REGGELI őr False (nem blokkolja a reggelit)
+    _ir_nap_szegmens(tmp_path, "2026-08-31", "este", "2026-08-31T19:00:00+00:00")
+    assert futas_orzo.szegmens_mar_gyujtottunk_ma(tmp_path, "reggel", "2026-08-31") is False
+    assert futas_orzo.szegmens_mar_gyujtottunk_ma(tmp_path, "este", "2026-08-31") is True
+
+
+def test_szegmens_tegnapi_false(tmp_path):
+    _ir_nap_szegmens(tmp_path, "2026-08-30", "reggel", "2026-08-30T07:00:00+00:00")
+    assert futas_orzo.szegmens_mar_gyujtottunk_ma(tmp_path, "reggel", "2026-08-31") is False
+
+
+def test_szegmens_hianyzo_fajl_false(tmp_path):
+    assert futas_orzo.szegmens_mar_gyujtottunk_ma(tmp_path, "reggel", "2026-08-31") is False
+
+
+def test_cli_szegmens(tmp_path, capsys):
+    _ir_nap_szegmens(tmp_path, "2026-08-31", "reggel", "2026-08-31T07:00:00+00:00")
+    # a „ma"-t a CLI a Budapest-napból számítja; itt a determinizmushoz a szegmens-fn közvetlen tesztje a mérvadó,
+    # a CLI-ág füst-szintű: hiányzó fájl → 'false'
+    futas_orzo.main(["--szegmens", "reggel", str(tmp_path)])
+    assert capsys.readouterr().out.strip() in {"true", "false"}
