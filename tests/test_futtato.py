@@ -1190,8 +1190,8 @@ def test_kategoriak_json_letrejon_a_futasban(tmp_path):
     # valódi diszkriminátor: a tükör a mai napi adatot fogja meg (napi_ir UTÁN)
     assert adat["napok"], "a napok lista nem lehet üres — a tükör a napi adatot fogja meg"
     nap = next(n for n in adat["napok"] if n["nap"] == "2021-01-04")
-    assert nap["merve"] is True
-    assert nap["kategoriak"]["Sports"] == 1
+    assert nap["este"]["merve"] is True
+    assert nap["este"]["kategoriak"]["Sports"] == 1
     sorok = _naplo_soronkent(tmp_path / "adatok")
     assert {s["ag"]: s["eredmeny"] for s in sorok}["kategoriak"] == "siker"
 

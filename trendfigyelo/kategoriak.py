@@ -48,11 +48,12 @@ def kategoria_aggregatum(nap_iso: str, trendek: list[dict]) -> dict | None:
 
 
 def kategoriak_ir(docs_data) -> Path:
-    """A napok/*.json determinisztikus tükre → kategoriak.json (spec 8.1).
+    """A napok/*.json determinisztikus, SZEGMENTÁLT tükre → kategoriak.json.
 
-    A napok/index.json szerinti összes napi fájlt beolvassa, minden napra
-    kategoria_aggregatum-ot hív, a None-t (3a előtti nap) kihagyja, nap szerint
-    rendez, kiír. Idempotens: a kimenet a napi fájlok determinisztikus függvénye.
+    Minden naphoz szegmensenként (reggel/este) kategoria_aggregatum-ot számol a
+    json_export._nap_szegmensek normalizálásából. A None (3a előtti) szegmenst
+    kihagyja; a régi {nap, trendek} fájl 'este'-ként számít. Egy nap csak akkor
+    kerül be, ha van legalább egy nem-None szegmens-aggregátum. Idempotens.
     """
     napok_mappa = Path(docs_data) / "napok"
     index_fajl = napok_mappa / "index.json"
@@ -62,15 +63,17 @@ def kategoriak_ir(docs_data) -> Path:
     for nap_iso in sorted(napok_index):
         nap_fajl = napok_mappa / f"{nap_iso}.json"
         if not nap_fajl.exists():
-            continue                                 # index-ben van, fájl nincs → nem reprezentáljuk
+            continue
         nap = json.loads(nap_fajl.read_text(encoding="utf-8"))
-        # az összes szegmentből gyűjtsük a trendeket (reggel + este)
         szeg = json_export._nap_szegmensek(nap)
-        trendek = []
+        rek = {"nap": nap_iso}
+        van = False
         for s in ("reggel", "este"):
             if s in szeg:
-                trendek.extend(szeg[s].get("trendek", []))
-        rek = kategoria_aggregatum(nap_iso, trendek)
-        if rek is not None:
+                agg = kategoria_aggregatum(nap_iso, szeg[s]["trendek"])
+                if agg is not None:
+                    rek[s] = agg
+                    van = True
+        if van:
             rekordok.append(rek)
     return json_export._ir_json(Path(docs_data) / "kategoriak.json", {"napok": rekordok})

@@ -95,6 +95,49 @@ def _index(napok_mappa, napok):
     (napok_mappa / "index.json").write_text(json.dumps({"napok": napok}), encoding="utf-8")
 
 
+def _ir_nap(tmp_path, nap_iso, obj):
+    napok = tmp_path / "napok"
+    napok.mkdir(exist_ok=True)
+    (napok / f"{nap_iso}.json").write_text(json.dumps(obj), encoding="utf-8")
+    idx = napok / "index.json"
+    lista = json.loads(idx.read_text()) if idx.exists() else {"napok": []}
+    idx.write_text(json.dumps({"napok": sorted(set(lista["napok"]) | {nap_iso})}), encoding="utf-8")
+
+
+def test_kategoriak_ir_szegmentalt_nap(tmp_path):
+    _ir_nap(tmp_path, "2026-08-10", {
+        "nap": "2026-08-10",
+        "reggel": {"trendek": [{"kifejezes": "a", "temak": ["Sports"]}], "frissitve": "x"},
+        "este": {"trendek": [{"kifejezes": "b", "temak": ["Health"]},
+                             {"kifejezes": "c", "temak": ["Sports"]}], "frissitve": "y"},
+    })
+    kategoriak.kategoriak_ir(tmp_path)
+    kj = json.loads((tmp_path / "kategoriak.json").read_text(encoding="utf-8"))
+    nap = kj["napok"][0]
+    assert nap["nap"] == "2026-08-10"
+    assert nap["reggel"]["kategoriak"] == {"Sports": 1}
+    assert nap["este"]["kategoriak"] == {"Health": 1, "Sports": 1}
+
+
+def test_kategoriak_ir_regi_nap_csak_este(tmp_path):
+    _ir_nap(tmp_path, "2026-08-09", {"nap": "2026-08-09",
+                                     "trendek": [{"kifejezes": "a", "temak": ["Politics"]}]})
+    kategoriak.kategoriak_ir(tmp_path)
+    kj = json.loads((tmp_path / "kategoriak.json").read_text(encoding="utf-8"))
+    nap = kj["napok"][0]
+    assert "reggel" not in nap
+    assert nap["este"]["kategoriak"] == {"Politics": 1}
+
+
+def test_kategoriak_ir_3a_elotti_nap_kihagyva(tmp_path):
+    # egyik szegmensben sincs 'temak' kulcs → a nap nem reprezentálódik
+    _ir_nap(tmp_path, "2026-08-08", {"nap": "2026-08-08",
+                                     "este": {"trendek": [{"kifejezes": "a"}], "frissitve": "z"}})
+    kategoriak.kategoriak_ir(tmp_path)
+    kj = json.loads((tmp_path / "kategoriak.json").read_text(encoding="utf-8"))
+    assert kj["napok"] == []
+
+
 def test_kategoriak_ir_tukor_harom_csoport(tmp_path):
     docs_data = tmp_path / "docs" / "data"
     napok = docs_data / "napok"
@@ -106,9 +149,9 @@ def test_kategoriak_ir_tukor_harom_csoport(tmp_path):
     adat = json.loads((docs_data / "kategoriak.json").read_text(encoding="utf-8"))
     napok_ki = adat["napok"]
     assert [n["nap"] for n in napok_ki] == ["2026-08-10", "2026-08-12"]   # 07-28 kihagyva, rendezett
-    assert napok_ki[0]["merve"] is True
-    assert napok_ki[0]["kategoriak"] == {"Sports": 1, "Health": 1}
-    assert napok_ki[1]["merve"] is False and napok_ki[1]["ok"] == "nincs_kategoria_adat"
+    assert napok_ki[0]["este"]["merve"] is True
+    assert napok_ki[0]["este"]["kategoriak"] == {"Sports": 1, "Health": 1}
+    assert napok_ki[1]["este"]["merve"] is False and napok_ki[1]["este"]["ok"] == "nincs_kategoria_adat"
 
 
 def test_kategoriak_ir_hianyzo_napi_fajl_kihagyva(tmp_path):
@@ -120,6 +163,7 @@ def test_kategoriak_ir_hianyzo_napi_fajl_kihagyva(tmp_path):
     kategoriak.kategoriak_ir(docs_data)
     adat = json.loads((docs_data / "kategoriak.json").read_text(encoding="utf-8"))
     assert [n["nap"] for n in adat["napok"]] == ["2026-08-10"]
+    assert adat["napok"][0]["este"]["kategoriak"] == {"Sports": 1}
 
 
 def test_kategoriak_ir_idempotens(tmp_path):
@@ -132,3 +176,6 @@ def test_kategoriak_ir_idempotens(tmp_path):
     kategoriak.kategoriak_ir(docs_data)
     masodik = (docs_data / "kategoriak.json").read_text(encoding="utf-8")
     assert elso == masodik
+    # verify the new segmented structure exists
+    adat = json.loads(elso)
+    assert adat["napok"][0]["este"]["kategoriak"] == {"Sports": 1}
