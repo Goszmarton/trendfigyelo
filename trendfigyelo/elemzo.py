@@ -363,6 +363,18 @@ def valasz_to_artefakt(ai_valasz, payload, nap, modell):
         valtozas_szoveg = ("Ma nincs korábbi nap, amivel összevethetnénk, így a napi "
                            "elmozdulás egyelőre nem értékelhető. A friss kép a lenti "
                            "szekciókban olvasható.")
+    fk = payload["felkapott"]
+    van_reggel = fk.get("van_reggel", True)
+    van_este = fk.get("van_este", True)
+    reggel_szoveg = ai_valasz["felkapott"]["reggel"]
+    este_szoveg = ai_valasz["felkapott"]["este"]
+    teljes_nap_szoveg = ai_valasz["felkapott"]["teljes_nap"]
+    if not van_reggel:
+        reggel_szoveg = {"szoveg": "Ma nem volt reggeli gyűjtés, ezért a reggeli kép nem elemezhető."}
+        teljes_nap_szoveg = {"szoveg": "Reggeli pillanatkép híján a nap íve (a reggeltől estig tartó elmozdulás) nem rajzolható."}
+    elif not van_este:
+        este_szoveg = {"szoveg": "Ma nem volt esti gyűjtés, ezért az esti kép nem elemezhető."}
+        teljes_nap_szoveg = {"szoveg": "Esti pillanatkép híján a nap íve nem rajzolható."}
     art = {
         "frissitve": seged.idopont_iso(seged.most_utc()),
         "modell": modell,
@@ -375,10 +387,15 @@ def valasz_to_artefakt(ai_valasz, payload, nap, modell):
             "het": ai_valasz["kulcsszavak"]["het"],
         },
         "felkapott": {
-            "top": payload["felkapott"]["top"],
-            "napi": ai_valasz["felkapott"]["napi"],
+            "top": fk["top"],
+            "reggel_top": fk["reggel_top"],
+            "este_top": fk["este_top"],
+            "reggel_este_diff": fk["reggel_este_diff"],
+            "reggel": reggel_szoveg,
+            "este": este_szoveg,
+            "teljes_nap": teljes_nap_szoveg,
             "het": ai_valasz["felkapott"]["het"],
-            "het_valos": payload["felkapott"]["het"],
+            "het_valos": fk["het"],
         },
     }
     if "youtube" in payload:

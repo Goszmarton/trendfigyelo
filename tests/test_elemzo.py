@@ -222,8 +222,43 @@ class KamuKliens:
 
 def _ai_valasz():
     szekcio = {"szoveg": "sz"}
+    sz = lambda s: {"szoveg": s}
     return {"valtozas": szekcio, "kulcsszavak": {"napi": szekcio, "teljes_kep": szekcio, "het": szekcio},
-            "felkapott": {"napi": szekcio, "het": szekcio}}
+            "felkapott": {"reggel": sz("f-reggel"), "este": sz("f-este"),
+                          "teljes_nap": sz("f- iv"), "het": sz("f-het")}}
+
+
+def _payload_szegmensekkel(van_reggel=True, van_este=True):
+    reggel = [{"kifejezes": "r"}] if van_reggel else []
+    este = [{"kifejezes": "e"}] if van_este else []
+    ms = {}
+    if van_reggel: ms["reggel"] = reggel
+    if van_este: ms["este"] = este
+    adatok = {"regresszio": {}, "tortenet": {},
+              "legfrissebb": {"top_trendek": este}, "napok_trendek": {},
+              "ma_szegmensek": ms, "lanc": {}}
+    return elemzo.epit_payload(adatok)
+
+
+def test_artefakt_felkapott_negy_szekcio():
+    payload = _payload_szegmensekkel(van_reggel=True, van_este=True)
+    art = elemzo.valasz_to_artefakt(_ai_valasz(), payload, nap="2026-08-31", modell="m")
+    fk = art["felkapott"]
+    assert fk["reggel"]["szoveg"] == "f-reggel"
+    assert fk["este"]["szoveg"] == "f-este"
+    assert fk["teljes_nap"]["szoveg"] == "f- iv"
+    assert fk["het"]["szoveg"] == "f-het"
+    assert "reggel_top" in fk and "este_top" in fk and "reggel_este_diff" in fk
+    assert "het_valos" in fk
+
+
+def test_artefakt_fail_soft_csak_este():
+    payload = _payload_szegmensekkel(van_reggel=False, van_este=True)
+    art = elemzo.valasz_to_artefakt(_ai_valasz(), payload, nap="2026-08-31", modell="m")
+    fk = art["felkapott"]
+    assert "nem volt reggeli" in fk["reggel"]["szoveg"].lower()      # DETERMINISZTIKUS, nem az AI
+    assert "nem rajzolható" in fk["teljes_nap"]["szoveg"].lower()
+    assert fk["este"]["szoveg"] == "f-este"                          # az esti marad AI-próza
 
 
 def test_elemez_a_varrat_mogott_nem_hiv_halozatot():
@@ -298,6 +333,8 @@ def test_valasz_to_artefakt_valos_reteg_es_ai_narrativa():
         "kulcsszavak": {"szamok": [{"szo": "állás", "irany": "emelkedik", "meredekseg": 1.0,
                                     "ervenyes": True, "mai_ertek": 10.0, "csucs": 100.0, "atlag": 25.0}]},
         "felkapott": {"top": [{"kifejezes": "eső", "volumen": "20000", "novekedes_pct": "500", "temak": ["W"]}],
+                      "reggel_top": [], "este_top": [],
+                      "reggel_este_diff": {"uj_estere": [], "eltunt_estere": [], "megmaradt": []},
                       "het": {"napok": 2, "visszateroek": []}},
         "valtozas": {"irany_valtok": [], "mozgok": [], "felkapott_uj": [], "felkapott_eltunt": [], "van_elozo": False},
     }
@@ -310,7 +347,7 @@ def test_valasz_to_artefakt_valos_reteg_es_ai_narrativa():
     assert art["valtozas"]["diff"]["van_elozo"] is False
     # AI-narratíva a helyén:
     assert art["kulcsszavak"]["napi"]["szoveg"] == "sz"
-    assert art["felkapott"]["het"]["szoveg"] == "sz"
+    assert art["felkapott"]["het"]["szoveg"] == "f-het"
 
 
 def test_valasz_to_artefakt_megorzi_a_heti_valos_reteget():
@@ -320,6 +357,8 @@ def test_valasz_to_artefakt_megorzi_a_heti_valos_reteget():
     payload = {
         "kulcsszavak": {"szamok": []},
         "felkapott": {"top": [],
+                      "reggel_top": [], "este_top": [],
+                      "reggel_este_diff": {"uj_estere": [], "eltunt_estere": [], "megmaradt": []},
                       "het": {"napok": 3, "visszateroek": [{"kifejezes": "eső", "napok_szama": 2}]}},
         "valtozas": {"irany_valtok": [], "mozgok": [], "felkapott_uj": [], "felkapott_eltunt": [], "van_elozo": False},
     }
@@ -327,12 +366,14 @@ def test_valasz_to_artefakt_megorzi_a_heti_valos_reteget():
     assert art["felkapott"]["het_valos"]["visszateroek"] == [{"kifejezes": "eső", "napok_szama": 2}]
     assert art["felkapott"]["het_valos"]["napok"] == 3
     # az AI-narratíva a het mezőben marad, változatlanul:
-    assert art["felkapott"]["het"]["szoveg"] == "sz"
+    assert art["felkapott"]["het"]["szoveg"] == "f-het"
 
 
 def _mini_payload(van_elozo):
     return {"kulcsszavak": {"szamok": []},
-            "felkapott": {"top": [], "het": {"napok": 0, "visszateroek": []}},
+            "felkapott": {"top": [], "reggel_top": [], "este_top": [],
+                          "reggel_este_diff": {"uj_estere": [], "eltunt_estere": [], "megmaradt": []},
+                          "het": {"napok": 0, "visszateroek": []}},
             "valtozas": {"van_elozo": van_elozo, "irany_valtok": [], "mozgok": [],
                          "felkapott_uj": [], "felkapott_eltunt": []},
             "kulcsszo_het": {"ablak_napok": 7, "szavak": []}}
@@ -342,7 +383,7 @@ def _mini_ai(valtozas_szoveg):
     sz = {"szoveg": "sz"}
     return {"valtozas": {"szoveg": valtozas_szoveg},
             "kulcsszavak": {"napi": sz, "teljes_kep": sz, "het": sz},
-            "felkapott": {"napi": sz, "het": sz}}
+            "felkapott": {"reggel": sz, "este": sz, "teljes_nap": sz, "het": sz}}
 
 
 def test_artefakt_ures_nap_python_szoveg():
@@ -532,7 +573,7 @@ def test_rendszer_prompt_youtube_keret():
 def _ai_valasz_youtubebal():
     sz = {"szoveg": "sz"}
     return {"valtozas": sz, "kulcsszavak": {"napi": sz, "teljes_kep": sz, "het": sz},
-            "felkapott": {"napi": sz, "het": sz},
+            "felkapott": {"reggel": sz, "este": sz, "teljes_nap": sz, "het": sz},
             "youtube": {"napi": {"szoveg": "yt-napi"}, "teljes_kep": {"szoveg": "yt-teljes"},
                         "het": {"szoveg": "yt-het"}}}
 
@@ -540,7 +581,9 @@ def _ai_valasz_youtubebal():
 def test_valasz_to_artefakt_youtube_blokk_valos_es_ai():
     payload = {
         "kulcsszavak": {"szamok": []},
-        "felkapott": {"top": [], "het": {"napok": 0, "visszateroek": []}},
+        "felkapott": {"top": [], "reggel_top": [], "este_top": [],
+                      "reggel_este_diff": {"uj_estere": [], "eltunt_estere": [], "megmaradt": []},
+                      "het": {"napok": 0, "visszateroek": []}},
         "valtozas": {"irany_valtok": [], "mozgok": [], "felkapott_uj": [], "felkapott_eltunt": [], "van_elozo": False},
         "youtube": {"szamok": [{"szo": "szorongás", "domen": "egeszseg", "irany": "novekszik",
                                 "meredekseg": 0.05, "ervenyes": True, "mai_ertek": 43, "csucs": 50, "atlag": 45.0}],
