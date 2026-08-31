@@ -194,6 +194,9 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 
 /* Task 7 trend-blokk — napi felkapott trendlista + kategória-eloszlás chart + kategória-szűrő.
    Az összefoglaló (chart+magyarázat+szűrő) a lista FÖLÖTT (áttekintés → részletek). Csak saját stílus. */
+/* Task 9: reggel/este szegmens-blokkok egymás alatt — a MÁSODIK (és további) szekció kap elválasztót */
+.trend-szegmens + .trend-szegmens { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 2px solid #e0e0e0; }
+.trend-szegmens-cim { margin: 0 0 .5rem; font-size: 1.05rem; color: #333; }
 #trend-blokk .trend-osszefoglalo { margin: 1rem 0 1.25rem; }
 /* a Chart.js kanonikus wrapper — fix magasság + position:relative, a canvas ezt tölti ki (mint a 9b chart-doboz) */
 #trend-blokk .kategoria-chart-doboz { position: relative; height: 200px; max-width: 40rem; }

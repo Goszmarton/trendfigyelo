@@ -1287,6 +1287,7 @@ const OSZT_T = {
   idosor_chart_doboz: "idosor-chart-doboz", idosor_chart: "idosor-chart",   // Szelet 2: line-chart (a jobb #idosor-blokk-ban)
   idosor_magyarazat: "idosor-magyarazat",   // caption a jobb doboz alján (a bar-caption külön)
   idosor_legend_elem: "idosor-legend-elem", idosor_legend_pont: "idosor-legend-pont", kiemelt: "kiemelt",  // kétdobozos: HTML-legend a bal dobozban
+  szegmens: "trend-szegmens", szegmens_cim: "trend-szegmens-cim",   // Task 9: reggel/este blokk-szekció + fejléce
 };
 const ATTR_T = {
   aktiv_kategoria: "data-aktiv-kategoria", nap: "data-nap", kifejezes: "data-kifejezes",
@@ -1311,7 +1312,8 @@ const TREND_NORMALIZALAS_SZOVEG = "A görbék magassága nem összemérhető: mi
   + "van skálázva, ezért két hasonló magasságú görbe eltérő keresettséget takarhat – azt a „volumen” mutatja. "
   + "Amit a görbe megbízhatóan mutat: egy trend saját napi lefutásának alakját és a csúcs időzítését.";
 
-let kategoria_chart = null;        // az eloszlás-chart SAJÁT példánya (NEM a kulcsszó chart_peldanyok/chart_takarit)
+// Task 9: az eloszlás-chart NEM modul-globális többé — szegmensenként a konténeren (container._kchart), mert
+// két blokk (reggel/este) SAJÁT chart-példányt tart; a takarítás ezért a .trend-szegmens konténereken jár körbe.
 let idosor_chart = null;           // a kategória-idősor line-chart SAJÁT példánya (Szelet 2)
 let idosor_aktiv = "";             // a kiemelt (kék) kategória neve, vagy "" (mind szürke) — a bar aktív-mintája
 let trend_chart_peldanyok = [];    // 8a: sparkline Chart-példányok TÖMBJE (MIN-TCP: NEM kifejezés-kulcsú — két
@@ -1339,6 +1341,36 @@ function trend_adat_nap(nap) {
   }
   const napi = adat["napok/" + nap + ".json"];
   return napi ? (napi.trendek || []) : null;
+}
+
+// az adott nap megjelenítendő szegmensei: [{szegmens, cimke, trendek}] (reggel elöl), VAGY null (a nap még tölt).
+// Forrás MINDEN napra a napok/<nap>.json; ha az még nincs betöltve → null (a render betölti és újrahív).
+// Legfrissebb-fallback: ha a napfájl hiányzik/legacy-üres és a legfrissebb.json-ban van top_trendek → egy cím nélküli blokk.
+// nap === null/"" (pl. a napok/index.json még nem elérhető → nincs kiszámítható napazonosító a fájlnévhez):
+// a napfájl-ág itt NEM érvényes (a render sem próbál "napok/null.json"-t tölteni) → egyenesen a legfrissebb.json-ra
+// esik vissza, mint a régi trend_adat_nap !nap ága.
+function trend_szegmensek_nap(nap) {
+  if (nap) {
+    const rel = "napok/" + nap + ".json";
+    const napi = adat[rel];
+    if (napi === undefined) return null;   // még nincs betöltve
+    if (napi && (napi.reggel || napi.este)) {
+      const ki = [];
+      if (napi.reggel && Array.isArray(napi.reggel.trendek))
+        ki.push({ szegmens: "reggel", cimke: "Reggeli · 9:00", trendek: napi.reggel.trendek });
+      if (napi.este && Array.isArray(napi.este.trendek))
+        ki.push({ szegmens: "este", cimke: "Esti · 21:00", trendek: napi.este.trendek });
+      return ki;
+    }
+    if (napi && Array.isArray(napi.trendek))
+      return [{ szegmens: "", cimke: "", trendek: napi.trendek }];   // régi nap: egy blokk, cím nélkül
+  }
+  // fallback: legfrissebb nap, napfájl nélkül (vagy nap ismeretlen — lásd fenti megjegyzés)
+  if (!nap || nap === trend_legfrissebb_nap()) {
+    const lf = adat["legfrissebb.json"];
+    if (lf && Array.isArray(lf.top_trendek)) return [{ szegmens: "", cimke: "", trendek: lf.top_trendek }];
+  }
+  return [{ szegmens: "", cimke: "", trendek: [] }];
 }
 
 // a megjelenítendő nap: a #trend-blokk data-nap-ja, vagy a dátumválasztó értéke, vagy a legfrissebb
@@ -1627,15 +1659,20 @@ function trend_sparkline_letrehoz(kartya) {
 }
 
 function trend_chart_takarit() {
-  if (kategoria_chart) { kategoria_chart.destroy(); kategoria_chart = null; }
   // MEGJEGYZÉS: az idősor-chart NEM itt takarodik — önálló #idosor-blokk szekció, NAP-FÜGGETLEN (nem napváltás-életciklus).
   trend_chart_peldanyok.forEach(function (c) { if (c) c.destroy(); });   // 8a: a sparkline-példányok is destroy (nem halmozódhatnak)
   trend_chart_peldanyok = [];                                           // MIN-TCP: teljes ürítés (index-független, kollízió-mentes)
+  // Task 9: az eloszlás-chart SZEGMENSENKÉNT él a konténerén (container._kchart) — mindegyik szegmens-szekciót
+  // végig kell járni, mert két blokk (reggel/este) saját példányt tarthat.
+  const blokk = document.getElementById("trend-blokk");
+  if (blokk) blokk.querySelectorAll("." + OSZT_T.szegmens).forEach(function (sz) {
+    if (sz._kchart) { sz._kchart.destroy(); sz._kchart = null; }
+  });
 }
 
 function trend_chart_epit(canvas, eloszlas, blokk) {
   if (typeof Chart === "undefined") return;   // a canvas elem akkor is megvan (a szerződés DOM-oldali)
-  kategoria_chart = new Chart(canvas, {
+  blokk._kchart = new Chart(canvas, {
     type: "bar",
     data: {
       labels: eloszlas.map(function (e) { return e.kategoria; }),
@@ -1652,17 +1689,18 @@ function trend_chart_epit(canvas, eloszlas, blokk) {
       },
     },
   });
-  kategoria_chart._eloszlas = eloszlas;
+  blokk._kchart._eloszlas = eloszlas;
 }
 
 // szűréskor a chart CSAK SZÍNEZ (aktív teli, többi tompított); a sáv-ÉRTÉKEK/count-ok VÁLTOZATLANOK
-function trend_chart_szinez(aktiv) {
-  if (!kategoria_chart) return;
-  const el = kategoria_chart._eloszlas || [];
-  kategoria_chart.data.datasets[0].backgroundColor = el.map(function (e) {
+function trend_chart_szinez(blokk, aktiv) {
+  const chart = blokk && blokk._kchart;
+  if (!chart) return;
+  const el = chart._eloszlas || [];
+  chart.data.datasets[0].backgroundColor = el.map(function (e) {
     return trend_szin(e.kategoria, aktiv !== "" && e.kategoria !== aktiv);
   });
-  kategoria_chart.update();
+  chart.update();
 }
 
 function trend_gomb_epit(kategoria, cimke, count, blokk) {
@@ -1764,7 +1802,7 @@ function trend_szinkron(blokk) {
       g.textContent = szurt ? "× " + OSSZES_CIMKE : OSSZES_CIMKE;
     }
   });
-  trend_chart_szinez(aktiv);
+  trend_chart_szinez(blokk, aktiv);
 }
 
 // az összefoglaló (chart + magyarázat + szűrő) — CSAK kategóriás napon (van_kategoria)
@@ -1797,30 +1835,25 @@ function trend_osszefoglalo_epit(trendek, eloszlas, blokk) {
   return oss;
 }
 
-// a trend-blokk teljes újraépítése az aktuális napra (init + minden napváltás)
-function trend_blokk_render() {
-  const blokk = document.getElementById("trend-blokk");
-  if (!blokk) return;
-  trend_esemeny_kot();
-
-  const nap = trend_aktualis_nap(blokk);
-  if (nap) blokk.setAttribute(ATTR_T.nap, nap);
-
-  trend_chart_takarit();
-  blokk.querySelectorAll("." + OSZT_T.osszefoglalo + ", ." + OSZT_T.lista + ", ." + OSZT_T.ures
-    + ", ." + OSZT_T.idosor_ures_blokk + ", ." + OSZT_T.normalizalas_magyarazat)
-    .forEach(function (e) { e.remove(); });
-
-  // KATEGÓRIA-IDŐSOR: már NEM itt él — önálló #idosor-blokk szekció (idosor_blokk_render), NAP-FÜGGETLEN.
-
-  const trendek = trend_adat_nap(nap);
-  if (trendek === null) return;   // a régi nap még tölt (async) — a trend_nap_valt újrahív
-
-  if (!trendek.length) {          // §7.5 lista-szintű üres állapot
+// Task 9: egy szegmens-blokk (cím + összefoglaló + lista) egy önálló section.trend-szegmens-be, PER-SZEGMENS
+// szűrés-állapottal (a data-aktiv-kategoria/kategoria_chart innentől a szekción él, nem a #trend-blokk-on).
+function trend_szegmens_epit(gazda, sz) {
+  const sec = document.createElement("section");
+  sec.className = OSZT_T.szegmens;
+  if (sz.szegmens) sec.setAttribute("data-szegmens", sz.szegmens);
+  if (sz.cimke) {
+    const c = document.createElement("h3");
+    c.className = OSZT_T.szegmens_cim;
+    c.textContent = sz.cimke;
+    sec.appendChild(c);
+  }
+  gazda.appendChild(sec);
+  const trendek = sz.trendek;
+  if (!trendek.length) {          // §7.5 lista-szintű üres állapot (szegmensenként)
     const u = document.createElement("p");
     u.className = OSZT_T.ures;
     u.textContent = TREND_URES_SZOVEG;
-    blokk.appendChild(u);
+    sec.appendChild(u);
     return;
   }
 
@@ -1829,7 +1862,7 @@ function trend_blokk_render() {
   // kategoria_eloszlas MINDEN temak-bejegyzést számol, tehát eloszlas.length > 0 ⟺ van legalább egy
   // temak-bejegyzés ⟺ van legalább egy nem-üres temak ([]/hiányzó semmit nem ad hozzá). NE bontsd szét.
   const eloszlas = kategoria_eloszlas(trendek);
-  if (eloszlas.length > 0) blokk.appendChild(trend_osszefoglalo_epit(trendek, eloszlas, blokk));
+  if (eloszlas.length > 0) sec.appendChild(trend_osszefoglalo_epit(trendek, eloszlas, sec));
 
   // 8a Tétel-4: ha a nap MINDEN eleme üres idosor-ú (idosor-ág bukása), az elemenkénti üzenet EGY blokk-jelzéssé
   // vonódik össze (üres == elemszám; köztes arányoknál elemenkénti marad). A kártyák data-idosor-allapot="nincs"-e MARAD.
@@ -1838,7 +1871,7 @@ function trend_blokk_render() {
     const bu = document.createElement("p");
     bu.className = OSZT_T.idosor_ures_blokk;
     bu.textContent = TREND_IDOSOR_URES_BLOKK;
-    blokk.appendChild(bu);   // a szekció élén, a lista előtt
+    sec.appendChild(bu);   // a szekció élén, a lista előtt
   } else {
     // 8b (LELET 2): normalizálás-magyarázat a lista FÖLÉ — CSAK ha van görbe (!mind_ures). A feltétel
     // SZÁNDÉKOSAN a mind_ures-tükre, NEM a kategória (eloszlas>0): archív napon van görbe, de nincs kategória
@@ -1846,20 +1879,58 @@ function trend_blokk_render() {
     const nm = document.createElement("p");
     nm.className = OSZT_T.normalizalas_magyarazat;
     nm.textContent = TREND_NORMALIZALAS_SZOVEG;
-    blokk.appendChild(nm);
+    sec.appendChild(nm);
   }
 
   const lista = document.createElement("div");
   lista.className = OSZT_T.lista;
   trendek.forEach(function (t) { lista.appendChild(trend_kartya_epit(t, mind_ures)); });   // NINCS fix hossz-feltevés
-  blokk.appendChild(lista);
+  sec.appendChild(lista);
 
   // 8a: a "van" kártyák sparkline-jai AZONNAL rajzolódnak (mint a kategoria_chart ma) — a lista már a DOM-ban van
   Array.prototype.slice.call(
     lista.querySelectorAll("." + OSZT_T.kartya + "[" + ATTR_T.idosor_allapot + "='van']"))
     .forEach(trend_sparkline_letrehoz);
 
-  trend_szinkron(blokk);   // a kezdő állapot (nincs szűrés) szinkronja
+  trend_szinkron(sec);   // a kezdő állapot (nincs szűrés) per-szegmens szinkronja
+}
+
+// a trend-blokk teljes újraépítése az aktuális napra (init + minden napváltás) — Task 9: ASZINKRON, mert a
+// napfájlt (napok/<nap>.json) MINDEN napra (a legfrissebb is) innen tölti be, hogy a reggel/este szegmensekhez jusson.
+async function trend_blokk_render() {
+  const blokk = document.getElementById("trend-blokk");
+  if (!blokk) return;
+  trend_esemeny_kot();
+
+  const nap = trend_aktualis_nap(blokk);
+  if (nap) blokk.setAttribute(ATTR_T.nap, nap);
+
+  // a napfájl betöltése MINDEN napra (a legfrissebb is innen jön a szegmensekhez); legacy/hiányzó → fallback
+  const rel = "napok/" + nap + ".json";
+  if (nap && !(rel in adat)) {
+    try { adat[rel] = await nap_betolt(nap); } catch (e) { adat[rel] = null; }
+  }
+
+  trend_chart_takarit();
+  blokk.querySelectorAll("." + OSZT_T.szegmens + ", ." + OSZT_T.osszefoglalo + ", ." + OSZT_T.lista + ", ." + OSZT_T.ures
+    + ", ." + OSZT_T.idosor_ures_blokk + ", ." + OSZT_T.normalizalas_magyarazat)
+    .forEach(function (e) { e.remove(); });
+
+  // KATEGÓRIA-IDŐSOR: már NEM itt él — önálló #idosor-blokk szekció (idosor_blokk_render), NAP-FÜGGETLEN.
+
+  const szegmensek = trend_szegmensek_nap(nap);
+  if (szegmensek === null) return;   // még tölt — a napváltás/await újrahív
+
+  const van = szegmensek.some(function (s) { return s.trendek.length; });
+  if (!van) {                     // §7.5 blokk-szintű üres állapot (egyik szegmensben sincs trend)
+    const u = document.createElement("p");
+    u.className = OSZT_T.ures;
+    u.textContent = TREND_URES_SZOVEG;
+    blokk.appendChild(u);
+    return;
+  }
+
+  szegmensek.forEach(function (s) { trend_szegmens_epit(blokk, s); });
 }
 
 // a naptár vezérli a napot (esemény-delegálás a konténeren → túléli a naptár újrarajzolását)
@@ -1894,7 +1965,7 @@ async function trend_nap_valt(nap) {
     try { adat[rel] = await nap_betolt(nap); }
     catch (e) { hiba_kiir("trend-blokk", [(e && e.message) || rel]); return; }
   }
-  trend_blokk_render();
+  await trend_blokk_render();
 }
 
 // ── HETI FELKAPOTT KERESÉSEK blokk — hét-logika (ISO, hétfő–vasárnap) + napi táblázat ──────────────

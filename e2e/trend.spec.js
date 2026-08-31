@@ -108,11 +108,18 @@ async function mock(page, opts) {
       r.fulfill({ contentType: "application/json", body: JSON.stringify(opts.legfrissebb) });
     });
   }
-  if (opts.index) {
-    await page.route(/napok\/index\.json/, function (r) {
-      r.fulfill({ contentType: "application/json", body: JSON.stringify(opts.index) });
-    });
-  }
+  // Task 9: a napok/index.json is MINDIG route-olt (alap üres), UGYANAZZAL az izolációs indokkal, mint a
+  // kategoriak.json fent — a #1 "Ma felkapott" mostantól a LEGFRISSEBB napot is a napok/<nap>.json-ból olvassa,
+  // ezért mockolatlanul a teszt-szerver VALÓS napi archívuma (docs/data/napok/) szivárogna be (dátum-drift →
+  // nem-determinisztikus teszt). A konkrét napokat az opts.index ÍRJA FELÜL.
+  await page.route(/napok\/index\.json/, function (r) {
+    r.fulfill({ contentType: "application/json", body: JSON.stringify(opts.index || { napok: [] }) });
+  });
+  // ugyanígy MINDEN napok/<ISO-dátum>.json alapból 404 (a napfájl "nincs" ága) — a konkrét napokat opts.napok
+  // ÍRJA FELÜL alább; a Playwright a KÉSŐBB regisztrált route-ot preferálja, ezért ez a széles route ELŐBB áll.
+  await page.route(/napok\/\d{4}-\d{2}-\d{2}\.json/, function (r) {
+    r.fulfill({ status: 404, contentType: "application/json", body: "{}" });
+  });
   if (opts.napok) {
     for (const nap of Object.keys(opts.napok)) {
       const trendek = opts.napok[nap];
@@ -182,7 +189,9 @@ test("5. »Politics« szűrés: csak a Politics-kártyák láthatók + data-akti
   const gomb = page.locator(`${T} .kategoria-gomb[data-kategoria="Politics"]`);
   await expect(gomb).toHaveCount(1);
   await gomb.click();
-  await expect(page.locator(T)).toHaveAttribute("data-aktiv-kategoria", "Politics");
+  // Task 9: a szűrés-állapot (data-aktiv-kategoria) a SZEGMENS-konténeren él (per-szegmens szűrés), nem a
+  // #trend-blokk-on — régi (nem szegmentált) napon EGYETLEN .trend-szegmens van, az hordozza az attribútumot.
+  await expect(page.locator(`${T} .trend-szegmens`)).toHaveAttribute("data-aktiv-kategoria", "Politics");
   await expect(gomb).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator(`${T} .trend-kartya:visible`)).toHaveCount(2); // huth gergely + hortay olivér
 });
@@ -259,9 +268,10 @@ test("11. napváltáskor az aktív szűrés nullázódik", async ({ page }) => {
   const gomb = page.locator(`${T} .kategoria-gomb[data-kategoria="Politics"]`);
   await expect(gomb).toHaveCount(1);
   await gomb.click();
-  await expect(page.locator(T)).toHaveAttribute("data-aktiv-kategoria", "Politics");
+  // Task 9: a szűrés-állapot a SZEGMENS-konténeren él (lásd T5) — régi napon egyetlen .trend-szegmens van.
+  await expect(page.locator(`${T} .trend-szegmens`)).toHaveAttribute("data-aktiv-kategoria", "Politics");
   await napValt(page, "2026-08-01");
-  await expect(page.locator(T)).not.toHaveAttribute("data-aktiv-kategoria", /.+/);
+  await expect(page.locator(`${T} .trend-szegmens`)).not.toHaveAttribute("data-aktiv-kategoria", /.+/);
 });
 
 // ── T12 — változó lista-hossz (16 vs FELTŰNŐEN más 3) ──────────────────────────
@@ -470,7 +480,9 @@ test("25. a normalizálás-magyarázat a lista ELŐTT áll, és külön elem a k
   await expect(page.locator(`${T} .kategoria-magyarazat`)).toHaveCount(1);            // külön elem (kategóriás napon)
   await expect(page.locator(`${T} .trend-normalizalas-magyarazat`)).toHaveCount(1);
   const rend = await page.evaluate(function () {
-    const kids = Array.prototype.slice.call(document.getElementById("trend-blokk").children);
+    // Task 9: a lista/magyarázat a SZEGMENS-szekció gyereke (nem a #trend-blokk közvetlen gyereke) — régi
+    // (nem szegmentált) napon egyetlen .trend-szegmens van, annak a gyerekein nézzük a sorrendet.
+    const kids = Array.prototype.slice.call(document.querySelector("#trend-blokk .trend-szegmens").children);
     const idx = function (cls) { return kids.findIndex(function (e) { return e.classList.contains(cls); }); };
     return { nm: idx("trend-normalizalas-magyarazat"), lista: idx("trend-lista") };
   });
@@ -542,6 +554,39 @@ test("28. két azonos kifejezésű trend → napváltás UTÁN nincs árva Chart
     return page.evaluate(function (c) { return !!(window.Chart && Chart.getChart(c)); }, h);
   }));
   expect(el_utana.filter(Boolean).length).toBe(0);
+});
+
+// ── Task 9 — #1 Napi „Ma felkapott": szegmentált nap → két blokk egymás alatt (Reggeli/Esti), per-szegmens szűrés ──
+test("N. napi: szegmentált nap két blokkja (Reggeli + Esti), saját chippel", async ({ page }) => {
+  const IDX = { napok: ["2026-08-31"] };
+  await page.route(/kategoriak\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ napok: [] }) }));
+  await page.route(/legfrissebb\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ top_trendek: [], kulcsszavak: {}, kulcsszo_osszesites: [] }) }));
+  await page.route(/napok\/index\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify(IDX) }));
+  await page.route(/napok\/2026-08-31\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({
+    nap: "2026-08-31",
+    reggel: { trendek: [trend("reggeli-szo", "5000", ["Sports"])], frissitve: "2026-08-31T07:00:00+00:00" },
+    este: { trendek: [trend("esti-szo", "9000", ["Politics"]), trend("esti-ketto", "8000", ["Politics"])], frissitve: "2026-08-31T19:00:00+00:00" },
+  }) }));
+  await page.goto("/");
+  await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="reggel"]')).toBeVisible();
+  await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="este"]')).toBeVisible();
+  await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="reggel"] .trend-kartya')).toHaveCount(1);
+  await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="este"] .trend-kartya')).toHaveCount(2);
+  // per-szegmens szűrő: az esti "Politics (2)" chip csak az esti blokkban
+  await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="este"] .kategoria-szuro button[data-kategoria="Politics"]')).toHaveAttribute("data-count", "2");
+});
+
+test("N+1. napi: régi (nem szegmentált) nap egyetlen blokk, cím nélkül", async ({ page }) => {
+  await page.route(/kategoriak\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ napok: [] }) }));
+  await page.route(/legfrissebb\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ top_trendek: [], kulcsszavak: {}, kulcsszo_osszesites: [] }) }));
+  await page.route(/napok\/index\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ napok: ["2026-08-20"] }) }));
+  await page.route(/napok\/2026-08-20\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({
+    nap: "2026-08-20", trendek: [trend("regi-szo", "5000", ["Sports"])],
+  }) }));
+  await page.goto("/");
+  await expect(page.locator('#trend-blokk .trend-szegmens')).toHaveCount(1);
+  await expect(page.locator('#trend-blokk .trend-szegmens-cim')).toHaveCount(0);   // régi napon nincs címke
+  await expect(page.locator('#trend-blokk .trend-kartya')).toHaveCount(1);
 });
 
 // ── KATEGÓRIA-IDŐSOR Szelet 1 — shaper + DOM-tükör (.idosor-adat). Canvast NEM érint, DOM-assertálható. ──
