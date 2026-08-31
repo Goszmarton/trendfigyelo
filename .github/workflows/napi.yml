@@ -42,8 +42,9 @@ jobs:
         shell: bash
         run: |
           # Kézi (workflow_dispatch) futás MINDIG gyűjt — a felhasználó szándéka felülír.
-          # Ütemezett futásnál: ha a legfrissebb adat 'frissitve' dátuma a mai UTC-nap,
-          # ma már megvan az adat → a fallback slot némán kihagyja a gyűjtést (skip=true).
+          # Ütemezett futásnál: ha az 'este' szegmens 'frissitve' dátuma a mai budapesti
+          # naptári nap, ma már megvan az esti adat → a fallback slot némán kihagyja a
+          # gyűjtést (skip=true).
           if [ "${{ github.event_name }}" != "schedule" ]; then
             echo "Kézi (workflow_dispatch) futás — az őr nem aktív, gyűjtünk."
             echo "skip=false" >> "$GITHUB_OUTPUT"

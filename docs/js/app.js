@@ -1332,23 +1332,12 @@ function trend_legfrissebb_nap() {
   return n.length ? n[n.length - 1] : null;
 }
 
-// az adott nap trendjei: legfrissebb → legfrissebb.json top_trendek; régebbi → napok/<nap>.json trendek.
-// Visszaad: tömb, VAGY null (a régi nap még nincs betöltve — a trend_nap_valt tölti be és újrahív).
-function trend_adat_nap(nap) {
-  if (!nap || nap === trend_legfrissebb_nap()) {
-    const lf = adat["legfrissebb.json"];
-    return lf ? (lf.top_trendek || []) : [];
-  }
-  const napi = adat["napok/" + nap + ".json"];
-  return napi ? (napi.trendek || []) : null;
-}
-
 // az adott nap megjelenítendő szegmensei: [{szegmens, cimke, trendek}] (reggel elöl), VAGY null (a nap még tölt).
 // Forrás MINDEN napra a napok/<nap>.json; ha az még nincs betöltve → null (a render betölti és újrahív).
 // Legfrissebb-fallback: ha a napfájl hiányzik/legacy-üres és a legfrissebb.json-ban van top_trendek → egy cím nélküli blokk.
 // nap === null/"" (pl. a napok/index.json még nem elérhető → nincs kiszámítható napazonosító a fájlnévhez):
 // a napfájl-ág itt NEM érvényes (a render sem próbál "napok/null.json"-t tölteni) → egyenesen a legfrissebb.json-ra
-// esik vissza, mint a régi trend_adat_nap !nap ága.
+// esik vissza.
 function trend_szegmensek_nap(nap) {
   if (nap) {
     const rel = "napok/" + nap + ".json";

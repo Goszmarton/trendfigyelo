@@ -101,6 +101,10 @@ def szegmens_mar_gyujtottunk_ma(docs_data, szegmens, ma_bp):
 
     Hiányzó/olvashatatlan jel → False (inkább gyűjtsünk, mint tévesen kihagyjunk).
     """
+    # A 'frissitve' UTC-ben van (napi_ir a most.isoformat()-ot írja), itt viszont a
+    # budapesti naptári nappal (ma_bp) hasonlítjuk; a 09:00/21:00 budapesti triggereknél
+    # ez egybeesik, az egyetlen eltérés (budapesti éjfél utáni backup-futás) FAIL-OPEN
+    # (újra gyűjt, sosem hamis kihagyás) — ne "javítsd" UTC-összehasonlításra.
     return _szegmens_datuma(docs_data, szegmens, ma_bp) == ma_bp
 
 
