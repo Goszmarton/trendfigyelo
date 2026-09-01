@@ -1,41 +1,46 @@
 {
-"frissitve": "2026-09-01T00:04:56+00:00",
+"frissitve": "2026-09-01T01:45:24+00:00",
 "modell": "claude-opus-4-8",
 "nap": "2026-09-01",
 "valtozas": {
 "diff": {
 "irany_valtok": [
 {
+"szo": "akciós újság",
+"elozo": "stagnal",
+"mai": "csokken"
+},
+{
 "szo": "albérlet",
 "elozo": "csokken",
 "mai": "stagnal"
 },
 {
-"szo": "hitel",
+"szo": "állás",
 "elozo": "csokken",
 "mai": "stagnal"
 }
 ],
 "mozgok": [
 {
-"szo": "albérlet",
-"valtozas": 1.663
-},
-{
-"szo": "nyaralás",
-"valtozas": -1.289
-},
-{
-"szo": "napelem",
-"valtozas": 0.93
-},
-{
 "szo": "akciós újság",
-"valtozas": -0.806
+"valtozas": -1.527
+},
+{
+"szo": "állás",
+"valtozas": 1.435
 },
 {
 "szo": "eladó lakás",
-"valtozas": 0.495
+"valtozas": -0.987
+},
+{
+"szo": "albérlet",
+"valtozas": 0.966
+},
+{
+"szo": "nyaralás",
+"valtozas": -0.885
 }
 ],
 "felkapott_uj": [
@@ -56,108 +61,108 @@
 ],
 "van_elozo": true
 },
-"szoveg": "A tegnapi képhez képest a legszembetűnőbb elmozdulás az albérlet és a hitel körül látszik: mindkettő a korábbi csökkenő irányból ma inkább kiegyenlített, stagnáló állapotba fordult. Az albérlet mozdult a legnagyobbat felfelé, míg a nyaralás iránti figyelem határozottan visszább lépett, ami a nyár végével összecsengő, óvatosan értelmezhető jelzés lehet.\n\nA napelem és az eladó lakás enyhén erősödött, az akciós újság iránti érdeklődés pedig valamelyest apadt. A felkapott témák között több új név bukkant fel, köztük az időjáráshoz kötődő kifejezések, egy spanyol labdarúgó-mérkőzés és a gáz témaköre. Ezzel párhuzamosan néhány korábbi téma, például a hidegfront és egy lemondáshoz kapcsolódó keresés kikopott a friss listáról."
+"szoveg": "A tegnapi képhez képest néhány kereséstípus megfordult. Az akciós újság korábban inkább egy helyben állt, ma viszont már lefelé húzó pályán van. Ezzel szemben az albérlet és az állás korábbi csökkenő mozgása mára inkább kiegyenlítődött, egy helyben álló képet mutat.\n\nA napon belüli mozgás terén az akciós újság volt a legmarkánsabban lefelé induló szó, míg az állás iránti érdeklődés a másik irányba, felfelé mozdult. Az eladó lakás és a nyaralás inkább lefelé billent, az albérlet pedig enyhén erősödött.\n\nA felkapott témák között ma frissen tűnt fel több időjárással kapcsolatos kifejezés, például a holnapi időjárás, az időjárás és az Időkép, valamint egy-egy sportmérkőzés, a gáz és egy szórakoztató műsor. Közben kikopott a keresésekből néhány tegnapi téma, köztük egy dátumhoz kötődő kifejezés, a hidegfront és néhány személyhez kapcsolódó keresés."
 },
 "kulcsszavak": {
 "szamok": [
 {
 "szo": "akciós újság",
-"irany": "stagnal",
-"meredekseg": -0.535,
+"irany": "csokken",
+"meredekseg": -1.256,
 "ervenyes": true,
-"mai_ertek": 19,
-"csucs": 50.0,
-"atlag": 35.95
+"mai_ertek": 0,
+"csucs": 57.0,
+"atlag": 40.19
 },
 {
 "szo": "albérlet",
 "irany": "stagnal",
-"meredekseg": 0.146,
+"meredekseg": -0.551,
 "ervenyes": true,
-"mai_ertek": 46,
-"csucs": 75.0,
-"atlag": 52.0
+"mai_ertek": 0,
+"csucs": 66.0,
+"atlag": 45.56
 },
 {
 "szo": "benzin",
 "irany": "csokken",
-"meredekseg": -1.125,
+"meredekseg": -1.311,
 "ervenyes": true,
-"mai_ertek": 34,
-"csucs": 59.0,
-"atlag": 23.1
+"mai_ertek": 45,
+"csucs": 58.0,
+"atlag": 23.14
 },
 {
 "szo": "betegség",
 "irany": "stagnal",
-"meredekseg": 0.474,
+"meredekseg": 0.399,
 "ervenyes": true,
 "mai_ertek": 0,
-"csucs": 55.0,
-"atlag": 36.58
+"csucs": 30.0,
+"atlag": 20.16
 },
 {
 "szo": "eladó lakás",
 "irany": "stagnal",
-"meredekseg": 0.751,
+"meredekseg": -0.731,
 "ervenyes": true,
-"mai_ertek": 48,
-"csucs": 71.0,
-"atlag": 57.35
+"mai_ertek": 0,
+"csucs": 63.0,
+"atlag": 50.47
 },
 {
 "szo": "hitel",
-"irany": "stagnal",
-"meredekseg": -0.949,
+"irany": "csokken",
+"meredekseg": -1.35,
 "ervenyes": true,
 "mai_ertek": 0,
-"csucs": 58.0,
-"atlag": 46.55
+"csucs": 72.0,
+"atlag": 55.65
 },
 {
 "szo": "kormányablak",
 "irany": "csokken",
-"meredekseg": -3.193,
+"meredekseg": -3.963,
 "ervenyes": true,
-"mai_ertek": 24,
+"mai_ertek": 0,
 "csucs": 100.0,
-"atlag": 60.65
+"atlag": 61.0
 },
 {
 "szo": "kórház",
 "irany": "csokken",
-"meredekseg": -2.322,
+"meredekseg": -2.952,
 "ervenyes": true,
-"mai_ertek": 24,
-"csucs": 91.0,
-"atlag": 52.52
+"mai_ertek": 0,
+"csucs": 93.0,
+"atlag": 53.17
 },
 {
 "szo": "napelem",
 "irany": "stagnal",
-"meredekseg": 0.44,
+"meredekseg": -0.114,
 "ervenyes": true,
-"mai_ertek": 57,
-"csucs": 100.0,
-"atlag": 44.67
+"mai_ertek": 0,
+"csucs": 39.0,
+"atlag": 25.47
 },
 {
 "szo": "nyaralás",
 "irany": "stagnal",
-"meredekseg": -0.303,
+"meredekseg": 0.101,
 "ervenyes": true,
 "mai_ertek": 0,
-"csucs": 41.0,
-"atlag": 30.6
+"csucs": 70.0,
+"atlag": 47.38
 },
 {
 "szo": "nyugdíj",
 "irany": "csokken",
-"meredekseg": -3.633,
+"meredekseg": -3.833,
 "ervenyes": true,
-"mai_ertek": 19,
-"csucs": 45.0,
-"atlag": 19.5
+"mai_ertek": 31,
+"csucs": 44.0,
+"atlag": 18.91
 },
 {
 "szo": "tüntetés",
@@ -165,27 +170,27 @@
 "meredekseg": null,
 "ervenyes": false,
 "mai_ertek": null,
-"csucs": 5.0,
-"atlag": 3.11
+"csucs": 6.0,
+"atlag": 3.5
 },
 {
 "szo": "állás",
-"irany": "csokken",
-"meredekseg": -1.796,
+"irany": "stagnal",
+"meredekseg": -0.387,
 "ervenyes": true,
-"mai_ertek": 49,
-"csucs": 96.0,
-"atlag": 71.21
+"mai_ertek": 100,
+"csucs": 36.0,
+"atlag": 27.88
 }
 ],
 "napi": {
-"szoveg": "A ma mért értékek vegyes képet mutatnak. A napelem a szokásos átlagos szintjénél érezhetően magasabban, 57-en áll, ami a megszokottnál élénkebb érdeklődésre utal. Az albérlet és az eladó lakás egyaránt a középmezőnyben mozog, a lakhatás témája tehát folyamatosan jelen van a keresésekben.\n\nFeltűnő, hogy a betegség, a hitel és a nyaralás ma nulla közeli értéken áll, vagyis ezekben gyakorlatilag nincs mai kereslet a szokásos szintjükhöz képest. A benzin 34-es értéke viszont a saját átlaga (nagyjából 23) fölött van, ami a szokásosnál nagyobb figyelmet jelez. A tüntetés szó ma nem adott értékelhető adatot."
+"szoveg": "A ma vizsgált kereséseknél az állás emelkedik ki a leginkább: mai értéke a lehetséges skála tetején jár, és ez érdemben a saját megszokott szintje fölött van, vagyis ma feltűnően élénk az érdeklődés az álláskeresés iránt. A benzin is aktívabb a szokásosnál, mai értéke jóval a saját átlaga fölé került, még ha az iránya inkább lefelé mutat is.\n\nA nyugdíj szintén mozgásban van, mai értéke a saját átlagát meghaladja, bár a mögötte lévő tendencia csökkenő. A többi vizsgált szó ma alig mutat mérhető keresést, náluk gyakorlatilag nem látszik érdemi napi aktivitás.\n\nA tüntetés esetében ma nincs értékelhető adat, így erről most nem lehet megbízhatóan nyilatkozni."
 },
 "teljes_kep": {
-"szoveg": "Összességében a lakhatással és a rezsivel összefüggő témák – albérlet, eladó lakás, napelem, benzin – tartósan foglalkoztatják az embereket, míg az egészséghez és a pénzügyi terhekhez kötődő szavak, mint a betegség és a hitel, ma háttérbe húzódtak. A kormányablak, a kórház, a nyugdíj és az állás mind csökkenő pályán van, ami inkább lecsengő, mint erősödő érdeklődésre utal.\n\nÉrdemes óvatosan kezelni ezeket az irányokat: egyetlen nap alacsony értéke még nem jelent tartós fordulatot, és a hétvégi, ünnepnaphoz közeli időszakok önmagukban is visszafoghatják bizonyos hivatali vagy munkakeresési témák keresését."
+"szoveg": "Összességében a mindennapi megélhetéshez és pénzügyekhez köthető keresések vannak előtérben: az állás, a benzin és a nyugdíj a szokásosnál élénkebb figyelmet kap. Ez óvatosan úgy olvasható, hogy a praktikus, anyagi jellegű kérdések foglalkoztatják most inkább az embereket, bár ezt az adat önmagában nem magyarázza meg teljesen.\n\nAz ingatlanhoz kötődő szavak, mint az albérlet, az eladó lakás vagy a lakhatás egyéb kifejezései most inkább nyugodtabb, alacsonyabb szinten mozognak. A hiteltől a napelemig több téma is a saját megszokott szintje alatt vagy annak közelében marad."
 },
 "het": {
-"szoveg": "A hetes ablakban a hitel, az albérlet és a betegség mutatja a legnagyobb visszaesést a hét eleji szintjéhez képest, mindhárom lejjebb csúszott a hét végére. Ezzel szemben a benzin, a kormányablak és a nyugdíj a hét folyamán inkább erősödött, még ha alacsony szintről is indultak.\n\nA napelem stabilan, kis emelkedéssel zárta a hetet, az eladó lakás és az akciós újság pedig gyakorlatilag a hét eleji szintjén maradt. A nyaralás végig lapos, nulla közeli maradt, ami a szezon lezárulásával összhangban álló, de önmagában nem magyarázható jelzés."
+"szoveg": "A hét egészét nézve az állás iránti érdeklődés futott fel a leglátványosabban: a hét eleji szintjéről jelentősen feljebb került a hét végére, és a mozgástere is széles volt. Ez a kép illeszkedik ahhoz, hogy a hét vége felé, a nyár záró szakaszában sokan foglalkoznak munkakereséssel, bár erre biztos magyarázatot az adat nem ad.\n\nA benzin szintén erősödött a hét folyamán, a semmiből indulva emelkedett feljebb. A nyugdíj kisebb mértékben, de szintén feljebb kúszott. Ezzel szemben az akciós újság a hét eleji élénkebb szintjéről visszaesett. A többi vizsgált téma a héten át inkább alacsony, csendes szinten maradt."
 }
 },
 "felkapott": {
@@ -243,45 +248,20 @@
 ]
 },
 {
-"kifejezes": "barcelona–rayo",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": [
-{
-"hir_cim": "Barcelona 5 - 2 Rayo Vallecano: resumen, goles y resultado de LaLiga EA Sports",
-"hir_forras": "Diario AS",
-"hir_url": "https://as.com/futbol/primera/barcelona-rayo-vallecano-en-directo-laliga-ea-sports-en-vivo-hoy-f202608-d/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRHmgYHmURLhgy5Xaqx3t5X0FxGvtZJjEMbWu5t5I2BjelWGsqJtVcMvs1kyNc",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "El Barça ha vuelto a decepcionar al Real Madrid y a Mourinho.",
-"hir_forras": "Vietnam.vn",
-"hir_url": "https://www.vietnam.vn/es/barca-lai-khien-real-madrid-va-mourinho-mat-vui",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSst0xM2Y09-v_FA_bUQpVclwWXeilUdRMldNA5obYqS8mmds-qgL02127HNS0",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "El Barça de las &apos;mil opciones&apos; pone en aprietos a Flick: &quot;Es un reto mantener en tensión a los que creen que deberían jugar más&quot;",
-"hir_forras": "Cadena SER",
-"hir_url": "https://cadenaser.com/audio/1788215917951/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRqrWiN2fWwOHb7RY3Pwkc7ivln-2Ut-DbGNRix9yiJ-psxjg9PSexFgtFZnvY",
-"hir_kivonat": ""
-}
-]
-},
-{
 "kifejezes": "járvány",
 "volumen": "10000",
 "novekedes_pct": "1000",
 "temak": [
 "Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "barcelona–rayo",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
 ],
 "hirek": []
 },
@@ -340,17 +320,17 @@
 {
 "kifejezes": "idojaras",
 "volumen": "5000",
-"novekedes_pct": "400",
+"novekedes_pct": "300",
 "temak": [
 "Other"
 ],
 "hirek": [
 {
-"hir_cim": "Megérkezett a vészjelzés: két hullámban csap le a pusztító vihar Magyarországra",
-"hir_forras": "Portfolio.hu",
-"hir_url": "https://www.portfolio.hu/gazdasag/20260831/megerkezett-a-veszjelzes-ket-hullamban-csap-le-a-pusztito-vihar-magyarorszagra-859372",
+"hir_cim": "Belföld - A kánikula után lecsap a vihar, az egész országra figyelmeztetést adtak ki",
+"hir_forras": "Index.hu",
+"hir_url": "https://index.hu/belfold/2026/08/31/idojaras-elorejelzes-augusztus-utolso-napja-riasztas-zivatar-fronthatas-vihar-radar/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWy1dtNRgzDbDcPiO7vz47ISEwmScL9nHg-isJ_LNEcb3_OsSpRWWHoKTqUH4",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeumKOJt-8fonOuARRSPB0wL3Z7nbNeTI8yA1KM7cRQ6YIHX5JzHcCFl8E7iw",
 "hir_kivonat": ""
 },
 {
@@ -374,7 +354,7 @@
 {
 "kifejezes": "most wanted",
 "volumen": "5000",
-"novekedes_pct": "700",
+"novekedes_pct": "600",
 "temak": [
 "Entertainment"
 ],
@@ -417,11 +397,11 @@
 "hirek": []
 },
 {
-"kifejezes": "hazassag elso latasra 2026",
+"kifejezes": "tűzifa",
 "volumen": "2000",
-"novekedes_pct": "900",
+"novekedes_pct": "1000",
 "temak": [
-"Entertainment"
+"Other"
 ],
 "hirek": []
 },
@@ -435,20 +415,11 @@
 "hirek": []
 },
 {
-"kifejezes": "tűzifa",
+"kifejezes": "hazassag elso latasra 2026",
 "volumen": "2000",
-"novekedes_pct": "1000",
+"novekedes_pct": "900",
 "temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "amedspor–trabzonspor",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
+"Entertainment"
 ],
 "hirek": []
 },
@@ -471,20 +442,29 @@
 "hirek": []
 },
 {
-"kifejezes": "gáz",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
-},
-{
 "kifejezes": "papp gergely",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "amedspor–trabzonspor",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "gáz",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
 ],
 "hirek": []
 },
@@ -498,20 +478,20 @@
 "hirek": []
 },
 {
-"kifejezes": "rtl műsor",
-"volumen": "2000",
-"novekedes_pct": "300",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
 "kifejezes": "telex.hu",
 "volumen": "2000",
 "novekedes_pct": "700",
 "temak": [
 "Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "rtl műsor",
+"volumen": "2000",
+"novekedes_pct": "300",
+"temak": [
+"Entertainment"
 ],
 "hirek": []
 }
@@ -571,45 +551,20 @@
 ]
 },
 {
-"kifejezes": "barcelona–rayo",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": [
-{
-"hir_cim": "Barcelona 5 - 2 Rayo Vallecano: resumen, goles y resultado de LaLiga EA Sports",
-"hir_forras": "Diario AS",
-"hir_url": "https://as.com/futbol/primera/barcelona-rayo-vallecano-en-directo-laliga-ea-sports-en-vivo-hoy-f202608-d/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRHmgYHmURLhgy5Xaqx3t5X0FxGvtZJjEMbWu5t5I2BjelWGsqJtVcMvs1kyNc",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "El Barça ha vuelto a decepcionar al Real Madrid y a Mourinho.",
-"hir_forras": "Vietnam.vn",
-"hir_url": "https://www.vietnam.vn/es/barca-lai-khien-real-madrid-va-mourinho-mat-vui",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSst0xM2Y09-v_FA_bUQpVclwWXeilUdRMldNA5obYqS8mmds-qgL02127HNS0",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "El Barça de las &apos;mil opciones&apos; pone en aprietos a Flick: &quot;Es un reto mantener en tensión a los que creen que deberían jugar más&quot;",
-"hir_forras": "Cadena SER",
-"hir_url": "https://cadenaser.com/audio/1788215917951/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRqrWiN2fWwOHb7RY3Pwkc7ivln-2Ut-DbGNRix9yiJ-psxjg9PSexFgtFZnvY",
-"hir_kivonat": ""
-}
-]
-},
-{
 "kifejezes": "járvány",
 "volumen": "10000",
 "novekedes_pct": "1000",
 "temak": [
 "Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "barcelona–rayo",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
 ],
 "hirek": []
 },
@@ -668,17 +623,17 @@
 {
 "kifejezes": "idojaras",
 "volumen": "5000",
-"novekedes_pct": "400",
+"novekedes_pct": "300",
 "temak": [
 "Other"
 ],
 "hirek": [
 {
-"hir_cim": "Megérkezett a vészjelzés: két hullámban csap le a pusztító vihar Magyarországra",
-"hir_forras": "Portfolio.hu",
-"hir_url": "https://www.portfolio.hu/gazdasag/20260831/megerkezett-a-veszjelzes-ket-hullamban-csap-le-a-pusztito-vihar-magyarorszagra-859372",
+"hir_cim": "Belföld - A kánikula után lecsap a vihar, az egész országra figyelmeztetést adtak ki",
+"hir_forras": "Index.hu",
+"hir_url": "https://index.hu/belfold/2026/08/31/idojaras-elorejelzes-augusztus-utolso-napja-riasztas-zivatar-fronthatas-vihar-radar/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWy1dtNRgzDbDcPiO7vz47ISEwmScL9nHg-isJ_LNEcb3_OsSpRWWHoKTqUH4",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeumKOJt-8fonOuARRSPB0wL3Z7nbNeTI8yA1KM7cRQ6YIHX5JzHcCFl8E7iw",
 "hir_kivonat": ""
 },
 {
@@ -702,7 +657,7 @@
 {
 "kifejezes": "most wanted",
 "volumen": "5000",
-"novekedes_pct": "700",
+"novekedes_pct": "600",
 "temak": [
 "Entertainment"
 ],
@@ -745,11 +700,11 @@
 "hirek": []
 },
 {
-"kifejezes": "hazassag elso latasra 2026",
+"kifejezes": "tűzifa",
 "volumen": "2000",
-"novekedes_pct": "900",
+"novekedes_pct": "1000",
 "temak": [
-"Entertainment"
+"Other"
 ],
 "hirek": []
 },
@@ -763,20 +718,11 @@
 "hirek": []
 },
 {
-"kifejezes": "tűzifa",
+"kifejezes": "hazassag elso latasra 2026",
 "volumen": "2000",
-"novekedes_pct": "1000",
+"novekedes_pct": "900",
 "temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "amedspor–trabzonspor",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
+"Entertainment"
 ],
 "hirek": []
 },
@@ -799,20 +745,29 @@
 "hirek": []
 },
 {
-"kifejezes": "gáz",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
-},
-{
 "kifejezes": "papp gergely",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "amedspor–trabzonspor",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "gáz",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
 ],
 "hirek": []
 },
@@ -826,20 +781,20 @@
 "hirek": []
 },
 {
-"kifejezes": "rtl műsor",
-"volumen": "2000",
-"novekedes_pct": "300",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
 "kifejezes": "telex.hu",
 "volumen": "2000",
 "novekedes_pct": "700",
 "temak": [
 "Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "rtl műsor",
+"volumen": "2000",
+"novekedes_pct": "300",
+"temak": [
+"Entertainment"
 ],
 "hirek": []
 }
@@ -879,13 +834,13 @@
 "szoveg": "Ma nem volt reggeli gyűjtés, ezért a reggeli kép nem elemezhető."
 },
 "este": {
-"szoveg": "Estére a lista élén az időjáráshoz kötődő és néhány gazdasági-közéleti téma állt. Kiemelkedett a jég, az MVM Zrt., valamint a holnapi időjárás, mindegyik nagy keresési volumennel. Az időjárási hírek egy közelgő viharra és egy budapesti melegrekordra utaltak, ami feltehetően magyarázza az idokép és az idojaras kifejezések megélénkülését.\n\nEmellett este ott volt a járvány, az Orbán Ráhel név, a pénzcentrum.hu, valamint sportesemények, például a Barcelona–Rayo és az Aston Villa–Arsenal mérkőzés. Több szórakoztató és médiához kötődő téma is felbukkant, köztük a Most Wanted, a Házasság első látásra 2026 és Várkonyi Andrea neve."
+"szoveg": "Estére az időjárás uralta a kereséseket: a holnapi időjárás, az időjárás és az Időkép is előkelő helyen szerepelt, a hírek pedig melegrekordról és közelgő zivatarokról, viharfigyelmeztetésről számoltak be. Emellett kiemelkedő volt a jég és az MVM Zrt. iránti érdeklődés is.\n\nEste feltűnt még a járvány, több futballmérkőzés, például a Barcelona–Rayo és az Aston Villa–Arsenal, valamint Orbán Ráhel és a Pénzcentrum neve. Kisebb volument mozgatott, de jelen volt a tűzifa, a gáz, több szórakoztató téma és médiához köthető keresés, például a Telex vagy az RTL műsora."
 },
 "teljes_nap": {
 "szoveg": "Reggeli pillanatkép híján a nap íve (a reggeltől estig tartó elmozdulás) nem rajzolható."
 },
 "het": {
-"szoveg": "A hét egészét nézve néhány téma többször is visszatért. Molnár Áron és a pénz kifejezés három-három napon át jelen volt, míg olyan nevek és témák, mint Berend T. Iván, a gáz, a hidegfront, az időkép, a járvány, a jég, Lagzi Lajcsi, a légitársaság, a Most Wanted, az MVM Zrt., Orbán Ráhel, Papp Gergely, a pénzcentrum.hu, az RTL-műsor, a telex.hu, a tűzifa és Várkonyi Andrea két-két napon szerepeltek.\n\nEz a visszatérő halmaz jól mutatja, hogy a héten párhuzamosan futott az időjárás, a rezsi és energia témaköre, a hazai közélet és a szórakoztató műsorok iránti érdeklődés. A sok egynapos sport- és külföldi mérkőzés-keresés inkább az adott napokhoz kötődő eseti figyelemre utal."
+"szoveg": "A hét egészében néhány téma több napon át vissza-visszatért. Ilyen volt Molnár Áron és a pénz, amelyek három napon is felbukkantak, valamint két-két napon több sportmérkőzés, energiához köthető keresés, mint a gáz és a tűzifa, továbbá az időjárás körüli szavak, mint a hidegfront, az Időkép és a jég.\n\nVisszatérő szereplő volt még az MVM Zrt., a járvány, Orbán Ráhel, a Pénzcentrum, néhány médiafelület és több, a szórakoztatáshoz köthető név, például Várkonyi Andrea vagy Lagzi Lajcsi. Ez a kép egy olyan hetet mutat, amelyben az időjárás, a megélhetés-pénzügyek és a média-szórakozás témái tartósan foglalkoztatták a keresőket."
 },
 "het_valos": {
 "napok": 7,
@@ -1611,13 +1566,13 @@
 }
 ],
 "napi": {
-"szoveg": "A videós keresésekben ma a mese áll kiemelkedően magasan, 91-es értékkel, ami a saját megszokott szintjéhez közeli, tartósan erős igény. A meditáció szintén magasan, 79-en mozog, a szorongás pedig 61-gyel a saját átlaga (nagyjából 30) fölött jár, ami a megszokottnál jóval élénkebb érdeklődésre utal.\n\nA befektetés a maga 54-es értékével szintén a saját átlaga fölött van, míg a magyar péter és a klíma ma alacsony, egyszámjegyű vagy tízes körüli szinten mozog. Fontos, hogy ezek a szavak külön-külön, saját skálájukon értelmezendők, egymáshoz nem hasonlíthatók."
+"szoveg": "A videós keresésekben ma több téma is a saját megszokott szintje fölött jár. A szorongás mai értéke jóval meghaladja a rá jellemző átlagot, ami arra utal, hogy e téma iránt most élénkebb a videós figyelem. A befektetés szintén feltűnően aktív, a szokásos szintjéhez képest jóval magasabban.\n\nA bitcoin is a megszokottnál élénkebb ma, mai értéke a saját átlaga fölött van. A mese és a meditáció továbbra is magas szinten mozog, ami náluk megszokottnak számít. Ezzel szemben a magyar péter és a klíma keresése ma alacsonyan, a saját megszokott szintjük közelében vagy az alatt marad. Fontos, hogy ezek a videós szavak mind a saját külön skálájukon mozognak, így egymással nem összemérhetők."
 },
 "teljes_kep": {
-"szoveg": "A videós figyelem összképében az egészséghez és a nyugalomhoz kötődő tartalmak – meditáció, szorongás, edzés – erős jelenléte a legjellemzőbb, ezek együtt tartós keresletet mutatnak. A pénzügyi témák, mint a bitcoin és a befektetés, szintén a saját átlaguk fölött állnak, ami élénkebb érdeklődésre utalhat.\n\nA családi és tanuláshoz kötődő tartalmak, a mese és a tanulás stabilan magasan vannak, míg a közéleti kifejezések inkább visszafogottak. Mindez óvatosan úgy összegezhető, hogy a videós kereséseknél most a személyes jóllét, a pénzügyek és a családi tartalmak dominálnak."
+"szoveg": "A videós érdeklődés összképében az egészséghez és a pénzügyekhez köthető témák most az átlagosnál valamivel jobban felkeltik a figyelmet, míg a mindennapi, folyamatosan népszerű tartalmak, mint a mese vagy a meditáció, stabilan magas szinten maradnak.\n\nA közélethez és az otthonhoz köthető keresések inkább visszafogottabbak. Mindezt óvatosan érdemes kezelni, hiszen minden egyes téma a saját skáláján mozog, tehát az itt leírtak az adott szó önmagához mért helyzetéről szólnak, nem a szavak egymáshoz viszonyított rangsoráról."
 },
 "het": {
-"szoveg": "A hetes videós adatok szerint a szorongás emelkedett a legtöbbet, a hét eleji szintjéről érezhetően feljebb lépett. A meditáció és a bitcoin szintén erősödött, ami a nyugalmat kereső és a pénzügyi tartalmak iránti növekvő figyelmet jelzi.\n\nA másik oldalon a klíma és a nyaralás enyhén visszább lépett, a magyar péter, a hírek és a recept pedig kismértékben csökkent. A mese gyakorlatilag változatlanul, magas szinten zárta a hetet. Ezek az elmozdulások többnyire mérsékeltek, így inkább finom hangsúlyeltolódásról, mint éles fordulatról beszélhetünk."
+"szoveg": "A héten a videós keresések közül a szorongás erősödött a leginkább, a hét eleji szintjéről érzékelhetően feljebb került a hét végére. Emellett a meditáció, a bitcoin, az edzés és a tanulás is enyhén emelkedett a hét során.\n\nA másik irányba a klíma mozdult a leginkább, ez csökkent a legjobban a héten. Kisebb mértékben halványult a nyaralás, a magyar péter, a hírek és a recept iránti videós figyelem is. A mese a hét egészében stabilan a csúcshoz közeli szinten maradt."
 }
 }
 }
