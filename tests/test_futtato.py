@@ -1449,3 +1449,31 @@ def test_main_mode_argparse_alap_este():
     assert futtato._mode_parse([]) == "este"
     assert futtato._mode_parse(["--mode", "reggel"]) == "reggel"
     assert futtato._mode_parse(["--mode", "este"]) == "este"
+
+
+def test_este_hajnali_futas_az_elozo_napra_ir(tmp_path):
+    # 03:38 CEST (01:38 UTC) esti futás = az ELŐZŐ nap (08-31) esti pótlása, NEM 09-01 este
+    most = datetime(2026, 9, 1, 1, 38, tzinfo=timezone.utc)
+    ddir = tmp_path / "docs" / "data"
+    futtato.futtat(_config(), AdatKliens(), tmp_path / "adatok", ddir, most=most, mode="este")
+    elozo = json.loads((ddir / "napok" / "2026-08-31.json").read_text(encoding="utf-8"))
+    assert "este" in elozo
+    assert not (ddir / "napok" / "2026-09-01.json").exists()
+
+
+def test_este_esti_futas_aznapra_ir(tmp_path):
+    # 21:00 CEST (19:00 UTC) → aznap (09-01) este
+    most = datetime(2026, 9, 1, 19, 0, tzinfo=timezone.utc)
+    ddir = tmp_path / "docs" / "data"
+    futtato.futtat(_config(), AdatKliens(), tmp_path / "adatok", ddir, most=most, mode="este")
+    mai = json.loads((ddir / "napok" / "2026-09-01.json").read_text(encoding="utf-8"))
+    assert "este" in mai
+
+
+def test_reggel_mod_valtozatlan_nincs_hajnali_eltolas(tmp_path):
+    # reggel-mód: a 09:00 CEST (07:00 UTC) a MAI reggelbe ír (nincs esti_nap-eltolás)
+    most = datetime(2026, 9, 1, 7, 0, tzinfo=timezone.utc)
+    ddir = tmp_path / "docs" / "data"
+    futtato.futtat(_config(), AdatKliens(), tmp_path / "adatok", ddir, most=most, mode="reggel")
+    mai = json.loads((ddir / "napok" / "2026-09-01.json").read_text(encoding="utf-8"))
+    assert "reggel" in mai

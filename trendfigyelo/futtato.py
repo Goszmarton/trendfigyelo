@@ -312,7 +312,10 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None, mode="este"
 
     idobelyeg = seged.bp_idobelyeg(most)
     letoltve = most.isoformat(timespec="seconds")
-    nap_iso = most.astimezone(seged.BUDAPEST).date().isoformat()
+    # este-mód: a LOGIKAI esti nap (hajnali backup = az ELŐZŐ este pótlása, nincs hamis
+    # másnapi esti szegmens); reggel-mód: a budapesti naptári nap (nincs hajnali eset).
+    nap_iso = (most.astimezone(seged.BUDAPEST).date().isoformat()
+               if csak_felkapott else seged.esti_nap(most))
 
     bejegyzesek = []
     plafon_tullepes = False           # L4: a hívás-plafon tüzelt-e (→ KILEPES_PLAFON exit)
