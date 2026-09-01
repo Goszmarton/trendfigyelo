@@ -5,6 +5,7 @@ mai UTC-dátummal — ez dönti el, hogy egy ütemezett fallback-futás gyűjts�
 némán kilépjen. A pótolhatatlan órás Google-utat érinti → tesztelt döntés.
 """
 import json
+from datetime import datetime, timezone
 
 from trendfigyelo import futas_orzo
 
@@ -161,3 +162,30 @@ def test_cli_szegmens(tmp_path, capsys):
     # a CLI-ág füst-szintű: hiányzó fájl → 'false'
     futas_orzo.main(["--szegmens", "reggel", str(tmp_path)])
     assert capsys.readouterr().out.strip() in {"true", "false"}
+
+
+def test_cli_este_hajnali_az_elozo_estet_nezi_skip(tmp_path, capsys, monkeypatch):
+    # 03:38 CEST (01:38 UTC) → esti_nap = 08-31; a 08-31 este MEGVAN → skip (true)
+    _ir_nap_szegmens(tmp_path, "2026-08-31", "este", "2026-08-31T19:06:00+00:00")
+    monkeypatch.setattr(futas_orzo.seged, "most_utc",
+                        lambda: datetime(2026, 9, 1, 1, 38, tzinfo=timezone.utc))
+    futas_orzo.main(["--szegmens", "este", str(tmp_path)])
+    assert capsys.readouterr().out.strip() == "true"
+
+
+def test_cli_este_hajnali_hianyzo_elozo_este_gyujt(tmp_path, capsys, monkeypatch):
+    # a 08-31 este HIÁNYZIK → a hajnali backup bepótolja (false = gyűjts)
+    monkeypatch.setattr(futas_orzo.seged, "most_utc",
+                        lambda: datetime(2026, 9, 1, 1, 38, tzinfo=timezone.utc))
+    futas_orzo.main(["--szegmens", "este", str(tmp_path)])
+    assert capsys.readouterr().out.strip() == "false"
+
+
+def test_cli_este_esti_futas_aznapot_nezi_gyujt(tmp_path, capsys, monkeypatch):
+    # 21:00 CEST (19:00 UTC) → esti_nap = 09-01; a 09-01 este MÉG NINCS → false (gyűjts),
+    # a tegnapi (08-31) este megléte nem befolyásol
+    _ir_nap_szegmens(tmp_path, "2026-08-31", "este", "2026-08-31T19:06:00+00:00")
+    monkeypatch.setattr(futas_orzo.seged, "most_utc",
+                        lambda: datetime(2026, 9, 1, 19, 0, tzinfo=timezone.utc))
+    futas_orzo.main(["--szegmens", "este", str(tmp_path)])
+    assert capsys.readouterr().out.strip() == "false"

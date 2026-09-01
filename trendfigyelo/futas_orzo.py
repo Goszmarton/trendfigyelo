@@ -101,10 +101,9 @@ def szegmens_mar_gyujtottunk_ma(docs_data, szegmens, ma_bp):
 
     Hiányzó/olvashatatlan jel → False (inkább gyűjtsünk, mint tévesen kihagyjunk).
     """
-    # A 'frissitve' UTC-ben van (napi_ir a most.isoformat()-ot írja), itt viszont a
-    # budapesti naptári nappal (ma_bp) hasonlítjuk; a 09:00/21:00 budapesti triggereknél
-    # ez egybeesik, az egyetlen eltérés (budapesti éjfél utáni backup-futás) FAIL-OPEN
-    # (újra gyűjt, sosem hamis kihagyás) — ne "javítsd" UTC-összehasonlításra.
+    # A 'nap' paramétert (itt ma_bp) a hívó (main) számolja: az este-ágon a
+    # seged.esti_nap logikai esti napja (a hajnali backup az ELŐZŐ estét nézi),
+    # a reggel-ágon a budapesti naptári nap — ez a függvény maga szegmens-agnosztikus.
     return _szegmens_datuma(docs_data, szegmens, ma_bp) == ma_bp
 
 
@@ -126,8 +125,13 @@ def main(argv=None):
         szegmens = argv[i + 1]
         maradek = argv[:i] + argv[i + 2:]
         docs_data = maradek[0] if maradek else "docs/data"
-        ma_bp = seged.most_utc().astimezone(seged.BUDAPEST).date().isoformat()
-        print("true" if szegmens_mar_gyujtottunk_ma(docs_data, szegmens, ma_bp) else "false")
+        # este: a LOGIKAI esti napot nézzük (hajnali backup az ELŐZŐ estét ellenőrzi → nem gyűjt
+        # hamis másnapi estit, de a tényleg kimaradt estét bepótolja). reggel: a budapesti naptári nap.
+        if szegmens == "este":
+            nap = seged.esti_nap(seged.most_utc())
+        else:
+            nap = seged.most_utc().astimezone(seged.BUDAPEST).date().isoformat()
+        print("true" if szegmens_mar_gyujtottunk_ma(docs_data, szegmens, nap) else "false")
         return 0
     youtube = "--youtube" in argv
     argv = [a for a in argv if a != "--youtube"]
