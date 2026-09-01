@@ -335,6 +335,6 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
   .attekinto-panel .attekinto-domen, #youtube-attekinto .attekinto-domen { flex-basis: 100%; }
 }
 
-.idosor-szegmens-valto { display: flex; gap: .5rem; margin: .25rem 0 .75rem; }
-.idosor-szegmens-valto button { padding: .25rem .75rem; border: 1px solid #ccc; border-radius: 999px; background: #fff; cursor: pointer; }
-.idosor-szegmens-valto button[aria-pressed="true"] { background: #3366cc; color: #fff; border-color: #3366cc; }
+.idosor-szegmens-valto, .felkapott-szegmens-valto { display: flex; gap: .5rem; margin: .25rem 0 .75rem; flex-wrap: wrap; }
+.idosor-szegmens-valto button, .felkapott-szegmens-valto button { padding: .25rem .75rem; border: 1px solid #ccc; border-radius: 999px; background: #fff; cursor: pointer; }
+.idosor-szegmens-valto button[aria-pressed="true"], .felkapott-szegmens-valto button[aria-pressed="true"] { background: #3366cc; color: #fff; border-color: #3366cc; }

@@ -611,6 +611,76 @@ test("N+2. napi: kék-vonalas gyűjtés-info a cím alatt + beszédes blokk-fejl
   await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="este"] .trend-szegmens-cim')).toHaveText("Esti lekérdezés · 21:00");
 });
 
+// ── #1 Napi felkapott — 3-gombos szegmens-váltó (Napi összesen / Reggeli / Esti), alap osszesen (a mostani stackelt nézet) ──
+function napi_ket_szegmens(page, nap) {
+  return Promise.all([
+    page.route(/kategoriak\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ napok: [] }) })),
+    page.route(/legfrissebb\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ top_trendek: [], kulcsszavak: {}, kulcsszo_osszesites: [] }) })),
+    page.route(/napok\/index\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ napok: [nap] }) })),
+    page.route(new RegExp("napok/" + nap + "\\.json"), r => r.fulfill({ contentType: "application/json", body: JSON.stringify({
+      nap: nap,
+      reggel: { trendek: [trend("reggeli-szo", "5000", ["Sports"])], frissitve: nap + "T07:00:00+00:00" },
+      este: { trendek: [trend("esti-szo", "9000", ["Politics"]), trend("esti-ketto", "8000", ["Politics"])], frissitve: nap + "T19:00:00+00:00" },
+    }) })),
+  ]);
+}
+
+test("N. napi: felkapott szegmens-váltó — 3 gomb, alap Napi összesen, mindkét blokk látszik", async ({ page }) => {
+  await napi_ket_szegmens(page, "2026-08-31");
+  await page.goto("/");
+  const gombok = page.locator("#trend-blokk .felkapott-szegmens-valto button");
+  await expect(gombok).toHaveCount(3);
+  await expect(gombok.nth(0)).toHaveAttribute("data-szegmens", "osszesen");
+  await expect(gombok.nth(1)).toHaveAttribute("data-szegmens", "reggel");
+  await expect(gombok.nth(2)).toHaveAttribute("data-szegmens", "este");
+  await expect(gombok.nth(0)).toHaveText("Napi összesen");
+  await expect(gombok.nth(0)).toHaveAttribute("aria-pressed", "true");
+  // alap osszesen → mindkét blokk egymás alatt (a mostani nézet, változatlan)
+  await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="reggel"]')).toBeVisible();
+  await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="este"]')).toBeVisible();
+});
+
+test("N. napi: váltó reggel → csak reggeli blokk; este → csak esti blokk", async ({ page }) => {
+  await napi_ket_szegmens(page, "2026-08-31");
+  await page.goto("/");
+  await page.locator('#trend-blokk .felkapott-szegmens-valto [data-szegmens="reggel"]').click();
+  await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="reggel"]')).toBeVisible();
+  await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="este"]')).toHaveCount(0);
+  await page.locator('#trend-blokk .felkapott-szegmens-valto [data-szegmens="este"]').click();
+  await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="este"]')).toBeVisible();
+  await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="reggel"]')).toHaveCount(0);
+});
+
+test("N. napi: csak-reggeli nap — Esti nézet üres üzenettel (nincs áthúzott esti), a váltó marad", async ({ page }) => {
+  await page.route(/kategoriak\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ napok: [] }) }));
+  await page.route(/legfrissebb\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ top_trendek: [], kulcsszavak: {}, kulcsszo_osszesites: [] }) }));
+  await page.route(/napok\/index\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ napok: ["2026-09-02"] }) }));
+  await page.route(/napok\/2026-09-02\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({
+    nap: "2026-09-02", reggel: { trendek: [trend("reggeli-szo", "5000", ["Sports"])], frissitve: "2026-09-02T07:00:00+00:00" },
+  }) }));   // NINCS este szegmens (aznap még nem futott az esti)
+  await page.goto("/");
+  // alap osszesen → csak a reggeli blokk (nincs esti szegmens, nincs áthúzott előző esti)
+  await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="reggel"]')).toBeVisible();
+  await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="este"]')).toHaveCount(0);
+  // Esti nézetre váltva → nincs blokk, világos üzenet, a váltó MARAD (nincs zsákutca)
+  await page.locator('#trend-blokk .felkapott-szegmens-valto [data-szegmens="este"]').click();
+  await expect(page.locator('#trend-blokk .trend-szegmens')).toHaveCount(0);
+  await expect(page.locator("#trend-blokk .felkapott-szegmens-valto")).toHaveCount(1);
+  await expect(page.locator("#trend-blokk .ures")).toContainText("esti 21:00-s lekérdezés erre a napra még nem futott le");
+});
+
+test("N. napi: régi (nem szegmentált) nap → nincs szegmens-váltó, egy blokk", async ({ page }) => {
+  await page.route(/kategoriak\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ napok: [] }) }));
+  await page.route(/legfrissebb\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ top_trendek: [], kulcsszavak: {}, kulcsszo_osszesites: [] }) }));
+  await page.route(/napok\/index\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ napok: ["2026-08-20"] }) }));
+  await page.route(/napok\/2026-08-20\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({
+    nap: "2026-08-20", trendek: [trend("regi-szo", "5000", ["Sports"])],
+  }) }));
+  await page.goto("/");
+  await expect(page.locator("#trend-blokk .felkapott-szegmens-valto")).toHaveCount(0);
+  await expect(page.locator('#trend-blokk .trend-szegmens')).toHaveCount(1);
+});
+
 // ── KATEGÓRIA-IDŐSOR Szelet 1 — shaper + DOM-tükör (.idosor-adat). Canvast NEM érint, DOM-assertálható. ──
 // A tükör a null-rés / első-megjelenés / valós-0 szabályt hordozza (JSON-tömb data-ertekek, mint a data-kategoriak).
 test("idősor-adat: a tengely CSAK a mért napokat tartalmazza (08-06 hiányzó nap KIMARAD)", async ({ page }) => {

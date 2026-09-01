@@ -1321,6 +1321,7 @@ let trend_chart_peldanyok = [];    // 8a: sparkline Chart-példányok TÖMBJE (M
                                    // kulcsszó chart_peldanyok-tól. Csak destroy-all a rendeltetése (nincs kikeresés).
 let trend_esemeny_kotve = false;   // a dátumválasztó change-kötése egyszer
 let idosor_szegmens = "osszesen";   // #2 szegmens-váltó — alap a Napi összesen (reggel+este a napra)
+let felkapott_szegmens = "osszesen";   // #1 „Ma felkapott" szegmens-váltó — alap a Napi összesen (mindkét blokk stackelve, mint eddig)
 
 // a rendezett nap-lista + a legfrissebb nap (a napok/index.json-ból)
 function trend_napok() {
@@ -1557,6 +1558,28 @@ function idosor_szegmens_valto_epit() {
       if (idosor_szegmens === par[0]) return;
       idosor_szegmens = par[0];
       idosor_blokk_render();
+    });
+    valto.appendChild(g);
+  });
+  return valto;
+}
+
+// #1 „Ma felkapott" 3-gombos szegmens-váltó (Napi összesen / Reggeli / Esti), alap a Napi összesen. CSAK szegmentált
+// napon jelenik meg (van reggel/este); azt SZŰRI, melyik blokk(ok) látsszanak — a per-szegmens render érintetlen.
+// Katt → felkapott_szegmens + a napi blokk újrarendere.
+function felkapott_szegmens_valto_epit() {
+  const valto = document.createElement("div");
+  valto.className = "felkapott-szegmens-valto";
+  [["osszesen", "Napi összesen"], ["reggel", "Reggeli 9:00"], ["este", "Esti 21:00"]].forEach(function (par) {
+    const g = document.createElement("button");
+    g.type = "button";
+    g.setAttribute("data-szegmens", par[0]);
+    g.setAttribute("aria-pressed", felkapott_szegmens === par[0] ? "true" : "false");
+    g.textContent = par[1];
+    g.addEventListener("click", function () {
+      if (felkapott_szegmens === par[0]) return;
+      felkapott_szegmens = par[0];
+      trend_blokk_render();
     });
     valto.appendChild(g);
   });
@@ -1925,7 +1948,7 @@ async function trend_blokk_render() {
 
   trend_chart_takarit();
   blokk.querySelectorAll("." + OSZT_T.szegmens + ", ." + OSZT_T.osszefoglalo + ", ." + OSZT_T.lista + ", ." + OSZT_T.ures
-    + ", ." + OSZT_T.idosor_ures_blokk + ", ." + OSZT_T.normalizalas_magyarazat)
+    + ", ." + OSZT_T.idosor_ures_blokk + ", ." + OSZT_T.normalizalas_magyarazat + ", .felkapott-szegmens-valto")
     .forEach(function (e) { e.remove(); });
 
   // KATEGÓRIA-IDŐSOR: már NEM itt él — önálló #idosor-blokk szekció (idosor_blokk_render), NAP-FÜGGETLEN.
@@ -1933,8 +1956,30 @@ async function trend_blokk_render() {
   const szegmensek = trend_szegmensek_nap(nap);
   if (szegmensek === null) return;   // még tölt — a napváltás/await újrahív
 
+  // Szegmentált nap (van reggel/este): 3-gombos szegmens-váltó + a kiválasztott nézet. A régi lapos nap /
+  // legfrissebb-fallback (szegmens === "") NEM kap váltót (nincs mit szűrni). A váltó CSAK azt szűri, melyik
+  // blokk(ok) látsszanak — a valós napfájl-szegmensen, ezért soha nem jelenik meg hamis/áthúzott esti.
+  const szegmentalt = szegmensek.some(function (s) { return s.szegmens; });
+  if (szegmentalt) {
+    blokk.appendChild(felkapott_szegmens_valto_epit());
+    const megjelenit = (felkapott_szegmens === "osszesen")
+      ? szegmensek
+      : szegmensek.filter(function (s) { return s.szegmens === felkapott_szegmens; });
+    if (!megjelenit.length) {   // a kiválasztott szegmens aznap még nem futott → világos üzenet, a váltó marad (nincs zsákutca)
+      const u = document.createElement("p");
+      u.className = OSZT_T.ures;
+      u.textContent = (felkapott_szegmens === "este")
+        ? "Az esti 21:00-s lekérdezés erre a napra még nem futott le."
+        : "A reggeli 9:00-s lekérdezés erre a napra még nem futott le.";
+      blokk.appendChild(u);
+      return;
+    }
+    megjelenit.forEach(function (s) { trend_szegmens_epit(blokk, s); });
+    return;
+  }
+
   const van = szegmensek.some(function (s) { return s.trendek.length; });
-  if (!van) {                     // §7.5 blokk-szintű üres állapot (egyik szegmensben sincs trend)
+  if (!van) {                     // §7.5 blokk-szintű üres állapot (nem szegmentált nap, nincs trend)
     const u = document.createElement("p");
     u.className = OSZT_T.ures;
     u.textContent = TREND_URES_SZOVEG;
