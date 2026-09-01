@@ -1,17 +1,32 @@
 {
-"frissitve": "2026-09-01T01:45:24+00:00",
+"frissitve": "2026-09-01T19:08:03+00:00",
 "modell": "claude-opus-4-8",
 "nap": "2026-09-01",
 "valtozas": {
 "diff": {
 "irany_valtok": [
 {
-"szo": "akciós újság",
-"elozo": "stagnal",
-"mai": "csokken"
+"szo": "albérlet",
+"elozo": "csokken",
+"mai": "stagnal"
 },
 {
-"szo": "albérlet",
+"szo": "hitel",
+"elozo": "csokken",
+"mai": "stagnal"
+},
+{
+"szo": "kormányablak",
+"elozo": "csokken",
+"mai": "stagnal"
+},
+{
+"szo": "kórház",
+"elozo": "csokken",
+"mai": "stagnal"
+},
+{
+"szo": "nyugdíj",
 "elozo": "csokken",
 "mai": "stagnal"
 },
@@ -23,797 +38,62 @@
 ],
 "mozgok": [
 {
-"szo": "akciós újság",
-"valtozas": -1.527
-},
-{
-"szo": "állás",
-"valtozas": 1.435
-},
-{
-"szo": "eladó lakás",
-"valtozas": -0.987
-},
-{
-"szo": "albérlet",
-"valtozas": 0.966
-},
-{
-"szo": "nyaralás",
-"valtozas": -0.885
-}
-],
-"felkapott_uj": [
-"amedspor–trabzonspor",
-"barcelona–rayo",
-"duna médiaszolgáltató",
-"gáz",
-"hazassag elso latasra 2026",
-"holnapi időjárás",
-"idojaras",
-"időkép"
-],
-"felkapott_eltunt": [
-"augusztus 31",
-"hidegfront",
-"lemondott helyettes államtitkár",
-"unger anna férje"
-],
-"van_elozo": true
-},
-"szoveg": "A tegnapi képhez képest néhány kereséstípus megfordult. Az akciós újság korábban inkább egy helyben állt, ma viszont már lefelé húzó pályán van. Ezzel szemben az albérlet és az állás korábbi csökkenő mozgása mára inkább kiegyenlítődött, egy helyben álló képet mutat.\n\nA napon belüli mozgás terén az akciós újság volt a legmarkánsabban lefelé induló szó, míg az állás iránti érdeklődés a másik irányba, felfelé mozdult. Az eladó lakás és a nyaralás inkább lefelé billent, az albérlet pedig enyhén erősödött.\n\nA felkapott témák között ma frissen tűnt fel több időjárással kapcsolatos kifejezés, például a holnapi időjárás, az időjárás és az Időkép, valamint egy-egy sportmérkőzés, a gáz és egy szórakoztató műsor. Közben kikopott a keresésekből néhány tegnapi téma, köztük egy dátumhoz kötődő kifejezés, a hidegfront és néhány személyhez kapcsolódó keresés."
-},
-"kulcsszavak": {
-"szamok": [
-{
-"szo": "akciós újság",
-"irany": "csokken",
-"meredekseg": -1.256,
-"ervenyes": true,
-"mai_ertek": 0,
-"csucs": 57.0,
-"atlag": 40.19
-},
-{
-"szo": "albérlet",
-"irany": "stagnal",
-"meredekseg": -0.551,
-"ervenyes": true,
-"mai_ertek": 0,
-"csucs": 66.0,
-"atlag": 45.56
-},
-{
-"szo": "benzin",
-"irany": "csokken",
-"meredekseg": -1.311,
-"ervenyes": true,
-"mai_ertek": 45,
-"csucs": 58.0,
-"atlag": 23.14
-},
-{
-"szo": "betegség",
-"irany": "stagnal",
-"meredekseg": 0.399,
-"ervenyes": true,
-"mai_ertek": 0,
-"csucs": 30.0,
-"atlag": 20.16
-},
-{
-"szo": "eladó lakás",
-"irany": "stagnal",
-"meredekseg": -0.731,
-"ervenyes": true,
-"mai_ertek": 0,
-"csucs": 63.0,
-"atlag": 50.47
-},
-{
-"szo": "hitel",
-"irany": "csokken",
-"meredekseg": -1.35,
-"ervenyes": true,
-"mai_ertek": 0,
-"csucs": 72.0,
-"atlag": 55.65
+"szo": "nyugdíj",
+"valtozas": 3.848
 },
 {
 "szo": "kormányablak",
-"irany": "csokken",
-"meredekseg": -3.963,
-"ervenyes": true,
-"mai_ertek": 0,
-"csucs": 100.0,
-"atlag": 61.0
-},
-{
-"szo": "kórház",
-"irany": "csokken",
-"meredekseg": -2.952,
-"ervenyes": true,
-"mai_ertek": 0,
-"csucs": 93.0,
-"atlag": 53.17
-},
-{
-"szo": "napelem",
-"irany": "stagnal",
-"meredekseg": -0.114,
-"ervenyes": true,
-"mai_ertek": 0,
-"csucs": 39.0,
-"atlag": 25.47
-},
-{
-"szo": "nyaralás",
-"irany": "stagnal",
-"meredekseg": 0.101,
-"ervenyes": true,
-"mai_ertek": 0,
-"csucs": 70.0,
-"atlag": 47.38
-},
-{
-"szo": "nyugdíj",
-"irany": "csokken",
-"meredekseg": -3.833,
-"ervenyes": true,
-"mai_ertek": 31,
-"csucs": 44.0,
-"atlag": 18.91
-},
-{
-"szo": "tüntetés",
-"irany": null,
-"meredekseg": null,
-"ervenyes": false,
-"mai_ertek": null,
-"csucs": 6.0,
-"atlag": 3.5
+"valtozas": 3.29
 },
 {
 "szo": "állás",
-"irany": "stagnal",
-"meredekseg": -0.387,
-"ervenyes": true,
-"mai_ertek": 100,
-"csucs": 36.0,
-"atlag": 27.88
+"valtozas": 2.186
+},
+{
+"szo": "albérlet",
+"valtozas": 1.994
+},
+{
+"szo": "hitel",
+"valtozas": 1.731
 }
 ],
-"napi": {
-"szoveg": "A ma vizsgált kereséseknél az állás emelkedik ki a leginkább: mai értéke a lehetséges skála tetején jár, és ez érdemben a saját megszokott szintje fölött van, vagyis ma feltűnően élénk az érdeklődés az álláskeresés iránt. A benzin is aktívabb a szokásosnál, mai értéke jóval a saját átlaga fölé került, még ha az iránya inkább lefelé mutat is.\n\nA nyugdíj szintén mozgásban van, mai értéke a saját átlagát meghaladja, bár a mögötte lévő tendencia csökkenő. A többi vizsgált szó ma alig mutat mérhető keresést, náluk gyakorlatilag nem látszik érdemi napi aktivitás.\n\nA tüntetés esetében ma nincs értékelhető adat, így erről most nem lehet megbízhatóan nyilatkozni."
-},
-"teljes_kep": {
-"szoveg": "Összességében a mindennapi megélhetéshez és pénzügyekhez köthető keresések vannak előtérben: az állás, a benzin és a nyugdíj a szokásosnál élénkebb figyelmet kap. Ez óvatosan úgy olvasható, hogy a praktikus, anyagi jellegű kérdések foglalkoztatják most inkább az embereket, bár ezt az adat önmagában nem magyarázza meg teljesen.\n\nAz ingatlanhoz kötődő szavak, mint az albérlet, az eladó lakás vagy a lakhatás egyéb kifejezései most inkább nyugodtabb, alacsonyabb szinten mozognak. A hiteltől a napelemig több téma is a saját megszokott szintje alatt vagy annak közelében marad."
-},
-"het": {
-"szoveg": "A hét egészét nézve az állás iránti érdeklődés futott fel a leglátványosabban: a hét eleji szintjéről jelentősen feljebb került a hét végére, és a mozgástere is széles volt. Ez a kép illeszkedik ahhoz, hogy a hét vége felé, a nyár záró szakaszában sokan foglalkoznak munkakereséssel, bár erre biztos magyarázatot az adat nem ad.\n\nA benzin szintén erősödött a hét folyamán, a semmiből indulva emelkedett feljebb. A nyugdíj kisebb mértékben, de szintén feljebb kúszott. Ezzel szemben az akciós újság a hét eleji élénkebb szintjéről visszaesett. A többi vizsgált téma a héten át inkább alacsony, csendes szinten maradt."
-}
-},
-"felkapott": {
-"top": [
-{
-"kifejezes": "jég",
-"volumen": "20000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "mvm zrt",
-"volumen": "20000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "holnapi időjárás",
-"volumen": "20000",
-"novekedes_pct": "75",
-"temak": [
-"Climate"
-],
-"hirek": [
-{
-"hir_cim": "Hétfő éjjel zordabbra vált az idő, de mi vár ránk holnap? – Mutatjuk a megyei előrejelzést",
-"hir_forras": "NOOL",
-"hir_url": "https://www.nool.hu/helyi-idojaras/2026/08/holnapi-idojaras-nogradban-kedd-felmelegedes",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQagcGz7cxU7qupWZNNtmtq9fvVs5l6Xc9LS443fGbobtkOWRGmsLSAilTFTjc",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Visszatér a forróság? Szerdán újra megmutatja erejét a nyár Nógrádban",
-"hir_forras": "NOOL",
-"hir_url": "https://www.nool.hu/helyi-idojaras/2026/08/holnapi-idojaras-nogradban-augusztus-26",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTynxWI-UhsWae-SecOHlwHMa8bipuuSekLVroFDTyYu_xW3lCjyHk0RZXijys",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Mutatjuk, milyen idő vár Nógrádra a nyár utolsó szombatján!",
-"hir_forras": "NOOL",
-"hir_url": "https://www.nool.hu/helyi-idojaras/2026/08/idojaras-holnap-meleg-zivatar-nograd",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcR3I4S8axjf3WZGZJBkG8g0Tnu9okKdOWxlT96brKQidwcH5jt_vAkW38DAitQ",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "járvány",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "barcelona–rayo",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "orbán ráhel",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "pénzcentrum.hu",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "időkép",
-"volumen": "5000",
-"novekedes_pct": "300",
-"temak": [
-"Other"
-],
-"hirek": [
-{
-"hir_cim": "Budapesti melegrekord született",
-"hir_forras": "Időkép",
-"hir_url": "https://www.idokep.hu/hirek/budapesti-melegrekord-szuletett",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkCAMJeT7dX3rEhebRAcZNt5vXhiPj1aPnSHpkpBn2XU5XLXMq9coUkQ2UUwM",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Ami ma történt Magyarországon, olyanra 11 éve nem volt példa",
-"hir_forras": "Agrárszektor",
-"hir_url": "https://www.agrarszektor.hu/noveny/20260831/ami-ma-tortent-magyarorszagon-olyanra-11-eve-nem-volt-pelda-64213",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjTgFY2CPyYS32bzqRvF0xiBJ8xiHsGzsjSVeyGryrvGx27KR3uwxl4p3Zcno",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "A nyár utolsó napján megdőlt a budapesti melegrekord",
-"hir_forras": "24.hu",
-"hir_url": "https://24.hu/belfold/2026/08/31/budapest-melegrekord-nap-megdolt/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTpV1J_EzmWgGUtkkGuCVPGQRHMm1M0i5M103Z2hzBmqlEGSnfyvmiBNGkObEk",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "idojaras",
-"volumen": "5000",
-"novekedes_pct": "300",
-"temak": [
-"Other"
-],
-"hirek": [
-{
-"hir_cim": "Belföld - A kánikula után lecsap a vihar, az egész országra figyelmeztetést adtak ki",
-"hir_forras": "Index.hu",
-"hir_url": "https://index.hu/belfold/2026/08/31/idojaras-elorejelzes-augusztus-utolso-napja-riasztas-zivatar-fronthatas-vihar-radar/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeumKOJt-8fonOuARRSPB0wL3Z7nbNeTI8yA1KM7cRQ6YIHX5JzHcCFl8E7iw",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Villámfényes éjszakával lépünk át a meteorológiai őszbe",
-"hir_forras": "Időkép",
-"hir_url": "https://www.idokep.hu/hirek/villamfenyes-ejszakaval-lepunk-at-a-meteorologiai-oszbe",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQ6LcKyI0KWtjRD_Y8ZNqPL9L6KHVIEmHfNZFcfTJI7CtajTNTb3KItZizJD_U",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Két hullámban csapnak le a zivatarok, éjszaka jön az erősebb rendszer",
-"hir_forras": "Agroinform",
-"hir_url": "https://www.agroinform.hu/idojaras_hirek/ket-hullamban-csapnak-le-a-zivatarok-ejszaka-jon-az-erosebb-rendszer-104783-001",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRHXq82eIzVBkQAKqHM1HwWX8-KRKCxcI24lmxD6uWV3CCIna9mXEfOLRIG59Y",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "most wanted",
-"volumen": "5000",
-"novekedes_pct": "600",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "aston villa–arsenal",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "pénz",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "duna médiaszolgáltató",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "légitársaság",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "tűzifa",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "várkonyi andrea",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "hazassag elso latasra 2026",
-"volumen": "2000",
-"novekedes_pct": "900",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "lagzi lajcsi",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "molnár áron",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "papp gergely",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "amedspor–trabzonspor",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "gáz",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
-},
-{
-"kifejezes": "berend t iván",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "telex.hu",
-"volumen": "2000",
-"novekedes_pct": "700",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "rtl műsor",
-"volumen": "2000",
-"novekedes_pct": "300",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-}
-],
-"reggel_top": [],
-"este_top": [
-{
-"kifejezes": "jég",
-"volumen": "20000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "mvm zrt",
-"volumen": "20000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "holnapi időjárás",
-"volumen": "20000",
-"novekedes_pct": "75",
-"temak": [
-"Climate"
-],
-"hirek": [
-{
-"hir_cim": "Hétfő éjjel zordabbra vált az idő, de mi vár ránk holnap? – Mutatjuk a megyei előrejelzést",
-"hir_forras": "NOOL",
-"hir_url": "https://www.nool.hu/helyi-idojaras/2026/08/holnapi-idojaras-nogradban-kedd-felmelegedes",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQagcGz7cxU7qupWZNNtmtq9fvVs5l6Xc9LS443fGbobtkOWRGmsLSAilTFTjc",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Visszatér a forróság? Szerdán újra megmutatja erejét a nyár Nógrádban",
-"hir_forras": "NOOL",
-"hir_url": "https://www.nool.hu/helyi-idojaras/2026/08/holnapi-idojaras-nogradban-augusztus-26",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTynxWI-UhsWae-SecOHlwHMa8bipuuSekLVroFDTyYu_xW3lCjyHk0RZXijys",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Mutatjuk, milyen idő vár Nógrádra a nyár utolsó szombatján!",
-"hir_forras": "NOOL",
-"hir_url": "https://www.nool.hu/helyi-idojaras/2026/08/idojaras-holnap-meleg-zivatar-nograd",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcR3I4S8axjf3WZGZJBkG8g0Tnu9okKdOWxlT96brKQidwcH5jt_vAkW38DAitQ",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "járvány",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "barcelona–rayo",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "orbán ráhel",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "pénzcentrum.hu",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "időkép",
-"volumen": "5000",
-"novekedes_pct": "300",
-"temak": [
-"Other"
-],
-"hirek": [
-{
-"hir_cim": "Budapesti melegrekord született",
-"hir_forras": "Időkép",
-"hir_url": "https://www.idokep.hu/hirek/budapesti-melegrekord-szuletett",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkCAMJeT7dX3rEhebRAcZNt5vXhiPj1aPnSHpkpBn2XU5XLXMq9coUkQ2UUwM",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Ami ma történt Magyarországon, olyanra 11 éve nem volt példa",
-"hir_forras": "Agrárszektor",
-"hir_url": "https://www.agrarszektor.hu/noveny/20260831/ami-ma-tortent-magyarorszagon-olyanra-11-eve-nem-volt-pelda-64213",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjTgFY2CPyYS32bzqRvF0xiBJ8xiHsGzsjSVeyGryrvGx27KR3uwxl4p3Zcno",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "A nyár utolsó napján megdőlt a budapesti melegrekord",
-"hir_forras": "24.hu",
-"hir_url": "https://24.hu/belfold/2026/08/31/budapest-melegrekord-nap-megdolt/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTpV1J_EzmWgGUtkkGuCVPGQRHMm1M0i5M103Z2hzBmqlEGSnfyvmiBNGkObEk",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "idojaras",
-"volumen": "5000",
-"novekedes_pct": "300",
-"temak": [
-"Other"
-],
-"hirek": [
-{
-"hir_cim": "Belföld - A kánikula után lecsap a vihar, az egész országra figyelmeztetést adtak ki",
-"hir_forras": "Index.hu",
-"hir_url": "https://index.hu/belfold/2026/08/31/idojaras-elorejelzes-augusztus-utolso-napja-riasztas-zivatar-fronthatas-vihar-radar/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeumKOJt-8fonOuARRSPB0wL3Z7nbNeTI8yA1KM7cRQ6YIHX5JzHcCFl8E7iw",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Villámfényes éjszakával lépünk át a meteorológiai őszbe",
-"hir_forras": "Időkép",
-"hir_url": "https://www.idokep.hu/hirek/villamfenyes-ejszakaval-lepunk-at-a-meteorologiai-oszbe",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQ6LcKyI0KWtjRD_Y8ZNqPL9L6KHVIEmHfNZFcfTJI7CtajTNTb3KItZizJD_U",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Két hullámban csapnak le a zivatarok, éjszaka jön az erősebb rendszer",
-"hir_forras": "Agroinform",
-"hir_url": "https://www.agroinform.hu/idojaras_hirek/ket-hullamban-csapnak-le-a-zivatarok-ejszaka-jon-az-erosebb-rendszer-104783-001",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRHXq82eIzVBkQAKqHM1HwWX8-KRKCxcI24lmxD6uWV3CCIna9mXEfOLRIG59Y",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "most wanted",
-"volumen": "5000",
-"novekedes_pct": "600",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "aston villa–arsenal",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "pénz",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "duna médiaszolgáltató",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "légitársaság",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "tűzifa",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "várkonyi andrea",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "hazassag elso latasra 2026",
-"volumen": "2000",
-"novekedes_pct": "900",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "lagzi lajcsi",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "molnár áron",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "papp gergely",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "amedspor–trabzonspor",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "gáz",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
-},
-{
-"kifejezes": "berend t iván",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "telex.hu",
-"volumen": "2000",
-"novekedes_pct": "700",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "rtl műsor",
-"volumen": "2000",
-"novekedes_pct": "300",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-}
-],
-"reggel_este_diff": {
-"uj_estere": [
-"amedspor–trabzonspor",
-"aston villa–arsenal",
-"barcelona–rayo",
-"berend t iván",
-"duna médiaszolgáltató",
-"gáz",
-"hazassag elso latasra 2026",
+"felkapott_uj": [
+"alföldi róbert",
+"aston villa vs arsenal tabella",
+"ausztria",
+"bicske",
+"enying",
+"faludy györgy",
+"fc barcelona vs rayo vallecano tabella",
+"földgáz",
+"hegedűs zsolt",
+"hitel",
 "holnapi időjárás",
+"hír",
 "idojaras",
+"időjárás figyelmeztetés",
 "időkép",
+"klímaváltozás",
+"ligeti miklós",
+"nagy feró",
+"németország",
+"nő",
+"orbán viktor",
+"pécsi tudományegyetem",
+"radar",
+"szoros",
+"tarr zoltán"
+],
+"felkapott_eltunt": [
+"aston villa–arsenal",
+"augusztus 31",
+"berend t iván",
+"hidegfront",
 "járvány",
 "jég",
 "lagzi lajcsi",
+"lemondott helyettes államtitkár",
 "légitársaság",
 "molnár áron",
 "most wanted",
@@ -825,44 +105,1065 @@
 "rtl műsor",
 "telex.hu",
 "tűzifa",
+"unger anna férje",
 "várkonyi andrea"
 ],
-"eltunt_estere": [],
-"megmaradt": []
+"van_elozo": true
 },
-"reggel": {
-"szoveg": "Ma nem volt reggeli gyűjtés, ezért a reggeli kép nem elemezhető."
+"szoveg": "Az előző mérésekhez képest több pénzügyi és hivatali témájú keresés esetében is elmozdulás látszik: az albérlet, a hitel, a kormányablak, a kórház, a nyugdíj és az állás egyaránt a korábbi csökkenő pályáról egy nyugodtabb, stagnáló állapotba fordult. Ez nem feltétlenül jelent érdemi felfutást, inkább azt, hogy a korábbi lefelé tartó lendület kifulladt.\n\nA napon belül a legnagyobb mozgás a nyugdíj, a kormányablak, az állás, az albérlet és a hitel körül mérhető, vagyis jellemzően a mindennapi megélhetéshez, ügyintézéshez és lakhatáshoz kötődő témák élénkültek meg leginkább. A fordulat iránya óvatosan biztató, de az adat önmagában nem árul el okot.\n\nA napi felkapott témák között sok új név és kifejezés jelent meg, köztük a holnapi időjárás, Tarr Zoltán, több politikai és közéleti szereplő, valamint időjárási és energetikai témák. Ezzel párhuzamosan kikoptak a korábbi nap kereséseiből egyes sport- és hírkeresések, például az Aston Villa–Arsenal, a járvány, a jég, a tűzifa vagy néhány közéleti név."
 },
-"este": {
-"szoveg": "Estére az időjárás uralta a kereséseket: a holnapi időjárás, az időjárás és az Időkép is előkelő helyen szerepelt, a hírek pedig melegrekordról és közelgő zivatarokról, viharfigyelmeztetésről számoltak be. Emellett kiemelkedő volt a jég és az MVM Zrt. iránti érdeklődés is.\n\nEste feltűnt még a járvány, több futballmérkőzés, például a Barcelona–Rayo és az Aston Villa–Arsenal, valamint Orbán Ráhel és a Pénzcentrum neve. Kisebb volument mozgatott, de jelen volt a tűzifa, a gáz, több szórakoztató téma és médiához köthető keresés, például a Telex vagy az RTL műsora."
+"kulcsszavak": {
+"szamok": [
+{
+"szo": "akciós újság",
+"irany": "stagnal",
+"meredekseg": -0.797,
+"ervenyes": true,
+"mai_ertek": 33,
+"csucs": 52.0,
+"atlag": 35.61
 },
-"teljes_nap": {
-"szoveg": "Reggeli pillanatkép híján a nap íve (a reggeltől estig tartó elmozdulás) nem rajzolható."
+{
+"szo": "albérlet",
+"irany": "stagnal",
+"meredekseg": 0.477,
+"ervenyes": true,
+"mai_ertek": 57,
+"csucs": 74.0,
+"atlag": 55.78
+},
+{
+"szo": "benzin",
+"irany": "csokken",
+"meredekseg": -1.967,
+"ervenyes": true,
+"mai_ertek": 22,
+"csucs": 55.0,
+"atlag": 22.05
+},
+{
+"szo": "betegség",
+"irany": "stagnal",
+"meredekseg": 0.094,
+"ervenyes": true,
+"mai_ertek": 37,
+"csucs": 49.0,
+"atlag": 34.89
+},
+{
+"szo": "eladó lakás",
+"irany": "stagnal",
+"meredekseg": 0.392,
+"ervenyes": true,
+"mai_ertek": 53,
+"csucs": 79.0,
+"atlag": 63.94
+},
+{
+"szo": "hitel",
+"irany": "stagnal",
+"meredekseg": 0.54,
+"ervenyes": true,
+"mai_ertek": 65,
+"csucs": 74.0,
+"atlag": 44.11
+},
+{
+"szo": "kormányablak",
+"irany": "stagnal",
+"meredekseg": 0.101,
+"ervenyes": true,
+"mai_ertek": 34,
+"csucs": 100.0,
+"atlag": 61.81
+},
+{
+"szo": "kórház",
+"irany": "stagnal",
+"meredekseg": -0.734,
+"ervenyes": true,
+"mai_ertek": 32,
+"csucs": 97.0,
+"atlag": 52.0
+},
+{
+"szo": "napelem",
+"irany": "stagnal",
+"meredekseg": 0.497,
+"ervenyes": true,
+"mai_ertek": 36,
+"csucs": 61.0,
+"atlag": 42.65
+},
+{
+"szo": "nyaralás",
+"irany": "stagnal",
+"meredekseg": -0.428,
+"ervenyes": true,
+"mai_ertek": 46,
+"csucs": 60.0,
+"atlag": 46.31
+},
+{
+"szo": "nyugdíj",
+"irany": "stagnal",
+"meredekseg": 0.556,
+"ervenyes": true,
+"mai_ertek": 35,
+"csucs": 55.0,
+"atlag": 22.48
+},
+{
+"szo": "tüntetés",
+"irany": null,
+"meredekseg": null,
+"ervenyes": false,
+"mai_ertek": null,
+"csucs": 12.0,
+"atlag": 3.75
+},
+{
+"szo": "állás",
+"irany": "stagnal",
+"meredekseg": 0.364,
+"ervenyes": true,
+"mai_ertek": 28,
+"csucs": 39.0,
+"atlag": 29.46
+}
+],
+"napi": {
+"szoveg": "A mai képen a hitel emelkedik ki leginkább: 65-ös mai értéke érezhetően a saját szokásos, 44 körüli szintje felett van, ami élénkebb érdeklődésre utal ezen a napon. Hasonlóan feltűnő a nyugdíj, amelynek 35-ös mai értéke jóval a maga 22 körüli átlaga fölé kúszott.\n\nA benzin ezzel szemben a szokásosnál nem élénkebb, épp a saját átlaga környékén, 22-n áll, miközben az iránya csökkenő. A kormányablak és a kórház a mai napon a saját megszokott szintje alatt marad, előbbi 34-en a 62 körüli átlagához, utóbbi 32-n az 52 körüli átlagához képest jóval visszafogottabb.\n\nAz eladó lakás 53-as értéke szintén a maga 64 körüli átlaga alatt van, míg az albérlet 57-tel nagyjából a szokásos szintjén mozog. A tüntetés keresésről ezúttal nincs értékelhető adat."
+},
+"teljes_kep": {
+"szoveg": "Összességében a megfigyelt szavak túlnyomó része stagnál, vagyis nincs egyértelmű, meredek trend egyik irányba sem. A lakhatás, a hitel, a munka és a hivatali ügyintézés témái csendes, kiegyensúlyozott érdeklődést mutatnak.\n\nA két szembetűnő kivétel a hitel és a nyugdíj, amelyek a saját megszokott szintjük fölé kerültek, valamint a benzin, amely határozottan lefelé tart, és jelenleg épp a szokásos szintjén áll. A kép egészében nyugodt, inkább a mindennapi, praktikus témák dominálnak, semmint egy-egy kiugró esemény köré szerveződő keresési hullám."
 },
 "het": {
-"szoveg": "A hét egészében néhány téma több napon át vissza-visszatért. Ilyen volt Molnár Áron és a pénz, amelyek három napon is felbukkantak, valamint két-két napon több sportmérkőzés, energiához köthető keresés, mint a gáz és a tűzifa, továbbá az időjárás körüli szavak, mint a hidegfront, az Időkép és a jég.\n\nVisszatérő szereplő volt még az MVM Zrt., a járvány, Orbán Ráhel, a Pénzcentrum, néhány médiafelület és több, a szórakoztatáshoz köthető név, például Várkonyi Andrea vagy Lagzi Lajcsi. Ez a kép egy olyan hetet mutat, amelyben az időjárás, a megélhetés-pénzügyek és a média-szórakozás témái tartósan foglalkoztatták a keresőket."
+"szoveg": "A hét egészét nézve a legnagyobb visszaesést a nyugdíj és az eladó lakás mutatta, mindkettő nagyjából húsz ponttal lejjebb került a hét eleji szintjéhez képest. Az albérlet és a betegség szintén lefelé mozdult a hét során.\n\nEzzel szemben a hitel a hét folyamán érdemben, közel tizennyolc ponttal emelkedett, ami egybecseng azzal, hogy a mai értéke is a szokásos szintje fölött van. A benzin enyhén feljebb kúszott, míg az állás, a kórház és az akciós újság gyakorlatilag ott maradt, ahol a hét elején állt.\n\nA napelem alacsony szintről indult és csak minimálisan emelkedett, vagyis továbbra sem tartozik a keresettebb témák közé. Az adatok a lakhatás lassuló, a hitel élénkülő érdeklődéséről árulkodnak, de az okokat maguk a számok nem magyarázzák."
+}
+},
+"felkapott": {
+"top": [
+{
+"kifejezes": "holnapi időjárás",
+"volumen": "20000",
+"novekedes_pct": "75",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "tarr zoltán",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "aston villa vs arsenal tabella",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "időkép",
+"volumen": "5000",
+"novekedes_pct": "200",
+"temak": [
+"Climate"
+],
+"hirek": []
+},
+{
+"kifejezes": "orbán viktor",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Politics",
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "faludy györgy",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "bicske",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "időjárás figyelmeztetés",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "ausztria",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "nagy feró",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "nő",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "alföldi róbert",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "földgáz",
+"volumen": "1000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "németország",
+"volumen": "1000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": [
+{
+"hir_cim": "Rakétatámadás érte Németország egyik legnagyobb erőművét – Megtámadták Jänschwaldét",
+"hir_forras": "Portfolio.hu",
+"hir_url": "https://www.portfolio.hu/global/20260901/raketatamadas-erte-nemetorszag-egyik-legnagyobb-eromuvet-megtamadtak-janschwaldet-859718",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcT_lJiHLBw_B6uq8a6mMDLKZfWdd21i9jv7oxHHwO4vwY6_jVpVthzM5sq4CNQ",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Szabotázs: megtámadták egy német szénerőmű kulcsfontosságú létesítményét",
+"hir_forras": "24.hu",
+"hir_url": "https://24.hu/kulfold/2026/09/01/raketakkal-robbanoszerkezettel-tamadtak-nemet-eromu/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR9BahAlbMKIq36cg6-qZsc45b28OAQonQgdczLOrESyyAeDuuDS-QsF0tnLJ8",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Világ: Bomba robbant egy elektromos elosztó központnál Németországban",
+"hir_forras": "| hvg.hu",
+"hir_url": "https://hvg.hu/vilag/20260901_bomba-elektromos-eloszto-kozpont-nemetorszag",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSsNRxKE2VjGotsK233APd8Aw2LWPorYHVgYTl6C_67Lu4abPry6Op1gaz5ftc",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "szoros",
+"volumen": "1000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "ligeti miklós",
+"volumen": "1000",
+"novekedes_pct": "900",
+"temak": [
+"Law and Government"
+],
+"hirek": [
+{
+"hir_cim": "Egy tucat ügyész és nyomozó már elfogadta a Nemzeti Vagyonvisszaszerzési és Vagyonvédelmi Hivatal állásajánlatát",
+"hir_forras": "24.hu",
+"hir_url": "https://24.hu/belfold/2026/09/01/nvvh-unger-anna-elso-munkanap-ugyeszek-nyomozok/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTXX99i0mG2Q9tx15Ebzdm_hMrfpRvue_f6z1keC4W0SkaKQPUPCJ2wlx6wuT4",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Ligeti Miklós nem a sajtóban akar válaszolni Unger Anna ajánlatára",
+"hir_forras": "Telex",
+"hir_url": "https://telex.hu/belfold/2026/09/01/ligeti-miklos-nem-a-sajtoban-akar-valaszolni-unger-anna-ajanlatara-nvvh",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvT9rPeFWHrrwLXzRxOEP-GYERtYPH_biQyFLHBx4VThLqKps45YiMsXT7x2Q",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Ligeti Miklós: Szerencsétlennek tartom a politika reakcióját Unger Anna felkapott, és szerintem sokak által félreértett mondatára",
+"hir_forras": "| hvg.hu",
+"hir_url": "https://hvg.hu/360/20260901_ligeti-miklos-dolgozunk-tovabb",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR61sF_dKQwUyNmS8DCiOBMsyQ9WLb-2I_3FJ65OYi8Y5ru-xKtg0yZGQYGO2o",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "hitel",
+"volumen": "1000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "hír",
+"volumen": "1000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": [
+{
+"hir_cim": "Ne féljetek! 2.0 – Működő szeretetország: tüntetés lesz szeptember 5-én a Kossuth téren",
+"hir_forras": "HírTv",
+"hir_url": "https://hirtv.origo.hu/ahirtvhirei/2026/09/ne-feljetek-20-mukodo-szeretetorszag-tuntetes-lesz-szeptember-5-en-a-kossuth-teren",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQcvs8RiYy22_bp5Md0Lr3zawslhYtmpAtMxXlg6LDf5fNLDQVFPltfxR8ZvpQ",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Ilyen volt a tüntetés a Kossuth téren",
+"hir_forras": "Blikk",
+"hir_url": "https://www.blikk.hu/video/blikk/ilyen-volt-a-tuntetes-a-kossuth-teren",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQZF0dWfkdhj8CMKfL7L1KcLOgC21azb7SBc7pM6rDUjIbTdf7ditape0diCco",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Belföld - Tüntetést szervez a Kossuth térre a KözTér",
+"hir_forras": "Index.hu",
+"hir_url": "https://index.hu/belfold/2026/08/25/tuntetes-koztar-kossuth-ter-ne-feljetek-2-skrabski-fruzsina-huth-gergely/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRCZI0lu_H1Sg16CZ4oPfur9mrGxj8UrkwQYh7T4_GvekhYGEr0PDv1WWgHFyA",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "enying",
+"volumen": "1000",
+"novekedes_pct": "500",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "hegedűs zsolt",
+"volumen": "1000",
+"novekedes_pct": "1000",
+"temak": [
+"Health"
+],
+"hirek": []
+},
+{
+"kifejezes": "klímaváltozás",
+"volumen": "1000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "fc barcelona vs rayo vallecano tabella",
+"volumen": "1000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "pécsi tudományegyetem",
+"volumen": "1000",
+"novekedes_pct": "900",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "idojaras",
+"volumen": "1000",
+"novekedes_pct": "200",
+"temak": [
+"Climate"
+],
+"hirek": []
+},
+{
+"kifejezes": "radar",
+"volumen": "1000",
+"novekedes_pct": "900",
+"temak": [
+"Climate"
+],
+"hirek": []
+}
+],
+"reggel_top": [
+{
+"kifejezes": "jég",
+"volumen": "20000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "járvány",
+"volumen": "20000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "holnapi időjárás",
+"volumen": "20000",
+"novekedes_pct": "75",
+"temak": [
+"Climate"
+],
+"hirek": []
+},
+{
+"kifejezes": "barcelona–rayo",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "pénz",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "duna médiaszolgáltató",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "időkép",
+"volumen": "5000",
+"novekedes_pct": "200",
+"temak": [
+"Travel and Transportation"
+],
+"hirek": []
+},
+{
+"kifejezes": "hidegfront",
+"volumen": "5000",
+"novekedes_pct": "800",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "most wanted",
+"volumen": "5000",
+"novekedes_pct": "600",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "aston villa–arsenal",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "légitársaság",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "tűzifa",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "lopás",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "rózsáné sádt mónika",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "hazassag elso latasra 2026",
+"volumen": "2000",
+"novekedes_pct": "800",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "magyar közlöny",
+"volumen": "2000",
+"novekedes_pct": "400",
+"temak": [
+"Law and Government"
+],
+"hirek": [
+{
+"hir_cim": "Mészáros Renáta már nem helyettes államtitkár",
+"hir_forras": "Portfolio.hu",
+"hir_url": "https://www.portfolio.hu/gazdasag/20260831/meszaros-renata-mar-nem-helyettes-allamtitkar-859516",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTb_YBU1GyrEwzVwb7TsnPmhimFl6yMxMXlHv0r4QicNkDNPp4fhTAFDzA-jNA",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Belföld - Kiderült, ki a Tisza-kormány távozó helyettes államtitkára",
+"hir_forras": "Index.hu",
+"hir_url": "https://index.hu/belfold/2026/08/31/meszaros-renata-tavozo-helyettes-allamtitkar-videk-es-telepulesfejlesztesi-miniszterium-lorincz-viktoria/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcROGcKKS8K3h6gp0T6RkDnLm_bB8RR5Va9TTDBm3f8CBmpS7X15XkRW7vILqBw",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Itthon: Megnevezték a Vidék- és Településfejlesztési Minisztérium lemondott helyettes államtitkárát",
+"hir_forras": "| hvg.hu",
+"hir_url": "https://hvg.hu/itthon/20260831_kozlony-allamtitkar-helyettes-tavozas-egyetemi-tanarok-kinevezesek",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTICP37hhHb84omVDqmCC1SwL8L0QtSByKQ1QHfQSrA0nA7KIbZA4pXckGLJos",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "gáz",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "várkonyi andrea",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "molnár áron",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "papp gergely",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "lagzi lajcsi",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "berend t iván",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "amedspor–trabzonspor",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "rtl műsor",
+"volumen": "2000",
+"novekedes_pct": "300",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+}
+],
+"este_top": [
+{
+"kifejezes": "holnapi időjárás",
+"volumen": "20000",
+"novekedes_pct": "75",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "tarr zoltán",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "aston villa vs arsenal tabella",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "időkép",
+"volumen": "5000",
+"novekedes_pct": "200",
+"temak": [
+"Climate"
+],
+"hirek": []
+},
+{
+"kifejezes": "orbán viktor",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Politics",
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "faludy györgy",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "bicske",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "időjárás figyelmeztetés",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "ausztria",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "nagy feró",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "nő",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "alföldi róbert",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "földgáz",
+"volumen": "1000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "németország",
+"volumen": "1000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": [
+{
+"hir_cim": "Rakétatámadás érte Németország egyik legnagyobb erőművét – Megtámadták Jänschwaldét",
+"hir_forras": "Portfolio.hu",
+"hir_url": "https://www.portfolio.hu/global/20260901/raketatamadas-erte-nemetorszag-egyik-legnagyobb-eromuvet-megtamadtak-janschwaldet-859718",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcT_lJiHLBw_B6uq8a6mMDLKZfWdd21i9jv7oxHHwO4vwY6_jVpVthzM5sq4CNQ",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Szabotázs: megtámadták egy német szénerőmű kulcsfontosságú létesítményét",
+"hir_forras": "24.hu",
+"hir_url": "https://24.hu/kulfold/2026/09/01/raketakkal-robbanoszerkezettel-tamadtak-nemet-eromu/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR9BahAlbMKIq36cg6-qZsc45b28OAQonQgdczLOrESyyAeDuuDS-QsF0tnLJ8",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Világ: Bomba robbant egy elektromos elosztó központnál Németországban",
+"hir_forras": "| hvg.hu",
+"hir_url": "https://hvg.hu/vilag/20260901_bomba-elektromos-eloszto-kozpont-nemetorszag",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSsNRxKE2VjGotsK233APd8Aw2LWPorYHVgYTl6C_67Lu4abPry6Op1gaz5ftc",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "szoros",
+"volumen": "1000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "ligeti miklós",
+"volumen": "1000",
+"novekedes_pct": "900",
+"temak": [
+"Law and Government"
+],
+"hirek": [
+{
+"hir_cim": "Egy tucat ügyész és nyomozó már elfogadta a Nemzeti Vagyonvisszaszerzési és Vagyonvédelmi Hivatal állásajánlatát",
+"hir_forras": "24.hu",
+"hir_url": "https://24.hu/belfold/2026/09/01/nvvh-unger-anna-elso-munkanap-ugyeszek-nyomozok/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTXX99i0mG2Q9tx15Ebzdm_hMrfpRvue_f6z1keC4W0SkaKQPUPCJ2wlx6wuT4",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Ligeti Miklós nem a sajtóban akar válaszolni Unger Anna ajánlatára",
+"hir_forras": "Telex",
+"hir_url": "https://telex.hu/belfold/2026/09/01/ligeti-miklos-nem-a-sajtoban-akar-valaszolni-unger-anna-ajanlatara-nvvh",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvT9rPeFWHrrwLXzRxOEP-GYERtYPH_biQyFLHBx4VThLqKps45YiMsXT7x2Q",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Ligeti Miklós: Szerencsétlennek tartom a politika reakcióját Unger Anna felkapott, és szerintem sokak által félreértett mondatára",
+"hir_forras": "| hvg.hu",
+"hir_url": "https://hvg.hu/360/20260901_ligeti-miklos-dolgozunk-tovabb",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR61sF_dKQwUyNmS8DCiOBMsyQ9WLb-2I_3FJ65OYi8Y5ru-xKtg0yZGQYGO2o",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "hitel",
+"volumen": "1000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "hír",
+"volumen": "1000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": [
+{
+"hir_cim": "Ne féljetek! 2.0 – Működő szeretetország: tüntetés lesz szeptember 5-én a Kossuth téren",
+"hir_forras": "HírTv",
+"hir_url": "https://hirtv.origo.hu/ahirtvhirei/2026/09/ne-feljetek-20-mukodo-szeretetorszag-tuntetes-lesz-szeptember-5-en-a-kossuth-teren",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQcvs8RiYy22_bp5Md0Lr3zawslhYtmpAtMxXlg6LDf5fNLDQVFPltfxR8ZvpQ",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Ilyen volt a tüntetés a Kossuth téren",
+"hir_forras": "Blikk",
+"hir_url": "https://www.blikk.hu/video/blikk/ilyen-volt-a-tuntetes-a-kossuth-teren",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQZF0dWfkdhj8CMKfL7L1KcLOgC21azb7SBc7pM6rDUjIbTdf7ditape0diCco",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Belföld - Tüntetést szervez a Kossuth térre a KözTér",
+"hir_forras": "Index.hu",
+"hir_url": "https://index.hu/belfold/2026/08/25/tuntetes-koztar-kossuth-ter-ne-feljetek-2-skrabski-fruzsina-huth-gergely/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRCZI0lu_H1Sg16CZ4oPfur9mrGxj8UrkwQYh7T4_GvekhYGEr0PDv1WWgHFyA",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "enying",
+"volumen": "1000",
+"novekedes_pct": "500",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "hegedűs zsolt",
+"volumen": "1000",
+"novekedes_pct": "1000",
+"temak": [
+"Health"
+],
+"hirek": []
+},
+{
+"kifejezes": "klímaváltozás",
+"volumen": "1000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "fc barcelona vs rayo vallecano tabella",
+"volumen": "1000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "pécsi tudományegyetem",
+"volumen": "1000",
+"novekedes_pct": "900",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "idojaras",
+"volumen": "1000",
+"novekedes_pct": "200",
+"temak": [
+"Climate"
+],
+"hirek": []
+},
+{
+"kifejezes": "radar",
+"volumen": "1000",
+"novekedes_pct": "900",
+"temak": [
+"Climate"
+],
+"hirek": []
+}
+],
+"reggel_este_diff": {
+"uj_estere": [
+"alföldi róbert",
+"aston villa vs arsenal tabella",
+"ausztria",
+"bicske",
+"enying",
+"faludy györgy",
+"fc barcelona vs rayo vallecano tabella",
+"földgáz",
+"hegedűs zsolt",
+"hitel",
+"hír",
+"idojaras",
+"időjárás figyelmeztetés",
+"klímaváltozás",
+"ligeti miklós",
+"nagy feró",
+"németország",
+"nő",
+"orbán viktor",
+"pécsi tudományegyetem",
+"radar",
+"szoros",
+"tarr zoltán"
+],
+"eltunt_estere": [
+"amedspor–trabzonspor",
+"aston villa–arsenal",
+"barcelona–rayo",
+"berend t iván",
+"duna médiaszolgáltató",
+"gáz",
+"hazassag elso latasra 2026",
+"hidegfront",
+"járvány",
+"jég",
+"lagzi lajcsi",
+"lopás",
+"légitársaság",
+"magyar közlöny",
+"molnár áron",
+"most wanted",
+"papp gergely",
+"pénz",
+"rtl műsor",
+"rózsáné sádt mónika",
+"tűzifa",
+"várkonyi andrea"
+],
+"megmaradt": [
+"holnapi időjárás",
+"időkép"
+]
+},
+"reggel": {
+"szoveg": "Reggel kilenc körül a keresések élén az időjárás és néhány mindennapi téma állt: kiemelkedően sokan keresték a jég, a járvány és a holnapi időjárás kifejezéseket, mellettük megjelent a hidegfront, az időkép és a radar is, ami arra utal, hogy a reggeli figyelem jó részét az időjárás kötötte le.\n\nEmellett sport- és pénzügyi témák is felbukkantak, például a Barcelona–Rayo és az Aston Villa–Arsenal mérkőzés, valamint a pénz és a gáz. A szórakoztató világból a Most Wanted, a Házasság első látásra, Várkonyi Andrea, Molnár Áron és Lagzi Lajcsi neve pörgött. A hivatali oldalon a Magyar Közlöny körüli keresést egy távozó helyettes államtitkárról szóló hír kísérte."
+},
+"este": {
+"szoveg": "Estére a lista jellege érezhetően átalakult: az élen továbbra is a holnapi időjárás állt, mellette azonban felfutott Tarr Zoltán, és előtérbe kerültek a közéleti-politikai témák, például Orbán Viktor, Ligeti Miklós és a hír kifejezés, utóbbi mögött egy Kossuth téri tüntetéssel kapcsolatos hírsorozat állt.\n\nAz esti képben megjelent Németország is, amelyhez egy német erőművet ért támadásról szóló hírek kapcsolódtak. Emellett kulturális nevek – Faludy György, Alföldi Róbert, Nagy Feró – és energetikai témák, például a földgáz és a hitel is helyet kaptak. Az időjárás továbbra is jelen volt az időkép, az időjárás figyelmeztetés és a radar keresésekkel."
+},
+"teljes_nap": {
+"szoveg": "A nap íve jól mutatja, ahogyan a reggeli, jórészt időjárás- és sportközpontú érdeklődés estére a közélet és a kultúra felé tolódott. Reggel még a jég, a járvány, a hidegfront és több sportmérkőzés dominált, ezek estére kikoptak a keresésekből.\n\nEstére viszont új témaként jött be Tarr Zoltán, Orbán Viktor, Ligeti Miklós, Németország és több kulturális név, vagyis a figyelem a friss híresemények felé fordult. A nap folyamán végig kitartott a holnapi időjárás és az időkép iránti érdeklődés, ami arra utal, hogy az időjárás egész nap az egyik legállandóbb keresési téma maradt."
+},
+"het": {
+"szoveg": "A hét egészét nézve néhány téma több napon is vissza-visszatért. Ilyen volt a földgáz, a hidegfront, az időkép, Molnár Áron és a pénz, amelyek két-két napon is felbukkantak a keresések között, jelezve, hogy az energia, az időjárás és a pénzügyek tartósan foglalkoztatták az érdeklődőket.\n\nA többi visszatérő kifejezés jellemzően egy-egy naphoz kötődött, és rendkívül szerteágazó képet ad: sok sportmérkőzés, számos közéleti és kulturális név, időjárási és energetikai témák, valamint helyszínek egyaránt szerepeltek. Ez a sokszínűség arra utal, hogy a hetet nem egyetlen nagy téma uralta, hanem több párhuzamos, rövid életű érdeklődési hullám váltotta egymást."
 },
 "het_valos": {
 "napok": 7,
 "visszateroek": [
 {
-"kifejezes": "molnár áron",
-"napok_szama": 3
-},
-{
-"kifejezes": "pénz",
-"napok_szama": 3
-},
-{
-"kifejezes": "aston villa–arsenal",
-"napok_szama": 2
-},
-{
-"kifejezes": "berend t iván",
-"napok_szama": 2
-},
-{
-"kifejezes": "gáz",
+"kifejezes": "földgáz",
 "napok_szama": 2
 },
 {
@@ -874,55 +1175,11 @@
 "napok_szama": 2
 },
 {
-"kifejezes": "járvány",
+"kifejezes": "molnár áron",
 "napok_szama": 2
 },
 {
-"kifejezes": "jég",
-"napok_szama": 2
-},
-{
-"kifejezes": "lagzi lajcsi",
-"napok_szama": 2
-},
-{
-"kifejezes": "légitársaság",
-"napok_szama": 2
-},
-{
-"kifejezes": "most wanted",
-"napok_szama": 2
-},
-{
-"kifejezes": "mvm zrt",
-"napok_szama": 2
-},
-{
-"kifejezes": "orbán ráhel",
-"napok_szama": 2
-},
-{
-"kifejezes": "papp gergely",
-"napok_szama": 2
-},
-{
-"kifejezes": "pénzcentrum.hu",
-"napok_szama": 2
-},
-{
-"kifejezes": "rtl műsor",
-"napok_szama": 2
-},
-{
-"kifejezes": "telex.hu",
-"napok_szama": 2
-},
-{
-"kifejezes": "tűzifa",
-"napok_szama": 2
-},
-{
-"kifejezes": "várkonyi andrea",
+"kifejezes": "pénz",
 "napok_szama": 2
 },
 {
@@ -938,7 +1195,15 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "amedspor–trabzonspor",
+"kifejezes": "alföldi róbert",
+"napok_szama": 1
+},
+{
+"kifejezes": "aston villa vs arsenal tabella",
+"napok_szama": 1
+},
+{
+"kifejezes": "aston villa–arsenal",
 "napok_szama": 1
 },
 {
@@ -962,15 +1227,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "ausztria",
+"napok_szama": 1
+},
+{
 "kifejezes": "balogh levente",
 "napok_szama": 1
 },
 {
 "kifejezes": "barcelona–bilbao",
-"napok_szama": 1
-},
-{
-"kifejezes": "barcelona–rayo",
 "napok_szama": 1
 },
 {
@@ -983,6 +1248,14 @@
 },
 {
 "kifejezes": "benzin",
+"napok_szama": 1
+},
+{
+"kifejezes": "berend t iván",
+"napok_szama": 1
+},
+{
+"kifejezes": "bicske",
 "napok_szama": 1
 },
 {
@@ -1026,11 +1299,11 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "duna médiaszolgáltató",
+"kifejezes": "dvsc–mtk",
 "napok_szama": 1
 },
 {
-"kifejezes": "dvsc–mtk",
+"kifejezes": "enying",
 "napok_szama": 1
 },
 {
@@ -1039,6 +1312,14 @@
 },
 {
 "kifejezes": "európa liga sorsolás ferencváros",
+"napok_szama": 1
+},
+{
+"kifejezes": "faludy györgy",
+"napok_szama": 1
+},
+{
+"kifejezes": "fc barcelona vs rayo vallecano tabella",
 "napok_szama": 1
 },
 {
@@ -1062,10 +1343,6 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "földgáz",
-"napok_szama": 1
-},
-{
 "kifejezes": "gallicoop zrt",
 "napok_szama": 1
 },
@@ -1078,11 +1355,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "gáz",
+"napok_szama": 1
+},
+{
 "kifejezes": "gázolaj",
 "napok_szama": 1
 },
 {
-"kifejezes": "hazassag elso latasra 2026",
+"kifejezes": "hegedűs zsolt",
+"napok_szama": 1
+},
+{
+"kifejezes": "hitel",
 "napok_szama": 1
 },
 {
@@ -1094,7 +1379,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "hír",
+"napok_szama": 1
+},
+{
 "kifejezes": "idojaras",
+"napok_szama": 1
+},
+{
+"kifejezes": "időjárás figyelmeztetés",
 "napok_szama": 1
 },
 {
@@ -1114,6 +1407,18 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "járvány",
+"napok_szama": 1
+},
+{
+"kifejezes": "jég",
+"napok_szama": 1
+},
+{
+"kifejezes": "klímaváltozás",
+"napok_szama": 1
+},
+{
 "kifejezes": "kocsis zoltán",
 "napok_szama": 1
 },
@@ -1130,6 +1435,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "lagzi lajcsi",
+"napok_szama": 1
+},
+{
 "kifejezes": "lannert judit",
 "napok_szama": 1
 },
@@ -1142,6 +1451,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "ligeti miklós",
+"napok_szama": 1
+},
+{
 "kifejezes": "liverpool fc vs nottingham forest tabella",
 "napok_szama": 1
 },
@@ -1151,6 +1464,10 @@
 },
 {
 "kifejezes": "losc–psg",
+"napok_szama": 1
+},
+{
+"kifejezes": "légitársaság",
 "napok_szama": 1
 },
 {
@@ -1194,7 +1511,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "most wanted",
+"napok_szama": 1
+},
+{
+"kifejezes": "mvm zrt",
+"napok_szama": 1
+},
+{
 "kifejezes": "márki zay péter",
+"napok_szama": 1
+},
+{
+"kifejezes": "nagy feró",
 "napok_szama": 1
 },
 {
@@ -1222,7 +1551,23 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "németország",
+"napok_szama": 1
+},
+{
+"kifejezes": "nő",
+"napok_szama": 1
+},
+{
 "kifejezes": "olaj",
+"napok_szama": 1
+},
+{
+"kifejezes": "orbán ráhel",
+"napok_szama": 1
+},
+{
+"kifejezes": "orbán viktor",
 "napok_szama": 1
 },
 {
@@ -1231,6 +1576,10 @@
 },
 {
 "kifejezes": "országos mentőszolgálat",
+"napok_szama": 1
+},
+{
+"kifejezes": "papp gergely",
 "napok_szama": 1
 },
 {
@@ -1254,7 +1603,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "pécsi tudományegyetem",
+"napok_szama": 1
+},
+{
+"kifejezes": "pénzcentrum.hu",
+"napok_szama": 1
+},
+{
 "kifejezes": "pócs jános",
+"napok_szama": 1
+},
+{
+"kifejezes": "radar",
 "napok_szama": 1
 },
 {
@@ -1267,6 +1628,10 @@
 },
 {
 "kifejezes": "robert de niro",
+"napok_szama": 1
+},
+{
+"kifejezes": "rtl műsor",
 "napok_szama": 1
 },
 {
@@ -1294,6 +1659,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "szoros",
+"napok_szama": 1
+},
+{
 "kifejezes": "szívós mária",
 "napok_szama": 1
 },
@@ -1303,6 +1672,14 @@
 },
 {
 "kifejezes": "séfek séfe",
+"napok_szama": 1
+},
+{
+"kifejezes": "tarr zoltán",
+"napok_szama": 1
+},
+{
+"kifejezes": "telex.hu",
 "napok_szama": 1
 },
 {
@@ -1330,6 +1707,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "tűzifa",
+"napok_szama": 1
+},
+{
 "kifejezes": "unger anna férje",
 "napok_szama": 1
 },
@@ -1347,6 +1728,10 @@
 },
 {
 "kifejezes": "virgil van dijk",
+"napok_szama": 1
+},
+{
+"kifejezes": "várkonyi andrea",
 "napok_szama": 1
 },
 {
@@ -1373,62 +1758,62 @@
 {
 "szo": "szorongás",
 "domen": "egeszseg",
-"irany": "stagnal",
-"meredekseg": 0.004,
+"irany": "csokken",
+"meredekseg": -0.065,
 "ervenyes": true,
-"mai_ertek": 61,
+"mai_ertek": 49,
 "csucs": 100,
-"atlag": 30.0
+"atlag": 26.2
 },
 {
 "szo": "edzés",
 "domen": "egeszseg",
 "irany": "stagnal",
-"meredekseg": -0.012,
+"meredekseg": -0.014,
 "ervenyes": true,
-"mai_ertek": 54,
+"mai_ertek": 58,
 "csucs": 100,
-"atlag": 67.2
+"atlag": 67.3
 },
 {
 "szo": "meditáció",
 "domen": "egeszseg",
 "irany": "csokken",
-"meredekseg": -0.048,
+"meredekseg": -0.05,
 "ervenyes": true,
-"mai_ertek": 79,
+"mai_ertek": 80,
 "csucs": 100,
-"atlag": 82.1
+"atlag": 83.0
 },
 {
 "szo": "befektetés",
 "domen": "penzugy",
 "irany": "csokken",
-"meredekseg": -0.036,
+"meredekseg": -0.02,
 "ervenyes": true,
-"mai_ertek": 54,
+"mai_ertek": 50,
 "csucs": 100,
-"atlag": 27.9
+"atlag": 30.9
 },
 {
 "szo": "bitcoin",
 "domen": "penzugy",
 "irany": "csokken",
-"meredekseg": -0.1,
+"meredekseg": -0.112,
 "ervenyes": true,
-"mai_ertek": 65,
+"mai_ertek": 63,
 "csucs": 100,
-"atlag": 46.4
+"atlag": 50.7
 },
 {
 "szo": "hírek",
 "domen": "kozelet",
 "irany": "stagnal",
-"meredekseg": -0.007,
+"meredekseg": -0.004,
 "ervenyes": true,
 "mai_ertek": 46,
 "csucs": 100,
-"atlag": 55.7
+"atlag": 52.5
 },
 {
 "szo": "magyar péter",
@@ -1436,7 +1821,7 @@
 "irany": "novekszik",
 "meredekseg": 0.034,
 "ervenyes": true,
-"mai_ertek": 9,
+"mai_ertek": 8,
 "csucs": 100,
 "atlag": 15.6
 },
@@ -1444,135 +1829,135 @@
 "szo": "recept",
 "domen": "haztartas",
 "irany": "csokken",
-"meredekseg": -0.041,
+"meredekseg": -0.042,
 "ervenyes": true,
-"mai_ertek": 42,
+"mai_ertek": 39,
 "csucs": 100,
-"atlag": 47.0
+"atlag": 47.2
 },
 {
 "szo": "mese",
 "domen": "csalad",
 "irany": "stagnal",
-"meredekseg": -0.013,
+"meredekseg": -0.012,
 "ervenyes": true,
-"mai_ertek": 91,
+"mai_ertek": 88,
 "csucs": 100,
-"atlag": 87.6
+"atlag": 85.3
 },
 {
 "szo": "nyaralás",
 "domen": "szabadido",
 "irany": "novekszik",
-"meredekseg": 0.098,
+"meredekseg": 0.1,
 "ervenyes": true,
-"mai_ertek": 47,
+"mai_ertek": 50,
 "csucs": 100,
-"atlag": 47.9
+"atlag": 51.5
 },
 {
 "szo": "tanulás",
 "domen": "tanulas",
 "irany": "csokken",
-"meredekseg": -0.041,
+"meredekseg": -0.053,
 "ervenyes": true,
-"mai_ertek": 69,
+"mai_ertek": 68,
 "csucs": 100,
-"atlag": 67.9
+"atlag": 76.8
 },
 {
 "szo": "klíma",
 "domen": "otthon",
 "irany": "novekszik",
-"meredekseg": 0.084,
+"meredekseg": 0.077,
 "ervenyes": true,
-"mai_ertek": 13,
+"mai_ertek": 12,
 "csucs": 100,
-"atlag": 16.4
+"atlag": 17.1
 }
 ],
 "het_valos": [
 {
-"szo": "szorongás",
-"kezdo": 38,
-"veg": 52,
-"valtozas": 14
-},
-{
-"szo": "meditáció",
-"kezdo": 72,
-"veg": 81,
-"valtozas": 9
-},
-{
-"szo": "bitcoin",
-"kezdo": 52,
-"veg": 60,
-"valtozas": 8
-},
-{
-"szo": "klíma",
-"kezdo": 19,
-"veg": 12,
-"valtozas": -7
-},
-{
-"szo": "edzés",
-"kezdo": 53,
-"veg": 58,
-"valtozas": 5
-},
-{
 "szo": "tanulás",
-"kezdo": 55,
-"veg": 60,
-"valtozas": 5
+"kezdo": 50,
+"veg": 68,
+"valtozas": 18
+},
+{
+"szo": "szorongás",
+"kezdo": 32,
+"veg": 49,
+"valtozas": 17
 },
 {
 "szo": "nyaralás",
-"kezdo": 49,
-"veg": 45,
-"valtozas": -4
+"kezdo": 39,
+"veg": 50,
+"valtozas": 11
+},
+{
+"szo": "bitcoin",
+"kezdo": 55,
+"veg": 63,
+"valtozas": 8
+},
+{
+"szo": "befektetés",
+"kezdo": 43,
+"veg": 50,
+"valtozas": 7
+},
+{
+"szo": "meditáció",
+"kezdo": 75,
+"veg": 80,
+"valtozas": 5
 },
 {
 "szo": "magyar péter",
 "kezdo": 12,
-"veg": 9,
-"valtozas": -3
+"veg": 8,
+"valtozas": -4
 },
 {
 "szo": "hírek",
-"kezdo": 52,
-"veg": 50,
-"valtozas": -2
-},
-{
-"szo": "recept",
-"kezdo": 42,
-"veg": 40,
-"valtozas": -2
-},
-{
-"szo": "befektetés",
-"kezdo": 42,
-"veg": 41,
-"valtozas": -1
+"kezdo": 49,
+"veg": 46,
+"valtozas": -3
 },
 {
 "szo": "mese",
-"kezdo": 94,
-"veg": 93,
-"valtozas": -1
+"kezdo": 91,
+"veg": 88,
+"valtozas": -3
+},
+{
+"szo": "klíma",
+"kezdo": 15,
+"veg": 12,
+"valtozas": -3
+},
+{
+"szo": "edzés",
+"kezdo": 56,
+"veg": 58,
+"valtozas": 2
+},
+{
+"szo": "recept",
+"kezdo": 41,
+"veg": 39,
+"valtozas": -2
 }
 ],
 "napi": {
-"szoveg": "A videós keresésekben ma több téma is a saját megszokott szintje fölött jár. A szorongás mai értéke jóval meghaladja a rá jellemző átlagot, ami arra utal, hogy e téma iránt most élénkebb a videós figyelem. A befektetés szintén feltűnően aktív, a szokásos szintjéhez képest jóval magasabban.\n\nA bitcoin is a megszokottnál élénkebb ma, mai értéke a saját átlaga fölött van. A mese és a meditáció továbbra is magas szinten mozog, ami náluk megszokottnak számít. Ezzel szemben a magyar péter és a klíma keresése ma alacsonyan, a saját megszokott szintjük közelében vagy az alatt marad. Fontos, hogy ezek a videós szavak mind a saját külön skálájukon mozognak, így egymással nem összemérhetők."
+"szoveg": "A magyarországi videós keresésekben – ahol minden téma a saját skáláján mozog, így egymással nem vethetők össze – ma több téma is a szokásosnál élénkebbnek látszik. A szorongás 49-es értéke jóval a maga 26 körüli átlaga fölött van, a befektetés 50-es szintje szintén magasan van a 31 körüli átlagához képest, és a bitcoin is a szokásosnál valamivel keresettebb.\n\nA mese és a meditáció mai értéke magas, de ez náluk megszokott, hiszen a saját átlaguk is a felső tartományban mozog. A magyar péter és a klíma ezzel szemben a saját szokásos szintje alatt marad, előbbi 8-on a 16 körüli, utóbbi 12-n a 17 körüli átlagához képest visszafogottabb ma."
 },
 "teljes_kep": {
-"szoveg": "A videós érdeklődés összképében az egészséghez és a pénzügyekhez köthető témák most az átlagosnál valamivel jobban felkeltik a figyelmet, míg a mindennapi, folyamatosan népszerű tartalmak, mint a mese vagy a meditáció, stabilan magas szinten maradnak.\n\nA közélethez és az otthonhoz köthető keresések inkább visszafogottabbak. Mindezt óvatosan érdemes kezelni, hiszen minden egyes téma a saját skáláján mozog, tehát az itt leírtak az adott szó önmagához mért helyzetéről szólnak, nem a szavak egymáshoz viszonyított rangsoráról."
+"szoveg": "A videós érdeklődés összképe vegyes irányokat mutat. Az egészséghez köthető témák közül a meditáció és az edzés magas, stabil szinten áll, míg a szorongás enyhén lefelé tart, ám a mai értéke így is kiemelkedik a saját átlagából.\n\nA pénzügyi témák – a befektetés és a bitcoin – jelenleg a szokásosnál érdeklődöttebbek, miközben irányuk óvatosan csökkenő. A családi és tanulási tartalmak, mint a mese és a tanulás, tartósan a kereslet felső részén mozognak. A növekvő irányt mutató témák közé tartozik a nyaralás és a klíma, bár a klíma abszolút szintje alacsony marad."
 },
 "het": {
-"szoveg": "A héten a videós keresések közül a szorongás erősödött a leginkább, a hét eleji szintjéről érzékelhetően feljebb került a hét végére. Emellett a meditáció, a bitcoin, az edzés és a tanulás is enyhén emelkedett a hét során.\n\nA másik irányba a klíma mozdult a leginkább, ez csökkent a legjobban a héten. Kisebb mértékben halványult a nyaralás, a magyar péter, a hírek és a recept iránti videós figyelem is. A mese a hét egészében stabilan a csúcshoz közeli szinten maradt."
+"szoveg": "A hét folyamán a videós keresésekben a tanulás emelkedett a leglátványosabban, tizennyolc ponttal feljebb került, ami az iskolakezdés közeledtével összefüggésben állhat, bár ezt az adat önmagában nem igazolja. Hasonlóan erős emelkedést mutatott a szorongás, amely tizenhét ponttal nőtt.\n\nA nyaralás, a bitcoin és a befektetés szintén a hét eleji szintje fölé került, jelezve a szabadidős és pénzügyi tartalmak iránti élénkülő figyelmet. A meditáció enyhén emelkedett, míg a magyar péter, a hírek, a mese és a klíma kisebb mértékben visszaesett a hét során. Az edzés és a recept nagyjából ott maradt, ahonnan indult."
 }
 }
 }
