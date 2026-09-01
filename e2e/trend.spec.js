@@ -763,6 +763,20 @@ test("N. idősor: három szegmens-gomb, sorrend Napi összesen · Reggeli · Est
   await expect(gombok.nth(0)).toHaveAttribute("aria-pressed", "true");
 });
 
+test("N. idősor: állandó info-doboz a három nézetről + frissülési időkről, nincs duplikáció", async ({ page }) => {
+  await mock(page, { kategoriak: { napok: [
+    { nap: "2026-09-01", reggel: { kategoriak: { Sports: 3 } }, este: { kategoriak: { Politics: 2 } } } ] } });
+  await page.goto("/");
+  const info = page.locator("#idosor-blokk .idosor-info");
+  await expect(info).toHaveCount(1);
+  await expect(info).toBeVisible();
+  await expect(info).toContainText("Napi összesen");
+  await expect(info).toContainText("21:00");
+  // váltás után is PONTOSAN EGY info-doboz (a re-render ne duplikálja)
+  await page.locator('.idosor-szegmens-valto [data-szegmens="reggel"]').click();
+  await expect(page.locator("#idosor-blokk .idosor-info")).toHaveCount(1);
+});
+
 // ── #2 fix: üres szegmensre váltva a váltó MARAD (nincs zsákutca) + rövid jelzés; vissza-váltás újra chartot ad ──
 test("N. idősor: üres szegmensen a váltó látszik + vissza lehet váltani", async ({ page }) => {
   const KJ = { napok: [

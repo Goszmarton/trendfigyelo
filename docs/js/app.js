@@ -1574,12 +1574,20 @@ function idosor_blokk_render() {
   if (idosor_chart) { idosor_chart.destroy(); idosor_chart = null; }
   idosor_aktiv = "";
   blokk.querySelectorAll("." + OSZT_T.idosor_chart_doboz + ", ." + OSZT_T.idosor_adat + ", ." + OSZT_T.idosor_magyarazat
-    + ", .idosor-szegmens-valto")
+    + ", .idosor-szegmens-valto, .idosor-info")
     .forEach(function (e) { e.remove(); });
   legendEl.innerHTML = "";
   blokk.removeAttribute(ATTR_T.idosor_aktiv);
 
   blokk.appendChild(idosor_szegmens_valto_epit());   // a váltó MINDIG látszik (üres szegmensnél is → vissza lehet váltani)
+
+  const info = document.createElement("p");
+  info.className = "idosor-info";
+  info.textContent = "Három nézet: a Napi összesen egy nap reggeli és esti adatát adja össze; a Reggeli 9:00 "
+    + "és az Esti 21:00 a két külön pillanatkép. Ha egy napnál még csak reggeli adat van (az aznapi 21:00 esti "
+    + "lekérdezés még nem futott le), a Napi összesen arra a napra egyelőre csak a reggelit tartalmazza, és este "
+    + "21:00 után egészül ki. Frissülés: reggel ~9:00, este ~21:00 (budapesti idő; a honlap kevéssel utána frissül).";
+  blokk.appendChild(info);
 
   const idosor = kategoria_idosor(adat["kategoriak.json"], idosor_szegmens);
   if (!idosor.vonalak.length) {   // ehhez a szegmenshez nincs adat → a váltó MARAD + rövid jelzés (nincs zsákutca)
