@@ -90,3 +90,31 @@ def test_utolso_res_ures_es_egyelemu():
 def test_utolso_res_ev_hatar():
     """Év-/hónaphatár: valódi dátum-aritmetikát kényszerít (naiv string-/int-kivonás őre)."""
     assert seged.utolso_res(["2026-12-31", "2027-01-02"]) == ["2027-01-01"]
+
+
+# --- ESTI-NAP: a logikai esti nap (hajnali futás = az ELŐZŐ este pótlása) ---
+
+def test_esti_nap_este_aznap():
+    # 21:00 CEST (19:00 UTC nyáron) → aznap estéje
+    assert seged.esti_nap(datetime(2026, 9, 1, 19, 0, tzinfo=timezone.utc)) == "2026-09-01"
+
+
+def test_esti_nap_hajnal_az_elozo_nap():
+    # 03:38 CEST (01:38 UTC) → hajnal → az ELŐZŐ nap estéje (a hamis-esti forrása)
+    assert seged.esti_nap(datetime(2026, 9, 1, 1, 38, tzinfo=timezone.utc)) == "2026-08-31"
+
+
+def test_esti_nap_hatar_kuszob_alatt_elozo():
+    # 05:59 CEST (03:59 UTC) → még hajnal → előző nap
+    assert seged.esti_nap(datetime(2026, 9, 1, 3, 59, tzinfo=timezone.utc)) == "2026-08-31"
+
+
+def test_esti_nap_hatar_kuszobon_aznap():
+    # 06:00 CEST (04:00 UTC) → már aznap
+    assert seged.esti_nap(datetime(2026, 9, 1, 4, 0, tzinfo=timezone.utc)) == "2026-09-01"
+
+
+def test_esti_nap_teli_ido_DST_hatar():
+    # télen CET (+1): 06:00 CET = 05:00 UTC → aznap; 05:00 CET = 04:00 UTC → előző
+    assert seged.esti_nap(datetime(2026, 1, 15, 5, 0, tzinfo=timezone.utc)) == "2026-01-15"
+    assert seged.esti_nap(datetime(2026, 1, 15, 4, 0, tzinfo=timezone.utc)) == "2026-01-14"

@@ -39,6 +39,23 @@ def most_utc() -> datetime:
     return datetime.now(timezone.utc)
 
 
+ESTI_NAP_HAJNAL_KUSZOB = 6   # budapesti óra: e küszöb ALATT a futás az ELŐZŐ nap estéjéhez tartozik
+
+
+def esti_nap(most: datetime) -> str:
+    """Az este-módú futás LOGIKAI esti napja (ISO 'YYYY-MM-DD').
+
+    A budapesti naptári nap, KIVÉVE a hajnali (ESTI_NAP_HAJNAL_KUSZOB budapesti óra
+    előtti) futást: az egy éjfél-átfordulós backup, ami az ELŐZŐ nap estéjének pótlása,
+    ezért az előző napra sorolódik. Így egy hajnali backup nem hoz létre hamis másnapi
+    esti szegmenst; a valóban kimaradt estét viszont bepótolja. DST automatikus
+    (budapesti helyi órából számol)."""
+    bp = most.astimezone(BUDAPEST)
+    if bp.hour < ESTI_NAP_HAJNAL_KUSZOB:
+        return (bp.date() - timedelta(days=1)).isoformat()
+    return bp.date().isoformat()
+
+
 def szovegge(ertek) -> str:
     """None/lista biztonságos szöveggé alakítása egy CSV-cellába."""
     if ertek is None:
