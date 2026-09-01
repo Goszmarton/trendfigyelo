@@ -704,8 +704,8 @@ test("idősor-chart: a cím a canvas ELŐTT, a magyarázat a canvas UTÁN (a job
   expect(sorrend).toBe(true);
 });
 
-// ── #2 Reggel/Este váltó — a kategória-idősor szegmentált kategoriak.json-t olvas, alap az Este szegmens ──
-test("N. idősor: Reggel/Este váltó — alap Este, váltásra a reggeli számok", async ({ page }) => {
+// ── #2 szegmens-váltó — a kategória-idősor szegmentált kategoriak.json-t olvas, alap a Napi összesen szegmens ──
+test("N. idősor: szegmens-váltó — alap Napi összesen, váltásra a reggeli számok", async ({ page }) => {
   const KJ = { napok: [
     { nap: "2026-08-10",
       reggel: { kategoriak: { "Sports": 3 } },
@@ -716,10 +716,51 @@ test("N. idősor: Reggel/Este váltó — alap Este, váltásra a reggeli számo
   await page.route(/napok\/index\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ napok: ["2026-08-10"] }) }));
   await page.goto("/");
   const tukor = page.locator("#idosor-blokk .idosor-adat");
-  await expect(tukor).toHaveAttribute("data-vonal-szam", "2");                 // este: Sports + Politics
-  await expect(page.locator('.idosor-szegmens-valto [data-szegmens="este"]')).toHaveAttribute("aria-pressed", "true");
+  await expect(tukor).toHaveAttribute("data-vonal-szam", "2");                 // osszesen: Sports + Politics
+  await expect(page.locator('.idosor-szegmens-valto [data-szegmens="osszesen"]')).toHaveAttribute("aria-pressed", "true");
   await page.locator('.idosor-szegmens-valto [data-szegmens="reggel"]').click();
   await expect(page.locator("#idosor-blokk .idosor-adat")).toHaveAttribute("data-vonal-szam", "1");  // reggel: csak Sports
+});
+
+// ── Napi összesen mód — a nap MEGLÉVŐ szegmenseinek darabszám-összege ──
+test("N. idősor: Napi összesen — reggel+este darabszám-összeg", async ({ page }) => {
+  await mock(page, { kategoriak: { napok: [
+    { nap: "2026-09-01", reggel: { kategoriak: { Sports: 3, Other: 8 } },
+                          este:   { kategoriak: { Sports: 1, Politics: 2, Other: 12 } } } ] } });
+  await page.goto("/");
+  const tukor = page.locator("#idosor-blokk .idosor-adat");
+  await expect(tukor.locator('.idosor-vonal[data-kategoria="Sports"]')).toHaveAttribute("data-ertekek", "[4]");
+  await expect(tukor.locator('.idosor-vonal[data-kategoria="Politics"]')).toHaveAttribute("data-ertekek", "[2]");
+  await expect(tukor.locator('.idosor-vonal[data-kategoria="Other"]')).toHaveAttribute("data-ertekek", "[20]");
+});
+
+test("N. idősor: Napi összesen — csak reggeli nap → csak a reggeli számít (nincs áthúzott este)", async ({ page }) => {
+  await mock(page, { kategoriak: { napok: [
+    { nap: "2026-09-01", reggel: { kategoriak: { Sports: 3 } } } ] } });   // NINCS este
+  await page.goto("/");
+  await expect(page.locator('#idosor-blokk .idosor-adat .idosor-vonal[data-kategoria="Sports"]'))
+    .toHaveAttribute("data-ertekek", "[3]");
+});
+
+test("N. idősor: Napi összesen — régi lapos rekord EGYSZER számít", async ({ page }) => {
+  await mock(page, { kategoriak: { napok: [
+    { nap: "2026-08-05", kategoriak: { A: 2 } } ] } });   // legacy (nincs reggel/este)
+  await page.goto("/");
+  await expect(page.locator('#idosor-blokk .idosor-adat .idosor-vonal[data-kategoria="A"]'))
+    .toHaveAttribute("data-ertekek", "[2]");
+});
+
+test("N. idősor: három szegmens-gomb, sorrend Napi összesen · Reggeli · Esti, alap az összesen", async ({ page }) => {
+  await mock(page, { kategoriak: { napok: [
+    { nap: "2026-09-01", reggel: { kategoriak: { Sports: 3 } }, este: { kategoriak: { Politics: 2 } } } ] } });
+  await page.goto("/");
+  const gombok = page.locator(".idosor-szegmens-valto button");
+  await expect(gombok).toHaveCount(3);
+  await expect(gombok.nth(0)).toHaveAttribute("data-szegmens", "osszesen");
+  await expect(gombok.nth(1)).toHaveAttribute("data-szegmens", "reggel");
+  await expect(gombok.nth(2)).toHaveAttribute("data-szegmens", "este");
+  await expect(gombok.nth(0)).toHaveText("Napi összesen");
+  await expect(gombok.nth(0)).toHaveAttribute("aria-pressed", "true");
 });
 
 // ── #2 fix: üres szegmensre váltva a váltó MARAD (nincs zsákutca) + rövid jelzés; vissza-váltás újra chartot ad ──

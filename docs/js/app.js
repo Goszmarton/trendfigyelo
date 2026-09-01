@@ -1320,7 +1320,7 @@ let trend_chart_peldanyok = [];    // 8a: sparkline Chart-példányok TÖMBJE (M
                                    // azonos kifejezésű trend különben felülírta egymást → árva Chart). KÜLÖN a
                                    // kulcsszó chart_peldanyok-tól. Csak destroy-all a rendeltetése (nincs kikeresés).
 let trend_esemeny_kotve = false;   // a dátumválasztó change-kötése egyszer
-let idosor_szegmens = "este";   // #2 Reggel/Este váltó — alap az esti (teljes) pillanatkép
+let idosor_szegmens = "osszesen";   // #2 szegmens-váltó — alap a Napi összesen (reggel+este a napra)
 
 // a rendezett nap-lista + a legfrissebb nap (a napok/index.json-ból)
 function trend_napok() {
@@ -1394,6 +1394,20 @@ function kategoria_eloszlas(trendek) {
 function kategoria_idosor(kj, szegmens) {
   const szeg = szegmens || "este";
   function kat(n) {   // a rekord kategoriak-ja a kért szegmensre; régi lapos rekord 'este'-ként
+    if (szeg === "osszesen") {                       // a nap MEGLÉVŐ szegmenseinek darabszám-összege
+      const ossz = {}; let van = false;
+      ["reggel", "este"].forEach(function (s) {
+        if (n[s] && n[s].kategoriak) {
+          van = true;
+          Object.keys(n[s].kategoriak).forEach(function (c) { ossz[c] = (ossz[c] || 0) + n[s].kategoriak[c]; });
+        }
+      });
+      if (!van && n.kategoriak) {                    // régi lapos rekord → EGYSZER számít (visszafelé kompat)
+        van = true;
+        Object.keys(n.kategoriak).forEach(function (c) { ossz[c] = (ossz[c] || 0) + n.kategoriak[c]; });
+      }
+      return van ? ossz : null;
+    }
     if (n[szeg] && n[szeg].kategoriak) return n[szeg].kategoriak;
     if (szeg === "este" && n.kategoriak) return n.kategoriak;   // visszafelé kompat
     return null;
@@ -1528,11 +1542,12 @@ function idosor_legend_epit(idosor) {
   return frag;
 }
 
-// a #2 Reggel/Este váltó — az egész kategória-idősort átváltja (alap Este). Katt → idosor_szegmens + újrarender.
+// 3-gombos szegmens-váltó (Napi összesen / Reggeli / Esti), alap a Napi összesen — az egész kategória-idősort
+// átváltja. Katt → idosor_szegmens + újrarender.
 function idosor_szegmens_valto_epit() {
   const valto = document.createElement("div");
   valto.className = "idosor-szegmens-valto";
-  [["reggel", "Reggeli 9:00"], ["este", "Esti 21:00"]].forEach(function (par) {
+  [["osszesen", "Napi összesen"], ["reggel", "Reggeli 9:00"], ["este", "Esti 21:00"]].forEach(function (par) {
     const g = document.createElement("button");
     g.type = "button";
     g.setAttribute("data-szegmens", par[0]);
