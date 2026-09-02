@@ -38,31 +38,39 @@ def tervezett_hivasszam(config) -> int:
 # körbeforgó eloszlás csúcsa), NEM naptár-függő; a hívás-plafon fejtere ebből jön.
 MAX_MASODLAGOS_NAPI = 2
 
+# a REGGELI másodlagos ág napi cap-je — KÜLÖN az esti 2-től. A reggeli futásnak szabad
+# kapacitása van (nem verseng az esti órás gyűjtéssel), ezért a ~15 reggeli szó egy-ablakos
+# másodlagosát ~2 reggel alatt körbejárja (staleness szerint).
+MAX_MASODLAGOS_REGGELI = 8
 
-def masodlagos_szavak_ma(config, most, docs_data_mappa, limit=None):
-    """A ma ütemezett (szó × timeframe) cellák — STALENESS-vezérelt (Task 5), a %7 helyett.
 
-    `limit` = hány cellát adjon vissza; None → MAX_MASODLAGOS_NAPI (a NAPI útvonal változatlan). A másodlagos-only
-    belépő SAJÁT limitet ad át (a napi cap-et NEM kerüli meg).
+def _oras_szavak(config, mode) -> list:
+    """A futás órás (elsődleges now 7-d) szavai: `oras` igaz ÉS a mód `futas`-részhalmaza."""
+    futas = "reggel" if mode == "reggel" else "este"
+    return [t for t in config.osszes_kulcsszo() if t.oras and t.futas == futas]
 
-    A racs≠"ora" (jogosult) szavakat elavultság szerint rangsorolja: never-collected / nincs érvényes
-    `lekerdezes_utc` = MAX elavult (legelöl); azonos elavultság → CONFIG-INDEX tie-break (NEM ábécé);
-    majd az első MAX_MASODLAGOS_NAPI-t adja — EXPLICIT cap (a %7 ≤14-szó implicit feltevése megszűnik).
-    I/O-ROBUSZTUS: a `kulcsszo_masodlagos_nyers.json` HIÁNYZIK/ÜRES/JSON-hibás → NEM dob, NEM állítja meg a
-    napi futást; FALLBACK a config-index sorrend első MAX_MASODLAGOS_NAPI szavára + HANGOS FIGYELEM.
+
+def masodlagos_szavak_ma(config, most, docs_data_mappa, limit=None, mode="este"):
+    """A ma ütemezett (szó × timeframe) cellák — STALENESS-vezérelt, a mód `futas`-részhalmazán.
+
+    `limit` = hány cellát adjon vissza; None → a mód cap-je (reggel MAX_MASODLAGOS_REGGELI / este
+    MAX_MASODLAGOS_NAPI). A cellák a mód `futas`-részhalmazának nem-ora szavaiból épülnek, per-szó
+    `masodlagos_timeframek(t)` ablakokkal (este mindkettő, reggel egy). A rangsor/fallback/IO-robusztusság
+    változatlan.
     """
-    from .config import MASODLAGOS_TIMEFRAMEK
-    limit = limit or MAX_MASODLAGOS_NAPI
-    nem_oras = [t for t in config.osszes_kulcsszo() if t.racs != "ora"]
-    # CELLA = (config-index, tetel, timeframe-index, timeframe) — minden nem-ora szó MINDKÉT hosszú sorozatot kapja
+    from .config import masodlagos_timeframek
+    futas = "reggel" if mode == "reggel" else "este"
+    limit = limit or (MAX_MASODLAGOS_REGGELI if mode == "reggel" else MAX_MASODLAGOS_NAPI)
+    nem_oras = [t for t in config.osszes_kulcsszo() if t.racs != "ora" and t.futas == futas]
+    # CELLA = (config-index, tetel, timeframe-index, timeframe) — per-szó ablak(ok) a masodlagos_timeframek-ből
     cellak = [(i, t, tf_i, tf) for i, t in enumerate(nem_oras)
-              for tf_i, tf in enumerate(MASODLAGOS_TIMEFRAMEK)]
+              for tf_i, tf in enumerate(masodlagos_timeframek(t))]
     fajl = Path(docs_data_mappa) / "kulcsszo_masodlagos_nyers.json"
     try:
         sorozatok = json.loads(fajl.read_text(encoding="utf-8")).get("kulcsszavak", {})
     except (OSError, ValueError) as e:
         print(f"FIGYELEM: másodlagos ütemező — a(z) {fajl.name!r} nem olvasható ({type(e).__name__}); "
-              f"FALLBACK: config-index+timeframe sorrend első {MAX_MASODLAGOS_NAPI} cellája.")
+              f"FALLBACK: config-index+timeframe sorrend első {limit} cellája.")
         return [(t, tf) for _, t, _, tf in cellak[:limit]]
 
     def _elavultsag(kif, tf):
@@ -76,7 +84,7 @@ def masodlagos_szavak_ma(config, most, docs_data_mappa, limit=None):
     return [(t, tf) for _, t, _, tf in rangsor[:limit]]
 
 
-def _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most):
+def _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most, mode="este"):
     """A másodlagos (nap/het) ág: a ma ütemezett szavakat SZAVANKÉNT kéri le és írja.
 
     LEGUTOLSÓ ág (a pótolhatatlan órás UTÁN). A `kulcsszo_masodlagos` a napló-címke
@@ -87,7 +95,7 @@ def _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most):
     """
     ag = "kulcsszo_masodlagos"
     try:
-        for tetel, timeframe in masodlagos_szavak_ma(config, most, docs_data_mappa):
+        for tetel, timeframe in masodlagos_szavak_ma(config, most, docs_data_mappa, mode=mode):
             rek = kulcsszavak.gyujt_egy_masodlagos(kliens, config, tetel, most, timeframe)
             if rek:
                 nyers_kimenet.ir_masodlagos(docs_data_mappa, {tetel.kifejezes: rek})

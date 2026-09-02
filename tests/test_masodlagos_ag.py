@@ -319,3 +319,56 @@ def test_masodlagos_esemenyjelzo_intervallum_nem_szivargat_task1_mezoket():
     assert ervenyesek, "a fixture-nek legalább egy ervenyes intervallumot kell adnia"
     for iv in ervenyesek:
         assert "mai_reziduum" not in iv
+
+
+# ── Task 4: mód-tudatos + per-szó-ablakos másodlagos ütemezés ──
+
+def test_masodlagos_szavak_reggel_egy_ablak_es_futas_szures(tmp_path):
+    from trendfigyelo.config import KulcsszoTetel
+    docs = tmp_path / "d"
+    docs.mkdir()
+    c = _config([
+        KulcsszoTetel("infláció", "gazdasag", "szintmero", "het", False, "reggel"),
+        KulcsszoTetel("kölcsön", "megelhetes", "szintmero", "nap", False, "reggel"),
+        KulcsszoTetel("hitel", "megelhetes", "szintmero", "nap", True, "este"),   # esti → NEM reggel
+    ])
+    most = datetime(2026, 8, 18, 12, tzinfo=timezone.utc)
+    cellak = [(t.kifejezes, tf) for t, tf in
+              futtato.masodlagos_szavak_ma(c, most, docs, mode="reggel")]
+    # reggeli szavak, EGY ablak/szó (het→12-m, nap→3-m), az esti "hitel" KIMARAD
+    assert ("infláció", "today 12-m") in cellak
+    assert ("kölcsön", "today 3-m") in cellak
+    assert all(kif != "hitel" for kif, _ in cellak)
+    assert all(kif != "infláció" or tf == "today 12-m" for kif, tf in cellak)  # nincs 3-m az inflációra
+
+
+def test_masodlagos_szavak_reggel_cap_8(tmp_path):
+    from trendfigyelo.config import KulcsszoTetel
+    docs = tmp_path / "d"
+    docs.mkdir()
+    c = _config([KulcsszoTetel(f"szo{i}", "megelhetes", "szintmero", "het", False, "reggel")
+                 for i in range(12)])   # 12 reggeli szó, egy-ablakos → 12 cella jogosult
+    most = datetime(2026, 8, 18, 12, tzinfo=timezone.utc)
+    cellak = futtato.masodlagos_szavak_ma(c, most, docs, mode="reggel")
+    assert len(cellak) == futtato.MAX_MASODLAGOS_REGGELI == 8   # a reggeli cap, NEM a napi 2
+
+
+def test_masodlagos_szavak_este_valtozatlan(tmp_path):
+    # az esti út: nem-ora szó MINDKÉT ablakot kapja, cap 2 (mai viselkedés)
+    docs = tmp_path / "d"
+    docs.mkdir()
+    c = _eles_config()   # 13 valódi szó, mind esti-default
+    most = datetime(2026, 8, 18, 12, tzinfo=timezone.utc)
+    cellak = futtato.masodlagos_szavak_ma(c, most, docs)   # mode default este
+    assert len(cellak) == futtato.MAX_MASODLAGOS_NAPI == 2
+
+
+def test_oras_szavak_mod_szures():
+    from trendfigyelo.config import KulcsszoTetel
+    c = _config([
+        KulcsszoTetel("korrupció", "politika", "szintmero", "het", True, "reggel"),
+        KulcsszoTetel("infláció", "gazdasag", "szintmero", "het", False, "reggel"),  # oras:false → KIMARAD
+        KulcsszoTetel("benzin", "megelhetes", "szintmero", "ora", True, "este"),
+    ])
+    assert [t.kifejezes for t in futtato._oras_szavak(c, "reggel")] == ["korrupció"]
+    assert [t.kifejezes for t in futtato._oras_szavak(c, "este")] == ["benzin"]
