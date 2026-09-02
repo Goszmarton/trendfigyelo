@@ -23,15 +23,14 @@ AGAK = ["felkapott_api", "felkapott_rss", "kulcsszo", "idosor", "kulcsszo_masodl
 KILEPES_PLAFON = 2
 
 
-def tervezett_hivasszam(config) -> int:
-    """A hibamentes (429 nélküli) futás várható Google-hívásszáma az ágstruktúrából.
+def tervezett_hivasszam(config, mode="este") -> int:
+    """A hibamentes (429 nélküli) futás várható Google-hívásszáma az ágstruktúrából, a MÓD szerint.
 
-    felkapott_api (1) + felkapott_rss (1) + idosor (≤ trend_idosor_max, trendenként)
-    + idosor_rekesz (≤ trend_idosor_rekesz_max, GORBE-B forward-only) + kulcsszo (SZÓLÓ:
-    szavankénti egy hívás = len(kulcsszavak)).
+    felkapott_api (1) + felkapott_rss (1) + idosor (≤ trend_idosor_max) + idosor_rekesz
+    (≤ trend_idosor_rekesz_max) + kulcsszo (SZÓLÓ: a mód órás szavai, szavankénti egy hívás).
     """
     return (2 + config.trend_idosor_max + config.trend_idosor_rekesz_max
-            + len(config.osszes_kulcsszo()))
+            + len(_oras_szavak(config, mode)))
 
 
 # a másodlagos (nap/het) ág napi maximuma — szerkezeti konstans (a 2-2-2-2-1-1-1
@@ -573,9 +572,10 @@ def _legfrissebb_frissitve_datum(docs_data):
     return friss[:10] if friss else "ismeretlen (nincs 'frissitve' a meglévő fájlban)"
 
 
-def _szamitott_plafon(config):
-    """A strukturális maximum: minden logikai hívás mind a max_probak próbát kimeríti."""
-    return (tervezett_hivasszam(config) + MAX_MASODLAGOS_NAPI) * config.max_probak
+def _szamitott_plafon(config, mode="este"):
+    """A strukturális maximum: minden logikai hívás mind a max_probak próbát kimeríti (a mód szerint)."""
+    masodlagos_cap = MAX_MASODLAGOS_REGGELI if mode == "reggel" else MAX_MASODLAGOS_NAPI
+    return (tervezett_hivasszam(config, mode) + masodlagos_cap) * config.max_probak
 
 
 def _plafon_override_env():
@@ -591,11 +591,11 @@ def _plafon_override_env():
         return None
 
 
-def _plafon(config, override=None):
-    """A tényleges hívás-plafon. Az override CSAK CSÖKKENTHET (min) — a biztonsági szelepet
-    egy bent felejtett/magas env NE kapcsolhassa ki csendben. Ha az env be van állítva, HANGOS
+def _plafon(config, mode="este", override=None):
+    """A tényleges hívás-plafon (a mód szerint). Az override CSAK CSÖKKENTHET (min) — a biztonsági
+    szelepet egy bent felejtett/magas env NE kapcsolhassa ki csendben. Ha az env be van állítva, HANGOS
     FIGYELEM (akkor is, ha no-op), hogy ne lehessen véletlenül bent felejteni."""
-    szamitott = _szamitott_plafon(config)
+    szamitott = _szamitott_plafon(config, mode)
     if override is None:
         return szamitott
     eff = min(szamitott, override)                            # sosem emel
@@ -619,8 +619,8 @@ def main(argv=None) -> int:
     config = betolt()
     # hívás-plafon = a strukturális maximum (efölött már csak call-multiplying bug lehet →
     # azonnali leállás). A PLAFON_OVERRIDE env CSAK CSÖKKENTHETI (a (c) CI-igazoláshoz).
-    kliens = Kliens(config, plafon=_plafon(config, _plafon_override_env()))
-    print(f"Mód: {mode} · Várható Google-hívásszám (429 nélkül): ~{tervezett_hivasszam(config)}")
+    kliens = Kliens(config, plafon=_plafon(config, mode, _plafon_override_env()))
+    print(f"Mód: {mode} · Várható Google-hívásszám (429 nélkül): ~{tervezett_hivasszam(config, mode)}")
     return futtat(config, kliens, Path("adatok"), Path("docs") / "data", mode=mode)
 
 

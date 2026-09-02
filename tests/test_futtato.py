@@ -105,18 +105,18 @@ def test_plafon_tullepes_utan_agak_kihagyva(tmp_path):
 # (min), sosem emelheti — hogy egy bent felejtett env NE kapcsolhassa ki csendben. HANGOS napló.
 def test_plafon_override_csokkent():
     cfg = _config()
-    assert futtato._plafon(cfg, 1) == 1                       # 1 < számított → csökkent
+    assert futtato._plafon(cfg, override=1) == 1              # 1 < számított → csökkent
 
 
 def test_plafon_override_sosem_emel_SZANDEKOS_ZOLD():
     # SZÁNDÉKOS-ZÖLD: a min sosem emel — egy irreálisan magas override NO-OP (a számított marad).
     cfg = _config()
-    assert futtato._plafon(cfg, 10 ** 9) == futtato._szamitott_plafon(cfg)
+    assert futtato._plafon(cfg, override=10 ** 9) == futtato._szamitott_plafon(cfg)
 
 
 def test_plafon_override_hangos_naplo(capsys):
     cfg = _config()
-    futtato._plafon(cfg, 1)
+    futtato._plafon(cfg, override=1)
     assert "PLAFON_OVERRIDE" in capsys.readouterr().out       # nem lehet csendben bent felejteni
 
 
@@ -1477,3 +1477,26 @@ def test_reggel_mod_valtozatlan_nincs_hajnali_eltolas(tmp_path):
     futtato.futtat(_config(), AdatKliens(), tmp_path / "adatok", ddir, most=most, mode="reggel")
     mai = json.loads((ddir / "napok" / "2026-09-01.json").read_text(encoding="utf-8"))
     assert "reggel" in mai
+
+
+def test_tervezett_hivasszam_mod_tudatos():
+    from trendfigyelo.config import KulcsszoTetel
+    c = _config([
+        KulcsszoTetel("korrupció", "politika", "szintmero", "het", True, "reggel"),  # reggeli órás
+        KulcsszoTetel("infláció", "gazdasag", "szintmero", "het", False, "reggel"),  # reggeli, NEM órás
+        KulcsszoTetel("benzin", "megelhetes", "szintmero", "ora", True, "este"),     # esti órás
+        KulcsszoTetel("hitel", "megelhetes", "szintmero", "nap", True, "este"),      # esti órás
+    ])
+    # este: 2 esti órás szó; reggel: 1 reggeli órás szó (infláció oras:false kimarad)
+    assert futtato.tervezett_hivasszam(c, "este") == 2 + c.trend_idosor_max + c.trend_idosor_rekesz_max + 2
+    assert futtato.tervezett_hivasszam(c, "reggel") == 2 + c.trend_idosor_max + c.trend_idosor_rekesz_max + 1
+
+
+def test_szamitott_plafon_reggel_a_reggeli_budgettel():
+    from trendfigyelo.config import KulcsszoTetel
+    c = _config([KulcsszoTetel("korrupció", "politika", "szintmero", "het", True, "reggel")])
+    vart = (futtato.tervezett_hivasszam(c, "reggel") + futtato.MAX_MASODLAGOS_REGGELI) * c.max_probak
+    assert futtato._szamitott_plafon(c, "reggel") == vart
+    # este a napi cap-pel, VÁLTOZATLAN
+    vart_este = (futtato.tervezett_hivasszam(c, "este") + futtato.MAX_MASODLAGOS_NAPI) * c.max_probak
+    assert futtato._szamitott_plafon(c, "este") == vart_este
