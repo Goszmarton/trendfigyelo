@@ -306,3 +306,22 @@ def test_gyujt_egy_masodlagos_alap_gprop_ures_es_ag_valtozatlan():
     hiv = k.hivasok[0]
     assert hiv["ag"] == "kulcsszo_masodlagos"
     assert hiv["kwargs"]["gprop"] == ""
+
+
+# ── gyujt: explicit tetelek-részhalmaz paraméter (Task 3, mód órás alhalmaza) ────
+def test_gyujt_tetelek_reszhalmaz(monkeypatch):
+    from trendfigyelo.config import Config, KulcsszoTetel
+    c = _config()   # 3 szó: állás, hitel, tüntetés
+    reszhalmaz = [KulcsszoTetel("hitel", "megelhetes", "szintmero", "het", True, "reggel")]
+
+    hivott = []
+
+    class _K:
+        def __init__(self):
+            self.tr = SimpleNamespace(interest_over_time=None)
+        def hivas(self, ag, fn, szavak, **kw):
+            hivott.append(szavak[0])
+            return egy_szo_df(szavak[0])
+
+    kulcsszavak.gyujt(_K(), c, most=FIX_MOST, tetelek=reszhalmaz)
+    assert hivott == ["hitel"]   # CSAK a megadott részhalmazt kérte le, nem mind a 3-at

@@ -150,8 +150,8 @@ def _nyers_sorozat(df, tetel, oszlop, ip_oszlop) -> dict:
     }
 
 
-def gyujt(kliens, config, most=None):
-    """Minden kulcsszót SZÓLÓBAN lekér (now 7-d). Visszaad:
+def gyujt(kliens, config, most=None, tetelek=None):
+    """Minden MEGADOTT (alap: összes) kulcsszót SZÓLÓBAN lekér (now 7-d). Visszaad:
     (egynapos_pontok, {nap_iso: [pontok]}, {kifejezes: nyers_rekord}).
 
     Az egynapos_pontok a CSV-hez/legfrissebb.json-hoz (utolsó teljes nap); a napi
@@ -162,10 +162,12 @@ def gyujt(kliens, config, most=None):
     most = most or seged.most_utc()
     mai_datum = most.astimezone(seged.BUDAPEST).date()
     n = config.tortenet_visszapotlas_nap
+    if tetelek is None:
+        tetelek = config.osszes_kulcsszo()
     pontok = []
     napi_pontok = {}
     nyers_sorozatok = {}
-    for tetel in config.osszes_kulcsszo():
+    for tetel in tetelek:
         try:
             df = kliens.hivas(
                 "kulcsszo", kliens.tr.interest_over_time,
