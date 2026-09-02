@@ -341,12 +341,13 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None, mode="este"
                           lambda: felkapott.gyujt_rss(kliens, config)) or []
         # a kulcsszo-ág az idosor ELŐTT fut: block-napon az idosor az olcsóbb veszteség
         # (a kulcsszó-adat a 24-órás horgony-nélküli mérés, az idosor a top-trend sparkline)
-        if csak_felkapott:
-            kulcsszo_pontok, kulcsszo_napi_pontok, kulcsszo_nyers = [], {}, {}
-        else:
+        oras_szavak = _oras_szavak(config, mode)
+        if oras_szavak:
             kulcsszo_eredmeny = _ag(bejegyzesek, kliens, "kulcsszo",
-                                lambda: kulcsszavak.gyujt(kliens, config, most))
+                                lambda: kulcsszavak.gyujt(kliens, config, most, tetelek=oras_szavak))
             kulcsszo_pontok, kulcsszo_napi_pontok, kulcsszo_nyers = kulcsszo_eredmeny or ([], {}, {})
+        else:
+            kulcsszo_pontok, kulcsszo_napi_pontok, kulcsszo_nyers = [], {}, {}
         # a KÖZÖS rangsor kifejezéslistája (a megjelenítéssel azonos forrás → prefix-invariáns);
         # az idősor-ág belül vág trend_idosor_max-ra, a hívásköltség NEM nő
         top_kifejezesek = [getattr(t, "keyword", "") for t in rangsorolt_trendek(api_trendek)]
@@ -354,9 +355,9 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None, mode="este"
                             lambda: idosorok.gyujt(kliens, config, top_kifejezesek)) or []
         # másodlagos (nap/het) ág — LEGUTOLSÓ, pótolható; csendes feladás (saját try/except,
         # NEM block-stop). Ha egy korábbi ág block-stopol, ide nem jutunk → a lenti except
-        # az AGAK-ban "kulcsszo_masodlagos"-t "kihagyva"-ra teszi.
-        if not csak_felkapott:
-            _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most)
+        # az AGAK-ban "kulcsszo_masodlagos"-t "kihagyva"-ra teszi. MINDKÉT mód a saját
+        # futás-részhalmazára fut, mód-specifikus budgettel.
+        _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most, mode=mode)
         # rekesz-idősor ág — LEGUTOLSÓ (GORBE-B, forward-only): a holtverseny-rekesz
         # trendjei is kapjanak sparkline-t; másodrendű, csendes feladás (nem block-stop/exit).
         # A pontokat a trend_idosorok-hoz fűzzük → a top_trend_struktura idosor_map-je fedi őket.
@@ -429,14 +430,16 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None, mode="este"
         json_export.napi_ir(docs_data_mappa, nap_iso, top_trendek,
                             szegmens=("reggel" if csak_felkapott else "este"),
                             frissitve_iso=letoltve)
-    # nyers órás sorozat verziókövetett gördülő kimenete (üres sorozat NE írjon fájlt)
-    if kulcsszo_nyers and not csak_felkapott:
+    # nyers órás sorozat — MINDKÉT mód a SAJÁT órás részhalmazát írja PER-SZÓ upserttel (a másik mód
+    # szavai érintetlenek: ir_gordulo/frissit_lanc read-modify-write). Üres sorozat NE írjon fájlt.
+    if kulcsszo_nyers:
         nyers_kimenet.ir_gordulo(docs_data_mappa, kulcsszo_nyers)
-        # LANC-ORAS (§8.2): a perzisztens órás lánc frissítése a RETENÁLT ablakokból (a most kiírt fájlból);
-        # bootstrap vagy napi bővítés + POTÓLHATATLANSÁG-guard. Származtatott, VÉDETT (hiba nem viszi el az adatmentést).
+        # LANC-ORAS (§8.2): CSAK a FRISS (e futás) szavak láncát bővítjük a RETENÁLT ablakaikból; a másik
+        # mód szavainak lánca érintetlen (frissit_lanc: ki=dict(tarolt)). Származtatott, VÉDETT.
         try:
             _retenalt = json.loads((docs_data_mappa / "kulcsszo_nyers.json").read_text(encoding="utf-8")).get("kulcsszavak", {})
-            lanc.frissit_lanc(docs_data_mappa, _retenalt, marker=config.modszertan_valtas)
+            _friss = {k: v for k, v in _retenalt.items() if k in kulcsszo_nyers}
+            lanc.frissit_lanc(docs_data_mappa, _friss, marker=config.modszertan_valtas)
         except Exception as e:
             print(f"FIGYELEM: az órás lánc frissítése kimaradt — nem blokkolja az adatmentést ({e}).")
 

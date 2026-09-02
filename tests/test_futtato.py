@@ -418,17 +418,24 @@ def _egy_szo_df(oszlop, ertekek, idopontok, reszleges):
 
 
 class KulcsszoAdatKliens:
-    """felkapott_rss ad egy trendet; a kulcsszo-ág egy-oszlopos 7-d DataFrame-et ad (horgony nélkül)."""
-    def __init__(self):
+    """felkapott_rss ad egy trendet; a kulcsszo-ág egy-oszlopos 7-d DataFrame-et ad (horgony nélkül).
+
+    `napok`/`ertekek`/`reszleges` opcionálisan felülírhatók (alap: 2021-01-01/02, [30, 40], [False,
+    True]) — a reggeli integrációs teszt (Task 6) más (2026-os, a seed-adathoz illeszkedő) dátumokat
+    kér, hogy a `kulcsszo_nyers.json` gördülő retenciója (14 nap) ne dobja el a friss rekordot."""
+    def __init__(self, napok=None, ertekek=None, reszleges=None):
         self.tr = _dummy_tr()
+        self._napok = napok if napok is not None else [
+            datetime(2021, 1, 1, 10, tzinfo=timezone.utc),   # utolsó teljes nap
+            datetime(2021, 1, 2, 10, tzinfo=timezone.utc),   # mai (részleges)
+        ]
+        self._ertekek = ertekek if ertekek is not None else [30, 40]
+        self._reszleges = reszleges if reszleges is not None else [False, True]
     def hivas(self, ag, fn, *a, **k):
         if ag == "felkapott_rss":
             return [SimpleNamespace(keyword="benzinár", news=[])]
         if ag == "kulcsszo":
-            return _egy_szo_df("a", [30, 40], [
-                datetime(2021, 1, 1, 10, tzinfo=timezone.utc),   # utolsó teljes nap
-                datetime(2021, 1, 2, 10, tzinfo=timezone.utc),   # mai (részleges)
-            ], [False, True])
+            return _egy_szo_df("a", self._ertekek, self._napok, self._reszleges)
         return []
     def hivasszam(self, ag):
         return 1
@@ -1500,3 +1507,54 @@ def test_szamitott_plafon_reggel_a_reggeli_budgettel():
     # este a napi cap-pel, VÁLTOZATLAN
     vart_este = (futtato.tervezett_hivasszam(c, "este") + futtato.MAX_MASODLAGOS_NAPI) * c.max_probak
     assert futtato._szamitott_plafon(c, "este") == vart_este
+
+
+# --- Task 6: futtat() reggeli kulcsszó-integráció (órás részhalmaz + másodlagos + per-szó nyers/lánc) ---
+
+def test_futtat_reggel_ir_profil3_nyerset_esti_szo_megmarad(tmp_path):
+    """Reggeli futás: a profil-3 (reggeli órás) szó bekerül a kulcsszo_nyers.json-ba PER-SZÓ upserttel,
+    az előzőleg beírt esti szó sorozata ÉRINTETLEN marad."""
+    from trendfigyelo import nyers_kimenet
+    from trendfigyelo.config import KulcsszoTetel
+    from datetime import datetime, timezone
+
+    ddir = tmp_path / "docs" / "data"
+    ddir.mkdir(parents=True)
+    # seed: egy esti szó pótolhatatlan órás sorozata már a fájlban
+    def _rek(kif, napok, ert):
+        idok = [datetime(2026, 8, d, 10, tzinfo=timezone.utc) for d in napok]
+        return {"kulcsszo": kif, "ablak_kezdet_utc": idok[0].isoformat(),
+                "ablak_veg_utc": idok[-1].isoformat(),
+                "pontok": [{"idopont_utc": t.isoformat(), "ertek": e, "reszleges": False}
+                           for t, e in zip(idok, ert)]}
+    nyers_kimenet.ir_gordulo(ddir, {"benzin": _rek("benzin", [1, 2, 3], [10, 20, 30])})
+
+    c = _config([
+        KulcsszoTetel("korrupció", "politika", "szintmero", "het", True, "reggel"),  # reggeli órás (profil-3)
+        KulcsszoTetel("benzin", "megelhetes", "szintmero", "ora", True, "este"),     # esti órás
+    ])
+    most = datetime(2026, 8, 18, 12, tzinfo=timezone.utc)
+    # a fake-kliens órás df-je a seed-adathoz (aug 1-3) illeszkedő, retención-belüli dátumokat ad
+    # (nem a régi, 2021-es alapértelmezést — az kiesne a 14-napos gördülő retencióból)
+    reggeli_kliens = KulcsszoAdatKliens(
+        napok=[datetime(2026, 8, 5, 10, tzinfo=timezone.utc),
+               datetime(2026, 8, 6, 10, tzinfo=timezone.utc)],
+        ertekek=[50, 60], reszleges=[False, True])
+    futtato.futtat(c, reggeli_kliens, tmp_path / "adatok", ddir, most=most, mode="reggel")
+
+    adat = json.loads((ddir / "kulcsszo_nyers.json").read_text(encoding="utf-8"))["kulcsszavak"]
+    assert "benzin" in adat                              # az esti szó ÉRINTETLEN (nem csonkolt)
+    assert adat["benzin"][0]["pontok"][0]["ertek"] == 10
+    assert "korrupció" in adat                           # a reggeli profil-3 szó BEKERÜLT
+
+
+def test_futtat_reggel_nem_ir_tortenetet(tmp_path):
+    """R2: a reggeli mód NEM ír tortenet.json-t (a nap-clobber elkerülése)."""
+    from trendfigyelo.config import KulcsszoTetel
+    from datetime import datetime, timezone
+    ddir = tmp_path / "docs" / "data"
+    ddir.mkdir(parents=True)
+    c = _config([KulcsszoTetel("korrupció", "politika", "szintmero", "het", True, "reggel")])
+    most = datetime(2026, 8, 18, 12, tzinfo=timezone.utc)
+    futtato.futtat(c, KulcsszoAdatKliens(), tmp_path / "adatok", ddir, most=most, mode="reggel")
+    assert not (ddir / "tortenet.json").exists()
