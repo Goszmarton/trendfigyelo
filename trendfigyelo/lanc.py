@@ -85,7 +85,7 @@ def frissit_lanc(docs_data, nyers_sorozatok, marker=None):
 
     GUARD (a POTÓLHATATLANSÁG-őr): ha a bővítés nem tud a tárolt lánc LEZÁRT átfedésére épülni (a friss ablak
     NEM ér vissza a tárolt lánc végéig → szakasz-törés) → a tárolt láncot MEGŐRZI, HANGOS FIGYELEM (megnevezi a
-    szót, a megőrzött lánc-véget) — a jó lánc NEM íródik felül üressel/rövidebbel. Csak órás (ora-rács) szavak.
+    szót, a megőrzött lánc-véget) — a jó lánc NEM íródik felül üressel/rövidebbel. Csak oras:true szavak.
     """
     tarolt = betolt_lanc(docs_data)
     ki = dict(tarolt)                                   # a nem érintett szavak megmaradnak
