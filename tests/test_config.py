@@ -154,16 +154,19 @@ def test_eles_config_lassitott_anti_block_utem():
 
 def test_eles_config_13_kulcsszo():
     # a Task 2-ben jóváhagyott 13 szó, per-kulcsszó tipussal
+    # (2026-09-02: a config 28-szavasra nőtt — a 13 eredeti szó tipusa VÁLTOZATLAN,
+    # csak a szószám nőtt a 15 új reggeli szóval)
     gyoker = Path(__file__).resolve().parent.parent
     c = config.betolt(gyoker / "config.yaml")
     tetelek = c.osszes_kulcsszo()
-    assert len(tetelek) == 13
+    assert len(tetelek) == 28
     assert all(t.tipus in {"szintmero", "esemenyjelzo", "hibrid"} for t in tetelek)
     assert any(t.kifejezes == "tüntetés" and t.tipus == "esemenyjelzo" for t in tetelek)
 
 
 def test_eles_config_racs_besorolas():
     # a MÉRT (2026-08-13) rács-besorolás — regresszió-őr a config-adaton
+    # (2026-09-02: kiegészítve a 15 új reggeli szó racs-ával, a config.yaml szerint)
     gyoker = Path(__file__).resolve().parent.parent
     c = config.betolt(gyoker / "config.yaml")
     racsok = {t.kifejezes: t.racs for t in c.osszes_kulcsszo()}
@@ -173,6 +176,12 @@ def test_eles_config_racs_besorolas():
         "napelem": "nap", "hitel": "nap", "nyaralás": "nap",
         "kormányablak": "het", "állás": "het", "kórház": "het",
         "akciós újság": "het", "tüntetés": "het",
+        # 15 új reggeli szó (2026-09-02)
+        "infláció": "het", "rezsi": "het", "fizetés": "het", "segély": "het",
+        "várólista": "het", "háziorvos": "het", "műtét": "het", "iskola": "het",
+        "munkanélküliség": "het", "csőd": "het",
+        "kölcsön": "nap", "sürgősségi": "nap",
+        "pedagógus": "het", "korrupció": "het", "kormány": "het",
     }
     assert all(t.racs in config.RACSOK for t in c.osszes_kulcsszo())
 
@@ -335,7 +344,7 @@ def test_youtube_szekcio_12_szo_es_racs():
     assert racs["mese"] == "nap" and racs["magyar péter"] == "nap"
     assert racs["szorongás"] == "het" and racs["bitcoin"] == "het" and racs["klíma"] == "het"
     # a Google-kulcsszavak ÉRINTETLENEK
-    assert len(c.osszes_kulcsszo()) == 13
+    assert len(c.osszes_kulcsszo()) == 28
 
 
 def test_youtube_szekcio_hianyzik_ures_lista():
@@ -417,3 +426,21 @@ def test_masodlagos_timeframek_reggel_egy_ablak():
     nap = KulcsszoTetel("kölcsön", "megelhetes", "szintmero", "nap", False, "reggel")
     assert config.masodlagos_timeframek(het) == ["today 12-m"]
     assert config.masodlagos_timeframek(nap) == ["today 3-m"]
+
+
+def test_eles_config_28_szo_profilokkal():
+    c = config.betolt("config.yaml")
+    szavak = {t.kifejezes: t for t in c.osszes_kulcsszo()}
+    assert len(szavak) == 28
+    # 5 új domén jelen van, a régi szórt domének eltűntek
+    domenek = {t.domen for t in c.osszes_kulcsszo()}
+    assert domenek == {"megelhetes", "egeszsegugy", "oktatas", "gazdasag", "politika"}
+    # profil 1 (lassú): oras:false, racs:het, futas:reggel
+    assert (szavak["infláció"].oras, szavak["infláció"].racs, szavak["infláció"].futas) == (False, "het", "reggel")
+    # profil 2 (közepes): oras:false, racs:nap
+    assert (szavak["kölcsön"].oras, szavak["kölcsön"].racs, szavak["kölcsön"].futas) == (False, "nap", "reggel")
+    # profil 3 (csúcs): oras:true, racs:het
+    assert (szavak["korrupció"].oras, szavak["korrupció"].racs, szavak["korrupció"].futas) == (True, "het", "reggel")
+    # a meglévő esti szó: default oras:true, futas:este, új domén-címke
+    assert (szavak["benzin"].oras, szavak["benzin"].futas, szavak["benzin"].domen) == (True, "este", "megelhetes")
+    assert szavak["tüntetés"].domen == "politika"

@@ -20,19 +20,39 @@ proxy: null                  # pl. "http://user:pass@host:port" — valódi hite
 # racs ∈ {ora, nap, het} — a megjelenítés/trend felbontása (Phase 4, MÉRT 2026-08-13); hiány → "ora".
 # A gyűjtés 1. (órás, now 7-d) lekérdezése MINDEN szóra változatlan; a racs a másodlagos nap/het sorozatot vezérli.
 kulcsszavak:
-  - {kifejezes: "állás",        domen: munkaeropiac,       tipus: szintmero,    racs: het}
-  - {kifejezes: "kormányablak", domen: kozigazgatas,       tipus: szintmero,    racs: het}
-  - {kifejezes: "eladó lakás",  domen: lakhatas,           tipus: szintmero,    racs: nap}
-  - {kifejezes: "albérlet",     domen: lakhatas,           tipus: szintmero,    racs: nap}
-  - {kifejezes: "akciós újság", domen: fogyasztas,         tipus: szintmero,    racs: het}
-  - {kifejezes: "benzin",       domen: fogyasztas,         tipus: szintmero,    racs: ora}
-  - {kifejezes: "nyaralás",     domen: fogyasztas,         tipus: szintmero,    racs: nap}
-  - {kifejezes: "kórház",       domen: egeszseg,           tipus: szintmero,    racs: het}
-  - {kifejezes: "betegség",     domen: egeszseg,           tipus: szintmero,    racs: nap}
-  - {kifejezes: "napelem",      domen: energia,            tipus: hibrid,       racs: nap}
-  - {kifejezes: "nyugdíj",      domen: jovedelem,          tipus: hibrid,       racs: ora}
-  - {kifejezes: "hitel",        domen: haztartasi_penzugy, tipus: szintmero,    racs: nap}
-  - {kifejezes: "tüntetés",     domen: kozelet,            tipus: esemenyjelzo, racs: het}
+  # — Meglévő 13 szó: CSAK a domen-címke változik az 5 új doménre (oras/futas default: true/este) —
+  - {kifejezes: "állás",        domen: megelhetes,  tipus: szintmero,    racs: het}
+  - {kifejezes: "kormányablak", domen: politika,    tipus: szintmero,    racs: het}
+  - {kifejezes: "eladó lakás",  domen: megelhetes,  tipus: szintmero,    racs: nap}
+  - {kifejezes: "albérlet",     domen: megelhetes,  tipus: szintmero,    racs: nap}
+  - {kifejezes: "akciós újság", domen: megelhetes,  tipus: szintmero,    racs: het}
+  - {kifejezes: "benzin",       domen: megelhetes,  tipus: szintmero,    racs: ora}
+  - {kifejezes: "nyaralás",     domen: megelhetes,  tipus: szintmero,    racs: nap}
+  - {kifejezes: "kórház",       domen: egeszsegugy, tipus: szintmero,    racs: het}
+  - {kifejezes: "betegség",     domen: egeszsegugy, tipus: szintmero,    racs: nap}
+  - {kifejezes: "napelem",      domen: megelhetes,  tipus: hibrid,       racs: nap}
+  - {kifejezes: "nyugdíj",      domen: megelhetes,  tipus: hibrid,       racs: ora}
+  - {kifejezes: "hitel",        domen: megelhetes,  tipus: szintmero,    racs: nap}
+  - {kifejezes: "tüntetés",     domen: politika,    tipus: esemenyjelzo, racs: het}
+  # — 15 új „társadalmi feszültség" szó, REGGELI gyűjtésben, egy-ablakos profilokkal —
+  # Profil 1 (lassú strukturális): oras:false, racs:het → csak 12-m heti
+  - {kifejezes: "infláció",       domen: gazdasag,    tipus: szintmero,    racs: het, oras: false, futas: reggel}
+  - {kifejezes: "rezsi",          domen: megelhetes,  tipus: szintmero,    racs: het, oras: false, futas: reggel}
+  - {kifejezes: "fizetés",        domen: megelhetes,  tipus: szintmero,    racs: het, oras: false, futas: reggel}
+  - {kifejezes: "segély",         domen: megelhetes,  tipus: szintmero,    racs: het, oras: false, futas: reggel}
+  - {kifejezes: "várólista",      domen: egeszsegugy, tipus: szintmero,    racs: het, oras: false, futas: reggel}
+  - {kifejezes: "háziorvos",      domen: egeszsegugy, tipus: szintmero,    racs: het, oras: false, futas: reggel}
+  - {kifejezes: "műtét",          domen: egeszsegugy, tipus: szintmero,    racs: het, oras: false, futas: reggel}
+  - {kifejezes: "iskola",         domen: oktatas,     tipus: szintmero,    racs: het, oras: false, futas: reggel}
+  - {kifejezes: "munkanélküliség", domen: gazdasag,   tipus: szintmero,    racs: het, oras: false, futas: reggel}
+  - {kifejezes: "csőd",           domen: gazdasag,    tipus: szintmero,    racs: het, oras: false, futas: reggel}
+  # Profil 2 (közepes momentum): oras:false, racs:nap → csak 3-m napi
+  - {kifejezes: "kölcsön",        domen: megelhetes,  tipus: szintmero,    racs: nap, oras: false, futas: reggel}
+  - {kifejezes: "sürgősségi",     domen: egeszsegugy, tipus: szintmero,    racs: nap, oras: false, futas: reggel}
+  # Profil 3 (esemény/csúcs): oras:true, racs:het → 7-d órás + 12-m
+  - {kifejezes: "pedagógus",      domen: oktatas,     tipus: szintmero,    racs: het, oras: true,  futas: reggel}
+  - {kifejezes: "korrupció",      domen: politika,    tipus: szintmero,    racs: het, oras: true,  futas: reggel}
+  - {kifejezes: "kormány",        domen: politika,    tipus: szintmero,    racs: het, oras: true,  futas: reggel}
 
 # YouTube-fül (Phase 4, 2026-08-25): társadalmi videó-igény-monitor, gprop=youtube, geo=HU.
 # A racs a MEGJELENÍTÉSI alapértelmezés (napi/heti); a gyűjtés MINDKÉT timeframe-et (3-m + 12-m) bekéri.
