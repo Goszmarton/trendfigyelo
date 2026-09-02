@@ -12,7 +12,8 @@ from pathlib import Path
 import yaml
 
 KulcsszoTetel = namedtuple(
-    "KulcsszoTetel", ["kifejezes", "domen", "tipus", "racs"], defaults=("ora",))
+    "KulcsszoTetel", ["kifejezes", "domen", "tipus", "racs", "oras", "futas"],
+    defaults=("ora", True, "este"))
 
 TIPUSOK = {"szintmero", "esemenyjelzo", "hibrid"}
 
@@ -26,6 +27,21 @@ MASODLAGOS_TIMEFRAMEK = ("today 3-m", "today 12-m")
 # a timeframe RÁCSA = a Google felbontása (3-m napi, 12-m heti) — a rekord `racs`-mezője EBBŐL, NEM a config-rácsból
 # (egy het-config szó 3-m rekordjának rácsa `nap`); a config-rács a megjelenítési alapértelmezés marad.
 TIMEFRAME_RACS = {"today 3-m": "nap", "today 12-m": "het"}
+
+FUTASOK = {"reggel", "este"}
+
+
+def masodlagos_timeframek(tetel) -> list:
+    """A szó másodlagos (nap/het) időablakai a `futas` szerint.
+
+    este → MINDKÉT hosszú ablak (3-m napi + 12-m heti), a meglévő viselkedés.
+    reggel → EGY ablak, a szó `racs`-a szerint (nap→3-m, het→12-m) — az „egy-ablakos
+    csak az újakra" viselkedés EGYETLEN igazságforrása; minden másodlagos-cellát
+    számoló/gyűjtő kód ezen megy át.
+    """
+    if tetel.futas == "reggel":
+        return [RACS_IDOKERET[tetel.racs]]
+    return list(MASODLAGOS_TIMEFRAMEK)
 
 
 class KonfigHiba(Exception):
@@ -121,7 +137,15 @@ def _kulcsszavak_beolvas(nyers) -> list:
         if racs not in RACSOK:
             raise KonfigHiba(
                 f"kulcsszavak[{i}].racs: {racs!r} — a megengedett: {sorted(RACSOK)} ({kifejezes!r})")
-        ki.append(KulcsszoTetel(kifejezes, domen, tipus, racs))
+        oras = t.get("oras", True)    # hiány → True (a mai órás elsődleges gyűjtés)
+        if not isinstance(oras, bool):
+            raise KonfigHiba(
+                f"kulcsszavak[{i}].oras: {oras!r} — true/false kell ({kifejezes!r})")
+        futas = t.get("futas", "este")  # hiány → "este" (a mai napi/esti futás)
+        if futas not in FUTASOK:
+            raise KonfigHiba(
+                f"kulcsszavak[{i}].futas: {futas!r} — a megengedett: {sorted(FUTASOK)} ({kifejezes!r})")
+        ki.append(KulcsszoTetel(kifejezes, domen, tipus, racs, oras, futas))
     latott = set()
     for t in ki:
         if t.kifejezes in latott:

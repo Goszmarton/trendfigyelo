@@ -352,3 +352,68 @@ def test_youtube_szekcio_hianyzik_ures_lista():
         assert c.osszes_youtube_kulcsszo() == []
     finally:
         os.unlink(utvonal)
+
+
+# --- oras/futas mezők + masodlagos_timeframek (2026-09-02: reggeli kulcsszó-feszültség) ---
+
+def test_kulcsszotetel_uj_mezok_default(tmp_path):
+    # a régi 3-mezős konstrukció defaultot kap: racs="ora", oras=True, futas="este"
+    t = KulcsszoTetel("infláció", "gazdasag", "szintmero")
+    assert (t.racs, t.oras, t.futas) == ("ora", True, "este")
+
+
+def test_kulcsszavak_beolvas_oras_futas(tmp_path):
+    yaml = (
+        "geo: HU\nnyelv: hu\nidoablak_orak: 24\nidosor_idokeret: \"now 1-d\"\n"
+        "trend_idosor_max: 15\n"
+        "kerespont:\n  alap_keses_mp: 6.0\n  szoras_mp: [6, 10]\n  max_probak: 4\n  backoff_mp: [30]\n"
+        "kulcsszavak:\n"
+        "  - {kifejezes: \"infláció\", domen: gazdasag, tipus: szintmero, racs: het, oras: false, futas: reggel}\n"
+        "  - {kifejezes: \"benzin\", domen: megelhetes, tipus: szintmero, racs: ora}\n"
+    )
+    p = tmp_path / "c.yaml"
+    p.write_text(yaml, encoding="utf-8")
+    c = config.betolt(str(p))
+    infl, benzin = c.osszes_kulcsszo()
+    assert (infl.oras, infl.futas) == (False, "reggel")
+    assert (benzin.oras, benzin.futas) == (True, "este")   # hiányzó mezők → default
+
+
+def test_kulcsszavak_beolvas_rossz_oras(tmp_path):
+    yaml = (
+        "geo: HU\nnyelv: hu\nidoablak_orak: 24\nidosor_idokeret: \"now 1-d\"\n"
+        "trend_idosor_max: 15\n"
+        "kerespont:\n  alap_keses_mp: 6.0\n  szoras_mp: [6, 10]\n  max_probak: 4\n  backoff_mp: [30]\n"
+        "kulcsszavak:\n"
+        "  - {kifejezes: \"infláció\", domen: gazdasag, tipus: szintmero, oras: talan}\n"
+    )
+    p = tmp_path / "c.yaml"
+    p.write_text(yaml, encoding="utf-8")
+    with pytest.raises(config.KonfigHiba):
+        config.betolt(str(p))
+
+
+def test_kulcsszavak_beolvas_rossz_futas(tmp_path):
+    yaml = (
+        "geo: HU\nnyelv: hu\nidoablak_orak: 24\nidosor_idokeret: \"now 1-d\"\n"
+        "trend_idosor_max: 15\n"
+        "kerespont:\n  alap_keses_mp: 6.0\n  szoras_mp: [6, 10]\n  max_probak: 4\n  backoff_mp: [30]\n"
+        "kulcsszavak:\n"
+        "  - {kifejezes: \"infláció\", domen: gazdasag, tipus: szintmero, futas: delben}\n"
+    )
+    p = tmp_path / "c.yaml"
+    p.write_text(yaml, encoding="utf-8")
+    with pytest.raises(config.KonfigHiba):
+        config.betolt(str(p))
+
+
+def test_masodlagos_timeframek_este_mindketto():
+    t = KulcsszoTetel("hitel", "megelhetes", "szintmero", "nap")   # futas default este
+    assert config.masodlagos_timeframek(t) == ["today 3-m", "today 12-m"]
+
+
+def test_masodlagos_timeframek_reggel_egy_ablak():
+    het = KulcsszoTetel("infláció", "gazdasag", "szintmero", "het", False, "reggel")
+    nap = KulcsszoTetel("kölcsön", "megelhetes", "szintmero", "nap", False, "reggel")
+    assert config.masodlagos_timeframek(het) == ["today 12-m"]
+    assert config.masodlagos_timeframek(nap) == ["today 3-m"]
