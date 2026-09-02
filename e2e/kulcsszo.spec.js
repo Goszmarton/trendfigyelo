@@ -1303,3 +1303,19 @@ test("21. frissesség-dátum = utolsó kirajzolt lezárt pont napja (00:43-futá
   await expect(f).toContainText("2026. 08. 06.");        // az utolsó LEZÁRT pont napja (a kirajzolt adat vége)
   await expect(f).not.toContainText("2026. 08. 07.");    // az ablak_veg (részleges slot) napja NEM jelenhet meg
 });
+
+// ── ÚJ: társadalmi-feszültség domén magyar címke (megelhetes/politika) ──────────────────────────
+test("23. új társadalmi-feszültség domének magyar címkével jelennek meg", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({
+      "korrupció": regSzo({ domen: "politika" }),
+      "hitel": regSzo({ domen: "megelhetes" }),
+    }),
+    nyersObj: nyers({ "korrupció": [nyersRekord("korrupció")], "hitel": [nyersRekord("hitel")] }),
+  });
+  await page.goto("/");
+  await expect(page.locator(`${K} .domen-csoport[data-domen="politika"] h3.domen-fejlec`))
+    .toHaveText("Politikai elégedetlenség");
+  await expect(page.locator(`${K} .domen-csoport[data-domen="megelhetes"] h3.domen-fejlec`))
+    .toHaveText("Megélhetési problémák");
+});

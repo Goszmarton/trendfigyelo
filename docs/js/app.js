@@ -575,12 +575,18 @@ function heti_valaszto_render() {
 // A frontend NEM SZÁMOL: a regressziós vonal a mini-9a illesztes_vonal két végpontjából rajzolódik.
 
 const DOMEN_MAGYAR = {
+  // 5 aktív társadalmi-feszültség domén — a config (Task 7 óta) EZEKET használja
+  megelhetes: "Megélhetési problémák", egeszsegugy: "Egészségügyi problémák",
+  oktatas: "Oktatási problémák", gazdasag: "Gazdasági bizonytalanság",
+  politika: "Politikai elégedetlenség",
+  // régi slugok — a config már NEM használja őket, de az e2e domén-fixture-ök igen → MEGTARTVA
   munkaeropiac: "Munkaerőpiac", kozigazgatas: "Közigazgatás", lakhatas: "Lakhatás",
   fogyasztas: "Fogyasztás", egeszseg: "Egészség", energia: "Energia",
   jovedelem: "Jövedelem", haztartasi_penzugy: "Háztartási pénzügy", kozelet: "Közélet",
 };
 // megjelenítési sorrend; a null (besorolatlan/eltávolított szó) az "Egyéb" csoportba, a lista VÉGÉRE
-const DOMEN_SORREND = ["munkaeropiac", "kozigazgatas", "lakhatas", "fogyasztas", "egeszseg",
+const DOMEN_SORREND = ["megelhetes", "egeszsegugy", "oktatas", "gazdasag", "politika",
+  "munkaeropiac", "kozigazgatas", "lakhatas", "fogyasztas", "egeszseg",
   "energia", "jovedelem", "haztartasi_penzugy", "kozelet", null];
 const EGYEB_KULCS = "__egyeb__";
 const IRANY_MAGYAR = { novekszik: "iránya növekvő", csokken: "iránya csökkenő", stagnal: "iránya stagnáló" };
