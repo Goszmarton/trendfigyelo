@@ -228,6 +228,28 @@ def test_len_agnosztikus_3_es_20():
         assert len(out["kulcsszavak"]) == n
 
 
+# ── R4: domén-agnoszticitás — új-domén reggeli szó tortenet nélkül ────────────
+def _uj_domen_cfg():
+    return SimpleNamespace(modszertan_valtas="2026-07-30",
+                           osszes_kulcsszo=lambda: [SimpleNamespace(
+                               kifejezes="korrupció", domen="politika", tipus="szintmero", racs="ora")])
+
+
+def test_regresszio_uj_domen_szo_tortenet_nelkul():
+    # R4: egy ma reggel felvett (profil-3), config-ban ÚJ domént (politika) hordozó szó, aminek
+    # MÉG NINCS tortenet-bejegyzése (csak a mai órás nyers-pontjai) — a regresszio_szamit NEM
+    # dob, a szó bekerül a kimenetbe a config szerinti doménnel, és a hiányzó tortenet miatt a
+    # meres_kezdete kecsesen None-ra degradál (nincs bedrótozott régi-domén feltevés, spec §R4).
+    pontok = _oras(7)
+    nyers = {"kulcsszavak": {"korrupció": [_rekord(KEZD, KEZD + timedelta(hours=7), pontok)]}}
+    out = regresszio.regresszio_szamit(nyers, _tortenet({}), _uj_domen_cfg(), "T")
+    rek = out["kulcsszavak"]["korrupció"]
+    assert rek["domen"] == "politika" and rek["tipus"] == "szintmero"
+    assert rek["aktiv"] is True
+    assert rek["meres_kezdete"] is None      # nincs tortenet-bejegyzés → kecses degradáció, nem crash
+    assert rek["intervallumok"]["1_het"]["ok"] == "keves_pont"   # kevés pont, de nem dob
+
+
 # ── writer + valós integráció ────────────────────────────────────────────────
 def test_regresszio_ir_visszaolvas(tmp_path):
     import json
