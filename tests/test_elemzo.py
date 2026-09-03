@@ -357,7 +357,7 @@ def test_futtat_fail_soft_megorzi_az_elozo_elemzest(tmp_path):
 def test_main_env_nappal_fut(tmp_path, monkeypatch):
     # a main a docs/data-t a repo gyökérből veszi; itt csak azt igazoljuk, hogy az env-nap átmegy
     hivott = {}
-    monkeypatch.setattr(elemzo, "futtat", lambda docs_data, nap, kliens=None: hivott.setdefault("nap", nap) and 0)
+    monkeypatch.setattr(elemzo, "futtat", lambda docs_data, nap, mode="este", kliens=None: hivott.setdefault("nap", nap) and 0)
     monkeypatch.setenv("ELEMZES_NAP", "2026-08-22")
     assert elemzo.main() == 0
     assert hivott["nap"] == "2026-08-22"
@@ -750,3 +750,49 @@ def test_valasz_sema_felkapott_negy_mezo():
 def test_rendszer_prompt_felkapott_negy_bekezdes():
     p = elemzo.RENDSZER_PROMPT.lower()
     assert "reggeli" in p and "esti" in p and "nap íve" in p
+
+
+def _ai_valasz_reggel():
+    return {"felkapott": {"reggel": {"szoveg": "reggeli-elemzes"}}}
+
+
+def test_artefakt_reggel_scoped_helyorzokkel():
+    payload = _payload_szegmensekkel(van_reggel=True, van_este=True)
+    art = elemzo.valasz_to_artefakt(_ai_valasz_reggel(), payload, nap="2026-09-03", modell="m", mode="reggel")
+    assert art["mode"] == "reggel"
+    assert art["felkapott"]["reggel"]["szoveg"] == "reggeli-elemzes"        # az AI reggeli bekezdése
+    assert art["felkapott"]["este"]["szoveg"] == elemzo._ESTI_FRISSUL       # deferrált
+    assert art["felkapott"]["teljes_nap"]["szoveg"] == elemzo._ESTI_FRISSUL
+    assert art["felkapott"]["het"]["szoveg"] == elemzo._ESTI_FRISSUL
+    assert art["kulcsszavak"]["napi"]["szoveg"] == elemzo._ESTI_FRISSUL
+    assert art["valtozas"]["szoveg"] == elemzo._ESTI_FRISSUL
+    assert art["kulcsszavak"]["szamok"] == payload["kulcsszavak"]["szamok"] # VALÓS réteg megmarad
+    assert "reggel_top" in art["felkapott"] and "het_valos" in art["felkapott"]
+    assert "youtube" not in art
+
+
+def test_artefakt_este_kap_mode_mezot():
+    payload = _payload_szegmensekkel(van_reggel=True, van_este=True)
+    art = elemzo.valasz_to_artefakt(_ai_valasz(), payload, nap="2026-08-31", modell="m")   # default este
+    assert art["mode"] == "este"
+    assert art["felkapott"]["este"]["szoveg"] == "f-este"                   # esti ág változatlan
+
+
+def test_futtat_reggel_ir_scoped_artefaktot(tmp_path):
+    dd = _minimal_docs_data(tmp_path)
+    kod = elemzo.futtat(dd, nap="2026-08-22", mode="reggel", kliens=KamuKliens(_ai_valasz_reggel()))
+    assert kod == 0
+    art = json.loads((dd / "elemzes.json").read_text(encoding="utf-8"))
+    assert art["mode"] == "reggel"
+    assert art["felkapott"]["reggel"]["szoveg"] == "reggeli-elemzes"
+    assert art["felkapott"]["het"]["szoveg"] == elemzo._ESTI_FRISSUL
+    assert "youtube" not in art
+
+
+def test_main_atveszi_az_elemzes_mode_ot(monkeypatch):
+    kapott = {}
+    monkeypatch.setenv("ELEMZES_MODE", "reggel")
+    monkeypatch.setenv("ELEMZES_NAP", "2026-09-03")
+    monkeypatch.setattr(elemzo, "futtat", lambda dd, nap, mode="este", kliens=None: kapott.update(nap=nap, mode=mode) or 0)
+    elemzo.main()
+    assert kapott == {"nap": "2026-09-03", "mode": "reggel"}

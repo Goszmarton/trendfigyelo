@@ -12,11 +12,13 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 from trendfigyelo import seged
+from trendfigyelo import elemzes_orzo
 
 
 _log = logging.getLogger(__name__)
 
 MODELL = "claude-opus-4-8"
+_ESTI_FRISSUL = "Ez a rész az esti futáskor (21:00) frissül."
 
 RENDSZER_PROMPT = (
     "Magyar nyelvű elemző vagy egy magyar Google Trends figyelő oldalhoz. A közönség "
@@ -387,13 +389,31 @@ def elemez(payload, kliens=None, modell=MODELL, mode="este"):
     return kliens.uzenet(payload, modell, mode)
 
 
-def valasz_to_artefakt(ai_valasz, payload, nap, modell):
+def valasz_to_artefakt(ai_valasz, payload, nap, modell, mode="este"):
+    fk = payload["felkapott"]
+    if mode == "reggel":
+        d = {"szoveg": _ESTI_FRISSUL}
+        return {
+            "frissitve": seged.idopont_iso(seged.most_utc()),
+            "modell": modell,
+            "nap": nap,
+            "mode": "reggel",
+            "valtozas": {"diff": payload["valtozas"], "szoveg": _ESTI_FRISSUL},
+            "kulcsszavak": {"szamok": payload["kulcsszavak"]["szamok"],
+                            "napi": d, "teljes_kep": d, "het": d},
+            "felkapott": {
+                "top": fk["top"], "reggel_top": fk["reggel_top"], "este_top": fk["este_top"],
+                "reggel_este_diff": fk["reggel_este_diff"],
+                "reggel": ai_valasz["felkapott"]["reggel"],
+                "este": d, "teljes_nap": d, "het": d,
+                "het_valos": fk["het"],
+            },
+        }
     valtozas_szoveg = ai_valasz["valtozas"]["szoveg"]
     if not payload["valtozas"].get("van_elozo"):
         valtozas_szoveg = ("Ma nincs korábbi nap, amivel összevethetnénk, így a napi "
                            "elmozdulás egyelőre nem értékelhető. A friss kép a lenti "
                            "szekciókban olvasható.")
-    fk = payload["felkapott"]
     van_reggel = fk.get("van_reggel", True)
     van_este = fk.get("van_este", True)
     reggel_szoveg = ai_valasz["felkapott"]["reggel"]
@@ -409,6 +429,7 @@ def valasz_to_artefakt(ai_valasz, payload, nap, modell):
         "frissitve": seged.idopont_iso(seged.most_utc()),
         "modell": modell,
         "nap": nap,
+        "mode": "este",
         "valtozas": {"diff": payload["valtozas"], "szoveg": valtozas_szoveg},
         "kulcsszavak": {
             "szamok": payload["kulcsszavak"]["szamok"],
@@ -477,7 +498,7 @@ def _elozo_archivum(docs_data, nap):
     return _betolt(Path(docs_data) / "elemzesek" / f"{max(korabbi)}.json")
 
 
-def futtat(docs_data, nap, kliens=None):
+def futtat(docs_data, nap, mode="este", kliens=None):
     docs_data = Path(docs_data)
     adatok = {
         "regresszio": _betolt(docs_data / "kulcsszo_regresszio.json") or {},
@@ -494,13 +515,14 @@ def futtat(docs_data, nap, kliens=None):
         adatok,
         tegnapi_szamok=(tegnapi or {}).get("kulcsszavak", {}).get("szamok") if tegnapi else None,
         tegnapi_top=(tegnapi or {}).get("felkapott", {}).get("top") if tegnapi else None,
+        mode=mode,
     )
     try:
-        ai_valasz = elemez(payload, kliens=kliens)
+        ai_valasz = elemez(payload, kliens=kliens, mode=mode)
     except Exception as e:                       # noqa: BLE001 — fail-soft: az elemzés nem pótolhatatlan
         _log.warning("FIGYELEM: az AI-elemzés elhasalt (%s) — az előző elemzes.json marad.", e)
         return 2
-    art = valasz_to_artefakt(ai_valasz, payload, nap=nap, modell=MODELL)
+    art = valasz_to_artefakt(ai_valasz, payload, nap=nap, modell=MODELL, mode=mode)
     szoveg = json.dumps(art, ensure_ascii=False, indent=0)
     elemzesek_dir = docs_data / "elemzesek"
     elemzesek_dir.mkdir(exist_ok=True)
@@ -512,6 +534,7 @@ def futtat(docs_data, nap, kliens=None):
 
 def main():
     import os
-    nap = os.environ.get("ELEMZES_NAP") or seged.bp_idobelyeg(seged.most_utc())[:10]
+    mode = os.environ.get("ELEMZES_MODE", "este")
+    nap = os.environ.get("ELEMZES_NAP") or elemzes_orzo.elemzes_nap(mode, seged.most_utc())
     docs_data = Path(__file__).resolve().parent.parent / "docs" / "data"
-    return futtat(docs_data, nap=nap)
+    return futtat(docs_data, nap=nap, mode=mode)
