@@ -268,7 +268,7 @@ def _injektal_varhato_gyujtes(reg, config, docs_data_mappa, most):
 ```python
                 reg = regresszio.regresszio_szamit(nyers, tortenet, config, letoltve,
                                                    lanc_map=lanc.betolt_lanc(docs_data_mappa))
-                _injektal_varhato_gyujtes(reg, config, docs_data_mappa, letoltve)
+                _injektal_varhato_gyujtes(reg, config, docs_data_mappa, most)   # `most` a datetime (NEM letoltve, ami string!)
                 regresszio.regresszio_ir(docs_data_mappa, reg)
 ```
 
