@@ -226,7 +226,8 @@
   function yt_attekinto_render(reg) {
     const blokk = document.getElementById(ATT);
     if (!blokk) return;
-    blokk.textContent = "";
+    // szelektív törlés (mint az app.js attekinto-útja): a statikus <h2> cím MEGMARAD az újrarajzolás során
+    blokk.querySelectorAll(".attekinto-lista, .attekinto-magyarazat").forEach(function (e) { e.remove(); });
     const csoportok = {};
     Object.keys(reg || {}).forEach(function (szo) {
       const d = reg[szo].domen;
