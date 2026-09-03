@@ -141,6 +141,7 @@ function regSzo(over = {}) {
     domen: over.domen ?? "munkaeropiac",
     tipus: over.tipus ?? "szintmero",
     racs: over.racs,   // RACS_EGYSEG: szó-szintű rács (óra/nap/hét); hiány → undefined (nem szerializálódik, mint az órás JSON)
+    varhato_gyujtes_datum: over.varhato_gyujtes_datum,   // Task 2: nincs_masodlagos várható gyűjtési nap
     intervallumok: iv,
   };
 }
@@ -408,6 +409,25 @@ test("2h-b. benzin (órás-only) 1_ho → 'Várhatóan <dátum>-től lesz elérh
   await expect(u).toContainText("Várhatóan 2026.08.31-től lesz elérhető.");   // 2026-08-01 + 30 nap
 });
 
+// ── 2h-c. nincs_masodlagos + becsült gyűjtési dátum → „Várhatóan <dátum>-től gyűlik" ──────────
+test("2h-c. nem-órás szó másodlagos nélkül → nincs_masodlagos + 'Várhatóan <dátum>-től gyűlik'", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({
+      "infláció": regSzo({ domen: "gazdasag", racs: "het", varhato_gyujtes_datum: "2026-09-04" }),
+      "albérlet": regSzo({ domen: "lakhatas" }),                     // hogy az 1_ho gomb ENGEDÉLYEZETT legyen
+    }),
+    nyersObj: nyers({ "infláció": [nyersRekord("infláció")], "albérlet": [nyersRekord("albérlet")] }),
+    mpRegObj: mpReg({ "albérlet": mpSzo("nap", { "1_ho": racs_iv(30, 1) }) }),   // albérlet 1_ho érvényes
+    mpNyersObj: mpNyers({ "albérlet": [racs_nyersRekord("albérlet", 30, 1)] }),
+    // infláció: NINCS másodlagos → 1_ho nincs_masodlagos
+  });
+  await page.goto("/");
+  await page.click('#intervallum-vezerlo button[data-intervallum="1_ho"]');
+  const u = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="infláció"] .ures`);
+  await expect(u).toContainText("még gyűlik a napi/heti adat");
+  await expect(u).toContainText("Várhatóan 2026.09.04-től gyűlik.");
+});
+
 // ── 2i. Szelet 2 integráció: másodlagos szó a hosszú intervallumon → "nap nem-nulla" ────────────
 test("2i. másodlagos szó 1_ho-ra váltva → kártya drawable, 'nap nem-nulla'", async ({ page }) => {
   await mock(page, {
@@ -447,9 +467,12 @@ test("2k. nap-szó másodlagos 1_ev nincs_lancolas → 'A napi/heti sorozat röv
     mpNyersObj: mpNyers({ "nyaralás": [racs_nyersRekord("nyaralás", 14, 1)] }),
   });
   await page.goto("/");
-  const v = page.locator("#intervallum-vezerlo");
-  await expect(v).toContainText("A napi/heti sorozat még rövidebb ennél az ablaknál. Magától feltöltődik.");   // rovid_masodlagos — IDŐBELI
-  await expect(v).not.toContainText("összefűzött");                                    // a félrevezető órás-láncolás felirat NEM
+  // a vezérlő minden intervallum ok-szövegét kirakja; az 1_ev tételre szűkítünk (rovid_masodlagos),
+  // különben az 1_ho/3_ho nincs_masodlagos "Magától feltöltődik"-je beszivárogna a konténer-szintű assertba
+  const iv1ev = page.locator(".intervallum-tetel", { has: page.locator('button[data-intervallum="1_ev"]') });
+  await expect(iv1ev).toContainText("A napi/heti sorozat ehhez az ablakhoz túl rövid.");   // rovid_masodlagos — ELVI, őszinte
+  await expect(iv1ev).not.toContainText("Magától feltöltődik");   // a régi félrevezető IDŐBELI szöveg NEM
+  await expect(iv1ev).not.toContainText("összefűzött");           // a félrevezető órás-láncolás felirat NEM
 });
 
 // ── 2l. Szelet 3 / HIBA 2: het-szó 2_het keves_pont → "heti rácson…túl rövid" (nem adathiány) ──
