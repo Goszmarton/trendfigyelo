@@ -497,7 +497,7 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None, mode="este"
                             if tortenet_fajl.exists() else {})
                 reg = regresszio.regresszio_szamit(nyers, tortenet, config, letoltve,
                                                    lanc_map=lanc.betolt_lanc(docs_data_mappa))
-                _injektal_varhato_gyujtes(reg, config, docs_data_mappa, letoltve)
+                _injektal_varhato_gyujtes(reg, config, docs_data_mappa, most)
                 regresszio.regresszio_ir(docs_data_mappa, reg)
                 bejegyzesek.append({"ag": "regresszio", "eredmeny": "siker",
                                     "hivasok_szama": 0, "hibakodok": ""})
