@@ -338,7 +338,7 @@ def test_futtat_sikeres_ut_ir_artefaktot_archivumot_indexet(tmp_path):
 
 
 class HibasKliens:
-    def uzenet(self, payload, modell):
+    def uzenet(self, payload, modell, mode="este"):
         raise RuntimeError("429 szimulált")
 
 
