@@ -12,7 +12,7 @@ import sys
 from pathlib import Path
 
 from . import (felkapott, idosorok, json_export, kategoriak, kulcsszavak, lanc, naplo,
-               nyers_kimenet, regresszio, seged)
+               nyers_kimenet, regresszio, seged, varhato_gyujtes)
 from .config import betolt
 from .kliens import AgFeladva, Kliens, PlafonTullepve
 
@@ -81,6 +81,23 @@ def masodlagos_szavak_ma(config, most, docs_data_mappa, limit=None, mode="este")
     # elavult DESC, majd config-index ASC, majd timeframe-index ASC (determinista tie-break)
     rangsor = sorted(cellak, key=lambda c: (-_elavultsag(c[1].kifejezes, c[3]), c[0], c[2]))
     return [(t, tf) for _, t, _, tf in rangsor[:limit]]
+
+
+def _injektal_varhato_gyujtes(reg, config, docs_data_mappa, most):
+    """A soha-nem-gyűlt reggeli szavakhoz beírja a becsült gyűjtési dátumot a
+    regresszió-struktúrába (kulcsszo_regresszio.json). Olvashatatlan másodlagos
+    fájl → nincs mutáció (a becslés SOHA nem viheti el a regressziót)."""
+    fajl = Path(docs_data_mappa) / "kulcsszo_masodlagos_nyers.json"
+    try:
+        masodlagos = json.loads(fajl.read_text(encoding="utf-8")).get("kulcsszavak", {})
+    except (OSError, ValueError):
+        return
+    datumok = varhato_gyujtes.varhato_gyujtes_datumok(
+        config, masodlagos, most, cap=MAX_MASODLAGOS_REGGELI)
+    kulcsszavak = reg.get("kulcsszavak", {})
+    for szo, datum in datumok.items():
+        if szo in kulcsszavak:
+            kulcsszavak[szo]["varhato_gyujtes_datum"] = datum
 
 
 def _masodlagos_ag(bejegyzesek, kliens, config, docs_data_mappa, most, mode="este"):
@@ -478,10 +495,10 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None, mode="este"
                 tortenet_fajl = docs_data_mappa / "tortenet.json"
                 tortenet = (json.loads(tortenet_fajl.read_text(encoding="utf-8"))
                             if tortenet_fajl.exists() else {})
-                regresszio.regresszio_ir(
-                    docs_data_mappa,
-                    regresszio.regresszio_szamit(nyers, tortenet, config, letoltve,
-                                                 lanc_map=lanc.betolt_lanc(docs_data_mappa)))
+                reg = regresszio.regresszio_szamit(nyers, tortenet, config, letoltve,
+                                                   lanc_map=lanc.betolt_lanc(docs_data_mappa))
+                _injektal_varhato_gyujtes(reg, config, docs_data_mappa, most)
+                regresszio.regresszio_ir(docs_data_mappa, reg)
                 bejegyzesek.append({"ag": "regresszio", "eredmeny": "siker",
                                     "hivasok_szama": 0, "hibakodok": ""})
             except Exception as e:

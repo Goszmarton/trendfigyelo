@@ -274,6 +274,11 @@ def test_valos_adatbol():
         # igazak; ez NEM lazítás, csak a ciklus hatókörének szűkítése az elvárt adatra.
         if szo not in nyers["kulcsszavak"]:
             continue
+        # a reggel-gyűjtött profil-3 órás szavak (pedagógus/korrupció/kormány) bekerülnek a
+        # nyersbe, de tortenet híján meres_kezdete=None — a per-szó adat-állítások csak a
+        # tortenettel bíró (2026-07-30 óta mért) 13 valós szóra igazak, ezért a None-t kihagyjuk.
+        if v["meres_kezdete"] is None:
+            continue
         assert v["meres_kezdete"] == "2026-07-30" and v["aktiv"] is True
         if v["tipus"] == "esemenyjelzo":
             # 6c: az esemenyjelzo (tüntetés) ÓRÁS ága NEM ad trendvonalat — minden órás

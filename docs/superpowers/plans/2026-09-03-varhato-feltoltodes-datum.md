@@ -268,7 +268,7 @@ def _injektal_varhato_gyujtes(reg, config, docs_data_mappa, most):
 ```python
                 reg = regresszio.regresszio_szamit(nyers, tortenet, config, letoltve,
                                                    lanc_map=lanc.betolt_lanc(docs_data_mappa))
-                _injektal_varhato_gyujtes(reg, config, docs_data_mappa, letoltve)
+                _injektal_varhato_gyujtes(reg, config, docs_data_mappa, most)   # `most` a datetime (NEM letoltve, ami string!)
                 regresszio.regresszio_ir(docs_data_mappa, reg)
 ```
 
@@ -335,14 +335,16 @@ test("2h-c. nem-órás szó másodlagos nélkül → nincs_masodlagos + 'Várhat
 });
 ```
 
-1c. A meglévő „2k" teszt (442. sor) 451. sori assertjét cseréld az új őszinte szövegre, és igazold, hogy NINCS „Várhatóan":
+1c. A meglévő „2k" teszt (442. sor) assertjeit cseréld az új őszinte szövegre. FONTOS: a `#intervallum-vezerlo` MINDEN intervallum ok-szövegét kirakja (a `.ok` span közvetlenül `OK_MAGYAR`-ból, NEM `ok_szoveg`-ből → sosem dátum), ezért az 1_ho/3_ho `nincs_masodlagos` „Magától feltöltődik."-je beszivárogna egy konténer-szintű assertba. Az 1_ev intervallum-tételre szűkítünk:
 
 ```javascript
-  await expect(v).toContainText("A napi/heti sorozat ehhez az ablakhoz túl rövid.");   // rovid_masodlagos — ELVI (nem töltődik fel)
-  await expect(v).not.toContainText("Magától feltöltődik");                            // a régi, félrevezető IDŐBELI szöveg NEM
-  await expect(v).not.toContainText("Várhatóan");                                      // rovid_masodlagos NEM kap dátumot
-  await expect(v).not.toContainText("összefűzött");                                    // a félrevezető órás-láncolás felirat NEM
+  await page.goto("/");
+  const iv1ev = page.locator(".intervallum-tetel", { has: page.locator('button[data-intervallum="1_ev"]') });
+  await expect(iv1ev).toContainText("A napi/heti sorozat ehhez az ablakhoz túl rövid.");   // rovid_masodlagos — ELVI, őszinte
+  await expect(iv1ev).not.toContainText("Magától feltöltődik");   // a régi félrevezető IDŐBELI szöveg NEM
+  await expect(iv1ev).not.toContainText("összefűzött");           // a félrevezető órás-láncolás felirat NEM
 ```
+(A „Várhatóan …-től gyűlik." pozitív ellenőrzést a kártyán a 2h-c fedi; a vezérlőben nincs dátum.)
 
 - [ ] **Step 2: Run e2e to verify the new/updated tests fail**
 

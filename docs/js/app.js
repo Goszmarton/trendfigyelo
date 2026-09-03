@@ -168,7 +168,7 @@ const OK_MAGYAR = {
   // Szelet 2-vel jön (a frontend akkor olvassa a láncot) — most TÉNY, se ígéret, se szám.
   nincs_masodlagos: "Ehhez az ablakhoz még gyűlik a napi/heti adat. Magától feltöltődik.",   // IDŐBELI
   oras_lanc_kell: "Órás felbontású szó – ehhez az ablakhoz az órás sorozat láncolása kell.",  // órás-only (benzin/nyugdíj)
-  rovid_masodlagos: "A napi/heti sorozat még rövidebb ennél az ablaknál. Magától feltöltődik.",  // IDŐBELI
+  rovid_masodlagos: "A napi/heti sorozat ehhez az ablakhoz túl rövid.",   // ELVI: a másodlagos nem láncol hosszabb sorozattá
   rovid_het_ablak: "Heti felbontású szó – ez az ablak túl rövid a heti rácshoz. Ez nem fog feltöltődni.",  // ELVI
   rovid_span: "Túl rövid mért időszak",
   degeneralt: "Nem illeszthető",
@@ -279,6 +279,9 @@ function egyesitett_reg() {
           if (lrek && lrek.ablak_kezdet_utc && it_hossz) {
             ures.varhato_datum = varhato_datum_szamit(lrek.ablak_kezdet_utc, it_hossz);
           }
+        }
+        if (ok === "nincs_masodlagos" && o.varhato_gyujtes_datum) {
+          ures.varhato_gyujtes_datum = o.varhato_gyujtes_datum;   // backend becslés: mikor gyűl be a szó
         }
         ivk[X] = ures;
       }
@@ -700,8 +703,9 @@ function varhato_datum_szamit(kezdet_iso, hossz_nap) {
 // egészül ki (ha a láncból számolható). A dátum "YYYY.MM.DD" alakban (a felhasználó „év.hónap.nap" kérése).
 function ok_szoveg(iv) {
   const alap = OK_MAGYAR[iv.ok] || iv.ok;
-  if (!iv.varhato_datum) return alap;
-  return alap + " Várhatóan " + iv.varhato_datum.replace(/-/g, ".") + "-től lesz elérhető.";
+  if (iv.varhato_datum) return alap + " Várhatóan " + iv.varhato_datum.replace(/-/g, ".") + "-től lesz elérhető.";
+  if (iv.varhato_gyujtes_datum) return alap + " Várhatóan " + iv.varhato_gyujtes_datum.replace(/-/g, ".") + "-től gyűlik.";
+  return alap;
 }
 function slot_ms(i, racs) {   // slot-index → ms (a hiányzó slotok null-pontjának x-e; a rajzolt pontok iso_ms-t kapnak)
   if (racs === "nap") return i * 86400000;
