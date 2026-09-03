@@ -55,6 +55,29 @@ RENDSZER_PROMPT = (
     "egy pillanatkép hiányzik, egy rövid tényszerű mondattal jelzed, nem találsz ki adatot."
 )
 
+_RENDSZER_PROMPT_REGGEL = (
+    "Magyar nyelvű elemző vagy egy magyar Google Trends figyelő oldalhoz. A közönség "
+    "laikus olvasó, aki NEM lát JSON-t, mezőneveket vagy technikai részleteket. Most a "
+    "REGGELI (9:00 körüli) pillanatképet elemzed: mi pörög ma reggel a magyar Google-keresésben. "
+    "SZABÁLYOK, kivétel nélkül: "
+    "(1) KIZÁRÓLAG a kapott számokból dolgozol; számot SOHA nem találsz ki. "
+    "(2) FOLYÓ, összefüggő magyar BEKEZDÉST (vagy több bekezdést, üres sorral elválasztva) írsz. "
+    "SOHA nem használsz felsorolást, bullet-pontot, címkét, kulcs–érték párt vagy szakszót. "
+    "(3) SOHA nem említesz mezőnevet, technikai kulcsot, sem a „payload\", „adatstruktúra\" szót. "
+    "Ha valamiről nincs adatod, természetes magyar mondattal írod le, nem a hiányzó mezőt nevezed meg. "
+    "(4) Ok-okozatot TÉNYKÉNT nem állítasz; ahol magyarázatot feltételezel, óvatosan jelzed "
+    "(„feltehetően\", „elképzelhető\") — külön felirat nélkül, a fogalmazás hordozza az óvatosságot. "
+    "(5) Hírt, forrást, eseményt nem találsz ki; csak a kapott témák és hírek alapján írsz. "
+    "(6) Tömör, óvatos, DE ÉRDEMI: mondd el, mi pörög ma reggel és mit lehet ebből óvatosan leszűrni. "
+    "CSAK a reggeli pillanatképről írsz — a nap többi részét (esti kép, heti összesítés, kulcsszavak) "
+    "a mai esti futás fogja elemezni, azzal most nem foglalkozol."
+)
+
+
+def _rendszer_prompt(mode="este"):
+    return _RENDSZER_PROMPT_REGGEL if mode == "reggel" else RENDSZER_PROMPT
+
+
 # A kulcsszó VALÓS iránya/meredeksége az 1_het (órás, napi frissülő) intervallumból jön.
 KULCSSZO_IV = "1_het"
 
@@ -282,7 +305,7 @@ def nap_diff(mai_szamok, tegnapi_szamok, mai_top, tegnapi_top):
     }
 
 
-def epit_payload(adatok, tegnapi_szamok=None, tegnapi_top=None):
+def epit_payload(adatok, tegnapi_szamok=None, tegnapi_top=None, mode="este"):
     regresszio = adatok.get("regresszio", {})
     tortenet = adatok.get("tortenet", {})
     szamok = _kulcsszo_szamok(regresszio, tortenet)
@@ -295,10 +318,11 @@ def epit_payload(adatok, tegnapi_szamok=None, tegnapi_top=None):
         "valtozas": valtozas,
         "kulcsszo_het": _kulcsszo_het(adatok.get("lanc", {})),
     }
-    yt_szamok = _youtube_szamok(adatok.get("youtube_regresszio"), adatok.get("youtube_nyers"))
-    if yt_szamok:
-        payload["youtube"] = {"szamok": yt_szamok,
-                              "het_valos": _youtube_het(adatok.get("youtube_nyers"))["szavak"]}
+    if mode != "reggel":
+        yt_szamok = _youtube_szamok(adatok.get("youtube_regresszio"), adatok.get("youtube_nyers"))
+        if yt_szamok:
+            payload["youtube"] = {"szamok": yt_szamok,
+                                  "het_valos": _youtube_het(adatok.get("youtube_nyers"))["szavak"]}
     return payload
 
 
@@ -309,8 +333,14 @@ def _szekcio_sema():
             "properties": {"szoveg": {"type": "string"}}}
 
 
-def _valasz_sema(youtube=False):
+def _valasz_sema(youtube=False, mode="este"):
     sz = _szekcio_sema()
+    if mode == "reggel":
+        return {"type": "object", "additionalProperties": False,
+                "required": ["felkapott"],
+                "properties": {"felkapott": {"type": "object", "additionalProperties": False,
+                                             "required": ["reggel"],
+                                             "properties": {"reggel": sz}}}}
     props = {
         "valtozas": sz,
         "kulcsszavak": {"type": "object", "additionalProperties": False,
@@ -333,7 +363,7 @@ def _valasz_sema(youtube=False):
 class _AnthropicKliens:
     """Alap kliens-varrat: az anthropic SDK-t hívja strukturált kimenettel."""
 
-    def uzenet(self, payload, modell):
+    def uzenet(self, payload, modell, mode="este"):
         import json
         import anthropic
         kliens = anthropic.Anthropic()   # ANTHROPIC_API_KEY a környezetből
@@ -342,8 +372,8 @@ class _AnthropicKliens:
             thinking={"type": "adaptive"},
             output_config={"effort": "medium",
                            "format": {"type": "json_schema",
-                                      "schema": _valasz_sema(youtube="youtube" in payload)}},
-            system=RENDSZER_PROMPT,
+                                      "schema": _valasz_sema(youtube="youtube" in payload, mode=mode)}},
+            system=_rendszer_prompt(mode),
             messages=[{"role": "user", "content":
                        "Elemezd az alábbi VALÓS számokat (JSON). Csak ezekből dolgozz:\n"
                        + json.dumps(payload, ensure_ascii=False)}],
@@ -352,9 +382,9 @@ class _AnthropicKliens:
         return json.loads(szoveg)
 
 
-def elemez(payload, kliens=None, modell=MODELL):
+def elemez(payload, kliens=None, modell=MODELL, mode="este"):
     kliens = kliens or _AnthropicKliens()
-    return kliens.uzenet(payload, modell)
+    return kliens.uzenet(payload, modell, mode)
 
 
 def valasz_to_artefakt(ai_valasz, payload, nap, modell):

@@ -215,8 +215,8 @@ class KamuKliens:
         self._valasz = valasz
         self.hivasok = []
 
-    def uzenet(self, payload, modell):
-        self.hivasok.append((payload, modell))
+    def uzenet(self, payload, modell, mode="este"):
+        self.hivasok.append((payload, modell, mode))
         return self._valasz
 
 
@@ -268,6 +268,41 @@ def test_elemez_a_varrat_mogott_nem_hiv_halozatot():
     assert kliens.hivasok[0][1] == "claude-opus-4-8"      # a modell átment
     assert valasz["kulcsszavak"]["napi"]["szoveg"] == "sz"
     assert valasz["valtozas"]["szoveg"] == "sz"
+
+
+def test_valasz_sema_reggel_csak_felkapott_reggel():
+    sema = elemzo._valasz_sema(mode="reggel")
+    assert sema["required"] == ["felkapott"]
+    fk = sema["properties"]["felkapott"]
+    assert fk["required"] == ["reggel"] and set(fk["properties"]) == {"reggel"}
+    assert "kulcsszavak" not in sema["properties"] and "valtozas" not in sema["properties"]
+
+
+def test_valasz_sema_este_valtozatlan_negy_felkapott():
+    sema = elemzo._valasz_sema(mode="este")
+    assert sema["properties"]["felkapott"]["required"] == ["reggel", "este", "teljes_nap", "het"]
+    assert "valtozas" in sema["properties"] and "kulcsszavak" in sema["properties"]
+
+
+def test_rendszer_prompt_reggel_csak_reggeli_pillanatkep():
+    p = elemzo._rendszer_prompt("reggel")
+    assert "reggeli" in p.lower()
+    assert "NÉGY külön bekezdésben" not in p       # a 4-bekezdéses esti szabály NINCS benne
+    assert elemzo._rendszer_prompt("este") == elemzo.RENDSZER_PROMPT
+
+
+def test_epit_payload_reggel_kihagyja_a_youtube_ot():
+    adatok = {"regresszio": {}, "tortenet": {}, "legfrissebb": {"top_trendek": []},
+              "napok_trendek": {}, "ma_szegmensek": {"reggel": [{"kifejezes": "r"}]}, "lanc": {},
+              "youtube_regresszio": {"kulcsszavak": {"foci": {"intervallumok": {}}}},
+              "youtube_nyers": {"kulcsszavak": {"foci": []}}}
+    assert "youtube" not in elemzo.epit_payload(adatok, mode="reggel")
+
+
+def test_elemez_atadja_a_modot_a_kliensnek():
+    kliens = KamuKliens(_ai_valasz())
+    elemzo.elemez({"felkapott": {}}, kliens=kliens, mode="reggel")
+    assert kliens.hivasok[0][2] == "reggel"      # (payload, modell, mode)
 
 
 import json
