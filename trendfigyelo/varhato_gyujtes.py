@@ -12,6 +12,7 @@ Tiszta függvény: nincs I/O és nincs órajel-olvasás — a `most`-ot a hívó
 from datetime import timedelta
 
 from . import nyers_kimenet, seged
+from .config import masodlagos_timeframek
 
 MAX_MASODLAGOS_REGGELI = 8   # tükrözi futtato.MAX_MASODLAGOS_REGGELI (a hívó a sajátját adja át)
 
@@ -21,15 +22,17 @@ def varhato_gyujtes_datumok(config, masodlagos_nyers, most, cap=MAX_MASODLAGOS_R
     masodlagos_nyers = masodlagos_nyers or {}
     reggeli = [t for t in config.osszes_kulcsszo()
                if t.racs != "ora" and t.futas == "reggel"]
-    varok = [t for t in reggeli if not _van_rekord(masodlagos_nyers, t.kifejezes)]
+    varok = [t for t in reggeli if not _van_rekord(masodlagos_nyers, t)]
     kov_reggeli = most.astimezone(seged.BUDAPEST).date() + timedelta(days=1)
     return {t.kifejezes: (kov_reggeli + timedelta(days=r // cap)).isoformat()
             for r, t in enumerate(varok)}
 
 
-def _van_rekord(masodlagos_nyers, kifejezes):
-    """Igaz, ha a szónak van érvényes lekerdezes_utc-jű másodlagos rekordja
-    (különben soha-nem-gyűlt = inf elavultság a rotációban)."""
-    rekordok = masodlagos_nyers.get(kifejezes) or []
+def _van_rekord(masodlagos_nyers, tetel):
+    """Igaz, ha a szónak van érvényes lekerdezes_utc-jű másodlagos rekordja A SAJÁT
+    (reggeli) timeframe-ében — a schedulerrel (futtato.masodlagos_szavak_ma) azonos
+    cella-szintű szűrés, hogy a két predikátum config-churn alatt se csússzon szét."""
+    tfs = set(masodlagos_timeframek(tetel))
+    rekordok = masodlagos_nyers.get(tetel.kifejezes) or []
     return any(nyers_kimenet._aware_dt(r.get("lekerdezes_utc")) is not None
-               for r in rekordok)
+               for r in rekordok if r.get("timeframe") in tfs)

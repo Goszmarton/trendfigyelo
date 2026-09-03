@@ -66,3 +66,15 @@ def test_ures_vagy_hianyzo_bemenet_ures_map():
     # None kulcsszavak-blokk (olvashatatlan/üres fájl esetén a hívó ezt adja)
     assert varhato_gyujtes.varhato_gyujtes_datumok(cfg, {}, MOST) == {"infláció": "2026-09-04"}
     assert varhato_gyujtes.varhato_gyujtes_datumok(_config([]), {}, MOST) == {}
+
+
+def test_nem_egyezo_timeframe_rekord_soha_nem_gyultnek_szamit():
+    # "het" rácsú reggeli szó saját timeframe-je "today 12-m" (RACS_IDOKERET["het"]);
+    # a rekord viszont "today 3-m" alatt van — ez NEM a szó saját cellája (pl. este→reggel
+    # átállás vagy racs-váltás után ottmaradt régi rekord), ezért a schedulerrel (futtato.
+    # masodlagos_szavak_ma) azonosan soha-nem-gyűltnek kell számítania.
+    cfg = _config([_reggeli("infláció", racs="het")])
+    mn = {"infláció": [{"timeframe": "today 3-m", "lekerdezes_utc": "2026-09-03T07:00:00+00:00",
+                         "ablak_kezdet_utc": "2026-06-01T00:00:00+00:00",
+                         "ablak_veg_utc": "2026-09-01T00:00:00+00:00", "pontok": []}]}
+    assert varhato_gyujtes.varhato_gyujtes_datumok(cfg, mn, MOST) == {"infláció": "2026-09-04"}
