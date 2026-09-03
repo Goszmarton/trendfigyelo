@@ -21,8 +21,9 @@
 
   <div id="dashboard">
     <hr class="blokk-vonal">
-    <section id="attekinto-blokk" class="attekinto-panel" data-mod="elteres" aria-label="Áttekintő – mai eltérés a trendtől">
-      <h2>Mai eltérés a kulcsszavak trendjétől</h2>
+    <!-- felső panel: a szavak TREND-iránya (növekvő/stagnáló/csökkenő) — az id a POZÍCIÓT jelöli (felül), a tartalmat a data-mod -->
+    <section id="attekinto-blokk" class="attekinto-panel" data-mod="trend" aria-label="A kulcsszavak trendje">
+      <h2>A kulcsszavak trendje</h2>
     </section>
     <!-- §7.1 per-szekció elrendezés: minden szekció a SAJÁT (sticky) vezérlősávjával -->
     <div class="szekcio">
@@ -38,12 +39,15 @@
       </section>
     </div>
 
-    <!-- a Kulcsszavak ALATT, a napi kategória-idősor ELŐTT: a szavak TREND-iránya (növekvő/stagnáló/csökkenő) -->
-    <section id="attekinto-blokk-alul" class="attekinto-panel" data-mod="trend" aria-label="A kulcsszavak trendje">
-      <h2>A kulcsszavak trendje</h2>
+    <!-- a Kulcsszavak ALATT, a napi kategória-idősor ELŐTT: a szavak MAI ELTÉRÉSE a saját trendjüktől -->
+    <section id="attekinto-blokk-alul" class="attekinto-panel" data-mod="elteres" aria-label="Áttekintő – mai eltérés a trendtől">
+      <h2>Mai eltérés a kulcsszavak trendjétől</h2>
     </section>
 
     <hr class="blokk-vonal">
+
+    <!-- innen a NAPI (nem a követett kulcsszavak) keresések: kategória-idősor + felkapott keresőszavak -->
+    <h2 class="szakasz-cim">Napi leggyakoribb keresések</h2>
 
     <div class="szekcio">
       <aside class="vezerlo-sav">

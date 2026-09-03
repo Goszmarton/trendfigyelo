@@ -62,3 +62,30 @@ test("YouTube-fül: kosár-csoportok + napi szó rajzol + trend", async ({ page 
   await expect(page.locator(`${Y} .kulcsszo-chart[data-drawable="true"]`)).toHaveCount(2);
   await expect(page.locator(`${Y} .kulcsszo-chart .ok`)).toContainText("túl rövid");
 });
+
+// ── TREND-BLOKK FELÜL + CÍM (2026-09-03): a #youtube-attekinto az oldal TETEJÉN, „A kulcsszavak trendje" címmel ──
+test("YouTube-fül: a trend-blokk (#youtube-attekinto) LEGFELÜL van és a címe 'A kulcsszavak trendje'", async ({ page }) => {
+  await mock(page, {
+    reg: { kulcsszavak: {
+      "edzés": { racs: "nap", aktiv: true, domen: "egeszseg", tipus: "szintmero",
+                 intervallumok: { "1_het": ivErvenyes(), "2_het": ivErvenyes(),
+                                  "1_ho": ivErvenyes(), "3_ho": ivErvenyes(), "1_ev": ivErvenyes() } },
+    }},
+    nyers: { kulcsszavak: {
+      "edzés": [{ kulcsszo:"edzés", racs:"nap", timeframe:"today 3-m",
+                  ablak_kezdet_utc: iso(Date.UTC(2026,4,22)), ablak_veg_utc: iso(Date.UTC(2026,7,20)),
+                  pontok: napiPontok(90) }],
+    }},
+  });
+  await page.goto("/youtube.html");
+  // a cím megvan (mint a Google-fülön) és túléli az újrarajzolást (szelektív törlés)
+  await expect(page.locator("#youtube-attekinto h2")).toHaveText("A kulcsszavak trendje");
+  await expect(page.locator("#youtube-attekinto .attekinto-lista")).toHaveCount(1);   // a lista is renderelt
+  // a trend-blokk a kártya-szekció (#youtube-blokk) ELŐTT áll a DOM-ban (legfelül)
+  const felul = await page.evaluate(() => {
+    const att = document.querySelector("#youtube-attekinto");
+    const blokk = document.querySelector("#youtube-blokk");
+    return !!(att && blokk && (att.compareDocumentPosition(blokk) & Node.DOCUMENT_POSITION_FOLLOWING));
+  });
+  expect(felul).toBe(true);
+});

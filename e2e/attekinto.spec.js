@@ -33,19 +33,20 @@ async function mock(page, regObj, mpRegObj) {
   await page.route(/kulcsszo_nyers\.json/, (r) =>
     r.fulfill({ contentType: "application/json", body: JSON.stringify({ kulcsszavak: {} }) }));
 }
-const A = "#attekinto-blokk";
+// ELTÉRÉS-panel (data-mod="elteres") — a helycsere (2026-09-03) óta a Kulcsszavak ALATT, #attekinto-blokk-alul
+const A = "#attekinto-blokk-alul";
 
-test("attekinto: panel legfelül, kategória-sor (domén balra, chipek jobbra), eltérés-ikon a szó ELŐTT + kattint-affordancia", async ({ page }) => {
+test("attekinto: eltérés-panel a Kulcsszavak alatt, kategória-sor (domén balra, chipek jobbra), eltérés-ikon a szó ELŐTT + kattint-affordancia", async ({ page }) => {
   await mock(page, reg({
     "állás": szo({ domen: "munkaeropiac", illeszkedes: "felette" }),
     "albérlet": szo({ domen: "lakhatas", illeszkedes: "illeszkedik" }),
   }));
   await page.goto("/");
-  // a panel a #kulcsszo-blokk ELŐTT áll a DOM-ban
+  // az eltérés-panel a #kulcsszo-blokk UTÁN áll a DOM-ban (a helycsere óta)
   const sorrend = await page.evaluate(() => {
-    const a = document.querySelector("#attekinto-blokk");
     const k = document.querySelector("#kulcsszo-blokk");
-    return a && k ? (a.compareDocumentPosition(k) & Node.DOCUMENT_POSITION_FOLLOWING) > 0 : false;
+    const a = document.querySelector("#attekinto-blokk-alul");
+    return a && k ? (k.compareDocumentPosition(a) & Node.DOCUMENT_POSITION_FOLLOWING) > 0 : false;
   });
   expect(sorrend).toBe(true);
   await expect(page.locator(A + " .attekinto-sor[data-domen='munkaeropiac'] .attekinto-domen")).toHaveText("Munkaerőpiac");
@@ -82,8 +83,8 @@ test("attekinto: magyarázó doboz a blokk ALJÁN (a lista után)", async ({ pag
   await page.goto("/");
   await expect(page.locator(A + " .attekinto-magyarazat")).toHaveCount(1);
   const utan = await page.evaluate(() => {
-    const lista = document.querySelector("#attekinto-blokk .attekinto-lista");
-    const magy = document.querySelector("#attekinto-blokk .attekinto-magyarazat");
+    const lista = document.querySelector("#attekinto-blokk-alul .attekinto-lista");
+    const magy = document.querySelector("#attekinto-blokk-alul .attekinto-magyarazat");
     return lista && magy ? (lista.compareDocumentPosition(magy) & Node.DOCUMENT_POSITION_FOLLOWING) > 0 : false;
   });
   expect(utan).toBe(true);
@@ -111,8 +112,8 @@ test("attekinto: tüntetés esemenyjelzo — a MEDIÁNTÓL való eltérés ikonj
   await expect(kartya).toHaveAttribute("aria-label", /medián/);
 });
 
-// ── TREND-panel (a Kulcsszavak alatt, data-mod="trend"): a trend IRÁNYÁT mutatja az `irany`-ból ──
-const B = "#attekinto-blokk-alul";
+// ── TREND-panel (a helycsere óta LEGFELÜL, data-mod="trend"): a trend IRÁNYÁT mutatja az `irany`-ból ──
+const B = "#attekinto-blokk";
 
 test("trend-panel: a chip ikonja a TREND-irányt kódolja (data-trend az irany-ból), külön title", async ({ page }) => {
   await mock(page, reg({
@@ -160,4 +161,41 @@ test("mindkét panel a TELJES (leghosszabb) ablakot használja, nem a legrövide
   await expect(page.locator(A + " .attekinto-kartya[data-kulcsszo='állás'] .attekinto-ikon")).toHaveAttribute("data-illeszkedes", "alatta");
   // trend-panel: a HOSSZÚ ablak "csokken", NEM a rövid "novekszik"
   await expect(page.locator(B + " .attekinto-kartya[data-kulcsszo='állás'] .attekinto-ikon")).toHaveAttribute("data-trend", "csokken");
+});
+
+// ── HELYCSERE-ŐR (2026-09-03): a TREND-panel LEGFELÜL (#attekinto-blokk), az ELTÉRÉS-panel a Kulcsszavak ALATT
+// (#attekinto-blokk-alul) — a két blokk címe + data-mod-ja + DOM-sorrendje ─────────────────────────────────
+test("helycsere: felül 'A kulcsszavak trendje' (trend), a Kulcsszavak alatt 'Mai eltérés…' (eltérés)", async ({ page }) => {
+  await mock(page, reg({ "állás": szo({ domen: "munkaeropiac", irany: "novekszik", illeszkedes: "felette" }) }));
+  await page.goto("/");
+  // felső panel = TREND
+  await expect(page.locator("#attekinto-blokk")).toHaveAttribute("data-mod", "trend");
+  await expect(page.locator("#attekinto-blokk h2")).toHaveText("A kulcsszavak trendje");
+  // alsó panel = ELTÉRÉS
+  await expect(page.locator("#attekinto-blokk-alul")).toHaveAttribute("data-mod", "elteres");
+  await expect(page.locator("#attekinto-blokk-alul h2")).toHaveText("Mai eltérés a kulcsszavak trendjétől");
+  // DOM-sorrend: trend(felül) → kulcsszavak → eltérés(alul)
+  const sorrend = await page.evaluate(() => {
+    const trend = document.querySelector("#attekinto-blokk");
+    const kulcs = document.querySelector("#kulcsszo-blokk");
+    const elt = document.querySelector("#attekinto-blokk-alul");
+    return !!(trend && kulcs && elt
+      && (trend.compareDocumentPosition(kulcs) & Node.DOCUMENT_POSITION_FOLLOWING)
+      && (kulcs.compareDocumentPosition(elt) & Node.DOCUMENT_POSITION_FOLLOWING));
+  });
+  expect(sorrend).toBe(true);
+});
+
+// ── SZAKASZ-CÍM-ŐR: a „Napi leggyakoribb keresések" elválasztó a kategória-idősor (#idosor-blokk) ELŐTT ──
+test("szakasz-cím: 'Napi leggyakoribb keresések' a napi keresések rész előtt (a kategória-idősor ELŐTT)", async ({ page }) => {
+  await mock(page, reg({ "állás": szo({ domen: "munkaeropiac" }) }));
+  await page.goto("/");
+  const cim = page.locator(".szakasz-cim");
+  await expect(cim).toHaveText("Napi leggyakoribb keresések");
+  const elotte = await page.evaluate(() => {
+    const c = document.querySelector(".szakasz-cim");
+    const i = document.querySelector("#idosor-blokk");
+    return !!(c && i && (c.compareDocumentPosition(i) & Node.DOCUMENT_POSITION_FOLLOWING));
+  });
+  expect(elotte).toBe(true);
 });
