@@ -12,11 +12,13 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 from trendfigyelo import seged
+from trendfigyelo import elemzes_orzo
 
 
 _log = logging.getLogger(__name__)
 
 MODELL = "claude-opus-4-8"
+_ESTI_FRISSUL = "Ez a rész az esti futáskor (21:00) frissül."
 
 RENDSZER_PROMPT = (
     "Magyar nyelvű elemző vagy egy magyar Google Trends figyelő oldalhoz. A közönség "
@@ -54,6 +56,29 @@ RENDSZER_PROMPT = (
     "nem a két lista újramondása), és a HETI kép (a több napon vissza-visszatérő szavak). Ha "
     "egy pillanatkép hiányzik, egy rövid tényszerű mondattal jelzed, nem találsz ki adatot."
 )
+
+_RENDSZER_PROMPT_REGGEL = (
+    "Magyar nyelvű elemző vagy egy magyar Google Trends figyelő oldalhoz. A közönség "
+    "laikus olvasó, aki NEM lát JSON-t, mezőneveket vagy technikai részleteket. Most a "
+    "REGGELI (9:00 körüli) pillanatképet elemzed: mi pörög ma reggel a magyar Google-keresésben. "
+    "SZABÁLYOK, kivétel nélkül: "
+    "(1) KIZÁRÓLAG a kapott számokból dolgozol; számot SOHA nem találsz ki. "
+    "(2) FOLYÓ, összefüggő magyar BEKEZDÉST (vagy több bekezdést, üres sorral elválasztva) írsz. "
+    "SOHA nem használsz felsorolást, bullet-pontot, címkét, kulcs–érték párt vagy szakszót. "
+    "(3) SOHA nem említesz mezőnevet, technikai kulcsot, sem a „payload\", „adatstruktúra\" szót. "
+    "Ha valamiről nincs adatod, természetes magyar mondattal írod le, nem a hiányzó mezőt nevezed meg. "
+    "(4) Ok-okozatot TÉNYKÉNT nem állítasz; ahol magyarázatot feltételezel, óvatosan jelzed "
+    "(„feltehetően\", „elképzelhető\") — külön felirat nélkül, a fogalmazás hordozza az óvatosságot. "
+    "(5) Hírt, forrást, eseményt nem találsz ki; csak a kapott témák és hírek alapján írsz. "
+    "(6) Tömör, óvatos, DE ÉRDEMI: mondd el, mi pörög ma reggel és mit lehet ebből óvatosan leszűrni. "
+    "CSAK a reggeli pillanatképről írsz — a nap többi részét (esti kép, heti összesítés, kulcsszavak) "
+    "a mai esti futás fogja elemezni, azzal most nem foglalkozol."
+)
+
+
+def _rendszer_prompt(mode="este"):
+    return _RENDSZER_PROMPT_REGGEL if mode == "reggel" else RENDSZER_PROMPT
+
 
 # A kulcsszó VALÓS iránya/meredeksége az 1_het (órás, napi frissülő) intervallumból jön.
 KULCSSZO_IV = "1_het"
@@ -282,7 +307,7 @@ def nap_diff(mai_szamok, tegnapi_szamok, mai_top, tegnapi_top):
     }
 
 
-def epit_payload(adatok, tegnapi_szamok=None, tegnapi_top=None):
+def epit_payload(adatok, tegnapi_szamok=None, tegnapi_top=None, mode="este"):
     regresszio = adatok.get("regresszio", {})
     tortenet = adatok.get("tortenet", {})
     szamok = _kulcsszo_szamok(regresszio, tortenet)
@@ -295,10 +320,11 @@ def epit_payload(adatok, tegnapi_szamok=None, tegnapi_top=None):
         "valtozas": valtozas,
         "kulcsszo_het": _kulcsszo_het(adatok.get("lanc", {})),
     }
-    yt_szamok = _youtube_szamok(adatok.get("youtube_regresszio"), adatok.get("youtube_nyers"))
-    if yt_szamok:
-        payload["youtube"] = {"szamok": yt_szamok,
-                              "het_valos": _youtube_het(adatok.get("youtube_nyers"))["szavak"]}
+    if mode != "reggel":
+        yt_szamok = _youtube_szamok(adatok.get("youtube_regresszio"), adatok.get("youtube_nyers"))
+        if yt_szamok:
+            payload["youtube"] = {"szamok": yt_szamok,
+                                  "het_valos": _youtube_het(adatok.get("youtube_nyers"))["szavak"]}
     return payload
 
 
@@ -309,8 +335,14 @@ def _szekcio_sema():
             "properties": {"szoveg": {"type": "string"}}}
 
 
-def _valasz_sema(youtube=False):
+def _valasz_sema(youtube=False, mode="este"):
     sz = _szekcio_sema()
+    if mode == "reggel":
+        return {"type": "object", "additionalProperties": False,
+                "required": ["felkapott"],
+                "properties": {"felkapott": {"type": "object", "additionalProperties": False,
+                                             "required": ["reggel"],
+                                             "properties": {"reggel": sz}}}}
     props = {
         "valtozas": sz,
         "kulcsszavak": {"type": "object", "additionalProperties": False,
@@ -333,7 +365,7 @@ def _valasz_sema(youtube=False):
 class _AnthropicKliens:
     """Alap kliens-varrat: az anthropic SDK-t hívja strukturált kimenettel."""
 
-    def uzenet(self, payload, modell):
+    def uzenet(self, payload, modell, mode="este"):
         import json
         import anthropic
         kliens = anthropic.Anthropic()   # ANTHROPIC_API_KEY a környezetből
@@ -342,8 +374,8 @@ class _AnthropicKliens:
             thinking={"type": "adaptive"},
             output_config={"effort": "medium",
                            "format": {"type": "json_schema",
-                                      "schema": _valasz_sema(youtube="youtube" in payload)}},
-            system=RENDSZER_PROMPT,
+                                      "schema": _valasz_sema(youtube="youtube" in payload, mode=mode)}},
+            system=_rendszer_prompt(mode),
             messages=[{"role": "user", "content":
                        "Elemezd az alábbi VALÓS számokat (JSON). Csak ezekből dolgozz:\n"
                        + json.dumps(payload, ensure_ascii=False)}],
@@ -352,18 +384,36 @@ class _AnthropicKliens:
         return json.loads(szoveg)
 
 
-def elemez(payload, kliens=None, modell=MODELL):
+def elemez(payload, kliens=None, modell=MODELL, mode="este"):
     kliens = kliens or _AnthropicKliens()
-    return kliens.uzenet(payload, modell)
+    return kliens.uzenet(payload, modell, mode)
 
 
-def valasz_to_artefakt(ai_valasz, payload, nap, modell):
+def valasz_to_artefakt(ai_valasz, payload, nap, modell, mode="este"):
+    fk = payload["felkapott"]
+    if mode == "reggel":
+        d = {"szoveg": _ESTI_FRISSUL}
+        return {
+            "frissitve": seged.idopont_iso(seged.most_utc()),
+            "modell": modell,
+            "nap": nap,
+            "mode": "reggel",
+            "valtozas": {"diff": payload["valtozas"], "szoveg": _ESTI_FRISSUL},
+            "kulcsszavak": {"szamok": payload["kulcsszavak"]["szamok"],
+                            "napi": d, "teljes_kep": d, "het": d},
+            "felkapott": {
+                "top": fk["top"], "reggel_top": fk["reggel_top"], "este_top": fk["este_top"],
+                "reggel_este_diff": fk["reggel_este_diff"],
+                "reggel": ai_valasz["felkapott"]["reggel"],
+                "este": d, "teljes_nap": d, "het": d,
+                "het_valos": fk["het"],
+            },
+        }
     valtozas_szoveg = ai_valasz["valtozas"]["szoveg"]
     if not payload["valtozas"].get("van_elozo"):
         valtozas_szoveg = ("Ma nincs korábbi nap, amivel összevethetnénk, így a napi "
                            "elmozdulás egyelőre nem értékelhető. A friss kép a lenti "
                            "szekciókban olvasható.")
-    fk = payload["felkapott"]
     van_reggel = fk.get("van_reggel", True)
     van_este = fk.get("van_este", True)
     reggel_szoveg = ai_valasz["felkapott"]["reggel"]
@@ -379,6 +429,7 @@ def valasz_to_artefakt(ai_valasz, payload, nap, modell):
         "frissitve": seged.idopont_iso(seged.most_utc()),
         "modell": modell,
         "nap": nap,
+        "mode": "este",
         "valtozas": {"diff": payload["valtozas"], "szoveg": valtozas_szoveg},
         "kulcsszavak": {
             "szamok": payload["kulcsszavak"]["szamok"],
@@ -447,7 +498,7 @@ def _elozo_archivum(docs_data, nap):
     return _betolt(Path(docs_data) / "elemzesek" / f"{max(korabbi)}.json")
 
 
-def futtat(docs_data, nap, kliens=None):
+def futtat(docs_data, nap, mode="este", kliens=None):
     docs_data = Path(docs_data)
     adatok = {
         "regresszio": _betolt(docs_data / "kulcsszo_regresszio.json") or {},
@@ -464,13 +515,14 @@ def futtat(docs_data, nap, kliens=None):
         adatok,
         tegnapi_szamok=(tegnapi or {}).get("kulcsszavak", {}).get("szamok") if tegnapi else None,
         tegnapi_top=(tegnapi or {}).get("felkapott", {}).get("top") if tegnapi else None,
+        mode=mode,
     )
     try:
-        ai_valasz = elemez(payload, kliens=kliens)
+        ai_valasz = elemez(payload, kliens=kliens, mode=mode)
     except Exception as e:                       # noqa: BLE001 — fail-soft: az elemzés nem pótolhatatlan
         _log.warning("FIGYELEM: az AI-elemzés elhasalt (%s) — az előző elemzes.json marad.", e)
         return 2
-    art = valasz_to_artefakt(ai_valasz, payload, nap=nap, modell=MODELL)
+    art = valasz_to_artefakt(ai_valasz, payload, nap=nap, modell=MODELL, mode=mode)
     szoveg = json.dumps(art, ensure_ascii=False, indent=0)
     elemzesek_dir = docs_data / "elemzesek"
     elemzesek_dir.mkdir(exist_ok=True)
@@ -482,6 +534,7 @@ def futtat(docs_data, nap, kliens=None):
 
 def main():
     import os
-    nap = os.environ.get("ELEMZES_NAP") or seged.bp_idobelyeg(seged.most_utc())[:10]
+    mode = os.environ.get("ELEMZES_MODE", "este")
+    nap = os.environ.get("ELEMZES_NAP") or elemzes_orzo.elemzes_nap(mode, seged.most_utc())
     docs_data = Path(__file__).resolve().parent.parent / "docs" / "data"
-    return futtat(docs_data, nap=nap)
+    return futtat(docs_data, nap=nap, mode=mode)

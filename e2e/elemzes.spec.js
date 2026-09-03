@@ -122,3 +122,39 @@ test("Elemzés fül: RÉGI felkapott {napi,het} → a mostani 2 szekció (vissza
   await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Felkapott — napi")) .elemzes-szoveg')).toHaveText("régi napi");
   await expect(page.locator('h3:text-is("Felkapott — reggeli (9:00)")')).toHaveCount(0);
 });
+
+const REGGELI_FIXTURE = {
+  frissitve: "2026-09-03T07:10:00+00:00", modell: "claude-opus-4-8", nap: "2026-09-03", mode: "reggel",
+  valtozas: { diff: { van_elozo: true, irany_valtok: [], mozgok: [], felkapott_uj: [], felkapott_eltunt: [] },
+              szoveg: "Ez a rész az esti futáskor (21:00) frissül." },
+  kulcsszavak: { szamok: [{ szo: "állás", irany: "emelkedik", mai_ertek: 10, csucs: 100 }],
+                 napi: { szoveg: "Ez a rész az esti futáskor (21:00) frissül." },
+                 teljes_kep: { szoveg: "Ez a rész az esti futáskor (21:00) frissül." },
+                 het: { szoveg: "Ez a rész az esti futáskor (21:00) frissül." } },
+  felkapott: { top: [{ kifejezes: "eső", volumen: "20000" }],
+               reggel_top: [{ kifejezes: "eső" }], este_top: [], reggel_este_diff: { uj_estere: [], eltunt_estere: [], megmaradt: [] },
+               reggel: { szoveg: "Reggel a legpörgőbb keresés az eső." },
+               este: { szoveg: "Ez a rész az esti futáskor (21:00) frissül." },
+               teljes_nap: { szoveg: "Ez a rész az esti futáskor (21:00) frissül." },
+               het: { szoveg: "Ez a rész az esti futáskor (21:00) frissül." },
+               het_valos: { napok: 3, visszateroek: [] } },
+};
+
+test("Elemzés — reggeli scoped artefakt: reggeli bekezdés + \"frissül este\" helyőrzők + nincs YouTube", async ({ page }) => {
+  await page.route("**/data/elemzes.json", (r) => r.fulfill({ json: REGGELI_FIXTURE }));
+  await page.route("**/data/elemzesek/index.json", (r) => r.fulfill({ status: 404, body: "" }));
+  await page.goto("/elemzes.html");
+  // a reggeli felkapott bekezdés valós AI-szöveget mutat
+  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Felkapott — reggeli (9:00)")) .elemzes-szoveg'))
+    .toContainText("a legpörgőbb keresés az eső");
+  // a deferrált esti felkapott a helyőrzőt mutatja
+  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Felkapott — esti (21:00)")) .elemzes-szoveg'))
+    .toContainText("az esti futáskor (21:00) frissül");
+  // a kulcsszó-próza is deferrált
+  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Kulcsszavak — mit látunk ma")) .elemzes-szoveg'))
+    .toContainText("az esti futáskor (21:00) frissül");
+  // a kulcsszó VALÓS csempe megmarad (tény, nem elemzés)
+  await expect(page.locator(".elemzes-csempe")).toContainText("állás");
+  // reggel NINCS YouTube-blokk
+  await expect(page.locator("#youtube-szegmens")).toHaveCount(0);
+});

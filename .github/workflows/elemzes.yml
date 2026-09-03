@@ -2,9 +2,9 @@ name: Napi AI-elemzés
 
 on:
   workflow_run:
-    workflows: ["Napi trendgyűjtés"]   # a napi.yml `name`-je
+    workflows: ["Napi trendgyűjtés", "Reggeli felkapott-gyűjtés"]   # esti (teljes) + reggeli (scoped)
     types: [completed]
-  workflow_dispatch: {}                # kézi teszt
+  workflow_dispatch: {}                # kézi teszt (default mód: este)
 
 permissions:
   contents: write
@@ -32,15 +32,33 @@ jobs:
       - name: Függőségek telepítése
         run: pip install -r requirements.txt
 
+      - name: "Mód + idempotencia-őr (reggel scoped / este teljes; backup-újraindítás kihagyása)"
+        id: guard
+        shell: bash
+        run: |
+          NEV="${{ github.event.workflow_run.name }}"
+          if [ "$NEV" = "Reggeli felkapott-gyűjtés" ]; then MODE=reggel; else MODE=este; fi
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Kézi (workflow_dispatch) futás — az őr nem aktív, elemzünk."
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          skip="$(python -m trendfigyelo.elemzes_orzo --mode $MODE docs/data)"
+          echo "Elemzés mód=$MODE — ma már kész? skip=$skip"
+          echo "skip=$skip" >> "$GITHUB_OUTPUT"
+
       - name: Elemzés futtatása
+        if: steps.guard.outputs.skip != 'true'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ELEMZES_MODE: ${{ steps.guard.outputs.mode }}
         run: |
           set -o pipefail
           python elemzes.py 2>&1 | tee elemzes.log
 
       - name: Változások commitolása (CSAK az elemzés-fájlok, KÜLÖN commit)
-        if: always() && github.ref == 'refs/heads/main'
+        if: always() && github.ref == 'refs/heads/main' && steps.guard.outputs.skip != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
