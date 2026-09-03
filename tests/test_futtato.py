@@ -1558,3 +1558,35 @@ def test_futtat_reggel_nem_ir_tortenetet(tmp_path):
     most = datetime(2026, 8, 18, 12, tzinfo=timezone.utc)
     futtato.futtat(c, KulcsszoAdatKliens(), tmp_path / "adatok", ddir, most=most, mode="reggel")
     assert not (ddir / "tortenet.json").exists()
+
+
+def test_injektal_varhato_gyujtes_csak_soha_nem_gyultre(tmp_path):
+    ddir = tmp_path / "docs" / "data"
+    ddir.mkdir(parents=True)
+    # két reggeli nem-órás szó; egyik már begyűlt (van rekordja), a másik nem
+    (ddir / "kulcsszo_masodlagos_nyers.json").write_text(json.dumps({"kulcsszavak": {
+        "rezsi": [{"timeframe": "today 12-m", "lekerdezes_utc": "2026-09-03T07:00:00+00:00",
+                   "ablak_kezdet_utc": "2026-08-01T00:00:00+00:00",
+                   "ablak_veg_utc": "2026-09-01T00:00:00+00:00", "pontok": []}],
+    }}), encoding="utf-8")
+    cfg = _config([
+        KulcsszoTetel("infláció", "gazdasag", "szintmero", "het", False, "reggel"),
+        KulcsszoTetel("rezsi", "megelhetes", "szintmero", "het", False, "reggel"),
+    ])
+    reg = {"kulcsszavak": {"infláció": {"racs": "het"}, "rezsi": {"racs": "het"}}}
+    most = datetime(2026, 9, 3, 19, 0, tzinfo=timezone.utc)
+
+    futtato._injektal_varhato_gyujtes(reg, cfg, ddir, most)
+
+    assert reg["kulcsszavak"]["infláció"]["varhato_gyujtes_datum"] == "2026-09-04"
+    assert "varhato_gyujtes_datum" not in reg["kulcsszavak"]["rezsi"]   # már begyűlt
+
+
+def test_injektal_varhato_gyujtes_hianyzo_fajl_nem_dob(tmp_path):
+    ddir = tmp_path / "docs" / "data"
+    ddir.mkdir(parents=True)   # NINCS kulcsszo_masodlagos_nyers.json
+    cfg = _config([KulcsszoTetel("infláció", "gazdasag", "szintmero", "het", False, "reggel")])
+    reg = {"kulcsszavak": {"infláció": {"racs": "het"}}}
+    most = datetime(2026, 9, 3, 19, 0, tzinfo=timezone.utc)
+    futtato._injektal_varhato_gyujtes(reg, cfg, ddir, most)   # nem dob
+    assert "varhato_gyujtes_datum" not in reg["kulcsszavak"]["infláció"]
