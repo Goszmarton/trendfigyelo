@@ -40,14 +40,21 @@ function szegmens_cim(szoveg) {
   return h;
 }
 
-// YouTube-szegmens: VALÓS csempék (a Google-render újrahasznosításával) + 3 AI-szekció
+// csoport-fejléc a szegmensen belül (a szegmens-h2 és a szekció-h3-ak között)
+function csoport_cim(szoveg) {
+  const h = document.createElement("h3");
+  h.className = "elemzes-csoport-cim";
+  h.textContent = szoveg;
+  return h;
+}
+
+// YouTube-szegmens: VALÓS csempék (a Google-render újrahasznosításával) + 2 AI-szekció
 function youtube_szegmens(yt) {
   const box = document.createElement("section");
   box.id = "youtube-szegmens";
   box.appendChild(szegmens_cim("YouTube keresések napi elemzése"));
-  box.appendChild(szekcio_elem("YouTube — mit néznek ma", yt.napi));
-  box.appendChild(szekcio_elem("YouTube — teljes kép", yt.teljes_kep));
-  box.appendChild(szekcio_elem("YouTube — heti mozgás", yt.het));
+  box.appendChild(szekcio_elem("YouTube – mai videós érdeklődés", yt.napi));
+  box.appendChild(szekcio_elem("YouTube – teljes kép", yt.teljes_kep));
   return box;
 }
 
@@ -55,29 +62,25 @@ function rajzol(art) {
   const t = document.getElementById("elemzes-tartalom");
   t.textContent = "";
   document.getElementById("elemzes-fejlec").textContent =
-    `Elemzés — ${art.nap} (${art.modell})`;
+    `Elemzés – ${art.nap} (${art.modell})`;
 
   t.appendChild(szegmens_cim("Google keresések napi elemzése"));
 
-  // Mi változott ma? — folyó AI-próza. A VALÓS diff-összegzés / „legnagyobb mozgók" sorokat és
-  // a kulcsszó-csempéket NEM jelenítjük meg (user-döntés 2026-09-04); az adat az artefaktban marad.
+  // „Google kulcsszavak" — a mi választott szavaink (napi kép, majd napi változás)
+  t.appendChild(csoport_cim("Google kulcsszavak"));
+  t.appendChild(szekcio_elem("Kulcsszavak – mit látunk ma", art.kulcsszavak.napi));
   t.appendChild(szekcio_elem("Mi változott ma?", art.valtozas));
 
-  // Kulcsszavak — csak az AI-próza
-  t.appendChild(szekcio_elem("Kulcsszavak — mit látunk ma", art.kulcsszavak.napi));
-  t.appendChild(szekcio_elem("Kulcsszavak — teljes kép", art.kulcsszavak.teljes_kep));
-  t.appendChild(szekcio_elem("Kulcsszavak — 1 hét", art.kulcsszavak.het));
-
-  // Felkapott — CSAK az AI-próza (a nyers csempesorok kivéve; lásd a fenti megjegyzést)
-  // — új alak (reggel/este/teljes_nap/het) vagy régi (napi/het), visszafelé kompat
+  // „Google napi friss keresőszavak" — a napi felkapott keresések
+  t.appendChild(csoport_cim("Google napi friss keresőszavak"));
   if (art.felkapott.reggel) {
-    t.appendChild(szekcio_elem("Felkapott — reggeli (9:00)", art.felkapott.reggel));
-    t.appendChild(szekcio_elem("Felkapott — esti (21:00)", art.felkapott.este));
-    t.appendChild(szekcio_elem("Felkapott — a nap íve", art.felkapott.teljes_nap));
-    t.appendChild(szekcio_elem("Felkapott — heti összesítés", art.felkapott.het));
+    t.appendChild(szekcio_elem("Reggeli (9:00)", art.felkapott.reggel));
+    t.appendChild(szekcio_elem("Esti (21:00)", art.felkapott.este));
+    t.appendChild(szekcio_elem("A nap íve", art.felkapott.teljes_nap));
+    t.appendChild(szekcio_elem("Heti összesítés", art.felkapott.het));
   } else {
-    t.appendChild(szekcio_elem("Felkapott — napi", art.felkapott.napi));
-    t.appendChild(szekcio_elem("Felkapott — heti összesítés", art.felkapott.het));
+    t.appendChild(szekcio_elem("Napi", art.felkapott.napi));
+    t.appendChild(szekcio_elem("Heti összesítés", art.felkapott.het));
   }
 
   // YouTube-szegmens — fail-soft: régi archív-nap (nincs art.youtube) → nincs YouTube-rész
@@ -140,7 +143,7 @@ async function elemzes_indit() {
   try {
     rajzol(await elemzes_betolt(null));
   } catch (e) {
-    document.getElementById("elemzes-fejlec").textContent = "Elemzés — nem érhető el";
+    document.getElementById("elemzes-fejlec").textContent = "Elemzés – nem érhető el";
     document.getElementById("elemzes-tartalom").textContent = "Az elemzés jelenleg nem érhető el.";
   }
   // archívum-választó — opcionális, fail-soft: ha nincs index.json, a fül csak a legfrissebbet mutatja

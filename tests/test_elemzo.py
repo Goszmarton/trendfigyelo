@@ -97,6 +97,26 @@ def test_rendszer_prompt_folyo_proza_es_tiltas():
     assert "mező" in p              # tiltja a mezőnév-hivatkozást
 
 
+def test_rendszer_prompt_grounded_miert():
+    p = elemzo.RENDSZER_PROMPT
+    assert "tényleg érkezett hír" in p
+    assert "okot, magyarázatot, hátteret akkor SEM találsz ki" in p
+
+
+def test_rendszer_prompt_teljesebb_lefedettseg():
+    assert "MINDEN követett kulcsszó legalább egyszer" in elemzo.RENDSZER_PROMPT
+
+
+def test_rendszer_prompt_rovid_gondolatjel_szabaly():
+    assert "SOHA nem a hosszú" in elemzo.RENDSZER_PROMPT
+
+
+def test_rendszer_prompt_reggel_grounded_es_gondolatjel():
+    r = elemzo._RENDSZER_PROMPT_REGGEL
+    assert "tényleg érkezett hír" in r
+    assert "soha nem a hosszú" in r
+
+
 def test_gordulo_het_napon_beluli_dedup():
     # Ha egy kifejezés EGY napon belül kétszer szerepel, az akkor is CSAK
     # egy nap (a "hány külön napon" szerződés — nem bejegyzés-számláló).
@@ -595,8 +615,16 @@ def test_valasz_sema_youtube_szekcio_szigoru():
     assert "youtube" in s["required"]
     yt = s["properties"]["youtube"]
     assert yt["additionalProperties"] is False
-    assert set(yt["required"]) == {"napi", "teljes_kep", "het"}
+    assert set(yt["required"]) == {"napi", "teljes_kep"}          # a 'het' KIESETT
+    assert set(yt["properties"]) == {"napi", "teljes_kep"}
     assert set(yt["properties"]["napi"]["properties"]) == {"szoveg"}
+
+
+def test_valasz_sema_kulcsszavak_csak_napi():
+    s = elemzo._valasz_sema(mode="este")
+    ks = s["properties"]["kulcsszavak"]
+    assert ks["required"] == ["napi"]                             # teljes_kep/het KIESETT
+    assert set(ks["properties"]) == {"napi"}
 
 
 def test_rendszer_prompt_youtube_keret():
@@ -625,19 +653,24 @@ def test_valasz_to_artefakt_youtube_blokk_valos_es_ai():
                     "het_valos": [{"szo": "bitcoin", "kezdo": 30, "veg": 57, "valtozas": 27}]},
     }
     art = elemzo.valasz_to_artefakt(_ai_valasz_youtubebal(), payload, nap="2026-08-26", modell="claude-opus-4-8")
-    # VALÓS a payloadból
-    assert art["youtube"]["szamok"][0]["csucs"] == 50
-    assert art["youtube"]["het_valos"][0]["valtozas"] == 27
-    # AI-próza a válaszból
-    assert art["youtube"]["napi"]["szoveg"] == "yt-napi"
+    assert art["youtube"]["szamok"][0]["csucs"] == 50             # VALÓS a payloadból
+    assert art["youtube"]["napi"]["szoveg"] == "yt-napi"          # AI-próza
     assert art["youtube"]["teljes_kep"]["szoveg"] == "yt-teljes"
-    assert art["youtube"]["het"]["szoveg"] == "yt-het"
+    assert "het" not in art["youtube"]                            # a heti mozgás KIESETT
+    assert "het_valos" not in art["youtube"]
 
 
 def test_valasz_to_artefakt_nincs_youtube_ha_nincs_payloadban():
     payload = _mini_payload(van_elozo=True)   # nincs "youtube" kulcs
     art = elemzo.valasz_to_artefakt(_mini_ai("napi"), payload, nap="2026-08-26", modell="claude-opus-4-8")
     assert "youtube" not in art
+
+
+def test_valasz_to_artefakt_kulcsszavak_csak_szamok_es_napi():
+    payload = _mini_payload(van_elozo=True)
+    art = elemzo.valasz_to_artefakt(_mini_ai("napi"), payload, nap="2026-08-26", modell="m")
+    assert set(art["kulcsszavak"]) == {"szamok", "napi"}          # teljes_kep/het KIESETT
+    assert art["kulcsszavak"]["napi"]["szoveg"] == "sz"
 
 
 def test_utolso_napok_trendek_szegmentalt_estit_ad(tmp_path):
@@ -796,3 +829,17 @@ def test_main_atveszi_az_elemzes_mode_ot(monkeypatch):
     monkeypatch.setattr(elemzo, "futtat", lambda dd, nap, mode="este", kliens=None: kapott.update(nap=nap, mode=mode) or 0)
     elemzo.main()
     assert kapott == {"nap": "2026-09-03", "mode": "reggel"}
+
+
+def test_gondolatjel_rovidit_rekurziv():
+    be = {"a": "egy — kettő", "b": {"c": "x—y"}, "d": ["p—q", 3, None]}
+    ki = elemzo._gondolatjel_rovidit(be)
+    assert ki == {"a": "egy – kettő", "b": {"c": "x–y"}, "d": ["p–q", 3, None]}
+
+
+def test_artefakt_hosszu_gondolatjel_rovidre_valt():
+    payload = _mini_payload(van_elozo=True)
+    ai = _mini_ai("Ma — röviden — ez történt.")
+    art = elemzo.valasz_to_artefakt(ai, payload, nap="2026-08-26", modell="m")
+    assert "—" not in art["valtozas"]["szoveg"]
+    assert art["valtozas"]["szoveg"] == "Ma – röviden – ez történt."

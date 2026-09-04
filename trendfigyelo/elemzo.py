@@ -35,8 +35,11 @@ RENDSZER_PROMPT = (
     "(4) Ok-okozatot TÉNYKÉNT nem állítasz. Ahol magyarázatot feltételezel, a mondatban "
     "óvatosan jelzed („feltehetően\", „elképzelhető\", „ezt az adat önmagában nem igazolja\") "
     "— külön „feltételezés\" felirat NÉLKÜL, a fogalmazás maga hordozza az óvatosságot. "
-    "(5) Hírt, forrást vagy eseményt nem találsz ki; a felkapott témákról csak a kapott "
-    "témák és hírek alapján írsz. "
+    "(5) A felkapott (napi trend) szó mögötti OKOT vagy hátteret KIZÁRÓLAG akkor írod le, ha "
+    "ahhoz a konkrét szóhoz tényleg érkezett hír a bemenetben; ilyenkor a hír tartalmát természetes "
+    "mondattal, a forrásra utalva foglalod össze. Ha egy felkapott szóhoz NINCS hír, csak azt írod le, "
+    "hogy felkapott — okot, magyarázatot, hátteret akkor SEM találsz ki, még óvatos formában sem. "
+    "Hírt, forrást, eseményt sosem találsz ki. "
     "(6) Tömör, óvatos, DE ÉRDEMI: mondd el, mit látunk ma, milyen irányba mozdul a kép, "
     "és mit lehet ebből óvatosan leszűrni. "
     "(7) Ha a bemenet YouTube-szegmenst is tartalmaz: az a magyarországi YouTube-keresések "
@@ -46,15 +49,17 @@ RENDSZER_PROMPT = (
     "óvatos ok-okozat) érvényesek a YouTube-prózára is. "
     "(8) Ahol egy szó MAI értéke érdemben eltér a saját szokásos (átlagos) szintjétől, azt "
     "emeld ki természetes szavakkal (pl. „a szokásosnál jóval élénkebb\", „a megszokott "
-    "szintje alatt van\") — ez a lényegi „önmagához képest\" olvasat, ezt keresd elsősorban. "
-    "Csak a SZEMBETŰNŐ eltéréseket hozd; ahol a mai érték a szokásos szint közelében van, ne "
-    "erőltesd. A „szokásos szint\" a szó SAJÁT átlaga, NEM a szavak közötti összevetés; ez a "
-    "Google- és a YouTube-szavakra egyaránt vonatkozik. "
+    "szintje alatt van\") — ez a lényegi „önmagához képest\" olvasat. TÖREKEDJ rá, hogy MINDEN "
+    "követett kulcsszó legalább egyszer szóba kerüljön: a szembetűnő eltéréseket külön kiemeled, "
+    "a szokásos szintjükön állókat néhány szóval, akár csoportosítva összefoglalod — de egyetlen "
+    "követett szó se maradjon ki teljesen. A „szokásos szint\" a szó SAJÁT átlaga, NEM a szavak "
+    "közötti összevetés; ez a Google- és a YouTube-szavakra egyaránt vonatkozik. "
     "(9) A felkapott (napi Google trend-keresések) részt NÉGY külön bekezdésben írod: a "
     "REGGELI pillanatkép (mi pörög reggel 9-kor), az ESTI pillanatkép (mi pörög este 9-kor), a "
     "NAP ÍVE (mi lett estére új, mi halványult el, mi tartott ki egész nap — a nap dinamikája, "
     "nem a két lista újramondása), és a HETI kép (a több napon vissza-visszatérő szavak). Ha "
-    "egy pillanatkép hiányzik, egy rövid tényszerű mondattal jelzed, nem találsz ki adatot."
+    "egy pillanatkép hiányzik, egy rövid tényszerű mondattal jelzed, nem találsz ki adatot. "
+    "(10) Gondolatjelként MINDIG a rövid „–\" jelet használod, SOHA nem a hosszú „—\" jelet."
 )
 
 _RENDSZER_PROMPT_REGGEL = (
@@ -69,10 +74,13 @@ _RENDSZER_PROMPT_REGGEL = (
     "Ha valamiről nincs adatod, természetes magyar mondattal írod le, nem a hiányzó mezőt nevezed meg. "
     "(4) Ok-okozatot TÉNYKÉNT nem állítasz; ahol magyarázatot feltételezel, óvatosan jelzed "
     "(„feltehetően\", „elképzelhető\") — külön felirat nélkül, a fogalmazás hordozza az óvatosságot. "
-    "(5) Hírt, forrást, eseményt nem találsz ki; csak a kapott témák és hírek alapján írsz. "
+    "(5) A felkapott szó mögötti OKOT kizárólag akkor írod le, ha ahhoz a konkrét szóhoz tényleg "
+    "érkezett hír; ilyenkor a hír tartalmát a forrásra utalva foglalod össze. Ha nincs hír egy szóhoz, "
+    "csak annyit írsz, hogy felkapott — okot akkor SEM találsz ki. Hírt, forrást, eseményt sosem találsz ki. "
     "(6) Tömör, óvatos, DE ÉRDEMI: mondd el, mi pörög ma reggel és mit lehet ebből óvatosan leszűrni. "
     "CSAK a reggeli pillanatképről írsz — a nap többi részét (esti kép, heti összesítés, kulcsszavak) "
-    "a mai esti futás fogja elemezni, azzal most nem foglalkozol."
+    "a mai esti futás fogja elemezni, azzal most nem foglalkozol. "
+    "(7) Gondolatjelként mindig a rövid „–\", soha nem a hosszú „—\"."
 )
 
 
@@ -346,8 +354,8 @@ def _valasz_sema(youtube=False, mode="este"):
     props = {
         "valtozas": sz,
         "kulcsszavak": {"type": "object", "additionalProperties": False,
-                        "required": ["napi", "teljes_kep", "het"],
-                        "properties": {"napi": sz, "teljes_kep": sz, "het": sz}},
+                        "required": ["napi"],
+                        "properties": {"napi": sz}},
         "felkapott": {"type": "object", "additionalProperties": False,
                       "required": ["reggel", "este", "teljes_nap", "het"],
                       "properties": {"reggel": sz, "este": sz, "teljes_nap": sz, "het": sz}},
@@ -355,8 +363,8 @@ def _valasz_sema(youtube=False, mode="este"):
     required = ["valtozas", "kulcsszavak", "felkapott"]
     if youtube:
         props["youtube"] = {"type": "object", "additionalProperties": False,
-                            "required": ["napi", "teljes_kep", "het"],
-                            "properties": {"napi": sz, "teljes_kep": sz, "het": sz}}
+                            "required": ["napi", "teljes_kep"],
+                            "properties": {"napi": sz, "teljes_kep": sz}}
         required = required + ["youtube"]
     return {"type": "object", "additionalProperties": False,
             "required": required, "properties": props}
@@ -389,7 +397,20 @@ def elemez(payload, kliens=None, modell=MODELL, mode="este"):
     return kliens.uzenet(payload, modell, mode)
 
 
+def _gondolatjel_rovidit(x):
+    """Az AI-szövegben a hosszú gondolatjelet (—, U+2014) rövidre (–, U+2013) cseréli
+    (item 3, 2026-09-04). Rekurzívan bejárja a válasz-struktúrát; csak string-leveleket érint."""
+    if isinstance(x, str):
+        return x.replace("—", "–")
+    if isinstance(x, dict):
+        return {k: _gondolatjel_rovidit(v) for k, v in x.items()}
+    if isinstance(x, list):
+        return [_gondolatjel_rovidit(v) for v in x]
+    return x
+
+
 def valasz_to_artefakt(ai_valasz, payload, nap, modell, mode="este"):
+    ai_valasz = _gondolatjel_rovidit(ai_valasz)
     fk = payload["felkapott"]
     if mode == "reggel":
         d = {"szoveg": _ESTI_FRISSUL}
@@ -399,8 +420,7 @@ def valasz_to_artefakt(ai_valasz, payload, nap, modell, mode="este"):
             "nap": nap,
             "mode": "reggel",
             "valtozas": {"diff": payload["valtozas"], "szoveg": _ESTI_FRISSUL},
-            "kulcsszavak": {"szamok": payload["kulcsszavak"]["szamok"],
-                            "napi": d, "teljes_kep": d, "het": d},
+            "kulcsszavak": {"szamok": payload["kulcsszavak"]["szamok"], "napi": d},
             "felkapott": {
                 "top": fk["top"], "reggel_top": fk["reggel_top"], "este_top": fk["este_top"],
                 "reggel_este_diff": fk["reggel_este_diff"],
@@ -434,8 +454,6 @@ def valasz_to_artefakt(ai_valasz, payload, nap, modell, mode="este"):
         "kulcsszavak": {
             "szamok": payload["kulcsszavak"]["szamok"],
             "napi": ai_valasz["kulcsszavak"]["napi"],
-            "teljes_kep": ai_valasz["kulcsszavak"]["teljes_kep"],
-            "het": ai_valasz["kulcsszavak"]["het"],
         },
         "felkapott": {
             "top": fk["top"],
@@ -452,10 +470,8 @@ def valasz_to_artefakt(ai_valasz, payload, nap, modell, mode="este"):
     if "youtube" in payload:
         art["youtube"] = {
             "szamok": payload["youtube"]["szamok"],
-            "het_valos": payload["youtube"]["het_valos"],
             "napi": ai_valasz["youtube"]["napi"],
             "teljes_kep": ai_valasz["youtube"]["teljes_kep"],
-            "het": ai_valasz["youtube"]["het"],
         }
     return art
 
