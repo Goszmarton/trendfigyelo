@@ -97,6 +97,26 @@ def test_rendszer_prompt_folyo_proza_es_tiltas():
     assert "mező" in p              # tiltja a mezőnév-hivatkozást
 
 
+def test_rendszer_prompt_grounded_miert():
+    p = elemzo.RENDSZER_PROMPT
+    assert "tényleg érkezett hír" in p
+    assert "okot, magyarázatot, hátteret akkor SEM találsz ki" in p
+
+
+def test_rendszer_prompt_teljesebb_lefedettseg():
+    assert "MINDEN követett kulcsszó legalább egyszer" in elemzo.RENDSZER_PROMPT
+
+
+def test_rendszer_prompt_rovid_gondolatjel_szabaly():
+    assert "SOHA nem a hosszú" in elemzo.RENDSZER_PROMPT
+
+
+def test_rendszer_prompt_reggel_grounded_es_gondolatjel():
+    r = elemzo._RENDSZER_PROMPT_REGGEL
+    assert "tényleg érkezett hír" in r
+    assert "soha nem a hosszú" in r
+
+
 def test_gordulo_het_napon_beluli_dedup():
     # Ha egy kifejezés EGY napon belül kétszer szerepel, az akkor is CSAK
     # egy nap (a "hány külön napon" szerződés — nem bejegyzés-számláló).
