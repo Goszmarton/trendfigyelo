@@ -389,7 +389,20 @@ def elemez(payload, kliens=None, modell=MODELL, mode="este"):
     return kliens.uzenet(payload, modell, mode)
 
 
+def _gondolatjel_rovidit(x):
+    """Az AI-szövegben a hosszú gondolatjelet (—, U+2014) rövidre (–, U+2013) cseréli
+    (item 3, 2026-09-04). Rekurzívan bejárja a válasz-struktúrát; csak string-leveleket érint."""
+    if isinstance(x, str):
+        return x.replace("—", "–")
+    if isinstance(x, dict):
+        return {k: _gondolatjel_rovidit(v) for k, v in x.items()}
+    if isinstance(x, list):
+        return [_gondolatjel_rovidit(v) for v in x]
+    return x
+
+
 def valasz_to_artefakt(ai_valasz, payload, nap, modell, mode="este"):
+    ai_valasz = _gondolatjel_rovidit(ai_valasz)
     fk = payload["felkapott"]
     if mode == "reggel":
         d = {"szoveg": _ESTI_FRISSUL}

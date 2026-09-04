@@ -809,3 +809,17 @@ def test_main_atveszi_az_elemzes_mode_ot(monkeypatch):
     monkeypatch.setattr(elemzo, "futtat", lambda dd, nap, mode="este", kliens=None: kapott.update(nap=nap, mode=mode) or 0)
     elemzo.main()
     assert kapott == {"nap": "2026-09-03", "mode": "reggel"}
+
+
+def test_gondolatjel_rovidit_rekurziv():
+    be = {"a": "egy — kettő", "b": {"c": "x—y"}, "d": ["p—q", 3, None]}
+    ki = elemzo._gondolatjel_rovidit(be)
+    assert ki == {"a": "egy – kettő", "b": {"c": "x–y"}, "d": ["p–q", 3, None]}
+
+
+def test_artefakt_hosszu_gondolatjel_rovidre_valt():
+    payload = _mini_payload(van_elozo=True)
+    ai = _mini_ai("Ma — röviden — ez történt.")
+    art = elemzo.valasz_to_artefakt(ai, payload, nap="2026-08-26", modell="m")
+    assert "—" not in art["valtozas"]["szoveg"]
+    assert art["valtozas"]["szoveg"] == "Ma – röviden – ez történt."
