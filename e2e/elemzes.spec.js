@@ -22,8 +22,8 @@ test("Elemzés fül: folyó próza <p>-ként, nincs feltételezés-réteg; VALÓ
   await page.goto("/elemzes.html");
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Elemzések");
   await expect(page.locator("#elemzes-fejlec")).toContainText("2026-08-22");
-  // folyó próza: a „Kulcsszavak — mit látunk ma" szekció 2 bekezdést renderel <p>-ként
-  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Kulcsszavak — mit látunk ma")) .elemzes-szoveg')).toHaveCount(2);
+  // folyó próza: a „Kulcsszavak – mit látunk ma" szekció 2 bekezdést renderel <p>-ként
+  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Kulcsszavak – mit látunk ma")) .elemzes-szoveg')).toHaveCount(2);
   // nincs ELMÉLETI/feltételezés-réteg és nincs bullet-lista
   await expect(page.locator(".elemzes-elmeleti")).toHaveCount(0);
   await expect(page.locator("#elemzes-tartalom")).not.toContainText("feltételezés:");
@@ -36,6 +36,17 @@ test("Elemzés fül: folyó próza <p>-ként, nincs feltételezés-réteg; VALÓ
   // a felkapott-csempesorok (napi top „(volumen: …)" + heti visszatérés „— N nap") sem jelennek meg
   await expect(page.locator(".elemzes-felkapott-csempe")).toHaveCount(0);
   await expect(page.locator("#felkapott-het-valos")).toHaveCount(0);
+  // ÚJ szerkezet (2026-09-04): sorrend, csoport-címek, törölt szekciók, rövid gondolatjel
+  await expect(page.locator(".elemzes-csoport-cim")).toHaveText([
+    "Google kulcsszavak", "Google napi friss keresőszavak"]);
+  // „mit látunk ma" a „Mi változott ma?" ELŐTT
+  const cimek = await page.locator("#elemzes-tartalom h3").allTextContents();
+  expect(cimek.indexOf("Kulcsszavak – mit látunk ma")).toBeLessThan(cimek.indexOf("Mi változott ma?"));
+  // törölt kulcsszó-szekciók
+  await expect(page.locator('h3:text-is("Kulcsszavak – teljes kép")')).toHaveCount(0);
+  await expect(page.locator('h3:text-is("Kulcsszavak – 1 hét")')).toHaveCount(0);
+  // rövid gondolatjel: sehol nincs hosszú „—"
+  await expect(page.locator("#elemzes-tartalom")).not.toContainText("—");
 });
 
 test("Elemzés elrendezés: naptár bal, elemzés jobb; mobilon egymás alá", async ({ page }) => {
@@ -64,17 +75,18 @@ const FIXTURE_YT = Object.assign({}, FIXTURE, {
   },
 });
 
-test("Elemzés: két nevesített szegmens + 3 YouTube-szekció, ha van youtube blokk (csempe nélkül)", async ({ page }) => {
+test("Elemzés: két nevesített szegmens + 2 YouTube-szekció, ha van youtube blokk (heti mozgás nélkül)", async ({ page }) => {
   await page.route("**/data/elemzes.json", (r) => r.fulfill({ json: FIXTURE_YT }));
   await page.route("**/data/elemzesek/index.json", (r) => r.fulfill({ status: 404, body: "" }));
   await page.goto("/elemzes.html");
-  // két szegmens-cím
   await expect(page.locator("h2.elemzes-szegmens")).toHaveText([
     "Google keresések napi elemzése", "YouTube keresések napi elemzése"]);
-  // a YouTube VALÓS csempe-réteg is KIVÉVE (user-döntés 2026-09-04)
   await expect(page.locator("#youtube-szegmens .elemzes-csempe")).toHaveCount(0);
-  // 3 YouTube AI-szekció renderel (folyó próza <p>-ként)
-  await expect(page.locator("#youtube-szegmens .elemzes-szekcio")).toHaveCount(3);
+  // ÚJ: nyítóblokk átnevezve, teljes kép marad, heti mozgás KIESETT → 2 szekció
+  await expect(page.locator("#youtube-szegmens .elemzes-szekcio")).toHaveCount(2);
+  await expect(page.locator('#youtube-szegmens h3:text-is("YouTube – mai videós érdeklődés")')).toHaveCount(1);
+  await expect(page.locator('#youtube-szegmens h3:text-is("YouTube – teljes kép")')).toHaveCount(1);
+  await expect(page.locator('#youtube-szegmens h3:text-is("YouTube – heti mozgás")')).toHaveCount(0);
   await expect(page.locator("#youtube-szegmens")).toContainText("YouTube napi próza.");
 });
 
@@ -103,12 +115,12 @@ test("Elemzés fül: ÚJ felkapott 4 szekció (reggeli/esti/nap íve/heti)", asy
   await page.route("**/data/elemzes.json", (r) => r.fulfill({ json: UJ }));
   await page.route("**/data/elemzesek/index.json", (r) => r.fulfill({ status: 404, body: "" }));
   await page.goto("/elemzes.html");
-  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Felkapott — reggeli (9:00)")) .elemzes-szoveg')).toHaveText("reggeli próza");
-  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Felkapott — esti (21:00)")) .elemzes-szoveg')).toHaveText("esti próza");
-  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Felkapott — a nap íve")) .elemzes-szoveg')).toHaveText("a nap íve próza");
-  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Felkapott — heti összesítés")) .elemzes-szoveg')).toHaveText("heti próza");
-  // a régi „Felkapott — napi" cím NEM jelenik meg az új alaknál
-  await expect(page.locator('h3:text-is("Felkapott — napi")')).toHaveCount(0);
+  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Reggeli (9:00)")) .elemzes-szoveg')).toHaveText("reggeli próza");
+  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Esti (21:00)")) .elemzes-szoveg')).toHaveText("esti próza");
+  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("A nap íve")) .elemzes-szoveg')).toHaveText("a nap íve próza");
+  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Heti összesítés")) .elemzes-szoveg')).toHaveText("heti próza");
+  // a régi „Napi" cím NEM jelenik meg az új alaknál
+  await expect(page.locator('h3:text-is("Napi")')).toHaveCount(0);
 });
 
 test("Elemzés fül: RÉGI felkapott {napi,het} → a mostani 2 szekció (visszafelé kompat)", async ({ page }) => {
@@ -121,8 +133,8 @@ test("Elemzés fül: RÉGI felkapott {napi,het} → a mostani 2 szekció (vissza
   await page.route("**/data/elemzes.json", (r) => r.fulfill({ json: REGI }));
   await page.route("**/data/elemzesek/index.json", (r) => r.fulfill({ status: 404, body: "" }));
   await page.goto("/elemzes.html");
-  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Felkapott — napi")) .elemzes-szoveg')).toHaveText("régi napi");
-  await expect(page.locator('h3:text-is("Felkapott — reggeli (9:00)")')).toHaveCount(0);
+  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Napi")) .elemzes-szoveg')).toHaveText("régi napi");
+  await expect(page.locator('h3:text-is("Reggeli (9:00)")')).toHaveCount(0);
 });
 
 const REGGELI_FIXTURE = {
@@ -147,13 +159,13 @@ test("Elemzés — reggeli scoped artefakt: reggeli bekezdés + \"frissül este\
   await page.route("**/data/elemzesek/index.json", (r) => r.fulfill({ status: 404, body: "" }));
   await page.goto("/elemzes.html");
   // a reggeli felkapott bekezdés valós AI-szöveget mutat
-  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Felkapott — reggeli (9:00)")) .elemzes-szoveg'))
+  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Reggeli (9:00)")) .elemzes-szoveg'))
     .toContainText("a legpörgőbb keresés az eső");
   // a deferrált esti felkapott a helyőrzőt mutatja
-  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Felkapott — esti (21:00)")) .elemzes-szoveg'))
+  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Esti (21:00)")) .elemzes-szoveg'))
     .toContainText("az esti futáskor (21:00) frissül");
   // a kulcsszó-próza is deferrált
-  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Kulcsszavak — mit látunk ma")) .elemzes-szoveg'))
+  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Kulcsszavak – mit látunk ma")) .elemzes-szoveg'))
     .toContainText("az esti futáskor (21:00) frissül");
   // a VALÓS csempe-réteg nem jelenik meg (user-döntés 2026-09-04)
   await expect(page.locator(".elemzes-csempe")).toHaveCount(0);
