@@ -28,36 +28,9 @@ function szekcio_elem(cim, szekcio) {
   return box;
 }
 
-// VALÓS kulcsszó-csempék (irány + mai érték + csúcs — közvetlenül a mérőszámokból, nem AI-szöveg)
-function valos_kulcsszo_csempek(szamok) {
-  const wrap = document.createElement("div");
-  wrap.className = "elemzes-csempek";
-  (szamok || []).forEach((s) => {
-    const c = document.createElement("div");
-    c.className = "elemzes-csempe irany-" + (s.irany || "ismeretlen");
-    c.textContent = `${s.szo}: ${s.irany} (mai ${s.mai_ertek ?? "–"}, csúcs ${s.csucs ?? "–"})`;
-    wrap.appendChild(c);
-  });
-  return wrap;
-}
-
 // Megjegyzés: a nyers felkapott-csempesorok (napi top „(volumen: …)" + heti visszatérés
 // „— N nap") KIVÉVE (user-döntés 2026-08-23) — a felkapottat az AI-próza foglalja össze.
 // A het_valos VALÓS réteg az artefaktban MARAD (fail-safe adat), csak nem rajzoljuk csempeként.
-
-// YouTube VALÓS csempék — a Google-csempével azonos, de a második szám ÁTLAG (a csúcs a 12-m
-// normálás miatt szavanként triviálisan ~100). Külön függvény, hogy a Google-render érintetlen maradjon.
-function valos_youtube_csempek(szamok) {
-  const wrap = document.createElement("div");
-  wrap.className = "elemzes-csempek";
-  (szamok || []).forEach((s) => {
-    const c = document.createElement("div");
-    c.className = "elemzes-csempe irany-" + (s.irany || "ismeretlen");
-    c.textContent = `${s.szo}: ${s.irany} (mai ${s.mai_ertek ?? "–"}, átlag ${s.atlag ?? "–"})`;
-    wrap.appendChild(c);
-  });
-  return wrap;
-}
 
 // egy nevesített szegmens-cím (Google / YouTube)
 function szegmens_cim(szoveg) {
@@ -72,7 +45,6 @@ function youtube_szegmens(yt) {
   const box = document.createElement("section");
   box.id = "youtube-szegmens";
   box.appendChild(szegmens_cim("YouTube keresések napi elemzése"));
-  box.appendChild(valos_youtube_csempek(yt.szamok));
   box.appendChild(szekcio_elem("YouTube — mit néznek ma", yt.napi));
   box.appendChild(szekcio_elem("YouTube — teljes kép", yt.teljes_kep));
   box.appendChild(szekcio_elem("YouTube — heti mozgás", yt.het));
@@ -87,31 +59,11 @@ function rajzol(art) {
 
   t.appendChild(szegmens_cim("Google keresések napi elemzése"));
 
-  // Mi változott ma? — a szekció (folyó AI-próza) ELŐBB, a VALÓS diff-összegzés
-  // (a nap-diffből, csak van_elozo esetén) UTÁNA.
-  const valt = document.createElement("div");
-  const d = art.valtozas.diff;
-  valt.appendChild(szekcio_elem("Mi változott ma?", art.valtozas));
-  if (d.van_elozo) {
-    const diffOsszegzes = document.createElement("p");
-    diffOsszegzes.className = "elemzes-diff-osszegzes elemzes-megfigyeles";   // VALÓS réteg (diff-számítás)
-    diffOsszegzes.textContent =
-      `Irányt váltott: ${d.irany_valtok.map((v) => v.szo).join(", ") || "–"} · új felkapott: ${d.felkapott_uj.join(", ") || "–"} · eltűnt: ${d.felkapott_eltunt.join(", ") || "–"}`;
-    valt.appendChild(diffOsszegzes);
-  }
-  // legnagyobb mozgók (VALÓS, a nap-diffből — d.mozgok) — csak ha van előző nap ÉS van mozgás
-  if (d.van_elozo && Array.isArray(d.mozgok) && d.mozgok.length) {
-    const mozgokP = document.createElement("p");
-    mozgokP.className = "elemzes-diff-mozgok elemzes-megfigyeles";   // VALÓS réteg (diff-számítás)
-    mozgokP.textContent = "legnagyobb mozgók: " + d.mozgok
-      .map((m) => `${m.szo} (${m.valtozas > 0 ? "+" : ""}${m.valtozas})`)
-      .join(", ");
-    valt.appendChild(mozgokP);
-  }
-  t.appendChild(valt);
+  // Mi változott ma? — folyó AI-próza. A VALÓS diff-összegzés / „legnagyobb mozgók" sorokat és
+  // a kulcsszó-csempéket NEM jelenítjük meg (user-döntés 2026-09-04); az adat az artefaktban marad.
+  t.appendChild(szekcio_elem("Mi változott ma?", art.valtozas));
 
-  // Kulcsszavak
-  t.appendChild(valos_kulcsszo_csempek(art.kulcsszavak.szamok));
+  // Kulcsszavak — csak az AI-próza
   t.appendChild(szekcio_elem("Kulcsszavak — mit látunk ma", art.kulcsszavak.napi));
   t.appendChild(szekcio_elem("Kulcsszavak — teljes kép", art.kulcsszavak.teljes_kep));
   t.appendChild(szekcio_elem("Kulcsszavak — 1 hét", art.kulcsszavak.het));

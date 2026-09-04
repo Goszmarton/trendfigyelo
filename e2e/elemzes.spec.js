@@ -16,7 +16,7 @@ const FIXTURE = {
                het_valos: { napok: 3, visszateroek: [{ kifejezes: "eső", napok_szama: 2 }] } },
 };
 
-test("Elemzés fül: folyó próza <p>-ként, nincs feltételezés-réteg; kulcsszó-csempe marad, felkapott-csempe NEM", async ({ page }) => {
+test("Elemzés fül: folyó próza <p>-ként, nincs feltételezés-réteg; VALÓS csempe/diff-réteg NEM jelenik meg", async ({ page }) => {
   await page.route("**/data/elemzes.json", (r) => r.fulfill({ json: FIXTURE }));
   await page.route("**/data/elemzesek/index.json", (r) => r.fulfill({ status: 404, body: "" }));
   await page.goto("/elemzes.html");
@@ -27,11 +27,13 @@ test("Elemzés fül: folyó próza <p>-ként, nincs feltételezés-réteg; kulcs
   // nincs ELMÉLETI/feltételezés-réteg és nincs bullet-lista
   await expect(page.locator(".elemzes-elmeleti")).toHaveCount(0);
   await expect(page.locator("#elemzes-tartalom")).not.toContainText("feltételezés:");
-  // kulcsszó VALÓS csempék + diff-összegzés + mozgók MARADNAK
-  await expect(page.locator(".elemzes-csempe")).toContainText("állás");
-  await expect(page.locator(".elemzes-diff-osszegzes")).toContainText("állás");
-  await expect(page.locator(".elemzes-diff-mozgok")).toContainText("benzin");
-  // a felkapott-csempesorok (napi top „(volumen: …)" + heti visszatérés „— N nap") NEM jelennek meg
+  // a VALÓS csempe-réteg (kulcsszó-csempék + diff-összegzés + „legnagyobb mozgók") KIVÉVE (user-döntés 2026-09-04)
+  await expect(page.locator(".elemzes-csempe")).toHaveCount(0);
+  await expect(page.locator(".elemzes-diff-osszegzes")).toHaveCount(0);
+  await expect(page.locator(".elemzes-diff-mozgok")).toHaveCount(0);
+  await expect(page.locator("#elemzes-tartalom")).not.toContainText("Irányt váltott");
+  await expect(page.locator("#elemzes-tartalom")).not.toContainText("legnagyobb mozgók");
+  // a felkapott-csempesorok (napi top „(volumen: …)" + heti visszatérés „— N nap") sem jelennek meg
   await expect(page.locator(".elemzes-felkapott-csempe")).toHaveCount(0);
   await expect(page.locator("#felkapott-het-valos")).toHaveCount(0);
 });
@@ -62,17 +64,15 @@ const FIXTURE_YT = Object.assign({}, FIXTURE, {
   },
 });
 
-test("Elemzés: két nevesített szegmens + YouTube-csempék és 3 szekció, ha van youtube blokk", async ({ page }) => {
+test("Elemzés: két nevesített szegmens + 3 YouTube-szekció, ha van youtube blokk (csempe nélkül)", async ({ page }) => {
   await page.route("**/data/elemzes.json", (r) => r.fulfill({ json: FIXTURE_YT }));
   await page.route("**/data/elemzesek/index.json", (r) => r.fulfill({ status: 404, body: "" }));
   await page.goto("/elemzes.html");
   // két szegmens-cím
   await expect(page.locator("h2.elemzes-szegmens")).toHaveText([
     "Google keresések napi elemzése", "YouTube keresések napi elemzése"]);
-  // YouTube VALÓS csempe: mai + ÁTLAG (nem csúcs — a 12-m normálás miatt a csúcs mindig ~100)
-  await expect(page.locator("#youtube-szegmens .elemzes-csempe")).toContainText("szorongás");
-  await expect(page.locator("#youtube-szegmens .elemzes-csempe")).toContainText("átlag 45");
-  await expect(page.locator("#youtube-szegmens .elemzes-csempe")).not.toContainText("csúcs");
+  // a YouTube VALÓS csempe-réteg is KIVÉVE (user-döntés 2026-09-04)
+  await expect(page.locator("#youtube-szegmens .elemzes-csempe")).toHaveCount(0);
   // 3 YouTube AI-szekció renderel (folyó próza <p>-ként)
   await expect(page.locator("#youtube-szegmens .elemzes-szekcio")).toHaveCount(3);
   await expect(page.locator("#youtube-szegmens")).toContainText("YouTube napi próza.");
@@ -84,7 +84,9 @@ test("Elemzés: régi archív-nap (nincs youtube blokk) → nincs YouTube-szegme
   await page.goto("/elemzes.html");
   await expect(page.locator("#youtube-szegmens")).toHaveCount(0);
   await expect(page.locator("h2.elemzes-szegmens")).toHaveText(["Google keresések napi elemzése"]);
-  await expect(page.locator(".elemzes-csempe")).toContainText("állás");   // Google-rész változatlan
+  // Google-rész ép: az AI-próza renderel, csempe nincs
+  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Mi változott ma?"))')).toBeVisible();
+  await expect(page.locator(".elemzes-csempe")).toHaveCount(0);
 });
 
 test("Elemzés fül: ÚJ felkapott 4 szekció (reggeli/esti/nap íve/heti)", async ({ page }) => {
@@ -153,8 +155,8 @@ test("Elemzés — reggeli scoped artefakt: reggeli bekezdés + \"frissül este\
   // a kulcsszó-próza is deferrált
   await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Kulcsszavak — mit látunk ma")) .elemzes-szoveg'))
     .toContainText("az esti futáskor (21:00) frissül");
-  // a kulcsszó VALÓS csempe megmarad (tény, nem elemzés)
-  await expect(page.locator(".elemzes-csempe")).toContainText("állás");
+  // a VALÓS csempe-réteg nem jelenik meg (user-döntés 2026-09-04)
+  await expect(page.locator(".elemzes-csempe")).toHaveCount(0);
   // reggel NINCS YouTube-blokk
   await expect(page.locator("#youtube-szegmens")).toHaveCount(0);
 });
