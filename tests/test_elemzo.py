@@ -595,8 +595,16 @@ def test_valasz_sema_youtube_szekcio_szigoru():
     assert "youtube" in s["required"]
     yt = s["properties"]["youtube"]
     assert yt["additionalProperties"] is False
-    assert set(yt["required"]) == {"napi", "teljes_kep", "het"}
+    assert set(yt["required"]) == {"napi", "teljes_kep"}          # a 'het' KIESETT
+    assert set(yt["properties"]) == {"napi", "teljes_kep"}
     assert set(yt["properties"]["napi"]["properties"]) == {"szoveg"}
+
+
+def test_valasz_sema_kulcsszavak_csak_napi():
+    s = elemzo._valasz_sema(mode="este")
+    ks = s["properties"]["kulcsszavak"]
+    assert ks["required"] == ["napi"]                             # teljes_kep/het KIESETT
+    assert set(ks["properties"]) == {"napi"}
 
 
 def test_rendszer_prompt_youtube_keret():
@@ -625,19 +633,24 @@ def test_valasz_to_artefakt_youtube_blokk_valos_es_ai():
                     "het_valos": [{"szo": "bitcoin", "kezdo": 30, "veg": 57, "valtozas": 27}]},
     }
     art = elemzo.valasz_to_artefakt(_ai_valasz_youtubebal(), payload, nap="2026-08-26", modell="claude-opus-4-8")
-    # VALÓS a payloadból
-    assert art["youtube"]["szamok"][0]["csucs"] == 50
-    assert art["youtube"]["het_valos"][0]["valtozas"] == 27
-    # AI-próza a válaszból
-    assert art["youtube"]["napi"]["szoveg"] == "yt-napi"
+    assert art["youtube"]["szamok"][0]["csucs"] == 50             # VALÓS a payloadból
+    assert art["youtube"]["napi"]["szoveg"] == "yt-napi"          # AI-próza
     assert art["youtube"]["teljes_kep"]["szoveg"] == "yt-teljes"
-    assert art["youtube"]["het"]["szoveg"] == "yt-het"
+    assert "het" not in art["youtube"]                            # a heti mozgás KIESETT
+    assert "het_valos" not in art["youtube"]
 
 
 def test_valasz_to_artefakt_nincs_youtube_ha_nincs_payloadban():
     payload = _mini_payload(van_elozo=True)   # nincs "youtube" kulcs
     art = elemzo.valasz_to_artefakt(_mini_ai("napi"), payload, nap="2026-08-26", modell="claude-opus-4-8")
     assert "youtube" not in art
+
+
+def test_valasz_to_artefakt_kulcsszavak_csak_szamok_es_napi():
+    payload = _mini_payload(van_elozo=True)
+    art = elemzo.valasz_to_artefakt(_mini_ai("napi"), payload, nap="2026-08-26", modell="m")
+    assert set(art["kulcsszavak"]) == {"szamok", "napi"}          # teljes_kep/het KIESETT
+    assert art["kulcsszavak"]["napi"]["szoveg"] == "sz"
 
 
 def test_utolso_napok_trendek_szegmentalt_estit_ad(tmp_path):

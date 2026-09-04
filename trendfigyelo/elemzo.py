@@ -346,8 +346,8 @@ def _valasz_sema(youtube=False, mode="este"):
     props = {
         "valtozas": sz,
         "kulcsszavak": {"type": "object", "additionalProperties": False,
-                        "required": ["napi", "teljes_kep", "het"],
-                        "properties": {"napi": sz, "teljes_kep": sz, "het": sz}},
+                        "required": ["napi"],
+                        "properties": {"napi": sz}},
         "felkapott": {"type": "object", "additionalProperties": False,
                       "required": ["reggel", "este", "teljes_nap", "het"],
                       "properties": {"reggel": sz, "este": sz, "teljes_nap": sz, "het": sz}},
@@ -355,8 +355,8 @@ def _valasz_sema(youtube=False, mode="este"):
     required = ["valtozas", "kulcsszavak", "felkapott"]
     if youtube:
         props["youtube"] = {"type": "object", "additionalProperties": False,
-                            "required": ["napi", "teljes_kep", "het"],
-                            "properties": {"napi": sz, "teljes_kep": sz, "het": sz}}
+                            "required": ["napi", "teljes_kep"],
+                            "properties": {"napi": sz, "teljes_kep": sz}}
         required = required + ["youtube"]
     return {"type": "object", "additionalProperties": False,
             "required": required, "properties": props}
@@ -399,8 +399,7 @@ def valasz_to_artefakt(ai_valasz, payload, nap, modell, mode="este"):
             "nap": nap,
             "mode": "reggel",
             "valtozas": {"diff": payload["valtozas"], "szoveg": _ESTI_FRISSUL},
-            "kulcsszavak": {"szamok": payload["kulcsszavak"]["szamok"],
-                            "napi": d, "teljes_kep": d, "het": d},
+            "kulcsszavak": {"szamok": payload["kulcsszavak"]["szamok"], "napi": d},
             "felkapott": {
                 "top": fk["top"], "reggel_top": fk["reggel_top"], "este_top": fk["este_top"],
                 "reggel_este_diff": fk["reggel_este_diff"],
@@ -434,8 +433,6 @@ def valasz_to_artefakt(ai_valasz, payload, nap, modell, mode="este"):
         "kulcsszavak": {
             "szamok": payload["kulcsszavak"]["szamok"],
             "napi": ai_valasz["kulcsszavak"]["napi"],
-            "teljes_kep": ai_valasz["kulcsszavak"]["teljes_kep"],
-            "het": ai_valasz["kulcsszavak"]["het"],
         },
         "felkapott": {
             "top": fk["top"],
@@ -452,10 +449,8 @@ def valasz_to_artefakt(ai_valasz, payload, nap, modell, mode="este"):
     if "youtube" in payload:
         art["youtube"] = {
             "szamok": payload["youtube"]["szamok"],
-            "het_valos": payload["youtube"]["het_valos"],
             "napi": ai_valasz["youtube"]["napi"],
             "teljes_kep": ai_valasz["youtube"]["teljes_kep"],
-            "het": ai_valasz["youtube"]["het"],
         }
     return art
 
