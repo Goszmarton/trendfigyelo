@@ -366,9 +366,9 @@ def test_youtube_szekcio_hianyzik_ures_lista():
 # --- oras/futas mezők + masodlagos_timeframek (2026-09-02: reggeli kulcsszó-feszültség) ---
 
 def test_kulcsszotetel_uj_mezok_default(tmp_path):
-    # a régi 3-mezős konstrukció defaultot kap: racs="ora", oras=True, futas="este"
+    # a régi 3-mezős konstrukció defaultot kap: racs="ora", oras=True, futas="este", hosszu_tav=False
     t = KulcsszoTetel("infláció", "gazdasag", "szintmero")
-    assert (t.racs, t.oras, t.futas) == ("ora", True, "este")
+    assert (t.racs, t.oras, t.futas, t.hosszu_tav) == ("ora", True, "este", False)
 
 
 def test_kulcsszavak_beolvas_oras_futas(tmp_path):
@@ -426,6 +426,43 @@ def test_masodlagos_timeframek_reggel_egy_ablak():
     nap = KulcsszoTetel("kölcsön", "megelhetes", "szintmero", "nap", False, "reggel")
     assert config.masodlagos_timeframek(het) == ["today 12-m"]
     assert config.masodlagos_timeframek(nap) == ["today 3-m"]
+
+
+def test_masodlagos_timeframek_reggel_hosszu_tav_mindketto():
+    # reggeli szó, ami opt-in a hosszú távra: a napi (racs) mellé a heti 12-m-et IS gyűjti
+    nap = KulcsszoTetel("kölcsön", "megelhetes", "szintmero", "nap", False, "reggel", True)
+    assert config.masodlagos_timeframek(nap) == ["today 3-m", "today 12-m"]
+
+
+def test_kulcsszavak_beolvas_hosszu_tav(tmp_path):
+    yaml = (
+        "geo: HU\nnyelv: hu\nidoablak_orak: 24\nidosor_idokeret: \"now 1-d\"\n"
+        "trend_idosor_max: 15\n"
+        "kerespont:\n  alap_keses_mp: 6.0\n  szoras_mp: [6, 10]\n  max_probak: 4\n  backoff_mp: [30]\n"
+        "kulcsszavak:\n"
+        "  - {kifejezes: \"kölcsön\", domen: megelhetes, tipus: szintmero, racs: nap, oras: false, futas: reggel, hosszu_tav: true}\n"
+        "  - {kifejezes: \"infláció\", domen: gazdasag, tipus: szintmero, racs: het, oras: false, futas: reggel}\n"
+    )
+    p = tmp_path / "c.yaml"
+    p.write_text(yaml, encoding="utf-8")
+    c = config.betolt(str(p))
+    kolcson, infl = c.osszes_kulcsszo()
+    assert kolcson.hosszu_tav is True
+    assert infl.hosszu_tav is False   # hiányzó mező → default False
+
+
+def test_kulcsszavak_beolvas_rossz_hosszu_tav(tmp_path):
+    yaml = (
+        "geo: HU\nnyelv: hu\nidoablak_orak: 24\nidosor_idokeret: \"now 1-d\"\n"
+        "trend_idosor_max: 15\n"
+        "kerespont:\n  alap_keses_mp: 6.0\n  szoras_mp: [6, 10]\n  max_probak: 4\n  backoff_mp: [30]\n"
+        "kulcsszavak:\n"
+        "  - {kifejezes: \"kölcsön\", domen: megelhetes, tipus: szintmero, hosszu_tav: talan}\n"
+    )
+    p = tmp_path / "c.yaml"
+    p.write_text(yaml, encoding="utf-8")
+    with pytest.raises(config.KonfigHiba):
+        config.betolt(str(p))
 
 
 def test_eles_config_28_szo_profilokkal():

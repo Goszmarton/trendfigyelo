@@ -46,9 +46,9 @@ kulcsszavak:
   - {kifejezes: "iskola",         domen: oktatas,     tipus: szintmero,    racs: het, oras: false, futas: reggel}
   - {kifejezes: "munkanélküliség", domen: gazdasag,   tipus: szintmero,    racs: het, oras: false, futas: reggel}
   - {kifejezes: "csőd",           domen: gazdasag,    tipus: szintmero,    racs: het, oras: false, futas: reggel}
-  # Profil 2 (közepes momentum): oras:false, racs:nap → csak 3-m napi
-  - {kifejezes: "kölcsön",        domen: megelhetes,  tipus: szintmero,    racs: nap, oras: false, futas: reggel}
-  - {kifejezes: "sürgősségi",     domen: egeszsegugy, tipus: szintmero,    racs: nap, oras: false, futas: reggel}
+  # Profil 2 (közepes momentum): oras:false, racs:nap → 3-m napi ALAP + hosszu_tav:true → 12-m heti IS (1 év feltölthető)
+  - {kifejezes: "kölcsön",        domen: megelhetes,  tipus: szintmero,    racs: nap, oras: false, futas: reggel, hosszu_tav: true}
+  - {kifejezes: "sürgősségi",     domen: egeszsegugy, tipus: szintmero,    racs: nap, oras: false, futas: reggel, hosszu_tav: true}
   # Profil 3 (esemény/csúcs): oras:true, racs:het → 7-d órás + 12-m
   - {kifejezes: "pedagógus",      domen: oktatas,     tipus: szintmero,    racs: het, oras: true,  futas: reggel}
   - {kifejezes: "korrupció",      domen: politika,    tipus: szintmero,    racs: het, oras: true,  futas: reggel}

@@ -12,8 +12,8 @@ from pathlib import Path
 import yaml
 
 KulcsszoTetel = namedtuple(
-    "KulcsszoTetel", ["kifejezes", "domen", "tipus", "racs", "oras", "futas"],
-    defaults=("ora", True, "este"))
+    "KulcsszoTetel", ["kifejezes", "domen", "tipus", "racs", "oras", "futas", "hosszu_tav"],
+    defaults=("ora", True, "este", False))
 
 TIPUSOK = {"szintmero", "esemenyjelzo", "hibrid"}
 
@@ -38,8 +38,10 @@ def masodlagos_timeframek(tetel) -> list:
     reggel → EGY ablak, a szó `racs`-a szerint (nap→3-m, het→12-m) — az „egy-ablakos
     csak az újakra" viselkedés EGYETLEN igazságforrása; minden másodlagos-cellát
     számoló/gyűjtő kód ezen megy át.
+    reggel + hosszu_tav → MINDKÉT ablak (opt-in): a `racs` napi/heti sorozat mellé a
+    hosszú 12-m heti sávot IS gyűjti, hogy a hosszú (pl. 1 év) ablak feltöltődhessen.
     """
-    if tetel.futas == "reggel":
+    if tetel.futas == "reggel" and not tetel.hosszu_tav:
         return [RACS_IDOKERET[tetel.racs]]
     return list(MASODLAGOS_TIMEFRAMEK)
 
@@ -145,7 +147,11 @@ def _kulcsszavak_beolvas(nyers) -> list:
         if futas not in FUTASOK:
             raise KonfigHiba(
                 f"kulcsszavak[{i}].futas: {futas!r} — a megengedett: {sorted(FUTASOK)} ({kifejezes!r})")
-        ki.append(KulcsszoTetel(kifejezes, domen, tipus, racs, oras, futas))
+        hosszu_tav = t.get("hosszu_tav", False)  # hiány → False (reggeli szó: EGY ablak a racs szerint)
+        if not isinstance(hosszu_tav, bool):
+            raise KonfigHiba(
+                f"kulcsszavak[{i}].hosszu_tav: {hosszu_tav!r} — true/false kell ({kifejezes!r})")
+        ki.append(KulcsszoTetel(kifejezes, domen, tipus, racs, oras, futas, hosszu_tav))
     latott = set()
     for t in ki:
         if t.kifejezes in latott:
