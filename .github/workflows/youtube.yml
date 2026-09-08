@@ -53,6 +53,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase --autostash || true   # párhuzamos main-push ellen (nem-fast-forward push elkerülése)
           git add docs/data/youtube_nyers.json docs/data/youtube_regresszio.json adatok/naplo.csv
           if git diff --cached --quiet; then
             echo "Nincs változás — nincs commit."
