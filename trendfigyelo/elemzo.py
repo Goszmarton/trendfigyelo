@@ -167,6 +167,7 @@ def _nyers_heti_sorozat(youtube_nyers, szo):
 
 
 def _csucs_atlag(series):
+    """A sorozat (csúcs, átlag) párja a NEM-részleges pontokból; üres → (None, None)."""
     pontok = (series or {}).get("pontok") or []
     ertekek = [p["ertek"] for p in pontok if not p.get("reszleges")]
     if not ertekek:
@@ -343,28 +344,27 @@ def _szekcio_sema():
             "properties": {"szoveg": {"type": "string"}}}
 
 
-def _valasz_sema(youtube=False, mode="este"):
+def _szekcio_csoport(*kulcsok):
+    """Objektum-séma N nevesített szöveg-szekcióval — mind kötelező, extra kulcs tiltva."""
     sz = _szekcio_sema()
+    return {"type": "object", "additionalProperties": False,
+            "required": list(kulcsok),
+            "properties": {k: sz for k in kulcsok}}
+
+
+def _valasz_sema(youtube=False, mode="este"):
     if mode == "reggel":
         return {"type": "object", "additionalProperties": False,
                 "required": ["felkapott"],
-                "properties": {"felkapott": {"type": "object", "additionalProperties": False,
-                                             "required": ["reggel"],
-                                             "properties": {"reggel": sz}}}}
+                "properties": {"felkapott": _szekcio_csoport("reggel")}}
     props = {
-        "valtozas": sz,
-        "kulcsszavak": {"type": "object", "additionalProperties": False,
-                        "required": ["napi"],
-                        "properties": {"napi": sz}},
-        "felkapott": {"type": "object", "additionalProperties": False,
-                      "required": ["reggel", "este", "teljes_nap", "het"],
-                      "properties": {"reggel": sz, "este": sz, "teljes_nap": sz, "het": sz}},
+        "valtozas": _szekcio_sema(),
+        "kulcsszavak": _szekcio_csoport("napi"),
+        "felkapott": _szekcio_csoport("reggel", "este", "teljes_nap", "het"),
     }
     required = ["valtozas", "kulcsszavak", "felkapott"]
     if youtube:
-        props["youtube"] = {"type": "object", "additionalProperties": False,
-                            "required": ["napi", "teljes_kep"],
-                            "properties": {"napi": sz, "teljes_kep": sz}}
+        props["youtube"] = _szekcio_csoport("napi", "teljes_kep")
         required = required + ["youtube"]
     return {"type": "object", "additionalProperties": False,
             "required": required, "properties": props}
