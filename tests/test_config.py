@@ -186,6 +186,21 @@ def test_eles_config_racs_besorolas():
     assert all(t.racs in config.RACSOK for t in c.osszes_kulcsszo())
 
 
+def test_eles_config_reggeli_szavak_orasak_es_ketablakosak():
+    # 2026-09-08: MINDEN reggeli feszültség-szó órás (oras:true) ÉS kétablakos (hosszu_tav
+    # → 3-m napi + 12-m heti) → a rövid ablakok (1 hét/2 hét/1 hónap) mind feltölthetők:
+    # 1 hét/2 hét az órás láncból, 1 hónap azonnal a napi 3-m-ből, 1 év a heti 12-m-ből.
+    # Regresszió-őr: ha bármelyik reggeli szó oras:false-ra vagy egy-ablakosra esik, ez bukik.
+    gyoker = Path(__file__).resolve().parent.parent
+    c = config.betolt(gyoker / "config.yaml")
+    reggeliek = [t for t in c.osszes_kulcsszo() if t.futas == "reggel"]
+    assert len(reggeliek) == 15  # a 15 új társadalmi feszültség-szó
+    for t in reggeliek:
+        assert t.oras is True, f"{t.kifejezes}: reggeli szónak órásnak kell lennie (1 hét/2 hét lánc)"
+        assert config.masodlagos_timeframek(t) == ["today 3-m", "today 12-m"], \
+            f"{t.kifejezes}: kétablakos kell (3-m napi az 1 hónaphoz + 12-m heti az 1 évhez)"
+
+
 def test_szoras_mp_skalar_konfighibat_dob(tmp_path):
     rossz = JO.replace("szoras_mp: [3, 7]", "szoras_mp: 5")
     with pytest.raises(config.KonfigHiba):
@@ -472,11 +487,13 @@ def test_eles_config_28_szo_profilokkal():
     # 5 új domén jelen van, a régi szórt domének eltűntek
     domenek = {t.domen for t in c.osszes_kulcsszo()}
     assert domenek == {"megelhetes", "egeszsegugy", "oktatas", "gazdasag", "politika"}
-    # profil 1 (lassú): oras:false, racs:het, futas:reggel
-    assert (szavak["infláció"].oras, szavak["infláció"].racs, szavak["infláció"].futas) == (False, "het", "reggel")
-    # profil 2 (közepes): oras:false, racs:nap
-    assert (szavak["kölcsön"].oras, szavak["kölcsön"].racs, szavak["kölcsön"].futas) == (False, "nap", "reggel")
-    # profil 3 (csúcs): oras:true, racs:het
+    # 2026-09-08: MINDEN reggeli szó órás (oras:true) + kétablakos → a racs már csak a
+    # megjelenítési alapfelbontás (het/nap), a gyűjtés minden ablakot lefed.
+    # ex-profil 1 (racs:het): órás, het megjelenítés
+    assert (szavak["infláció"].oras, szavak["infláció"].racs, szavak["infláció"].futas) == (True, "het", "reggel")
+    # ex-profil 2 (racs:nap): órás, nap megjelenítés
+    assert (szavak["kölcsön"].oras, szavak["kölcsön"].racs, szavak["kölcsön"].futas) == (True, "nap", "reggel")
+    # ex-profil 3 (racs:het): órás
     assert (szavak["korrupció"].oras, szavak["korrupció"].racs, szavak["korrupció"].futas) == (True, "het", "reggel")
     # a meglévő esti szó: default oras:true, futas:este, új domén-címke
     assert (szavak["benzin"].oras, szavak["benzin"].futas, szavak["benzin"].domen) == (True, "este", "megelhetes")
