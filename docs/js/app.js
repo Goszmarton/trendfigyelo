@@ -89,7 +89,12 @@ const ATTR = {
   rajzolt_pont: "data-rajzolt-pont",   // 6c javító-szelet: a RAJZOLT slotok száma (szeletelt ablak) — DOM-őr a szeletelési hibára
   felbontas: "data-felbontas",   // item 3: a kártya felbontás-rácsa (ora/nap/het) — DOM-őr
   teljes_forras: "data-teljes-forras",   // TELJES-NEZET: a per-szó választott intervallum kulcsa (het→1_ev, nap→3_ho, ora→1_het)
+  elo_marker: "data-elo-marker",   // ÉLŐ-MÉRÉS MARKER: a meres_kezdete dátuma, ha a rajzolt ablakon belülre esik (teljes nézet)
 };
+// ÉLŐ-MÉRÉS MARKER magyarázó szövege (állandó callout a blokk alján, ha legalább egy kártyán van marker) + a
+// tooltip lábléce; a jelölt vonal SZÜRKE (meta, nem adat — a kék adattól/piros trendtől/narancs szinttől elüt).
+const ELO_MARKER_SZIN = "#8a8a8a";
+const ELO_MARKER_INFO = "A szürke szaggatott függőleges vonal jelzi, honnan követjük élőben az adott szót: a vonaltól balra a Google saját visszamenőleges becslése látható (nem általunk mért adat), jobbra a mi mérési időszakunk.";
 const TENGELY_FELIRAT = "relatív keresési szint (0–100)";   // EN DASH
 const CSUPA_NULLA_SZOVEG = "Ezen az időszakon nincs érdemi keresési aktivitás (a mért értékek végig nulla körül).";
 const URES_NINCS_ABLAK = "Az adatsor ezen az időszakon nem érhető el.";
@@ -1006,6 +1011,21 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs) {
     kartya.appendChild(e);
   }
   kartya._racs = racs;   // a lusta Chart-példányosításhoz
+
+  // ÉLŐ-MÉRÉS MARKER (CSAK teljes nézet): függőleges jelölő a szó `meres_kezdete`-jénél, ha az a RAJZOLT ablakon
+  // BELÜLRE esik (van tőle balra Google-becslés). Ugyanaz a feltétel, mint az elettartam_szoveg „mérés kezdete"
+  // feliratáé, de itt a rajzolt xy tartományhoz mérve (a marker az xy-tengelyen jelenik meg). Rövid ablakoknál
+  // (a szó után kezdődő ablak) a mk kívül esik → nincs marker, helyesen. A chart_letrehoz teljes-ága rajzolja.
+  if (aktiv_kulcs === TELJES_KULCS && szoreg.meres_kezdete && racs.xy && racs.xy.length) {
+    const mk_ms = iso_ms(szoreg.meres_kezdete);
+    const rajzolt = racs.xy.filter(function (p) { return p.y !== null; });
+    const elso = rajzolt.length ? rajzolt[0].x : null;
+    const utolso = rajzolt.length ? rajzolt[rajzolt.length - 1].x : null;
+    if (elso != null && utolso != null && mk_ms > elso && mk_ms < utolso) {
+      kartya.setAttribute(ATTR.elo_marker, szoreg.meres_kezdete);
+      kartya._elo_marker_ms = mk_ms;
+    }
+  }
   return kartya;
 }
 
@@ -1024,6 +1044,8 @@ function chart_letrehoz(kartya) {
     const ds = [{ data: racs.xy, spanGaps: false, borderColor: ADAT_VONAL_SZIN, borderWidth: 1.5, pointRadius: 0 }];
     if (racs.vonal_xy) ds.push({ data: racs.vonal_xy, spanGaps: true, borderColor: "#cc3333", borderWidth: 1.5, borderDash: [4, 3], pointRadius: 0 });
     if (racs.szint_xy) ds.push({ data: racs.szint_xy, spanGaps: true, borderColor: "#e69138", borderWidth: 1.5, borderDash: [6, 4], pointRadius: 0 });
+    // ÉLŐ-MÉRÉS MARKER: függőleges szürke szaggatott vonal a meres_kezdete-nél (0→100), a kártya x-tengelyén
+    if (kartya._elo_marker_ms != null) ds.push({ data: [{ x: kartya._elo_marker_ms, y: 0 }, { x: kartya._elo_marker_ms, y: 100 }], spanGaps: true, borderColor: ELO_MARKER_SZIN, borderWidth: 1, borderDash: [3, 3], pointRadius: 0 });
     // per-szó tengely PONTOS széllel: min/max = az ELSŐ/UTOLSÓ tényleges adatpont (nincs Chart.js grace-padding →
     // a görbe a két szélt ÉRINTI, nincs felesleges gap). A tengelyen CSAK 2 tick: a KEZDŐ + a VÉG dátum (teljes).
     const teljes_pts = racs.xy.filter(function (p) { return p.y !== null; });
@@ -1046,7 +1068,16 @@ function chart_letrehoz(kartya) {
           legend: { display: false },
           // közös tooltip-stílus + a dátum a title-ben (teljes nap); a per-szó lineáris tengelyen a parsed.x az ms
           tooltip: Object.assign({}, TOOLTIP_STILUS, {
-            callbacks: { title: function (items) { return items.length ? ms_datum(items[0].parsed.x, true) : ""; } },
+            callbacks: {
+              title: function (items) { return items.length ? ms_datum(items[0].parsed.x, true) : ""; },
+              // ÉLŐ-MÉRÉS MARKER interaktív lábléc: CSAK a markertől BALRA (a becslés-szakasz fölé érve) figyelmeztet,
+              // hogy az ott látott értékek a Google visszamenőleges becslése — jobbra (a mi mérésünk) nem villan fel.
+              footer: kartya._elo_marker_ms != null ? function (items) {
+                return (items.length && items[0].parsed.x < kartya._elo_marker_ms)
+                  ? "❘ e szakasz a Google visszamenőleges becslése (élő mérés: " + datum_formaz(kartya.getAttribute(ATTR.elo_marker)) + "-től)"
+                  : "";
+              } : undefined,
+            },
           }),
         },
       },
@@ -1216,7 +1247,7 @@ function kulcsszo_blokk_render() {
   const blokk = document.getElementById("kulcsszo-blokk");
   if (!blokk) return;
   chart_takarit();   // váltáskor: régi példányok destroy + megfigyelő le
-  blokk.querySelectorAll("." + OSZT.frissesseg + ", ." + OSZT.csoport).forEach(function (e) { e.remove(); });
+  blokk.querySelectorAll("." + OSZT.frissesseg + ", ." + OSZT.csoport + ", .elo-marker-info").forEach(function (e) { e.remove(); });
 
   const aktiv = blokk.getAttribute(ATTR.aktiv);
   // request 2: a „Kulcsszavak" cím a nézet-leírással bővül (aktiv szerint); nincs aktív → csak a bázis cím
@@ -1269,6 +1300,15 @@ function kulcsszo_blokk_render() {
   // szövegesen a forrás-feliraton marad. A kártya-Chart a _teljes_mod flaget olvassa (chart_letrehoz).
   if (aktiv === TELJES_KULCS) {
     rajzolhatok.forEach(function (k) { k._teljes_mod = true; });
+  }
+
+  // ÉLŐ-MÉRÉS MARKER magyarázata: állandó, az oldalon látható callout a blokk alján — CSAK ha legalább egy
+  // rajzolható kártyán van marker (data-elo-marker). Így a felhasználó hover nélkül is érti, mit jelöl a szürke vonal.
+  if (rajzolhatok.some(function (k) { return k.hasAttribute(ATTR.elo_marker); })) {
+    const em = document.createElement("p");
+    em.className = "elo-marker-info";
+    em.textContent = ELO_MARKER_INFO;
+    blokk.appendChild(em);
   }
 
   // frissesseg CSAK ha van legalább egy RAJZOLHATÓ kártya (különben — mint 15a/15b — elmarad); a h2 után

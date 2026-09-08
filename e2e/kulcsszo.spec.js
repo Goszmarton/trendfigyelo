@@ -619,6 +619,46 @@ test("2m. van érvényes intervallum → az ALAPNEZET a TELJES (request 1), nem 
     .toHaveAttribute("data-intervallum", "teljes");   // a kezdő nézet a teljes időszak (az oldal ezzel nyílik)
 });
 
+// ── ÉLŐ-MÉRÉS MARKER (teljes nézet): meres_kezdete-nél függőleges jelölő + magyarázó callout ──
+// A heti nyers sorozat (racs_nyersRekord …,52,7) a NAP_MS=2026-08-01 → +364 nap ablakot fedi;
+// meres_kezdete ezen BELÜL (2026-10-01) → marker; a KÍVÜL (2026-06-01) → nincs marker.
+test("marker: teljes nézetben a heti szó élő-mérés markert kap, ha meres_kezdete az ablakon belül + magyarázó callout", async ({ page }) => {
+  await mock(page, {
+    // NINCS érvényes órás (1_het hibás) → a teljes = az 1_ev másodlagos (2026-08-01 → 2027-07-31)
+    regObj: reg({ "kórház": regSzo({ domen: "egeszseg", meres_kezdete: "2026-10-01", intervallumok: {
+      "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"), "1_ho": ivHibas("keves_pont"),
+      "3_ho": ivHibas("keves_pont"), "1_ev": ivHibas("nincs_lancolas") } }) }),
+    nyersObj: nyers({ "kórház": [nyersRekord("kórház")] }),
+    mpRegObj: mpReg({ "kórház": mpSzo("het", { "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"),
+      "1_ho": ivHibas("keves_pont"), "3_ho": ivHibas("keves_pont"), "1_ev": hetIvErv(0, 52) },
+      { domen: "egeszseg", meres_kezdete: "2026-10-01" }) }),
+    mpNyersObj: mpNyers({ "kórház": [racs_nyersRekord("kórház", 52, 7)] }),
+  });
+  await page.goto("/");
+  const k = page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="kórház"]');
+  await k.waitFor();
+  await expect(k).toHaveAttribute("data-elo-marker", "2026-10-01");          // a kártyán a marker dátuma
+  await expect(page.locator("#kulcsszo-blokk .elo-marker-info")).toHaveCount(1);  // magyarázó callout jelen
+});
+
+test("marker: NINCS marker/callout, ha meres_kezdete az ablak ELŐTT van (nincs bal-becslés)", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "kórház": regSzo({ domen: "egeszseg", meres_kezdete: "2026-06-01", intervallumok: {
+      "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"), "1_ho": ivHibas("keves_pont"),
+      "3_ho": ivHibas("keves_pont"), "1_ev": ivHibas("nincs_lancolas") } }) }),
+    nyersObj: nyers({ "kórház": [nyersRekord("kórház")] }),
+    mpRegObj: mpReg({ "kórház": mpSzo("het", { "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"),
+      "1_ho": ivHibas("keves_pont"), "3_ho": ivHibas("keves_pont"), "1_ev": hetIvErv(0, 52) },
+      { domen: "egeszseg", meres_kezdete: "2026-06-01" }) }),
+    mpNyersObj: mpNyers({ "kórház": [racs_nyersRekord("kórház", 52, 7)] }),
+  });
+  await page.goto("/");
+  const k = page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="kórház"]');
+  await k.waitFor();
+  await expect(k).not.toHaveAttribute("data-elo-marker", /.*/);              // nincs marker (ablak előtti mk)
+  await expect(page.locator("#kulcsszo-blokk .elo-marker-info")).toHaveCount(0);  // nincs callout
+});
+
 // ── TELJES-NEZET Szelet 1 (DOM-only routing) — 4 RED, mind AZONNALI AssertionError ──────────────
 // A B/C/D a teljes módba evaluate(aktiv_intervallum_valt("teljes"))-szel lép: a még nem létező gombra
 // kattintás TIMEOUT lenne (nem AssertionError); a gomb léte + huzalozása a T1 (gomb) dolga. A count()/
