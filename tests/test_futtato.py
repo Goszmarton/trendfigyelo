@@ -1509,6 +1509,18 @@ def test_szamitott_plafon_reggel_a_reggeli_budgettel():
     assert futtato._szamitott_plafon(c, "este") == vart_este
 
 
+def test_eles_config_rekesz_max_10_teljes_farok_lefedes():
+    # 2026-09-08: a 14-napos újramérés után trend_idosor_rekesz_max 5→10, hogy a MEGJELENÍTETT
+    # farok (trend_megjelenites_max 25 − trend_idosor_max 15 = 10) MINDEN kártyája sparkline-t
+    # kapjon (a korlát a mérés szerint a futások 76%-ában harapott). Esti plafon 148→168.
+    from pathlib import Path
+    from trendfigyelo import config
+    c = config.betolt(Path(__file__).resolve().parent.parent / "config.yaml")
+    assert c.trend_idosor_rekesz_max == 10
+    assert c.trend_idosor_rekesz_max == c.trend_megjelenites_max - c.trend_idosor_max  # teljes farok
+    assert futtato._szamitott_plafon(c, "este") == 168
+
+
 # --- Task 6: futtat() reggeli kulcsszó-integráció (órás részhalmaz + másodlagos + per-szó nyers/lánc) ---
 
 def test_futtat_reggel_ir_profil3_nyerset_esti_szo_megmarad(tmp_path):
