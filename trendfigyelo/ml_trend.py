@@ -33,3 +33,23 @@ def loess(x, y, span=0.4, robusztus_iter=1):
         u = np.clip(r / (6 * s), -1, 1)
         sulyok = (1 - u ** 2) ** 2
     return yhat
+
+
+def cv_r2(x, y, fit_predict, k=5):
+    """Determinista k-fold out-of-sample R². Fold = index % k (NINCS véletlen)."""
+    x = np.asarray(x, float); y = np.asarray(y, float)
+    n = len(x)
+    if n < k + 2:
+        return 0.0
+    yhat = np.full(n, np.nan)
+    for f in range(k):
+        teszt = np.arange(n) % k == f
+        tren = ~teszt
+        if tren.sum() < 2 or teszt.sum() == 0:
+            continue
+        yhat[teszt] = fit_predict(x[tren], y[tren], x[teszt])
+    ok = ~np.isnan(yhat)
+    ss_tot = ((y[ok] - y[ok].mean()) ** 2).sum()
+    if ss_tot <= 0:
+        return 0.0
+    return float(1 - ((y[ok] - yhat[ok]) ** 2).sum() / ss_tot)
