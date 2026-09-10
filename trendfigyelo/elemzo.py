@@ -371,15 +371,29 @@ def _valasz_sema(youtube=False, mode="este"):
             "required": required, "properties": props}
 
 
+MAX_TOKENS = 32000   # a gondolkodás (adaptive thinking) ÉS a strukturált kimenet KÖZÖS kerete;
+#  16000 kevés lett a bővült payloadon (a thinking elhasználta, a szöveg üresre/rövidre csonkolt);
+#  32000 felett az SDK időtúllépés-védelme miatt STREAMING kell (messages.stream + get_final_message).
+
+
 class _AnthropicKliens:
-    """Alap kliens-varrat: az anthropic SDK-t hívja strukturált kimenettel."""
+    """Alap kliens-varrat: az anthropic SDK-t STREAMELVE hívja strukturált kimenettel.
+    Az `sdk` injektálható (teszt); None → az anthropic.Anthropic() a környezeti kulccsal."""
+
+    def __init__(self, sdk=None):
+        self._sdk = sdk
+
+    def _kliens(self):
+        if self._sdk is not None:
+            return self._sdk
+        import anthropic
+        return anthropic.Anthropic()   # ANTHROPIC_API_KEY a környezetből
 
     def uzenet(self, payload, modell, mode="este"):
         import json
-        import anthropic
-        kliens = anthropic.Anthropic()   # ANTHROPIC_API_KEY a környezetből
-        valasz = kliens.messages.create(
-            model=modell, max_tokens=16000,
+        kliens = self._kliens()
+        with kliens.messages.stream(   # STREAM: a nagy max_tokens nem üt HTTP-időtúllépésbe
+            model=modell, max_tokens=MAX_TOKENS,
             thinking={"type": "adaptive"},
             output_config={"effort": "medium",
                            "format": {"type": "json_schema",
@@ -388,7 +402,8 @@ class _AnthropicKliens:
             messages=[{"role": "user", "content":
                        "Elemezd az alábbi VALÓS számokat (JSON). Csak ezekből dolgozz:\n"
                        + json.dumps(payload, ensure_ascii=False)}],
-        )
+        ) as folyam:
+            valasz = folyam.get_final_message()
         szoveg = next(b.text for b in valasz.content if b.type == "text")
         return json.loads(szoveg)
 

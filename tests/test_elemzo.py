@@ -347,6 +347,43 @@ def test_elemez_ujraprobal_intermittens_hiba_utan_es_sikerul():
     assert kliens.hivasok == 3      # 2 bukás + 1 siker
 
 
+def test_anthropic_kliens_streamel_es_nagy_kimeneti_keret():
+    # a valódi API-varrat: STREAMEL (nem create) + max_tokens=32000, hogy a gondolkodás ÉS a
+    # teljes szöveg is elférjen (16000-nél a bővebb payloadon az adaptív thinking elhasználta a keretet).
+    # Az SDK injektálható (nincs anthropic a teszt-venvben), így a varrat valós kódja fut.
+    import json as _json
+    rogzitett = {}
+    valasz_json = _json.dumps(_ai_valasz(), ensure_ascii=False)
+
+    class _Block:
+        type = "text"
+        text = valasz_json
+
+    class _Msg:
+        content = [_Block()]
+
+    class _Stream:
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+        def get_final_message(self): return _Msg()
+
+    class _Messages:
+        def stream(self, **kw):
+            rogzitett.update(kw)
+            return _Stream()
+        def create(self, **kw):
+            rogzitett["create_hivva"] = True
+            raise AssertionError("create-et hívott stream helyett")
+
+    class _FakeSDK:
+        def __init__(self): self.messages = _Messages()
+
+    out = elemzo._AnthropicKliens(sdk=_FakeSDK()).uzenet({"felkapott": {}}, "claude-opus-4-8", mode="este")
+    assert out == _ai_valasz()                    # a stream végső üzenetéből parse-olt JSON
+    assert rogzitett.get("max_tokens") == 32000   # megnövelt kimeneti keret
+    assert "create_hivva" not in rogzitett        # streamel, NEM create
+
+
 import json
 from pathlib import Path
 
