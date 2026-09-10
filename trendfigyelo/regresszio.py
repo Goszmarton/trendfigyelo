@@ -25,7 +25,7 @@ import statistics
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from . import json_export
+from . import json_export, ml_trend
 
 INTERVALLUMOK = {"1_het": 7, "2_het": 14, "1_ho": 30, "3_ho": 90, "1_ev": 365}
 
@@ -183,7 +183,7 @@ def regresszio_egy_ablak(pontok, ablak_kezdet_utc, ablak_veg_utc, ablak_hossz_na
     else:
         reziduum_szokasos = None
         illeszkedes = None
-    return {
+    eredmeny = {
         "ervenyes": True,
         "meredekseg_nap": round(b, 3),
         "se_meredekseg": round(se, 4),
@@ -204,6 +204,11 @@ def regresszio_egy_ablak(pontok, ablak_kezdet_utc, ablak_veg_utc, ablak_hossz_na
         "reziduum_szokasos": reziduum_szokasos,
         "illeszkedes": illeszkedes,
     }
+    nemlin = ml_trend.nemlin_trend(
+        [{"idopont_utc": p["idopont_utc"], "ertek": p["ertek"]} for p in lezart])
+    if nemlin is not None:
+        eredmeny["nemlin"] = nemlin
+    return eredmeny
 
 
 def _domen_tipus(szo, aktivak, napok):

@@ -569,3 +569,29 @@ def test_regresszio_egy_ablak_sav_min_padlo_kis_elteresnel():
         pts, t0.isoformat(), (t0 + timedelta(hours=47)).isoformat(), 2)
     assert iv["ervenyes"] is True
     assert iv["illeszkedes"] == "illeszkedik"      # |2| <= max(2×MAD, 3,0) = 3,0
+
+
+def test_regresszio_egy_ablak_nemlin_blokkot_ad_eleg_ponttal():
+    # a brief eredeti f"2026-01-{1+i:02d}" mintája napi 40 ponttal túlfut január 31-én
+    # (ValueError: day 32) — timedelta-alapú dátumgenerálásra javítva, a pontszám/jel VÁLTOZATLAN.
+    import numpy as np
+    t0 = datetime(2026, 1, 1, tzinfo=timezone.utc)
+    pontok = [{"idopont_utc": (t0 + timedelta(days=i)).isoformat(),
+               "ertek": float(50 + 20 * np.sin(i / 5.0)), "reszleges": False} for i in range(40)]
+    out = regresszio.regresszio_egy_ablak(pontok, pontok[0]["idopont_utc"], pontok[-1]["idopont_utc"], 40)
+    assert out["ervenyes"] is True
+    assert "nemlin" in out and out["nemlin"]["van_struktura"] is True
+
+
+def test_regresszio_egy_ablak_nemlin_hianyzik_kevesebb_mint_12_zart_pontnal():
+    pts, t0 = _pontok_egyenes(10, meredek=0.0, bazis=50.0)
+    iv = regresszio.regresszio_egy_ablak(
+        pts, t0.isoformat(), (t0 + timedelta(hours=9)).isoformat(), 0, min_pont=5)
+    assert iv["ervenyes"] is True
+    assert "nemlin" not in iv
+
+
+def test_regresszio_egy_ablak_nemlin_hianyzik_ervenytelen_agon():
+    iv = regresszio.regresszio_egy_ablak([], "2026-01-01T00:00:00+00:00", "2026-01-02T00:00:00+00:00", 1)
+    assert iv["ervenyes"] is False
+    assert "nemlin" not in iv
