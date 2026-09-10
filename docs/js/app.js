@@ -104,9 +104,9 @@ const ADATFORRAS_INFO = "Bekapcsolva minden charton egy szürke függőleges von
 // jelenik meg (ha a szónak van kimutatható struktúrája — `nemlin.van_struktura`), a meglévő piros lineáris trend
 // MELLETT (nem helyette). A szín szándékosan elüt: kék=adat, piros=lineáris trend, narancs=szint, szürke=marker.
 const NEMLIN_SZIN = "#8e44ad";
-const MLTREND_GOMB_BE = "Nemlineáris trend (ML) – bekapcsolva";
-const MLTREND_GOMB_KI = "Nemlineáris trend (ML)";
-const MLTREND_INFO = "Bekapcsolva a kirajzolható charton egy lila görbe mutatja a Google-trend nemlineáris (gépi tanulásos) illesztését, ha van kimutatható struktúra a mért adaton. A piros egyenes trendvonal ettől függetlenül megmarad.";
+const MLTREND_GOMB_BE = "Nemlineáris (LOESS) trend – bekapcsolva";
+const MLTREND_GOMB_KI = "Nemlineáris (LOESS) trend";
+const MLTREND_INFO = "Bekapcsolva a kirajzolható charton egy lila görbe mutatja a Google-trend nemlineáris illesztését (LOESS-simítás, adatból hangolt simasággal), ha van kimutatható szerkezet a mért adaton. A piros egyenes trendvonal ettől függetlenül megmarad. Részletek az Adatokról oldalon.";
 const TENGELY_FELIRAT = "relatív keresési szint (0–100)";   // EN DASH
 const CSUPA_NULLA_SZOVEG = "Ezen az időszakon nincs érdemi keresési aktivitás (a mért értékek végig nulla körül).";
 const URES_NINCS_ABLAK = "Az adatsor ezen az időszakon nem érhető el.";

@@ -49,7 +49,40 @@
     <section class="adat-doboz">
       <h2>Trend</h2>
       <p>A megjelenített időszakra egy <strong>egyenest illesztünk</strong> (legkisebb négyzetek módszere). Az irány (növekvő / stagnáló / csökkenő) az egyenes meredekségéből adódik; az R² (0–1) az illeszkedés <em>jóságát</em> írja le.</p>
+      <p><strong>A képlet.</strong> Az egyenes <code>ŷ = a + b·x</code>, ahol a meredekség <code>b = Σ(xᵢ − x̄)(yᵢ − ȳ) / Σ(xᵢ − x̄)²</code> és a metszet <code>a = ȳ − b·x̄</code> (a hibanégyzetek <code>Σ(yᵢ − (a + b·xᵢ))²</code> összegét minimalizálja). Az illeszkedés jósága <code>R² = 1 − Σ(yᵢ − ŷᵢ)² / Σ(yᵢ − ȳ)²</code>.</p>
+      <p class="adat-magyarazat">Ez az egyenes R²-e a <strong>saját pontjain</strong> mért (in-sample). A nemlineáris görbe R²-e ezzel szemben a szigorúbb <strong>out-of-sample</strong> (kihagyott pontokon mért) érték - ezért a két R² közvetlenül <strong>nem hasonlítható össze</strong> (a görbe kártyán kiírt „lineáris … helyett" száma épp ezért egy külön, out-of-sample lineáris R²).</p>
       <p class="adat-magyarazat">Az irány és az R² <strong>leíró</strong> mérőszám - nem azt állítja, hogy a mozgás „jelentős" vagy „valódi". Minden szó a saját 0–100 relatív skáláján áll (a Google így normál), ezért <strong>a szavak egymással nem összemérhetők</strong>; csak az egy szón belüli mozgás olvasható.</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Nemlineáris (LOESS) trend</h2>
+      <p>A piros egyenes trend mellé bekapcsolható egy <strong>lila görbe</strong> (a chart fölötti „Nemlineáris (LOESS) trend" gombbal, alapból kikapcsolva). Amíg az egyenes egyetlen irányba tart, a görbe <strong>meghajolhat</strong>, így a keresettség hullámzását, csúcsait és völgyeit gyakran sokkal jobban követi.</p>
+      <p><strong>Hogyan számoljuk?</strong> A módszer neve <strong>LOESS</strong> (lokálisan súlyozott regresszió). A görbe minden pontjához csak a <em>közeli</em> mérési pontokra illesztünk egy kis egyenest - a közelebbi pontok nagyobb súllyal, a távoliak kisebbel -, és ezekből a helyi illesztésekből áll össze a folytonos, sima vonal. Egy <strong>robusztus lépés</strong> lefokozza a kiugró órás értékeket, hogy egy-egy zajos csúcs ne rántsa el a görbét. A görbe nem <em>egyetlen</em> globális képlet és nem jóslat, hanem sok kis helyi illesztésből összeálló, a <strong>mért adatból</strong> származó összegzés (a képleteket lásd lent).</p>
+      <p><strong>Statisztika vagy „gépi tanulás"?</strong> Legyünk pontosak, hogy ne írjunk túlzást: a LOESS <strong>klasszikus statisztikai módszer</strong> (nem-parametrikus lokális regresszió, Cleveland, 1979) - <em>nem</em> neurális háló és <em>nem</em> betanított modell. Ha „gépi tanulásként" hallod emlegetni, az tág, gyűjtő értelemben áll (ezért is a pontosabb „LOESS" a gombon). Ami a gépi tanulás eszköztárával valóban közös: a görbe simaságát nem rögzítjük előre képlettel, hanem <strong>az adatból, kereszt-validációval hangoljuk ki</strong>. Szigorúan fogalmazva ez <strong>nem-parametrikus statisztikai simítás, adatból választott simasággal</strong>.</p>
+      <p><strong>Hogyan választjuk a simaságot?</strong> Azt, hogy a görbe mennyire legyen sima (mekkora „szomszédságból" dolgozzon), nem kézzel állítjuk be, hanem <strong>kereszt-validációval</strong>: a sorozatot részekre osztjuk, a görbét az egyik részen illesztjük, és a <em>kihagyott</em>, nem látott pontokon mérjük, mennyire találja el őket. Az a simaság nyer, amelyik az ismeretlen pontokat a legjobban előrejelzi. A számítás <strong>determinista</strong> - ugyanabból az adatból mindig ugyanaz a görbe.</p>
+      <p><strong>Milyen statisztika a mérőszáma?</strong> A kiírt R² <strong>nem</strong> a szokásos „ráillik-e a görbe a saját pontjaira" érték (az egy elég hullámos görbénél mindig szépnek tűnik), hanem <strong>out-of-sample</strong> (kereszt-validált) R²: azt méri, mennyire jelzi előre a görbe a <em>nem látott</em> pontokat. Ez lényegesen szigorúbb, és pont ez véd a <strong>túltanulás</strong> (a zaj „bemagolása") ellen.</p>
+      <p><strong>Az őr - mikor NINCS görbe.</strong> A görbét csak akkor rajzoljuk ki, ha a kereszt-validált R²-e (1) érdemben, egy küszöbbel <strong>felülmúlja</strong> az egyenesét, ÉS (2) <strong>pozitív</strong> (vagyis jobb, mint egyszerűen az átlagot húzni). Ha nem, a kártya őszintén azt írja: <strong>„nincs érdemi nemlineáris szerkezet"</strong> - zajos szóra nem hazudunk kanyargó trendet.</p>
+      <p><strong>A képletek dióhéjban.</strong></p>
+      <ul>
+        <li><strong>Tricube súly (a „közelség" súlyozása):</strong> egy görbepont körül a legtávolabbi figyelembe vett szomszédhoz mért, arra normált távolság <code>u = d / d<sub>max</sub></code> (0–1) esetén a súly <code>w(u) = (1 − |u|³)³</code> - a legközelebbi pont súlya ~1, a szomszédság széle felé 0-hoz tart.</li>
+        <li><strong>Helyi illesztés (súlyozott legkisebb négyzetek):</strong> minden görbeponthoz azt az <code>a, b</code> egyenest keressük, amely minimalizálja a <code>Σᵢ wᵢ · (yᵢ − (a + b·xᵢ))²</code> súlyozott hibát; a görbe értéke ott <code>ŷ = a + b·x</code>. A sok helyi egyenesből áll össze a folytonos görbe.</li>
+        <li><strong>A simaság (span) választása:</strong> a sorozatot <code>k = 5</code> rekeszre osztjuk a <code>rekesz(i) = i mod 5</code> szabállyal; minden simaság-jelöltre (<code>span ∈ {0,3; 0,5; 0,7}</code>, a szomszédság a pontok ekkora hányada) a rekeszen <em>kívül</em> illesztünk, és a kihagyott pontokon mérünk - a legjobb out-of-sample R²-ű span nyer.</li>
+        <li><strong>Out-of-sample R²:</strong> <code>R² = 1 − Σ(yᵢ − ŷᵢ)² / Σ(yᵢ − ȳ)²</code>, ahol <code>ŷᵢ</code> a <em>kihagyott</em> pont becslése, <code>ȳ</code> a sorozat átlaga. <code>R² = 1</code> tökéletes; <code>R² = 0</code> annyit ér, mint az átlagot húzni; <code>R² &lt; 0</code> rosszabb az átlagnál.</li>
+        <li><strong>Az őr (mikor van görbe):</strong> <code>görbe ⇔ (R²<sub>görbe</sub> ≥ R²<sub>egyenes</sub> + 0,05) ÉS (R²<sub>görbe</sub> &gt; 0)</code> - mindkét R² a fenti out-of-sample érték.</li>
+      </ul>
+      <p><strong>Hogyan olvasd a mérőszámokat?</strong></p>
+      <ul>
+        <li><strong>„nemlineáris illeszkedés R²=0,47 (lineáris 0,08 helyett)":</strong> a görbe a nem látott pontok ingadozásának ~47%-át magyarázza, szemben az egyenes ~8%-ával - vagyis a mozgás sokkal inkább görbe, mint egyenes. A magasabb érték erősebb kimutatható szerkezetet jelent (0–1 skála).</li>
+        <li><strong>„N fordulópont":</strong> hányszor vált irányt (emelkedésből esésbe vagy fordítva) a sima görbe - mennyire hullámzó a mögöttes mozgás.</li>
+        <li><strong>„a görbe emelkedő / csökkenő / hullámzó":</strong> a görbe nettó iránya a teljes ablakon (hullámzó, ha oda-vissza mozog és nagyjából ott végződik, ahol kezdődött).</li>
+      </ul>
+      <p class="adat-magyarazat">Mint a lineáris trend, ezek is <strong>leíró</strong> mérőszámok: a görbe a múltat összegzi, <strong>nem jósol jövőt</strong>. A 0–100 skála szavanként külön normált, ezért <strong>a szavak most sem összemérhetők</strong> - csak az egy szón belüli alak olvasható.</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Mitől - és mikortól - vannak saját adataink?</h2>
+      <p>A chart fölötti „Mikortól gyűjtjük az adatokat?" gombbal bekapcsolható minden charton egy <strong>szürke függőleges vonal</strong> (alapból kikapcsolva). Ez azt a napot jelöli, <strong>mikortól gyűjtjük mi magunk</strong> az adott szó adatát (az első saját mérésünk).</p>
+      <p>A vonaltól <strong>jobbra</strong> a mi általunk, óránként/naponta <strong>ténylegesen mért</strong> adatunk áll. A vonaltól <strong>balra</strong> a Google <strong>saját, visszamenőleges becslése</strong> látható arról az időszakról, amikor még nem figyeltük a szót - ez <em>nem</em> a mi mérésünk, hanem háttér-kontextus. Ezért érdemes a bal oldali szakaszt óvatosabban olvasni.</p>
     </section>
 
     <section class="adat-doboz">
