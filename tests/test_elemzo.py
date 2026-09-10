@@ -325,6 +325,28 @@ def test_elemez_atadja_a_modot_a_kliensnek():
     assert kliens.hivasok[0][2] == "reggel"      # (payload, modell, mode)
 
 
+class KamuKliensNProbaraJo:
+    """Az első `bukasok` hívás dob (intermittens API-400 szimulációja), utána sikeresen visszaad."""
+    def __init__(self, valasz, bukasok):
+        self._valasz = valasz
+        self._bukasok = bukasok
+        self.hivasok = 0
+
+    def uzenet(self, payload, modell, mode="este"):
+        self.hivasok += 1
+        if self.hivasok <= self._bukasok:
+            raise RuntimeError("400 invalid_request_error: Invalid request data (szimulált intermittens)")
+        return self._valasz
+
+
+def test_elemez_ujraprobal_intermittens_hiba_utan_es_sikerul():
+    # bounded retry: 2 átmeneti bukás után a 3. hívás sikerül → a valós válasz jön vissza (nem hasal el)
+    kliens = KamuKliensNProbaraJo(_ai_valasz(), bukasok=2)
+    valasz = elemzo.elemez({"felkapott": {}}, kliens=kliens, alvo=lambda _mp: None)
+    assert valasz == _ai_valasz()
+    assert kliens.hivasok == 3      # 2 bukás + 1 siker
+
+
 import json
 from pathlib import Path
 
@@ -358,7 +380,11 @@ def test_futtat_sikeres_ut_ir_artefaktot_archivumot_indexet(tmp_path):
 
 
 class HibasKliens:
+    def __init__(self):
+        self.hivasok = 0
+
     def uzenet(self, payload, modell, mode="este"):
+        self.hivasok += 1
         raise RuntimeError("429 szimulált")
 
 
@@ -366,8 +392,10 @@ def test_futtat_fail_soft_megorzi_az_elozo_elemzest(tmp_path):
     dd = _minimal_docs_data(tmp_path)
     regi = json.dumps({"nap": "2026-08-21", "modell": "regi"}, ensure_ascii=False)
     (dd / "elemzes.json").write_text(regi, encoding="utf-8")
-    kod = elemzo.futtat(dd, nap="2026-08-22", kliens=HibasKliens())
+    kliens = HibasKliens()
+    kod = elemzo.futtat(dd, nap="2026-08-22", kliens=kliens, alvo=lambda _mp: None)
     assert kod == 2
+    assert kliens.hivasok == 3      # tartós hiba: mind a 3 próba kimerült, MAJD fail-soft
     # a LEMEZEN a régi maradt (SZANDEKOS-ZOLD-VAK: a lemezt nézzük, nem a visszatérést)
     a_lemezen = json.loads((dd / "elemzes.json").read_text(encoding="utf-8"))
     assert a_lemezen["nap"] == "2026-08-21"

@@ -8,6 +8,7 @@ külön ELMÉLETI mező (spec §2.2).
 
 import json
 import logging
+import time
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -392,9 +393,30 @@ class _AnthropicKliens:
         return json.loads(szoveg)
 
 
-def elemez(payload, kliens=None, modell=MODELL, mode="este"):
+RETRY_PROBAK = 3                 # a Claude-hívás max ennyi próbája
+RETRY_BACKOFF_MP = (5, 20, 60)   # növekvő várakozás a próbák közt (mp)
+
+
+def elemez(payload, kliens=None, modell=MODELL, mode="este",
+           probak=RETRY_PROBAK, backoff_mp=RETRY_BACKOFF_MP, alvo=None):
+    """A Claude-hívás BOUNDED RETRY-vel: az Anthropic API néha intermittens 400-at
+    ('Invalid request data') ad egy egyébként érvényes, determinista kérésre — ugyanaz
+    a kérés a következő percben már 200. `probak` próba, közöttük `backoff_mp` várakozás;
+    csak az utolsó bukás propagál (a `futtat` fail-soft-ja ott lép be). `alvo` = a várakozó
+    (default time.sleep; tesztben no-op)."""
     kliens = kliens or _AnthropicKliens()
-    return kliens.uzenet(payload, modell, mode)
+    alvo = alvo if alvo is not None else time.sleep
+    utolso = None
+    for i in range(probak):
+        try:
+            return kliens.uzenet(payload, modell, mode)
+        except Exception as e:   # noqa: BLE001 — intermittens API-hiba: bounded retry, végül propagál
+            utolso = e
+            if i + 1 < probak:
+                _log.warning("FIGYELEM: az AI-elemzés hívása elhasalt (%s); újrapróba %d/%d %d mp múlva.",
+                             e, i + 2, probak, backoff_mp[i])
+                alvo(backoff_mp[i])
+    raise utolso
 
 
 def _gondolatjel_rovidit(x):
@@ -514,7 +536,7 @@ def _elozo_archivum(docs_data, nap):
     return _betolt(Path(docs_data) / "elemzesek" / f"{max(korabbi)}.json")
 
 
-def futtat(docs_data, nap, mode="este", kliens=None):
+def futtat(docs_data, nap, mode="este", kliens=None, alvo=None):
     docs_data = Path(docs_data)
     adatok = {
         "regresszio": _betolt(docs_data / "kulcsszo_regresszio.json") or {},
@@ -534,7 +556,7 @@ def futtat(docs_data, nap, mode="este", kliens=None):
         mode=mode,
     )
     try:
-        ai_valasz = elemez(payload, kliens=kliens, mode=mode)
+        ai_valasz = elemez(payload, kliens=kliens, mode=mode, alvo=alvo)
     except Exception as e:                       # noqa: BLE001 — fail-soft: az elemzés nem pótolhatatlan
         _log.warning("FIGYELEM: az AI-elemzés elhasalt (%s) — az előző elemzes.json marad.", e)
         return 2
