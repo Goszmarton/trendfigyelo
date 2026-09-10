@@ -1409,3 +1409,109 @@ test("ML-trend: alapból KI (nincs lila görbe), a gomb bekapcsolja", async ({ p
   await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="kórház"]'))
     .toHaveAttribute("data-nemlin", "true");
 });
+
+// ── ML-TREND görbe + metrikák (Task 6) ──────────────────────────────────────────────────────────
+test("ML-trend: bekapcsolva lila görbe-dataset + metrika-szöveg a kártyán", async ({ page }) => {
+  // ugyanaz a mock, mint Task 5 (ivNemlin)
+  const ivNemlin = { ...hetIvErv(0, 52), nemlin: { van_struktura: true,
+    gorbe: Array.from({length: 20}, (_, i) => ({ idopont_utc: racs_iso(i*2, 7), ertek: 40 + i })),
+    cv_r2: 0.42, lin_cv_r2: 0.08, span: 0.3, eff_df: 6.2, irany: "novekszik",
+    fordulopontok: 2, rezidualis_szoras: 7.1 } };
+  await mock(page, {
+    regObj: reg({ "kórház": regSzo({ domen: "egeszseg", intervallumok: {
+      "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"), "1_ho": ivHibas("keves_pont"),
+      "3_ho": ivHibas("keves_pont"), "1_ev": ivHibas("nincs_lancolas") } }) }),
+    nyersObj: nyers({ "kórház": [nyersRekord("kórház")] }),
+    mpRegObj: mpReg({ "kórház": mpSzo("het", { "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"),
+      "1_ho": ivHibas("keves_pont"), "3_ho": ivHibas("keves_pont"), "1_ev": ivNemlin }, { domen: "egeszseg" }) }),
+    mpNyersObj: mpNyers({ "kórház": [racs_nyersRekord("kórház", 52, 7)] }),
+  });
+  await page.goto("/");
+  await page.locator("#kulcsszo-blokk .mltrend-gomb").click();
+  await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="kórház"]'))
+    .toHaveAttribute("data-rendered", "true");
+  // a Chart-példány datasetjei közt van egy a NEMLIN_SZIN-nel
+  const vanLila = await page.evaluate(() => {
+    const p = (window.chart_peldanyok || {})["kórház"];
+    return !!p && p.data.datasets.some(d => d.borderColor === "#8e44ad");
+  });
+  expect(vanLila).toBe(true);
+  await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="kórház"] .merteszamok'))
+    .toContainText("nemlineáris");
+});
+
+// NEM csak a TELJES (xy) nézetben rajzol — a mltrend-sáv minden nézetben elérhető (l. app.js komment), a
+// NORMÁL (category-tengelyes, fix "1_ev" gomb) nézeten a label-indexelt racs.nemlin adja a görbét.
+test("ML-trend: normál (nem teljes) nézetben is rajzol lila görbét", async ({ page }) => {
+  const ivNemlin = { ...hetIvErv(0, 52), nemlin: { van_struktura: true,
+    gorbe: Array.from({length: 20}, (_, i) => ({ idopont_utc: racs_iso(i*2, 7), ertek: 40 + i })),
+    cv_r2: 0.42, lin_cv_r2: 0.08, span: 0.3, eff_df: 6.2, irany: "novekszik",
+    fordulopontok: 2, rezidualis_szoras: 7.1 } };
+  await mock(page, {
+    regObj: reg({ "kórház": regSzo({ domen: "egeszseg", intervallumok: {
+      "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"), "1_ho": ivHibas("keves_pont"),
+      "3_ho": ivHibas("keves_pont"), "1_ev": ivHibas("nincs_lancolas") } }) }),
+    nyersObj: nyers({ "kórház": [nyersRekord("kórház")] }),
+    mpRegObj: mpReg({ "kórház": mpSzo("het", { "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"),
+      "1_ho": ivHibas("keves_pont"), "3_ho": ivHibas("keves_pont"), "1_ev": ivNemlin }, { domen: "egeszseg" }) }),
+    mpNyersObj: mpNyers({ "kórház": [racs_nyersRekord("kórház", 52, 7)] }),
+  });
+  await page.goto("/");
+  await page.locator("#kulcsszo-blokk .mltrend-gomb").click();
+  await page.locator('button[data-intervallum="1_ev"]').click();
+  await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="kórház"]'))
+    .toHaveAttribute("data-rendered", "true");
+  const vanLila = await page.evaluate(() => {
+    const p = (window.chart_peldanyok || {})["kórház"];
+    return !!p && p.data.datasets.some(d => d.borderColor === "#8e44ad");
+  });
+  expect(vanLila).toBe(true);
+});
+
+test("ML-trend: bekapcsolva DE nincs struktúra → nincs lila görbe, 'nincs érdemi nemlineáris szerkezet'", async ({ page }) => {
+  const ivNincsStruktura = { ...hetIvErv(0, 52), nemlin: { van_struktura: false, gorbe: [],
+    cv_r2: 0.05, lin_cv_r2: 0.03, span: 0.3, eff_df: null, irany: null,
+    fordulopontok: null, rezidualis_szoras: null } };
+  await mock(page, {
+    regObj: reg({ "hitel": regSzo({ domen: "gazdasag", intervallumok: {
+      "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"), "1_ho": ivHibas("keves_pont"),
+      "3_ho": ivHibas("keves_pont"), "1_ev": ivHibas("nincs_lancolas") } }) }),
+    nyersObj: nyers({ "hitel": [nyersRekord("hitel")] }),
+    mpRegObj: mpReg({ "hitel": mpSzo("het", { "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"),
+      "1_ho": ivHibas("keves_pont"), "3_ho": ivHibas("keves_pont"), "1_ev": ivNincsStruktura }, { domen: "gazdasag" }) }),
+    mpNyersObj: mpNyers({ "hitel": [racs_nyersRekord("hitel", 52, 7)] }),
+  });
+  await page.goto("/");
+  await page.locator("#kulcsszo-blokk .mltrend-gomb").click();
+  const vanLila = await page.evaluate(() => {
+    const p = (window.chart_peldanyok || {})["hitel"];
+    return !!p && p.data.datasets.some(d => d.borderColor === "#8e44ad");
+  });
+  expect(vanLila).toBe(false);
+  await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="hitel"] .merteszamok'))
+    .toContainText("nincs érdemi nemlineáris szerkezet");
+});
+
+test("ML-trend: kikapcsolva → nincs lila görbe, nincs nemlineáris-metrika a kártyán", async ({ page }) => {
+  const ivNemlin = { ...hetIvErv(0, 52), nemlin: { van_struktura: true,
+    gorbe: Array.from({length: 20}, (_, i) => ({ idopont_utc: racs_iso(i*2, 7), ertek: 40 + i })),
+    cv_r2: 0.42, lin_cv_r2: 0.08, span: 0.3, eff_df: 6.2, irany: "novekszik",
+    fordulopontok: 2, rezidualis_szoras: 7.1 } };
+  await mock(page, {
+    regObj: reg({ "kórház": regSzo({ domen: "egeszseg", intervallumok: {
+      "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"), "1_ho": ivHibas("keves_pont"),
+      "3_ho": ivHibas("keves_pont"), "1_ev": ivHibas("nincs_lancolas") } }) }),
+    nyersObj: nyers({ "kórház": [nyersRekord("kórház")] }),
+    mpRegObj: mpReg({ "kórház": mpSzo("het", { "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"),
+      "1_ho": ivHibas("keves_pont"), "3_ho": ivHibas("keves_pont"), "1_ev": ivNemlin }, { domen: "egeszseg" }) }),
+    mpNyersObj: mpNyers({ "kórház": [racs_nyersRekord("kórház", 52, 7)] }),
+  });
+  await page.goto("/");   // a kapcsoló alapból KI — NEM kattintunk
+  const vanLila = await page.evaluate(() => {
+    const p = (window.chart_peldanyok || {})["kórház"];
+    return !!p && p.data.datasets.some(d => d.borderColor === "#8e44ad");
+  });
+  expect(vanLila).toBe(false);
+  await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="kórház"] .merteszamok'))
+    .not.toContainText("nemlineáris");
+});

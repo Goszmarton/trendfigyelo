@@ -610,6 +610,10 @@ const DOMEN_SORREND = ["megelhetes", "egeszsegugy", "oktatas", "gazdasag", "poli
   "energia", "jovedelem", "haztartasi_penzugy", "kozelet", null];
 const EGYEB_KULCS = "__egyeb__";
 const IRANY_MAGYAR = { novekszik: "iránya növekvő", csokken: "iránya csökkenő", stagnal: "iránya stagnáló" };
+// ML-TREND (Task 6): a nemlin.irany KÜLÖN érték-halmaz (novekszik/csokken/hullamzik — trendfigyelo/ml_trend.py
+// `irany`), NEM ugyanaz, mint a lineáris iv.irany (novekszik/csokken/stagnal) → külön szótár, rövid melléknévi
+// alakkal ("a görbe emelkedő", nem "a görbe iránya növekvő" — a mondat már kimondja, hogy görbéről van szó).
+const NEMLIN_IRANY_MAGYAR = { novekszik: "emelkedő", csokken: "csökkenő", hullamzik: "hullámzó" };
 // ÁTTEKINTŐ: a chip a MAI ELTÉRÉST mutatja a szó saját trendjéhez (nem a trend irányát): a backend 3-állapotú
 // `illeszkedes`-e — felette (▲, ma a trend fölé ugrott) / alatta (▼, a trend alá esett) / illeszkedik (✓, sávban).
 const ELTERES_SZOVEG = {
@@ -677,6 +681,7 @@ function racs_szo(racs) {
 }
 
 const chart_peldanyok = {};   // szo -> Chart-példány (a destroy()-hoz, spec 8b: nem halmozódhatnak)
+window.chart_peldanyok = chart_peldanyok;   // teszt-célra elérhető (ugyanaz az objektum-referencia, mutáció látszik)
 let megfigyelo = null;        // IntersectionObserver a lusta canvas-rajzoláshoz (mobil-görgetés, spec 6)
 
 // tiszta string→egész órarács-index (NINCS Date a böngészőben, nincs tz-konverzió): days_from_civil
@@ -758,7 +763,7 @@ function mered_szoveg(x) { return (x < 0 ? "-" : "+") + tizedes2(Math.abs(x)); }
 // az első szám a jel erőssége (pontok_nem_nulla/lezárt), nem a puszta fedettség; a régi "M/M óra" teljes mérést sugallt.
 // A se_meredekseg NEM jelenik meg (autokorreláció-torzított, mint az R², de a ± hamis szignifikanciát
 // sugallna — spec 6:599, a se-döntés). NEVEZŐ = pontok_hasznalt + pontok_hianyzo (= a lezárt órarács, robusztus).
-function merteszamok_szoveg(iv, racs, szint) {
+function merteszamok_szoveg(iv, racs, szint, mltrend_be) {
   const nevezo = iv.pontok_hasznalt + iv.pontok_hianyzo;
   const jelerosseg = iv.pontok_nem_nulla + "/" + iv.pontok_hasznalt + " " + racs_szo(racs) + " nem-nulla (" + iv.pontok_hasznalt + "/" + nevezo + " lezárt, " + iv.pontok_kihagyva_reszleges + " részleges kihagyva)";
   if (szint != null) {
@@ -767,12 +772,26 @@ function merteszamok_szoveg(iv, racs, szint) {
     // MINDEN rajzoló nézeten UGYANEZ (a 3_ho-n is — nem a 13 hetes ablaké), (a) döntés. + a jel erőssége.
     return "szint: " + szint_formaz(szint) + " (heti medián, 52 hét) · " + jelerosseg;
   }
-  return [
+  const alap = [
     IRANY_MAGYAR[iv.irany] || iv.irany,
     mered_szoveg(iv.meredekseg_nap) + " relatív pont/nap",
     "R² = " + tizedes2(iv.r2) + " (illeszkedés-jóság 0–1; a magasabb érték erősebb irányt jelent)",
     jelerosseg,
-  ].join(" · ");
+  ];
+  // ML-TREND (Task 6): a kapcsoló BE állásában toldjuk hozzá a nemlineáris mérőszám-sort (a lineáris a
+  // fentiek közt VÁLTOZATLAN marad) — a kapcsoló KI állásában nincs nemlin-szöveg (Global Constraints).
+  if (mltrend_be) alap.push(nemlin_metrika_szoveg(iv.nemlin));
+  return alap.join(" · ");
+}
+
+// a lila görbe mérőszám-sora: "nemlineáris illeszkedés R²=… (lineáris … helyett) · N fordulópont · a görbe X"
+// — ha nincs kimutatható struktúra (van_struktura:false VAGY a backend nem is számolt nemlin blokkot, pl.
+// n<12 pont), őszinte „nincs érdemi nemlineáris szerkezet" (nincs kitalált szám).
+function nemlin_metrika_szoveg(nemlin) {
+  if (!nemlin || !nemlin.van_struktura) return "nincs érdemi nemlineáris szerkezet";
+  return "nemlineáris illeszkedés R²=" + tizedes2(nemlin.cv_r2)
+    + " (lineáris " + tizedes2(nemlin.lin_cv_r2) + " helyett) · "
+    + nemlin.fordulopontok + " fordulópont · a görbe " + (NEMLIN_IRANY_MAGYAR[nemlin.irany] || nemlin.irany);
 }
 
 // a szint magyar megjelenítése: egész → "8"; tört → "8,5" (a data-szint attribútum a String(szint), gépnek)
@@ -920,8 +939,19 @@ function racs_epit(ablak, iv, racs, szint) {
   const nemlin_xy = (iv.nemlin && iv.nemlin.van_struktura)
     ? iv.nemlin.gorbe.map(function (p) { return { x: iso_ms(p.idopont_utc), y: p.ertek }; })
     : null;
+  // NORMÁL (category-tengelyes) nézethez: a görbe pontjait a SAJÁT slot-indexükre helyezzük (mint a vonal/
+  // szint_vonal), a köztes null-okat a spanGaps:true hidalja át (Task 6: a lila görbe NEM csak a teljes nézetben
+  // rajzol — a mltrend-sáv minden nézetben elérhető, ellentétben az adatforrás-markerrel).
+  let nemlin = null;
+  if (iv.nemlin && iv.nemlin.van_struktura) {
+    nemlin = new Array(ertekek.length).fill(null);
+    iv.nemlin.gorbe.forEach(function (p) {
+      const i = slot_index(p.idopont_utc, racs) - rajz_kezd;
+      if (i >= 0 && i < nemlin.length) nemlin[i] = p.ertek;
+    });
+  }
   return { labels: labels, ertekek: ertekek, xy: xy, vonal: vonal, vonal_van: vonal_van, vonal_xy: vonal_xy,
-           szint_vonal: szint_vonal, szint_xy: szint_xy, nemlin_xy: nemlin_xy,
+           szint_vonal: szint_vonal, szint_xy: szint_xy, nemlin_xy: nemlin_xy, nemlin: nemlin,
            adat_veg: lezart[lezart.length - 1].idopont_utc,
            szakadas: ertekek.filter(function (v) { return v === null; }).length,
            csupa_nulla: lezart.length > 0 && !van_nemnulla };
@@ -1000,7 +1030,7 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs, adatforras_be, mltrend_be) {
 
   const m = document.createElement("p");
   m.className = OSZT.merteszamok;
-  m.textContent = merteszamok_szoveg(iv, iv._racs, szoreg.szint);
+  m.textContent = merteszamok_szoveg(iv, iv._racs, szoreg.szint, mltrend_be);
   kartya.appendChild(m);
 
   const tf = document.createElement("p");
@@ -1067,6 +1097,9 @@ function chart_letrehoz(kartya) {
     if (racs.szint_xy) ds.push({ data: racs.szint_xy, spanGaps: true, borderColor: "#e69138", borderWidth: 1.5, borderDash: [6, 4], pointRadius: 0 });
     // ÉLŐ-MÉRÉS MARKER: függőleges szürke szaggatott vonal a meres_kezdete-nél (0→100), a kártya x-tengelyén
     if (kartya._elo_marker_ms != null) ds.push({ data: [{ x: kartya._elo_marker_ms, y: 0 }, { x: kartya._elo_marker_ms, y: 100 }], spanGaps: true, borderColor: ELO_MARKER_SZIN, borderWidth: 1, borderDash: [3, 3], pointRadius: 0 });
+    // ML-TREND (Task 6): a lila LOESS-görbe — CSAK ha a kapcsoló BE (data-nemlin="true", Task 5 dönti el) ÉS
+    // van racs.nemlin_xy (van_struktura). Additív dataset, a meglévő kék/piros/narancs/szürke VÁLTOZATLAN.
+    if (kartya.getAttribute(ATTR.nemlin) === "true" && racs.nemlin_xy) ds.push({ data: racs.nemlin_xy, spanGaps: true, borderColor: NEMLIN_SZIN, borderWidth: 2, pointRadius: 0, tension: 0.3 });
     // per-szó tengely PONTOS széllel: min/max = az ELSŐ/UTOLSÓ tényleges adatpont (nincs Chart.js grace-padding →
     // a görbe a két szélt ÉRINTI, nincs felesleges gap). A tengelyen CSAK 2 tick: a KEZDŐ + a VÉG dátum (teljes).
     const teljes_pts = racs.xy.filter(function (p) { return p.y !== null; });
@@ -1112,6 +1145,9 @@ function chart_letrehoz(kartya) {
   // 6c: esemenyjelzo szint-vonal — konstans vízszintes referencia (narancs, a kék adattól ÉS a piros trendtől
   // is elkülönül); NEM trendvonal (data-vonal marad "false"), a bázist a merteszamok-felirat mondja ki.
   if (racs.szint_vonal) datasetek.push({ data: racs.szint_vonal, spanGaps: true, borderColor: "#e69138", borderWidth: 1.5, borderDash: [6, 4], pointRadius: 0 });
+  // ML-TREND (Task 6): ugyanaz a guard, mint a teljes-ág fenti; a label-indexelt `racs.nemlin` a saját slot-
+  // pozíciókra rakott görbe-pontok (racs_epit), a köztes null-okat a spanGaps:true hidalja át.
+  if (kartya.getAttribute(ATTR.nemlin) === "true" && racs.nemlin) datasetek.push({ data: racs.nemlin, spanGaps: true, borderColor: NEMLIN_SZIN, borderWidth: 2, pointRadius: 0, tension: 0.3 });
   chart_peldanyok[kartya.getAttribute(ATTR.kulcsszo)] = new Chart(canvas, {
     type: "line",
     data: { labels: racs.labels, datasets: datasetek },
