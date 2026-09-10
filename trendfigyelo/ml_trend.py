@@ -76,7 +76,12 @@ def nemlin_trend(pontok, gorbe_pont=60, margo=0.05, spanok=(0.3, 0.5, 0.7), k=5)
         if best is None or cv > best[1]:
             best = (sp, cv)
     span, cv = best
-    van = cv >= lin_cv + margo
+    # túltanulás-őr: a nemlineáris görbét CSAK akkor jelöljük struktúrának, ha (1) a
+    # kereszt-validált R² a lineáris bázist legalább `margo`-val veri, ÉS (2) abszolút
+    # értelemben pozitív (out-of-sample jobb a lapos átlagnál). A (2) padló zárja a relatív
+    # őr vakfoltját: ha MINDKÉT illesztés a mérce alatti (negatív cv), a „kevésbé rossz"
+    # nemlineáris se rajzoljon negatív R²-ű görbét (naming-discipline: zajra nincs trend).
+    van = cv >= lin_cv + margo and cv > 0
     if not van:
         return {"van_struktura": False, "gorbe": [], "cv_r2": round(cv, 3),
                 "lin_cv_r2": round(lin_cv, 3), "span": span, "eff_df": None,

@@ -36,3 +36,15 @@ def test_nemlin_trend_gorbere_struktura_van_zajra_nincs():
     assert len(ok["gorbe"]) <= 60 and ok["gorbe"][0]["idopont_utc"]
     assert ne["van_struktura"] is False                # a zajra az őr NEM enged trendet
     assert ne["gorbe"] == []
+
+def test_nemlin_trend_negativ_cv_nem_ad_strukturat_meg_ha_veri_is_a_linearist():
+    # determinista, zajos sorozat: a LOESS out-of-sample R²-e NEGATÍV (rosszabb, mint a
+    # lapos átlag), de a lineáris MÉG rosszabb → a puszta relatív őr (cv >= lin+margo)
+    # átengedné. Az abszolút padló (cv > 0) ilyenkor is False-t ad: negatív R²-ű görbét
+    # NEM rajzolunk (naming-discipline: ne olvassunk struktúrát a zajba).
+    ertekek = [4, 8, 38, 84, 40, 79, 31, 24, 79, 88, 8, 5, 67, 33, 57, 15]
+    r = ml_trend.nemlin_trend(_pontok(ertekek))
+    assert r["cv_r2"] < 0                               # a nemlineáris illesztés is negatív out-of-sample
+    assert r["cv_r2"] >= r["lin_cv_r2"] + 0.05          # ÉS veri a (még rosszabb) lineárist
+    assert r["van_struktura"] is False                 # mégsem struktúra — az abszolút padló miatt
+    assert r["gorbe"] == []
