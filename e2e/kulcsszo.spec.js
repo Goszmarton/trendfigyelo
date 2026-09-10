@@ -1381,3 +1381,31 @@ test("23. új társadalmi-feszültség domének magyar címkével jelennek meg",
   await expect(page.locator(`${K} .domen-csoport[data-domen="megelhetes"] h3.domen-fejlec`))
     .toHaveText("Megélhetési problémák");
 });
+
+// ── ML-TREND kapcsoló (Task 5): alapból KI, a gomb + info jelen, kattintásra data-nemlin a kártyán ──
+test("ML-trend: alapból KI (nincs lila görbe), a gomb bekapcsolja", async ({ page }) => {
+  // hetIvErv-hez hasonló, de nemlin blokkal — segéd a fixture-építőben:
+  const ivNemlin = { ...hetIvErv(0, 52), nemlin: { van_struktura: true,
+    gorbe: Array.from({length: 20}, (_, i) => ({ idopont_utc: racs_iso(i*2, 7), ertek: 40 + i })),
+    cv_r2: 0.42, lin_cv_r2: 0.08, span: 0.3, eff_df: 6.2, irany: "novekszik",
+    fordulopontok: 2, rezidualis_szoras: 7.1 } };
+  await mock(page, {
+    regObj: reg({ "kórház": regSzo({ domen: "egeszseg", intervallumok: {
+      "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"), "1_ho": ivHibas("keves_pont"),
+      "3_ho": ivHibas("keves_pont"), "1_ev": ivHibas("nincs_lancolas") } }) }),
+    nyersObj: nyers({ "kórház": [nyersRekord("kórház")] }),
+    mpRegObj: mpReg({ "kórház": mpSzo("het", { "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"),
+      "1_ho": ivHibas("keves_pont"), "3_ho": ivHibas("keves_pont"), "1_ev": ivNemlin }, { domen: "egeszseg" }) }),
+    mpNyersObj: mpNyers({ "kórház": [racs_nyersRekord("kórház", 52, 7)] }),
+  });
+  await page.goto("/");
+  const gomb = page.locator("#kulcsszo-blokk .mltrend-gomb");
+  await expect(gomb).toHaveCount(1);
+  await expect(page.locator("#kulcsszo-blokk .mltrend-info")).toHaveCount(1);
+  // alapból KI: a kártyán nincs nemlin-jelző
+  const k = page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="kórház"]');
+  await expect(k).not.toHaveAttribute("data-nemlin", /.*/);
+  await gomb.click();  // BE
+  await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="kórház"]'))
+    .toHaveAttribute("data-nemlin", "true");
+});

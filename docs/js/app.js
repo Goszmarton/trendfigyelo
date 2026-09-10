@@ -91,6 +91,8 @@ const ATTR = {
   teljes_forras: "data-teljes-forras",   // TELJES-NEZET: a per-szó választott intervallum kulcsa (het→1_ev, nap→3_ho, ora→1_het)
   elo_marker: "data-elo-marker",   // ADATFORRÁS-MARKER: a meres_kezdete dátuma a kártyán (teljes nézet, ha bekapcsolt)
   adatforras: "data-adatforras",   // a #kulcsszo-blokk kapcsoló-állapota: "be" | "ki" (alapból ki)
+  mltrend: "data-mltrend",   // a #kulcsszo-blokk ML-trend kapcsoló-állapota: "be" | "ki" (alapból ki)
+  nemlin: "data-nemlin",     // a kártyán: van kirajzolható nemlin_xy ÉS a kapcsoló bekapcsolt (Task 6 rajzolja a görbét)
 };
 // ADATFORRÁS-MARKER: kapcsolóval BE/KI (alapból KI). A jelölt vonal SZÜRKE (meta, nem adat — a kék adattól/
 // piros trendtől/narancs szinttől elüt); a markerre húzva EGYETLEN tooltip mondja meg, mikortól van saját adat.
@@ -98,6 +100,13 @@ const ELO_MARKER_SZIN = "#8a8a8a";
 const ADATFORRAS_GOMB_BE = "Mikortól gyűjtjük az adatokat? – bekapcsolva";
 const ADATFORRAS_GOMB_KI = "Mikortól gyűjtjük az adatokat?";
 const ADATFORRAS_INFO = "Bekapcsolva minden charton egy szürke függőleges vonal jelzi, mikortól gyűjtjük mi az adott szó adatát. A vonaltól balra a Google saját visszamenőleges becslése látható (nem általunk mért adat).";
+// ML-TREND (Task 5/6): kapcsolóval BE/KI (alapból KI). Bekapcsolva a kártyákon egy LILA nemlineáris illesztés-görbe
+// jelenik meg (ha a szónak van kimutatható struktúrája — `nemlin.van_struktura`), a meglévő piros lineáris trend
+// MELLETT (nem helyette). A szín szándékosan elüt: kék=adat, piros=lineáris trend, narancs=szint, szürke=marker.
+const NEMLIN_SZIN = "#8e44ad";
+const MLTREND_GOMB_BE = "Nemlineáris trend (ML) – bekapcsolva";
+const MLTREND_GOMB_KI = "Nemlineáris trend (ML)";
+const MLTREND_INFO = "Bekapcsolva a kirajzolható charton egy lila görbe mutatja a Google-trend nemlineáris (gépi tanulásos) illesztését, ha van kimutatható struktúra a mért adaton. A piros egyenes trendvonal ettől függetlenül megmarad.";
 const TENGELY_FELIRAT = "relatív keresési szint (0–100)";   // EN DASH
 const CSUPA_NULLA_SZOVEG = "Ezen az időszakon nincs érdemi keresési aktivitás (a mért értékek végig nulla körül).";
 const URES_NINCS_ABLAK = "Az adatsor ezen az időszakon nem érhető el.";
@@ -905,8 +914,14 @@ function racs_epit(ablak, iv, racs, szint) {
   // már ellenőrizte, hogy mindkettő a rajzolt sorozaton van); a szint-vonal konstans, a rajzolt x-tartomány két végén.
   const vonal_xy = vonal_van ? [{ x: iso_ms(v[0].idopont_utc), y: v[0].ertek }, { x: iso_ms(v[1].idopont_utc), y: v[1].ertek }] : null;
   const szint_xy = (szint != null && xy.length) ? [{ x: xy[0].x, y: szint }, { x: xy[xy.length - 1].x, y: szint }] : null;
+  // ML-TREND (Task 5): a nemlineáris illesztés-görbe {x,y} párokban (a lineáris tengelyhez, mint vonal_xy/szint_xy),
+  // CSAK ha a backend `van_struktura` igazat mondott (nincs görbe, ha nincs kimutatható struktúra). A rajzolást
+  // (Task 6) a kapcsoló-állapot dönti el (mltrend_be) — itt csak a NYERS koordináták származnak a rácsépítőben.
+  const nemlin_xy = (iv.nemlin && iv.nemlin.van_struktura)
+    ? iv.nemlin.gorbe.map(function (p) { return { x: iso_ms(p.idopont_utc), y: p.ertek }; })
+    : null;
   return { labels: labels, ertekek: ertekek, xy: xy, vonal: vonal, vonal_van: vonal_van, vonal_xy: vonal_xy,
-           szint_vonal: szint_vonal, szint_xy: szint_xy,
+           szint_vonal: szint_vonal, szint_xy: szint_xy, nemlin_xy: nemlin_xy,
            adat_veg: lezart[lezart.length - 1].idopont_utc,
            szakadas: ertekek.filter(function (v) { return v === null; }).length,
            csupa_nulla: lezart.length > 0 && !van_nemnulla };
@@ -914,7 +929,7 @@ function racs_epit(ablak, iv, racs, szint) {
 
 // egy kulcsszó-kártya (EAGER DOM); a canvas ELEM azonnal, a Chart.js-példány LUSTA (data-rendered).
 // BINÁRIS szerződés: rajzolható → canvas + .merteszamok; nem rajzolható → .ures (mérőszám NÉLKÜL, spec 6:599).
-function kartya_letrehoz(szo, szoreg, aktiv_kulcs, adatforras_be) {
+function kartya_letrehoz(szo, szoreg, aktiv_kulcs, adatforras_be, mltrend_be) {
   const kartya = document.createElement("div");
   kartya.className = OSZT.kartya;
   kartya.setAttribute(ATTR.kulcsszo, szo);
@@ -960,6 +975,9 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs, adatforras_be) {
 
   const racs = racs_epit(ablak, iv, iv._racs, szoreg.szint);
   kartya.setAttribute(ATTR.drawable, "true");
+  // ML-TREND (Task 5): CSAK a kapcsoló ÁLLAPOTÁTÓL függ, NEM a nézettől (teljes-ág ÉS normál ág egyaránt idejut) —
+  // Task 6 a data-nemlin="true" kártyákon rajzolja a lila görbét (racs.nemlin_xy).
+  if (mltrend_be && racs.nemlin_xy) kartya.setAttribute(ATTR.nemlin, "true");
   if (szoreg.szint != null) kartya.setAttribute(ATTR.szint, String(szoreg.szint));   // 6c: a szint-vonal értéke (heti medián)
   kartya.setAttribute(ATTR.ablak_veg, ablak.ablak_veg_utc);   // a kiválasztott nyers ablak KULCSA (regresszió ablak_veg_utc-vel egyező); részleges záró slot
   kartya.setAttribute(ATTR.adat_veg, racs.adat_veg);          // B1: a felirat „adat vége"-je — az utolsó KIRAJZOLT LEZÁRT pont (nem az ablak_veg)
@@ -1250,10 +1268,11 @@ function kulcsszo_blokk_render() {
   const blokk = document.getElementById("kulcsszo-blokk");
   if (!blokk) return;
   chart_takarit();   // váltáskor: régi példányok destroy + megfigyelő le
-  blokk.querySelectorAll("." + OSZT.frissesseg + ", ." + OSZT.csoport + ", .adatforras-sav").forEach(function (e) { e.remove(); });
+  blokk.querySelectorAll("." + OSZT.frissesseg + ", ." + OSZT.csoport + ", .adatforras-sav, .mltrend-sav").forEach(function (e) { e.remove(); });
 
   const aktiv = blokk.getAttribute(ATTR.aktiv);
   const adatforras_be = blokk.getAttribute(ATTR.adatforras) === "be";   // ADATFORRÁS-MARKER kapcsoló (alapból KI)
+  const mltrend_be = blokk.getAttribute(ATTR.mltrend) === "be";   // ML-TREND kapcsoló (alapból KI)
   // request 2: a „Kulcsszavak" cím a nézet-leírással bővül (aktiv szerint); nincs aktív → csak a bázis cím
   const cim_h2 = blokk.querySelector("h2");
   if (cim_h2) {
@@ -1288,7 +1307,7 @@ function kulcsszo_blokk_render() {
     h3.textContent = d === null ? "Egyéb" : DOMEN_MAGYAR[d];
     cs.appendChild(h3);
     szavak.forEach(function (szo) {
-      const k = kartya_letrehoz(szo, reg.kulcsszavak[szo], aktiv, adatforras_be);
+      const k = kartya_letrehoz(szo, reg.kulcsszavak[szo], aktiv, adatforras_be, mltrend_be);
       cs.appendChild(k);
       if (k.getAttribute(ATTR.drawable) === "true") {
         rajzolhatok.push(k);
@@ -1335,6 +1354,31 @@ function kulcsszo_blokk_render() {
     info.textContent = ADATFORRAS_INFO;
     sav.appendChild(info);
     const ref = blokk.querySelector("." + OSZT.frissesseg) || blokk.querySelector("h2");
+    if (ref) ref.insertAdjacentElement("afterend", sav); else blokk.appendChild(sav);
+  }
+
+  // ML-TREND kapcsoló + magyarázat (Task 5) — az adatforrás-sáv MINTÁJÁRA (2. gomb-sáv, ALATTA ha az is jelen van).
+  // MINDEN nézetben elérhető (nem csak teljes nézetben — az adatforrás-markerrel ellentétben a nemlin_xy bármelyik
+  // intervallumban felmerülhet, ha a szónak van kimutatható struktúrája). Alapból KI; kattintásra átbillenti
+  // a #kulcsszo-blokk állapotát és újrarendel (a görbék meg/eltűnnek — Task 6 rajzolja).
+  if (rajzolhatok.length) {
+    const sav = document.createElement("div");
+    sav.className = "mltrend-sav";
+    const gomb = document.createElement("button");
+    gomb.type = "button";
+    gomb.className = "mltrend-gomb";
+    gomb.setAttribute("aria-pressed", mltrend_be ? "true" : "false");
+    gomb.textContent = mltrend_be ? MLTREND_GOMB_BE : MLTREND_GOMB_KI;
+    gomb.addEventListener("click", function () {
+      blokk.setAttribute(ATTR.mltrend, mltrend_be ? "ki" : "be");
+      kulcsszo_blokk_render();
+    });
+    sav.appendChild(gomb);
+    const info = document.createElement("p");
+    info.className = "mltrend-info";
+    info.textContent = MLTREND_INFO;
+    sav.appendChild(info);
+    const ref = blokk.querySelector(".adatforras-sav") || blokk.querySelector("." + OSZT.frissesseg) || blokk.querySelector("h2");
     if (ref) ref.insertAdjacentElement("afterend", sav); else blokk.appendChild(sav);
   }
   lusta_megfigyel(rajzolhatok);
