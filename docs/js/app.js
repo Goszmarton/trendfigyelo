@@ -89,12 +89,15 @@ const ATTR = {
   rajzolt_pont: "data-rajzolt-pont",   // 6c javító-szelet: a RAJZOLT slotok száma (szeletelt ablak) — DOM-őr a szeletelési hibára
   felbontas: "data-felbontas",   // item 3: a kártya felbontás-rácsa (ora/nap/het) — DOM-őr
   teljes_forras: "data-teljes-forras",   // TELJES-NEZET: a per-szó választott intervallum kulcsa (het→1_ev, nap→3_ho, ora→1_het)
-  elo_marker: "data-elo-marker",   // ÉLŐ-MÉRÉS MARKER: a meres_kezdete dátuma, ha a rajzolt ablakon belülre esik (teljes nézet)
+  elo_marker: "data-elo-marker",   // ADATFORRÁS-MARKER: a meres_kezdete dátuma a kártyán (teljes nézet, ha bekapcsolt)
+  adatforras: "data-adatforras",   // a #kulcsszo-blokk kapcsoló-állapota: "be" | "ki" (alapból ki)
 };
-// ÉLŐ-MÉRÉS MARKER magyarázó szövege (állandó callout a blokk alján, ha legalább egy kártyán van marker) + a
-// tooltip lábléce; a jelölt vonal SZÜRKE (meta, nem adat — a kék adattól/piros trendtől/narancs szinttől elüt).
+// ADATFORRÁS-MARKER: kapcsolóval BE/KI (alapból KI). A jelölt vonal SZÜRKE (meta, nem adat — a kék adattól/
+// piros trendtől/narancs szinttől elüt); a markerre húzva EGYETLEN tooltip mondja meg, mikortól van saját adat.
 const ELO_MARKER_SZIN = "#8a8a8a";
-const ELO_MARKER_INFO = "A szürke szaggatott függőleges vonal jelzi, honnan követjük élőben az adott szót: a vonaltól balra a Google saját visszamenőleges becslése látható (nem általunk mért adat), jobbra a mi mérési időszakunk.";
+const ADATFORRAS_GOMB_BE = "Mikortól gyűjtjük az adatokat? – bekapcsolva";
+const ADATFORRAS_GOMB_KI = "Mikortól gyűjtjük az adatokat?";
+const ADATFORRAS_INFO = "Bekapcsolva minden charton egy szürke függőleges vonal jelzi, mikortól gyűjtjük mi az adott szó adatát. A vonaltól balra a Google saját visszamenőleges becslése látható (nem általunk mért adat).";
 const TENGELY_FELIRAT = "relatív keresési szint (0–100)";   // EN DASH
 const CSUPA_NULLA_SZOVEG = "Ezen az időszakon nincs érdemi keresési aktivitás (a mért értékek végig nulla körül).";
 const URES_NINCS_ABLAK = "Az adatsor ezen az időszakon nem érhető el.";
@@ -911,7 +914,7 @@ function racs_epit(ablak, iv, racs, szint) {
 
 // egy kulcsszó-kártya (EAGER DOM); a canvas ELEM azonnal, a Chart.js-példány LUSTA (data-rendered).
 // BINÁRIS szerződés: rajzolható → canvas + .merteszamok; nem rajzolható → .ures (mérőszám NÉLKÜL, spec 6:599).
-function kartya_letrehoz(szo, szoreg, aktiv_kulcs) {
+function kartya_letrehoz(szo, szoreg, aktiv_kulcs, adatforras_be) {
   const kartya = document.createElement("div");
   kartya.className = OSZT.kartya;
   kartya.setAttribute(ATTR.kulcsszo, szo);
@@ -1012,18 +1015,18 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs) {
   }
   kartya._racs = racs;   // a lusta Chart-példányosításhoz
 
-  // ÉLŐ-MÉRÉS MARKER (CSAK teljes nézet): függőleges jelölő a szó `meres_kezdete`-jénél, ha az a RAJZOLT ablakon
-  // BELÜLRE esik (van tőle balra Google-becslés). Ugyanaz a feltétel, mint az elettartam_szoveg „mérés kezdete"
-  // feliratáé, de itt a rajzolt xy tartományhoz mérve (a marker az xy-tengelyen jelenik meg). Rövid ablakoknál
-  // (a szó után kezdődő ablak) a mk kívül esik → nincs marker, helyesen. A chart_letrehoz teljes-ága rajzolja.
-  if (aktiv_kulcs === TELJES_KULCS && szoreg.meres_kezdete && racs.xy && racs.xy.length) {
-    const mk_ms = iso_ms(szoreg.meres_kezdete);
+  // ADATFORRÁS-MARKER (CSAK teljes nézet, CSAK ha a kapcsoló BE): függőleges jelölő a szó `meres_kezdete`-jénél.
+  // MINDEN charton megjelenik (ahol van meres_kezdete): ha a mk a rajzolt ablakon KÍVÜL esik, a látható tartomány
+  // szélére CSÍPJÜK, hogy mindig látszódjon. A chart_letrehoz teljes-ága rajzolja; a tooltip mondja meg a dátumot.
+  if (adatforras_be && aktiv_kulcs === TELJES_KULCS && szoreg.meres_kezdete && racs.xy && racs.xy.length) {
     const rajzolt = racs.xy.filter(function (p) { return p.y !== null; });
-    const elso = rajzolt.length ? rajzolt[0].x : null;
-    const utolso = rajzolt.length ? rajzolt[rajzolt.length - 1].x : null;
-    if (elso != null && utolso != null && mk_ms > elso && mk_ms < utolso) {
-      kartya.setAttribute(ATTR.elo_marker, szoreg.meres_kezdete);
-      kartya._elo_marker_ms = mk_ms;
+    if (rajzolt.length) {
+      const elso = rajzolt[0].x, utolso = rajzolt[rajzolt.length - 1].x;
+      const mk_ms = iso_ms(szoreg.meres_kezdete);
+      kartya.setAttribute(ATTR.elo_marker, szoreg.meres_kezdete);       // a VALÓS dátum (tooltiphez)
+      kartya._elo_marker_ms = Math.max(elso, Math.min(utolso, mk_ms));  // rajzolt pozíció: a látható tartományra csípve
+      // a tooltip-lábléc közelség-küszöbe: a pontok átlagos térközének fele (így csak a marker fölé húzva villan)
+      kartya._marker_kuszob_ms = rajzolt.length > 1 ? (utolso - elso) / (rajzolt.length - 1) / 2 : 0;
     }
   }
   return kartya;
@@ -1070,11 +1073,11 @@ function chart_letrehoz(kartya) {
           tooltip: Object.assign({}, TOOLTIP_STILUS, {
             callbacks: {
               title: function (items) { return items.length ? ms_datum(items[0].parsed.x, true) : ""; },
-              // ÉLŐ-MÉRÉS MARKER interaktív lábléc: CSAK a markertől BALRA (a becslés-szakasz fölé érve) figyelmeztet,
-              // hogy az ott látott értékek a Google visszamenőleges becslése — jobbra (a mi mérésünk) nem villan fel.
+              // ADATFORRÁS-MARKER: EGYETLEN tiszta tooltip-lábléc, CSAK a marker KÖZELÉBE húzva (máshol nincs lábléc,
+              // tiszta marad a tooltip) — kiírja a dátumot + „innentől van saját adatunk".
               footer: kartya._elo_marker_ms != null ? function (items) {
-                return (items.length && items[0].parsed.x < kartya._elo_marker_ms)
-                  ? "❘ e szakasz a Google visszamenőleges becslése (élő mérés: " + datum_formaz(kartya.getAttribute(ATTR.elo_marker)) + "-től)"
+                return (items.length && Math.abs(items[0].parsed.x - kartya._elo_marker_ms) <= (kartya._marker_kuszob_ms || 0))
+                  ? "❘ élő mérés kezdete: " + datum_formaz(kartya.getAttribute(ATTR.elo_marker)) + " – innentől van saját adatunk"
                   : "";
               } : undefined,
             },
@@ -1247,9 +1250,10 @@ function kulcsszo_blokk_render() {
   const blokk = document.getElementById("kulcsszo-blokk");
   if (!blokk) return;
   chart_takarit();   // váltáskor: régi példányok destroy + megfigyelő le
-  blokk.querySelectorAll("." + OSZT.frissesseg + ", ." + OSZT.csoport + ", .elo-marker-info").forEach(function (e) { e.remove(); });
+  blokk.querySelectorAll("." + OSZT.frissesseg + ", ." + OSZT.csoport + ", .adatforras-sav").forEach(function (e) { e.remove(); });
 
   const aktiv = blokk.getAttribute(ATTR.aktiv);
+  const adatforras_be = blokk.getAttribute(ATTR.adatforras) === "be";   // ADATFORRÁS-MARKER kapcsoló (alapból KI)
   // request 2: a „Kulcsszavak" cím a nézet-leírással bővül (aktiv szerint); nincs aktív → csak a bázis cím
   const cim_h2 = blokk.querySelector("h2");
   if (cim_h2) {
@@ -1284,7 +1288,7 @@ function kulcsszo_blokk_render() {
     h3.textContent = d === null ? "Egyéb" : DOMEN_MAGYAR[d];
     cs.appendChild(h3);
     szavak.forEach(function (szo) {
-      const k = kartya_letrehoz(szo, reg.kulcsszavak[szo], aktiv);
+      const k = kartya_letrehoz(szo, reg.kulcsszavak[szo], aktiv, adatforras_be);
       cs.appendChild(k);
       if (k.getAttribute(ATTR.drawable) === "true") {
         rajzolhatok.push(k);
@@ -1302,15 +1306,6 @@ function kulcsszo_blokk_render() {
     rajzolhatok.forEach(function (k) { k._teljes_mod = true; });
   }
 
-  // ÉLŐ-MÉRÉS MARKER magyarázata: állandó, az oldalon látható callout a blokk alján — CSAK ha legalább egy
-  // rajzolható kártyán van marker (data-elo-marker). Így a felhasználó hover nélkül is érti, mit jelöl a szürke vonal.
-  if (rajzolhatok.some(function (k) { return k.hasAttribute(ATTR.elo_marker); })) {
-    const em = document.createElement("p");
-    em.className = "elo-marker-info";
-    em.textContent = ELO_MARKER_INFO;
-    blokk.appendChild(em);
-  }
-
   // frissesseg CSAK ha van legalább egy RAJZOLHATÓ kártya (különben — mint 15a/15b — elmarad); a h2 után
   if (adat_veg) {
     const f = document.createElement("p");
@@ -1318,6 +1313,29 @@ function kulcsszo_blokk_render() {
     f.textContent = frissesseg_szoveg(aktiv, adat_veg);   // teljes módban a szöveg NEM használ egyetlen dátumot (per-szó tengely)
     const h2 = blokk.querySelector("h2");
     if (h2) h2.insertAdjacentElement("afterend", f); else blokk.appendChild(f);
+  }
+
+  // ADATFORRÁS-MARKER kapcsoló + magyarázat — a frissesseg (kék-vonalas info) ALÁ; CSAK teljes nézetben (ott van marker).
+  // Alapból KI; kattintásra átbillenti a #kulcsszo-blokk állapotát és újrarendel (a markerek meg/eltűnnek).
+  if (aktiv === TELJES_KULCS && rajzolhatok.length) {
+    const sav = document.createElement("div");
+    sav.className = "adatforras-sav";
+    const gomb = document.createElement("button");
+    gomb.type = "button";
+    gomb.className = "adatforras-gomb";
+    gomb.setAttribute("aria-pressed", adatforras_be ? "true" : "false");
+    gomb.textContent = adatforras_be ? ADATFORRAS_GOMB_BE : ADATFORRAS_GOMB_KI;
+    gomb.addEventListener("click", function () {
+      blokk.setAttribute(ATTR.adatforras, adatforras_be ? "ki" : "be");
+      kulcsszo_blokk_render();
+    });
+    sav.appendChild(gomb);
+    const info = document.createElement("p");
+    info.className = "adatforras-info";
+    info.textContent = ADATFORRAS_INFO;
+    sav.appendChild(info);
+    const ref = blokk.querySelector("." + OSZT.frissesseg) || blokk.querySelector("h2");
+    if (ref) ref.insertAdjacentElement("afterend", sav); else blokk.appendChild(sav);
   }
   lusta_megfigyel(rajzolhatok);
 }

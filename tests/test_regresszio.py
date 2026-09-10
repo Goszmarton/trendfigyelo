@@ -192,6 +192,28 @@ def test_meres_kezdete_markerre_vagva():
     assert out["kulcsszavak"]["állás"]["meres_kezdete"] == "2026-07-30"
 
 
+def test_meres_kezdete_lanc_fallback_ha_nincs_tortenet():
+    # a reggeli szavak órás adata a REGGELI futásban gyűlik, a tortenet-et az ESTI passz írja →
+    # kimaradnak a tortenetből (meres_kezdete=None volt). FALLBACK: az órás lánc kezdő-napja
+    # (marker-re vágva), hogy MINDEN órás szónak legyen valós meres_kezdete-je.
+    lanc_map = {"infláció": {"ablak_kezdet_utc": "2026-09-02T00:00:00+00:00",
+                             "ablak_veg_utc": "2026-09-10T00:00:00+00:00",
+                             "pontok": [{"idopont_utc": "2026-09-02T00:00:00+00:00", "ertek": 40}]}}
+    out = regresszio.regresszio_szamit({"kulcsszavak": {}}, _tortenet({}), _config(["infláció"]),
+                                       "T", lanc_map=lanc_map)
+    assert out["kulcsszavak"]["infláció"]["meres_kezdete"] == "2026-09-02"
+
+
+def test_meres_kezdete_lanc_fallback_markerre_vagva():
+    # ha a lánc a marker ELŐTT kezdődik (pl. a now-7d seed visszanyúl), a meres_kezdete a markerre vágva
+    lanc_map = {"infláció": {"ablak_kezdet_utc": "2026-07-25T00:00:00+00:00",
+                             "ablak_veg_utc": "2026-08-01T00:00:00+00:00",
+                             "pontok": [{"idopont_utc": "2026-07-25T00:00:00+00:00", "ertek": 40}]}}
+    out = regresszio.regresszio_szamit({"kulcsszavak": {}}, _tortenet({}), _config(["infláció"]),
+                                       "T", lanc_map=lanc_map)
+    assert out["kulcsszavak"]["infláció"]["meres_kezdete"] == "2026-07-30"   # marker
+
+
 def test_horgonyos_only_szo_kimarad():
     tort = _tortenet({"2026-07-21": [{"kulcsszo": "MNB", "csoport": "gazd",
                                       "atlag": 3.0, "csucs": 3.0, "ervenyes_pontok": 1}]})

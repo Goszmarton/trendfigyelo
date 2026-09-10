@@ -282,6 +282,20 @@ def _szint_intervallum(iv):
     return {k: v for k, v in iv.items() if k not in _ESEMENYJELZO_TREND_MEZOK}
 
 
+def _meres_kezdete(napok, lanc, marker):
+    """A szó első SAJÁT adat-napja (>= marker). Elsődlegesen a tortenet első marker-utáni napja;
+    ha nincs tortenet-nap (pl. reggeli szó, aminek az órása a reggeli futásban gyűlik, de a
+    tortenetet az esti passz írja → kimarad), az órás lánc kezdő-napja a fallback (szintén marker-re
+    vágva) — így MINDEN órás szónak van valós meres_kezdete-je, nem None."""
+    if napok:
+        return napok[0][0]
+    if isinstance(lanc, dict):
+        kezd = (lanc.get("ablak_kezdet_utc") or "")[:10]
+        if kezd:
+            return max(kezd, marker) if marker else kezd
+    return None
+
+
 def regresszio_szamit(nyers, tortenet, config, szamitva_utc, lanc_map=None):
     """A teljes kulcsszo_regresszio.json szerkezet. Nulla extra Google-hívás.
 
@@ -313,7 +327,7 @@ def regresszio_szamit(nyers, tortenet, config, szamitva_utc, lanc_map=None):
             intervallumok = _intervallumok(nyers.get("kulcsszavak", {}).get(szo),
                                            lanc=(lanc_map or {}).get(szo))
         ki[szo] = {
-            "meres_kezdete": napok[0][0] if napok else None,
+            "meres_kezdete": _meres_kezdete(napok, (lanc_map or {}).get(szo), marker),
             "meres_vege": None if aktiv else (napok[-1][0] if napok else None),
             "aktiv": aktiv,
             "domen": domen,
