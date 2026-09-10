@@ -273,6 +273,7 @@ _ESEMENYJELZO_TREND_MEZOK = (
     "meredekseg_nap", "se_meredekseg", "se_masodlagos_autokorrelacio",
     "irany", "r2", "r2_masodlagos_autokorrelacio", "illesztes_vonal",
     "mai_ertek", "mai_reziduum", "reziduum_szokasos", "illeszkedes",
+    "nemlin",
 )
 
 
