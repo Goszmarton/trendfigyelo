@@ -25,7 +25,7 @@ import statistics
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from . import json_export, ml_trend
+from . import json_export, ml_trend, predikcio
 
 INTERVALLUMOK = {"1_het": 7, "2_het": 14, "1_ho": 30, "3_ho": 90, "1_ev": 365}
 
@@ -304,6 +304,25 @@ def _meres_kezdete(napok, lanc, marker):
     return None
 
 
+def _oras_sorozat(nyers, lanc_map, szo):
+    """A szó legfrissebb, lezárt ÓRÁS sorozata — a Task 5 predikció bemenete.
+
+    Elsőbbség a láncnak (lanc_map.get(szo)["pontok"]): a `lanc.lancol` már eleve csak
+    lezárt (reszleges kihagyva) pontokat tárol, ÍGY a lánc-ág nem szűr újra, csak rendez.
+    Lánc hiányában a nyers `kulcsszavak[szo]` UTOLSÓ (legfrissebb ablak_veg_utc) ablakának
+    pontjai, a `regresszio_egy_ablak`/`_intervallumok` mintáját tükrözve: lezárt =
+    `not p.get("reszleges")`, `idopont_utc` szerint rendezve.
+    """
+    lanc = (lanc_map or {}).get(szo)
+    if lanc and lanc.get("pontok"):
+        return sorted(lanc["pontok"], key=lambda p: p["idopont_utc"])
+    rekordok = nyers.get("kulcsszavak", {}).get(szo)
+    if not rekordok:
+        return []
+    rek = max(rekordok, key=lambda r: r["ablak_veg_utc"])
+    return sorted((p for p in rek["pontok"] if not p.get("reszleges")), key=lambda p: p["idopont_utc"])
+
+
 def regresszio_szamit(nyers, tortenet, config, szamitva_utc, lanc_map=None):
     """A teljes kulcsszo_regresszio.json szerkezet. Nulla extra Google-hívás.
 
@@ -345,6 +364,15 @@ def regresszio_szamit(nyers, tortenet, config, szamitva_utc, lanc_map=None):
             "racs": getattr(aktivak.get(szo), "racs", "ora") or "ora",
             "intervallumok": intervallumok,
         }
+        # szó-szintű ELŐREJELZÉS (órás horizontok, Task 5) — additív, a lineáris/nemlin érintetlen
+        oras_pontok = _oras_sorozat(nyers, lanc_map, szo)
+        pred = {}
+        for hz in ("1_nap", "1_het"):
+            blk = predikcio.horizont_blokk(oras_pontok, hz, 3600, m=24)
+            if blk is not None:
+                pred[hz] = blk
+        if pred:
+            ki[szo]["predikcio"] = pred
     return {
         "szamitva_utc": szamitva_utc,
         "meredekseg_egyseg": MEREDEKSEG_EGYSEG,
@@ -379,6 +407,27 @@ def _masodlagos_intervallumok_egyesit(rekordok, alap_racs):
             _, racs, iv = jeloltek[0]
             egyesitett[kulcs] = {**iv, "racs": racs}
     return egyesitett
+
+
+def _racs_sorozat(rekordok, racs):
+    """A szó adott rácsú (nap/het) TIMEFRAME-rekordjának lezárt, rendezett pontsora — a Task 5
+    predikció bemenete. A `masodlagos_nyers[szo]` több timeframe-rekordot tartalmazhat (§Task 6a-3
+    PER-SZÓ TÖBB-TIMEFRAME); a racs szerint szűrve a LEGFRISSEBB (max ablak_veg_utc) rekordot
+    választja — ugyanaz a minta, mint `_intervallumok` `rek = max(nyers_rekordok, key=...)`-je.
+    """
+    jeloltek = [r for r in rekordok if r.get("racs") == racs]
+    if not jeloltek:
+        return []
+    rek = max(jeloltek, key=lambda r: r["ablak_veg_utc"])
+    return sorted((p for p in rek["pontok"] if not p.get("reszleges")), key=lambda p: p["idopont_utc"])
+
+
+def _napi_sorozat(rekordok):
+    return _racs_sorozat(rekordok, "nap")
+
+
+def _heti_sorozat(rekordok):
+    return _racs_sorozat(rekordok, "het")
 
 
 def regresszio_masodlagos_szamit(masodlagos_nyers, tortenet, config, szamitva_utc):
@@ -435,6 +484,21 @@ def regresszio_masodlagos_szamit(masodlagos_nyers, tortenet, config, szamitva_ut
                                         for k, iv in _masodlagos_intervallumok_egyesit(rekordok, racs or "het").items()}
         else:
             ki[szo]["intervallumok"] = _masodlagos_intervallumok_egyesit(rekordok, racs or "ora")
+        # szó-szintű ELŐREJELZÉS (napi/heti horizontok, Task 5) — additív; a SAJÁT fájljába írja a
+        # napi/heti horizontokat (a frontend az elsődleges órás + a másodlagos napi/heti predikciót
+        # a két fájlból mergeli, lásd Task-brief)
+        pred = {}
+        napi_pontok = _napi_sorozat(rekordok)
+        for hz in ("1_ho", "3_ho"):
+            blk = predikcio.horizont_blokk(napi_pontok, hz, 86400, m=7)
+            if blk is not None:
+                pred[hz] = blk
+        heti_pontok = _heti_sorozat(rekordok)
+        blk = predikcio.horizont_blokk(heti_pontok, "1_ev", 604800, m=None)
+        if blk is not None:
+            pred["1_ev"] = blk
+        if pred:
+            ki[szo]["predikcio"] = pred
     return {
         "szamitva_utc": szamitva_utc,
         "meredekseg_egyseg": MEREDEKSEG_EGYSEG,
