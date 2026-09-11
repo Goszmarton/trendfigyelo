@@ -1617,6 +1617,11 @@ test("Predikció: kiválasztott horizont előrejelző vonalat + sávot rajzol a 
     return !!p && p.data.datasets.some(d => d.borderColor === "#16a085");  // előrejelző vonal
   });
   expect(van).toBe(true);
+  // FINDING 1 fix: a kártya-szöveg nyelvtanilag helyes ragozott horizont-alakot használ
+  // ("1 napra"), NEM a gomb-cimke + "-ra" toldást ("1 nap-ra" hibás lenne).
+  const kartya = page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="benzin"]');
+  await expect(kartya).toContainText("1 napra");
+  await expect(kartya).not.toContainText("nap-ra");
 });
 
 test("Predikció: 1_ev horizont figyelmeztetést mutat", async ({ page }) => {

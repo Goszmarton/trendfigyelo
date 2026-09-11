@@ -115,12 +115,14 @@ const MLTREND_INFO = "Bekapcsolva minden kirajzolható charton egy lila görbe m
 // narancs=szint, szürke=marker, lila=nemlin, ZÖLD=predikció) — Task 7 rajzolja a görbét/sávot ezzel a színnel.
 const PREDIKCIO_SZIN = "#16a085";
 const PREDIKCIO_SAV_SZIN = "rgba(22, 160, 133, 0.15)";   // halvány kitöltés a bizonytalansági sávhoz (also/felso közt)
+// cimke: rövid gomb-felirat (VÁLTOZATLAN); ragozott: a kártya-szövegbe illő, nyelvtanilag helyes
+// alak ("…pont (1 hétre)") — a cimke + "-ra" toldás ("1 hét-ra") nyelvtanilag hibás lenne.
 const PREDIKCIO_HORIZONTOK = [
-  { kulcs: "1_nap", cimke: "1 nap" },
-  { kulcs: "1_het", cimke: "1 hét" },
-  { kulcs: "1_ho", cimke: "1 hó" },
-  { kulcs: "3_ho", cimke: "3 hó" },
-  { kulcs: "1_ev", cimke: "1 év" },
+  { kulcs: "1_nap", cimke: "1 nap", ragozott: "1 napra" },
+  { kulcs: "1_het", cimke: "1 hét", ragozott: "1 hétre" },
+  { kulcs: "1_ho", cimke: "1 hó", ragozott: "1 hónapra" },
+  { kulcs: "3_ho", cimke: "3 hó", ragozott: "3 hónapra" },
+  { kulcs: "1_ev", cimke: "1 év", ragozott: "1 évre" },
 ];
 const PREDIKCIO_INFO = "Egy horizontot választva a chartokon egy zöld előrejelzés-görbe (LOESS-alapú) és bizonytalansági sáv jelenik meg a mért adat után. Alapból egyik horizont sincs kiválasztva. Részletek az Adatokról oldalon.";
 const TENGELY_FELIRAT = "relatív keresési szint (0–100)";   // EN DASH
@@ -813,9 +815,9 @@ function merteszamok_szoveg(iv, racs, szint, mltrend_be, predikcio_info) {
   return alap_szoveg;
 }
 
-// a predikció mérőszám-toldaléka: „80%-os sáv: ±X pont (H-ra)" + figyelmeztetett horizontnál a hosszú-táv jelzés.
+// a predikció mérőszám-toldaléka: „80%-os sáv: ±X pont (1 hétre)" + figyelmeztetett horizontnál a hosszú-táv jelzés.
 function predikcio_szoveg(info) {
-  let s = "80%-os sáv: ±" + String(info.blk.rmse_veg).replace(".", ",") + " pont (" + info.cimke + "-ra)";
+  let s = "80%-os sáv: ±" + String(info.blk.rmse_veg).replace(".", ",") + " pont (" + info.ragozott + ")";
   if (info.blk.figyelmeztetes) s += " · szemléltető — nagy bizonytalanság";
   return s;
 }
@@ -1050,8 +1052,11 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs, adatforras_be, mltrend_be, pr
   // A szónak lehet a kiválasztott horizonthoz mergelt blokkja (predikcio, Task 6) — ha van, additív dataset.
   const predikcio_blk = (aktiv_kulcs === TELJES_KULCS && predikcio_horizont && predikcio_horizont !== "ki" && szoreg.predikcio)
     ? szoreg.predikcio[predikcio_horizont] : null;
-  const predikcio_cimke = predikcio_blk
-    ? ((PREDIKCIO_HORIZONTOK.find(function (h) { return h.kulcs === predikcio_horizont; }) || {}).cimke || predikcio_horizont)
+  const predikcio_horizont_def = predikcio_blk
+    ? (PREDIKCIO_HORIZONTOK.find(function (h) { return h.kulcs === predikcio_horizont; }) || {})
+    : null;
+  const predikcio_ragozott = predikcio_blk
+    ? (predikcio_horizont_def.ragozott || predikcio_horizont)
     : null;
   if (predikcio_blk) {
     kartya.setAttribute(ATTR.predikcio_aktiv, "true");
@@ -1084,7 +1089,7 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs, adatforras_be, mltrend_be, pr
   const m = document.createElement("p");
   m.className = OSZT.merteszamok;
   m.textContent = merteszamok_szoveg(iv, iv._racs, szoreg.szint, mltrend_be,
-    predikcio_blk ? { blk: predikcio_blk, cimke: predikcio_cimke } : null);
+    predikcio_blk ? { blk: predikcio_blk, ragozott: predikcio_ragozott } : null);
   kartya.appendChild(m);
 
   const tf = document.createElement("p");
