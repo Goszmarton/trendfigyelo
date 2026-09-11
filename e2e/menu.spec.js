@@ -24,7 +24,7 @@ test("youtube.html: a fül betölt, a YouTube menüpont aktív", async ({ page }
 test("Infó oldal: adat + elemzés dobozok, csoportcímek, aktív fül + üres lábléc", async ({ page }) => {
   await page.goto("/adatokrol.html");
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Infó");
-  await expect(page.locator("#adatokrol .adat-doboz")).toHaveCount(18);  // 10 Google (+ nemlin-trend, adatforrás-marker) + 5 YouTube + 3 elemzés doboz
+  await expect(page.locator("#adatokrol .adat-doboz")).toHaveCount(19);  // 10 Google (+ nemlin-trend, adatforrás-marker, előrejelzés) + 5 YouTube + 3 elemzés doboz
   await expect(page.locator("#adatokrol .adat-csoport")).toHaveCount(3);  // „Google Trend adatok" + „YouTube Trend adatok" + „Az elemzés"
   await expect(page.locator("#adatokrol .adat-csoport")).toHaveText([
     "Google Trend adatok", "YouTube Trend adatok", "Az elemzés (napi AI-összefoglaló)"]);
@@ -34,6 +34,10 @@ test("Infó oldal: adat + elemzés dobozok, csoportcímek, aktív fül + üres l
   await expect(page.locator("#adatokrol")).toContainText("nem-parametrikus");
   await expect(page.locator("#adatokrol")).toContainText("out-of-sample");
   await expect(page.locator("#adatokrol")).toContainText("Mindig látszik a görbe");
+  // előrejelzés doboz: csillapított trend, bizonytalansági sáv, visszatesztel
+  await expect(page.locator("#adatokrol")).toContainText("csillapított");
+  await expect(page.locator("#adatokrol")).toContainText("bizonytalansági sáv");
+  await expect(page.locator("#adatokrol")).toContainText("visszatesztel");
   // elemzés-rész: pontos, precíz — a modell és a „Python számol / AI csak szöveg" elv nevesítve
   await expect(page.locator("#adatokrol")).toContainText("claude-opus-4-8");
   await expect(page.locator("#adatokrol")).toContainText("Python");

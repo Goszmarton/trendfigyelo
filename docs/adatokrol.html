@@ -79,6 +79,21 @@
     </section>
 
     <section class="adat-doboz">
+      <h2>Előrejelzés – hogyan és meddig?</h2>
+      <p><strong>A módszer.</strong> Az előrejelzés az elmúlt trend alapján készül, a LOESS-görbe szintjéből indulva. Az alapmodell egy <strong>csillapított trend</strong>: az irány folytatódik, de a damping faktor miatt lassan kifuthat – a közeli jövőt mutatja, a távolabbat vigyázatosan.</p>
+      <p>Ha az adatban <strong>legalább 2 teljes ciklusra</strong> utal szerkezet (például 52 heti érték → 1 év, ahol 2–4 heti ismétlődés látszik), az előrejelzés <strong>szezonális komponenst is vesz fel</strong>. A Fourier-módszer azonosít periódusokat, és azokat a csillapított trendhez hozzáadja.</p>
+      <p><strong>A bizonytalansági sáv.</strong> A megjelenített szürke sáv a <strong>80%-os empirikus konfidencia-intervallum</strong>: az elmúlt 3 évre visszatesztel a modellt, és az előrejelzési hibák 90%-ile alapján kalkulálja a szélességét. Nem szigorú statisztikai valószínűség, hanem a valós múltbeli teljesítményből tanult bizonytalanság-mérték. A sáv szélesebb horizonton szélesedik – ez a figyelmeztetés: mennyire bizonytalan az előrejelzés.</p>
+      <p><strong>Miért óvatos a hosszú táv?</strong> A Google Trendek adatai egyedi pillanatképek: egy nap trend-értékéből nem lehet biztosan tudni, mi lesz egy év múlva. Az előrejelzés <strong>a lineáris / nemlineáris trend és szezon matematikai folytatása</strong>, de nem vesz fel új eseményeket, trendfordulókat vagy külső sokkokat. A hosszú horizont (1 év, 2 év) alatt szó-szint eltolódás, közérdeklődés-váltás vagy váratlan hírek korábban vagy később is történhetnek. Ezért az előrejelzés hosszabb horizonton sokkal bizonytalanabb.</p>
+      <p><strong>A képletek dióhéjban.</strong></p>
+      <ul>
+        <li><strong>Csillapított trend:</strong> az alapmodell az elmúlt 3–12 hónapban mért meredekség <code>b</code>, egy csillapítási faktor <code>φ</code> (0–1 között) és a jelenlegi szint <code>L</code> alapján. Az <code>h</code> lépésre előre az előrejelzés <code>ŷ(h) = L + b·(Σᵢ₌₁ʰ φⁱ) = L + b·φ·(1 − φʰ) / (1 − φ)</code> - az összeg a meredekség exponenciálisan csökkenő hozzájárulása.</li>
+        <li><strong>Szezonális összetevő (ha ≥2 ciklus):</strong> Fourier-analízis azonosít periódusokat az elmúlt adatban, és a jelentős harmonikusok amplitúdóját az előrejelzéshez hozzáadja.</li>
+        <li><strong>Empirikus bizonytalanság:</strong> a modellt a múltban, időablak-váltásokon keresztül visszateszelik (backtesting). Az előrejelzési hibák (RMSE) tárolódnak, és az előrejelzési intervallum a 90%-ile alapján szélesített.</li>
+      </ul>
+      <p class="adat-magyarazat">Az előrejelzés <strong>feltételes</strong>: a mai trend megtartásának vagy szezonális szerkezetnek a legjobb becslése. A valósággal való eltérés a normális dolog – azt méri, mennyire változékonyan követik a felhasználók az adott szót.</p>
+    </section>
+
+    <section class="adat-doboz">
       <h2>Mitől - és mikortól - vannak saját adataink?</h2>
       <p>A chart fölötti „Mikortól gyűjtjük az adatokat?" gombbal bekapcsolható minden charton egy <strong>szürke függőleges vonal</strong> (alapból kikapcsolva). Ez azt a napot jelöli, <strong>mikortól gyűjtjük mi magunk</strong> az adott szó adatát (az első saját mérésünk).</p>
       <p>A vonaltól <strong>jobbra</strong> a mi általunk, óránként/naponta <strong>ténylegesen mért</strong> adatunk áll. A vonaltól <strong>balra</strong> a Google <strong>saját, visszamenőleges becslése</strong> látható arról az időszakról, amikor még nem figyeltük a szót - ez <em>nem</em> a mi mérésünk, hanem háttér-kontextus. Ezért érdemes a bal oldali szakaszt óvatosabban olvasni.</p>
