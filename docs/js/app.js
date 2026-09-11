@@ -816,8 +816,12 @@ function merteszamok_szoveg(iv, racs, szint, mltrend_be, predikcio_info) {
 }
 
 // a predikció mérőszám-toldaléka: „80%-os sáv: ±X pont (1 hétre)" + figyelmeztetett horizontnál a hosszú-táv jelzés.
+// a ±rmse_veg NINCS a 0–100 skálára korlátozva; ha a skála felét eléri/meghaladja, egy pontos szám
+// (pl. „±148,7 pont") a 0–100 charton töröttnek/megtévesztőnek tűnne — helyette őszinte szöveges jelzés.
 function predikcio_szoveg(info) {
-  let s = "80%-os sáv: ±" + String(info.blk.rmse_veg).replace(".", ",") + " pont (" + info.ragozott + ")";
+  let s = info.blk.rmse_veg >= 50
+    ? "80%-os sáv: közel a teljes skála (nagy bizonytalanság) (" + info.ragozott + ")"
+    : "80%-os sáv: ±" + String(info.blk.rmse_veg).replace(".", ",") + " pont (" + info.ragozott + ")";
   if (info.blk.figyelmeztetes) s += " · szemléltető — nagy bizonytalanság";
   return s;
 }

@@ -1622,6 +1622,7 @@ test("Predikció: kiválasztott horizont előrejelző vonalat + sávot rajzol a 
   const kartya = page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="benzin"]');
   await expect(kartya).toContainText("1 napra");
   await expect(kartya).not.toContainText("nap-ra");
+  await expect(kartya).toContainText("±3,1 pont");   // rmse_veg=3,1 < 50 → pontos szám marad
 });
 
 test("Predikció: 1_ev horizont figyelmeztetést mutat", async ({ page }) => {
@@ -1636,4 +1637,21 @@ test("Predikció: 1_ev horizont figyelmeztetést mutat", async ({ page }) => {
   await page.locator('#kulcsszo-blokk .predikcio-gomb[data-horizont="1_ev"]').click();
   await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="benzin"]'))
     .toContainText("nagy bizonytalanság");
+});
+
+// ── display-fix: nagy rmse_veg (≥50, a 0–100 skála felét eléri/meghaladja) → őszinte szöveges sáv-jelzés,
+// NEM egy skálán kívüli pontos ± szám (ami töröttnek tűnne, pl. „±148,7 pont" egy 0–100 charton).
+test("Predikció: rmse_veg>=50 esetén 'közel a teljes skála' szöveg, nincs skálán-kívüli pontos ± szám", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "benzin": { ...regSzo({ domen: "energia" }),
+      predikcio: { "1_nap": predikcioBlokk({ rmse_veg: 148.7 }) } } }),
+    nyersObj: nyers({ "benzin": [nyersRekord("benzin")] }),
+  });
+  await page.goto("/");
+  await page.locator('#kulcsszo-blokk .predikcio-gomb[data-horizont="1_nap"]').click();
+  const kartya = page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="benzin"]');
+  await expect(kartya).toHaveAttribute("data-rendered", "true");   // várjuk meg a lusta re-rendert
+  await expect(kartya).toContainText("közel a teljes skála");
+  await expect(kartya).not.toContainText("±148,7 pont");
+  await expect(kartya).not.toContainText("±148");
 });
