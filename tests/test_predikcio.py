@@ -1,4 +1,5 @@
 import numpy as np
+from datetime import datetime, timezone, timedelta
 from trendfigyelo import predikcio
 
 def test_damped_sor_ellaposodik_es_nem_szall_el():
@@ -49,3 +50,26 @@ def test_backteszt_rmse_monoton_no_es_zajra_nagyobb():
     assert r_zajos.mean() > r_tiszta.mean()            # zajosabb sorozat → nagyobb hiba
     r2 = predikcio._backteszt_rmse(zajos, m=7, H=20, phi=0.95, K=15)
     assert np.array_equal(r_zajos, r2)                 # DETERMINISTA
+
+def _sor(n, lepes_mp, bazis=50.0, trend=0.1):
+    """Teszt-segéd: n pont, lineáris trend."""
+    t0 = datetime(2026, 1, 1, tzinfo=timezone.utc)
+    return [{"idopont_utc": (t0 + timedelta(seconds=i * lepes_mp)).isoformat(),
+             "ertek": float(bazis + trend * i)} for i in range(n)]
+
+def test_horizont_blokk_savval_es_jovo_idobelyegekkel():
+    pontok = _sor(200, 3600)                              # 200 órás pont
+    blk = predikcio.horizont_blokk(pontok, "1_nap", 3600, m=24)
+    assert blk is not None
+    for kulcs in ("pont", "also", "felso"):
+        assert len(blk[kulcs]) > 0
+        assert all(0.0 <= p["ertek"] <= 100.0 for p in blk[kulcs])   # [0,100]-vágva
+    # a sáv körbeveszi a pontot; a jövő időbélyeg > az utolsó adat
+    assert blk["also"][-1]["ertek"] <= blk["pont"][-1]["ertek"] <= blk["felso"][-1]["ertek"]
+    assert blk["pont"][0]["idopont_utc"] > pontok[-1]["idopont_utc"]
+    assert blk["figyelmeztetes"] is False                # 1_nap nem figyelmeztetett
+
+def test_horizont_blokk_figyelmeztetett_es_keves_pont_none():
+    assert predikcio.horizont_blokk(_sor(10, 3600), "1_nap", 3600, m=24) is None   # túl kevés
+    blk = predikcio.horizont_blokk(_sor(200, 604800), "1_ev", 604800, m=None)
+    assert blk["figyelmeztetes"] is True and blk["szezon"] is False                 # heti: nincs szezon

@@ -1,6 +1,8 @@
 """LOESS-alapú, csillapított-trendű előrejelzés empirikus (visszatesztelt) hibasávval.
 Tiszta numpy, determinista. A számítás a napi futásban, a regresszió után fut (0 Google-hívás)."""
 import numpy as np
+from datetime import datetime, timedelta
+from .ml_trend import loess
 
 # horizont -> hány LÉPÉS az adott sorozat felbontásán (1_nap/1_het órás; 1_ho/3_ho napi; 1_ev heti)
 HORIZONTOK = {"1_nap": 24, "1_het": 168, "1_ho": 30, "3_ho": 90, "1_ev": 52}
@@ -81,3 +83,34 @@ def _backteszt_rmse(y, m, H, phi, K):
     rmse = np.array([float(np.sqrt(np.mean(np.square(hibak[h])))) if hibak[h]
                      else resid * np.sqrt(h + 1) for h in range(H)])
     return np.maximum.accumulate(rmse)
+
+def _jovo_ido(utolso_iso, lepes_mp, h):
+    """Az utolsó ISO-időpont + h·lépés (másodpercben). NINCS datetime.now()."""
+    return (datetime.fromisoformat(utolso_iso) + timedelta(seconds=lepes_mp * h)).isoformat()
+
+def horizont_blokk(pontok, horizont, lepes_mp, m, phi=0.95, z=1.28, K=15, ritkitas=40):
+    """Egy horizont teljes blokkja (pont + 80%-os empirikus sáv + jövő-időbélyegek + metaadat).
+    None, ha túl kevés pont a stabil illesztéshez (< 3m vagy < 24)."""
+    y = np.array([p["ertek"] for p in pontok], float)
+    n = len(y)
+    minimum = max(3 * (m or 1), 24)
+    if n < minimum:
+        return None
+    H = HORIZONTOK[horizont]
+    sim = loess(np.arange(n, dtype=float), y, span=0.4)
+    pont, szezon = elorejelzes(y, sim, m, H, phi)
+    rmse = _backteszt_rmse(y, m, H, phi, K)
+    also = np.clip(pont - z * rmse, 0.0, 100.0)
+    felso = np.clip(pont + z * rmse, 0.0, 100.0)
+    utolso = pontok[-1]["idopont_utc"]
+    lep = max(1, H // ritkitas)                          # ritkítás ~ritkitas pontra
+    idx = list(range(0, H, lep))
+    if idx[-1] != H - 1:
+        idx.append(H - 1)
+    def _pts(arr):
+        return [{"idopont_utc": _jovo_ido(utolso, lepes_mp, h + 1), "ertek": round(float(arr[h]), 1)} for h in idx]
+    megb = round(float(max(0.0, 1.0 - rmse[-1] / 50.0)), 2)   # durva 0–1 megbízhatóság (nagy hiba→alacsony)
+    return {"pont": _pts(pont), "also": _pts(also), "felso": _pts(felso),
+            "rmse_veg": round(float(rmse[-1]), 1), "szezon": bool(szezon),
+            "modszer": "damped-LOESS", "megbizhatosag": megb,
+            "figyelmeztetes": horizont in FIGYELMEZTETETT}
