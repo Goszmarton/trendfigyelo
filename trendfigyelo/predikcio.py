@@ -25,3 +25,27 @@ def _damped_sor(L, b, H, phi):
     i = np.arange(1, int(H) + 1)
     kum = phi * (1.0 - phi ** i) / (1.0 - phi)
     return L + b * kum
+
+def _szezon_profil(y, sim, m):
+    """Additív, NULLA-ÁTLAGÚ szezon-profil (m hosszú): a (y - sim) átlagos eltérése fázisonként.
+    None, ha m<2 vagy n<2m (nincs ≥2 teljes ciklus → nem becsülhető őszintén)."""
+    y = np.asarray(y, float); sim = np.asarray(sim, float)
+    n = len(y)
+    if not m or m < 2 or n < 2 * m:
+        return None
+    dev = y - sim
+    prof = np.array([dev[k::m].mean() if dev[k::m].size else 0.0 for k in range(m)])
+    return prof - prof.mean()
+
+def elorejelzes(y, sim, m, H, phi=0.95):
+    """H-lépéses csillapított előrejelzés + additív szezon (ahol becsülhető), [0,100]-ra vágva.
+    Visszaad: (pont (H,), szezon_volt bool)."""
+    y = np.asarray(y, float); sim = np.asarray(sim, float)
+    n = len(y)
+    L, b = _szint_trend(sim, w=max(3, min(n // 10, 24)))
+    pont = _damped_sor(L, b, H, phi)
+    prof = _szezon_profil(y, sim, m)
+    if prof is not None:
+        faz = ((n - 1) + np.arange(1, int(H) + 1)) % m
+        pont = pont + prof[faz]
+    return np.clip(pont, 0.0, 100.0), (prof is not None)

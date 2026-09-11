@@ -16,3 +16,24 @@ def test_szint_trend_a_gorbe_szelerol():
     L, b = predikcio._szint_trend(sim, w=10)
     assert abs(L - 30.0) < 1e-6
     assert abs(b - 20.0 / 39.0) < 1e-3
+
+def test_szezon_profil_csak_ket_ciklustol_es_nulla_atlagu():
+    m = 7
+    x = np.arange(28)                                  # 4 ciklus
+    szez = np.array([0, 5, -5, 0, 3, -3, 0], float)
+    y = 50 + szez[x % m]
+    sim = np.full(28, 50.0)                             # a „simító" a szint
+    prof = predikcio._szezon_profil(y, sim, m)
+    assert prof is not None and prof.shape == (7,)
+    assert abs(prof.mean()) < 1e-9                      # nulla-átlagú
+    assert np.allclose(prof, szez, atol=1e-9)
+    assert predikcio._szezon_profil(y[:10], sim[:10], m) is None   # < 2m → None
+
+def test_elorejelzes_szezont_hozzaad_es_vag():
+    m = 7
+    x = np.arange(28)
+    y = 50 + np.array([0, 5, -5, 0, 3, -3, 0], float)[x % m]
+    sim = np.full(28, 50.0)
+    pont, volt = predikcio.elorejelzes(y, sim, m, H=7, phi=0.95)
+    assert volt is True and pont.shape == (7,)
+    assert pont.min() >= 0.0 and pont.max() <= 100.0   # [0,100]-vágás
