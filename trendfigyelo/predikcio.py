@@ -49,3 +49,35 @@ def elorejelzes(y, sim, m, H, phi=0.95):
         faz = ((n - 1) + np.arange(1, int(H) + 1)) % m
         pont = pont + prof[faz]
     return np.clip(pont, 0.0, 100.0), (prof is not None)
+
+def _olcso_sim(y, ablak=None):
+    """Olcsó, szél-korrigált mozgóátlag-simító a backteszthez (NEM teljes LOESS minden origón)."""
+    y = np.asarray(y, float); n = len(y)
+    w = ablak or max(3, min(n // 5, 25))
+    if w % 2 == 0:
+        w += 1
+    sim = np.convolve(y, np.ones(w) / w, mode="same")
+    fel = w // 2
+    for i in list(range(fel)) + list(range(n - fel, n)):   # szél: részleges átlag
+        sim[i] = y[max(0, i - fel):min(n, i + fel + 1)].mean()
+    return sim
+
+def _backteszt_rmse(y, m, H, phi, K):
+    """Gördülő-origó visszatesztelés: az utolsó K origóból H-lépés előrejelzés, RMSE(h)
+    horizontonként (az él-simító OLCSÓ mozgóátlag). Hiányzó h → reziduál-alapú fallback
+    (σ·√h). Végül KUMULATÍV MAX → monoton nem-csökkenő (a sáv nem szűkül vissza)."""
+    y = np.asarray(y, float); n = len(y)
+    H = int(H)
+    hibak = [[] for _ in range(H)]
+    also = max(2 * (m or 1) + 5, 20)
+    origok = [o for o in range(max(also, n - K), n) if o < n]
+    for o in origok:
+        yo = y[:o]
+        po, _ = elorejelzes(yo, _olcso_sim(yo), m, min(H, n - o), phi)
+        for h in range(len(po)):
+            if o + h < n:
+                hibak[h].append(y[o + h] - po[h])
+    resid = float(np.std(y - _olcso_sim(y))) or 1.0
+    rmse = np.array([float(np.sqrt(np.mean(np.square(hibak[h])))) if hibak[h]
+                     else resid * np.sqrt(h + 1) for h in range(H)])
+    return np.maximum.accumulate(rmse)

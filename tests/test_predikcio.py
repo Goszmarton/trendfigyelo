@@ -37,3 +37,15 @@ def test_elorejelzes_szezont_hozzaad_es_vag():
     pont, volt = predikcio.elorejelzes(y, sim, m, H=7, phi=0.95)
     assert volt is True and pont.shape == (7,)
     assert pont.min() >= 0.0 and pont.max() <= 100.0   # [0,100]-vágás
+
+def test_backteszt_rmse_monoton_no_es_zajra_nagyobb():
+    rng = np.arange(120, dtype=float)
+    tiszta = 50 + 0.1 * rng
+    zajos = tiszta + 8 * np.sin(rng)                   # determinista „zaj"
+    r_tiszta = predikcio._backteszt_rmse(tiszta, m=7, H=20, phi=0.95, K=15)
+    r_zajos = predikcio._backteszt_rmse(zajos, m=7, H=20, phi=0.95, K=15)
+    assert r_tiszta.shape == (20,)
+    assert np.all(np.diff(r_tiszta) >= -1e-9)          # MONOTON nem-csökkenő (kumulatív max)
+    assert r_zajos.mean() > r_tiszta.mean()            # zajosabb sorozat → nagyobb hiba
+    r2 = predikcio._backteszt_rmse(zajos, m=7, H=20, phi=0.95, K=15)
+    assert np.array_equal(r_zajos, r2)                 # DETERMINISTA
