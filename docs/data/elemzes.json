@@ -1,13 +1,33 @@
 {
-"frissitve": "2026-09-11T07:07:39+00:00",
+"frissitve": "2026-09-11T19:08:22+00:00",
 "modell": "claude-opus-4-8",
 "nap": "2026-09-11",
-"mode": "reggel",
+"mode": "este",
 "valtozas": {
 "diff": {
 "irany_valtok": [
 {
 "szo": "akciós újság",
+"elozo": "csokken",
+"mai": "stagnal"
+},
+{
+"szo": "albérlet",
+"elozo": "stagnal",
+"mai": "csokken"
+},
+{
+"szo": "benzin",
+"elozo": "novekszik",
+"mai": "stagnal"
+},
+{
+"szo": "betegség",
+"elozo": "stagnal",
+"mai": "novekszik"
+},
+{
+"szo": "hitel",
 "elozo": "csokken",
 "mai": "novekszik"
 },
@@ -17,8 +37,18 @@
 "mai": "novekszik"
 },
 {
+"szo": "iskola",
+"elozo": "csokken",
+"mai": "novekszik"
+},
+{
 "szo": "kormány",
 "elozo": "csokken",
+"mai": "novekszik"
+},
+{
+"szo": "kölcsön",
+"elozo": "stagnal",
 "mai": "novekszik"
 },
 {
@@ -27,67 +57,74 @@
 "mai": "stagnal"
 },
 {
-"szo": "nyaralás",
-"elozo": "stagnal",
-"mai": "csokken"
-},
-{
-"szo": "nyugdíj",
+"szo": "napelem",
 "elozo": "novekszik",
 "mai": "stagnal"
 },
 {
-"szo": "sürgősségi",
+"szo": "nyugdíj",
+"elozo": "novekszik",
+"mai": "csokken"
+},
+{
+"szo": "pedagógus",
 "elozo": "csokken",
+"mai": "stagnal"
+},
+{
+"szo": "segély",
+"elozo": "novekszik",
 "mai": "stagnal"
 }
 ],
 "mozgok": [
 {
 "szo": "kormány",
-"valtozas": 6.036
+"valtozas": 9.111
 },
 {
 "szo": "nyugdíj",
-"valtozas": -4.515
+"valtozas": -5.82
 },
 {
-"szo": "akciós újság",
-"valtozas": 3.221
+"szo": "iskola",
+"valtozas": 3.958
 },
 {
-"szo": "kormányablak",
-"valtozas": 2.625
+"szo": "pedagógus",
+"valtozas": 3.894
 },
 {
-"szo": "háziorvos",
-"valtozas": 2.275
+"szo": "infláció",
+"valtozas": -3.043
 }
 ],
 "felkapott_uj": [
-"2026",
-"adó",
-"frakció",
-"hadházy ákos",
-"hőségriasztás",
+"911",
+"atlétikai világdöntő",
+"botrány",
+"formula 1 olasz nagydíj",
+"forsthoffer ágnes",
 "időjárás",
-"karácsony gergely",
-"katonai repülőgép",
-"kerkez milos",
-"kötvény",
-"lázár jános",
-"magyarország",
-"mohu mol hulladékgazdálkodási zrt.",
-"pécs",
-"pósfai gábor",
-"sarka kata",
-"szuverenitásvédelmi hivatal",
-"termékvisszahívás",
-"államadósság",
-"óraátállítás 2026"
+"koós boglárka",
+"kötcse",
+"magyar államkincstár",
+"marco rossi",
+"mohu mol hulladékgazdálkodási zrt",
+"olaj",
+"oszkó péter",
+"prőhle gergely",
+"rendőrség",
+"világgazdaság",
+"vásárhelyi jános",
+"weather",
+"world trade center",
+"óraátállítás",
+"üldözés"
 ],
 "felkapott_eltunt": [
 "barcelona–feyenoord",
+"blikk",
 "chelsea–leeds",
 "európai bizottság",
 "fasy adam",
@@ -110,50 +147,50 @@
 ],
 "van_elozo": true
 },
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A mai kép több ponton is elmozdult a korábbihoz képest. A leglátványosabb átrendeződés a közélet és a pénzügyek körül zajlik: a „kormány\" szó lendülete a többihez mérten kiugró, a korábbi csökkenő állapotból határozott emelkedésbe fordult, és a hét ívén is ez mutatja a legnagyobb erősödést. Emellett a „hitel\", az „iskola\", a „háziorvos\" és a „kölcsön\" is a korábbi visszahúzódásból vagy egy helyben állásból növekedésbe váltott, ami arra utal, hogy a pénzügyi és az egészségügyi-oktatási témák felé óvatosan élénkül a figyelem.\n\nA másik irányba a „nyugdíj\" mozdult el a legérzékelhetőbben: a korábbi emelkedés csökkenésbe fordult. Az „albérlet\" szintén lefelé vette az irányt, míg a „benzin\", a „napelem\" és a „segély\" a korábbi növekedésből inkább nyugodtabb, egy helyben álló állapotba csillapodott. Az „akciós újság\" és a „pedagógus\" is kikerült a csökkenő sávból egy kiegyensúlyozottabb szintre.\n\nA napi felkapott keresések között sok az új belépő, köztük az „időjárás\", a „rendőrség\", a „magyar államkincstár\", az „olaj\", az „óraátállítás\" és több személynév. Ezzel párhuzamosan kikoptak a tegnap még pörgő témák, mint a különféle labdarúgó-mérkőzések, a telefonbemutatóhoz kötődő szavak vagy az árvíz. Ez a fajta gyors csere természetes: a napi hírciklus témái jönnek-mennek, és önmagában nem jelez tartós irányt."
 },
 "kulcsszavak": {
 "szamok": [
 {
 "szo": "akciós újság",
-"irany": "novekszik",
-"meredekseg": 1.663,
+"irany": "stagnal",
+"meredekseg": -0.308,
 "ervenyes": true,
-"mai_ertek": 33,
-"csucs": 60.0,
-"atlag": 47.83
+"mai_ertek": 32,
+"csucs": 78.0,
+"atlag": 48.17
 },
 {
 "szo": "albérlet",
-"irany": "stagnal",
-"meredekseg": 0.238,
+"irany": "csokken",
+"meredekseg": -1.232,
 "ervenyes": true,
-"mai_ertek": 27,
-"csucs": 100.0,
-"atlag": 35.48
+"mai_ertek": 33,
+"csucs": 43.0,
+"atlag": 33.11
 },
 {
 "szo": "benzin",
-"irany": "novekszik",
-"meredekseg": 1.732,
+"irany": "stagnal",
+"meredekseg": 0.967,
 "ervenyes": true,
-"mai_ertek": 18,
-"csucs": 60.0,
-"atlag": 34.38
+"mai_ertek": 43,
+"csucs": 38.0,
+"atlag": 21.87
 },
 {
 "szo": "betegség",
-"irany": "stagnal",
-"meredekseg": 0.464,
+"irany": "novekszik",
+"meredekseg": 1.862,
 "ervenyes": true,
-"mai_ertek": 32,
-"csucs": 100.0,
-"atlag": 35.79
+"mai_ertek": 42,
+"csucs": 72.0,
+"atlag": 50.06
 },
 {
 "szo": "csőd",
 "irany": "stagnal",
-"meredekseg": 0.456,
+"meredekseg": -0.661,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -162,79 +199,79 @@
 {
 "szo": "eladó lakás",
 "irany": "stagnal",
-"meredekseg": 0.4,
+"meredekseg": -0.444,
 "ervenyes": true,
-"mai_ertek": 60,
-"csucs": 91.0,
-"atlag": 62.81
+"mai_ertek": 54,
+"csucs": 72.0,
+"atlag": 44.7
 },
 {
 "szo": "fizetés",
 "irany": "stagnal",
-"meredekseg": -0.301,
+"meredekseg": 0.932,
 "ervenyes": true,
-"mai_ertek": 31,
+"mai_ertek": 49,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "hitel",
-"irany": "csokken",
-"meredekseg": -2.762,
+"irany": "novekszik",
+"meredekseg": 1.28,
 "ervenyes": true,
-"mai_ertek": 14,
-"csucs": 46.0,
-"atlag": 21.7
+"mai_ertek": 41,
+"csucs": 80.0,
+"atlag": 60.85
 },
 {
 "szo": "háziorvos",
 "irany": "novekszik",
-"meredekseg": 1.95,
+"meredekseg": 2.628,
 "ervenyes": true,
-"mai_ertek": 73,
+"mai_ertek": 53,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "infláció",
 "irany": "novekszik",
-"meredekseg": 2.008,
+"meredekseg": 1.162,
 "ervenyes": true,
-"mai_ertek": 16,
+"mai_ertek": 31,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "iskola",
-"irany": "csokken",
-"meredekseg": -1.714,
+"irany": "novekszik",
+"meredekseg": 1.216,
 "ervenyes": true,
-"mai_ertek": 55,
+"mai_ertek": 49,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kormány",
 "irany": "novekszik",
-"meredekseg": 2.787,
+"meredekseg": 5.862,
 "ervenyes": true,
-"mai_ertek": 30,
+"mai_ertek": 48,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kormányablak",
 "irany": "novekszik",
-"meredekseg": 5.296,
+"meredekseg": 5.129,
 "ervenyes": true,
-"mai_ertek": 27,
-"csucs": 90.0,
-"atlag": 57.2
+"mai_ertek": 14,
+"csucs": 91.0,
+"atlag": 55.05
 },
 {
 "szo": "korrupció",
 "irany": "stagnal",
-"meredekseg": 0.639,
+"meredekseg": -0.07,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -243,18 +280,18 @@
 {
 "szo": "kórház",
 "irany": "novekszik",
-"meredekseg": 2.642,
+"meredekseg": 3.065,
 "ervenyes": true,
-"mai_ertek": 36,
-"csucs": 100.0,
-"atlag": 49.38
+"mai_ertek": 24,
+"csucs": 77.0,
+"atlag": 42.29
 },
 {
 "szo": "kölcsön",
-"irany": "stagnal",
-"meredekseg": -0.146,
+"irany": "novekszik",
+"meredekseg": 2.607,
 "ervenyes": true,
-"mai_ertek": 25,
+"mai_ertek": 74,
 "csucs": null,
 "atlag": null
 },
@@ -270,52 +307,52 @@
 {
 "szo": "műtét",
 "irany": "stagnal",
-"meredekseg": -0.451,
+"meredekseg": -0.755,
 "ervenyes": true,
-"mai_ertek": 16,
+"mai_ertek": 32,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "napelem",
-"irany": "novekszik",
-"meredekseg": 1.159,
+"irany": "stagnal",
+"meredekseg": 0.511,
 "ervenyes": true,
-"mai_ertek": 54,
+"mai_ertek": 14,
 "csucs": 100.0,
-"atlag": 56.76
+"atlag": 25.88
 },
 {
 "szo": "nyaralás",
-"irany": "csokken",
-"meredekseg": -1.0,
+"irany": "stagnal",
+"meredekseg": -0.597,
 "ervenyes": true,
-"mai_ertek": 72,
-"csucs": 93.0,
-"atlag": 57.53
+"mai_ertek": 0,
+"csucs": 65.0,
+"atlag": 29.59
 },
 {
 "szo": "nyugdíj",
-"irany": "stagnal",
-"meredekseg": -0.619,
+"irany": "csokken",
+"meredekseg": -1.924,
 "ervenyes": true,
-"mai_ertek": 12,
-"csucs": 52.0,
-"atlag": 21.38
+"mai_ertek": 17,
+"csucs": 33.0,
+"atlag": 12.92
 },
 {
 "szo": "pedagógus",
-"irany": "csokken",
-"meredekseg": -2.794,
+"irany": "stagnal",
+"meredekseg": 0.248,
 "ervenyes": true,
-"mai_ertek": 37,
+"mai_ertek": 0,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "rezsi",
 "irany": "stagnal",
-"meredekseg": 0.464,
+"meredekseg": -0.489,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -323,17 +360,17 @@
 },
 {
 "szo": "segély",
-"irany": "novekszik",
-"meredekseg": 2.464,
+"irany": "stagnal",
+"meredekseg": 0.922,
 "ervenyes": true,
-"mai_ertek": 28,
+"mai_ertek": 17,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "sürgősségi",
-"irany": "stagnal",
-"meredekseg": -0.826,
+"irany": "csokken",
+"meredekseg": -2.353,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -351,7 +388,7 @@
 {
 "szo": "várólista",
 "irany": "stagnal",
-"meredekseg": -0.112,
+"meredekseg": -0.062,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -360,22 +397,22 @@
 {
 "szo": "állás",
 "irany": "novekszik",
-"meredekseg": 1.681,
+"meredekseg": 1.334,
 "ervenyes": true,
 "mai_ertek": 20,
-"csucs": 45.0,
-"atlag": 29.62
+"csucs": 100.0,
+"atlag": 31.17
 }
 ],
 "napi": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A követett szavak közül ma a pénzügyi és a mindennapi megélhetés témái húzódnak előtérbe. A „kölcsön\" mai szintje a saját szokásos sávjában is a magasabbak közé tartozik, és emelkedő irányt mutat, hasonlóan a „hitel\"-hez, amely a szokásos átlaga alatt áll ugyan, de felfelé kapaszkodik. Az „eladó lakás\" a saját átlaga fölött, élénkebb szinten mozog, míg az „albérlet\" épp a szokásos szintje közelében, de csökkenő irányban.\n\nAz egészségügyi szavak is aktívabbak: a „háziorvos\" és a „kórház\" egyaránt növekvő pályán van, a „betegség\" szintén emelkedik, bár mai értéke a saját megszokott szintje alatt marad. A „műtét\" nyugodtabb, egy helyben álló állapotban van. Az árakhoz kötődő „benzin\" mai értéke a saját átlagához mérten feltűnően magas, ez a szó jóval élénkebb a szokásosnál, még ha az iránya kiegyensúlyozott is.\n\nA „kormány\" a leginkább mozgásban lévő szó, meredeken emelkedő figyelemmel. Néhány szó ma gyakorlatilag nem mutat keresési aktivitást, így a „csőd\", a „korrupció\", a „munkanélküliség\", a „rezsi\", a „sürgősségi\", a „várólista\", a „pedagógus\" és a „nyaralás\" is a nullás szint közelében áll. A „nyugdíj\" mérsékelt szinten, de csökkenő irányban van, a „napelem\" és a „kormányablak\" pedig a saját átlaguk alatti, csendesebb állapotban. Az „akciós újság\", a „fizetés\", az „állás\", az „infláció\", az „iskola\" és a „segély\" nagyjából a megszokott közegükben mozognak, kiemelkedő kilengés nélkül."
 }
 },
 "felkapott": {
 "top": [
 {
 "kifejezes": "időjárás",
-"volumen": "100000",
+"volumen": "50000",
 "novekedes_pct": "75",
 "temak": [
 "Other"
@@ -383,63 +420,17 @@
 "hirek": []
 },
 {
-"kifejezes": "blikk",
-"volumen": "50000",
+"kifejezes": "rendőrség",
+"volumen": "20000",
 "novekedes_pct": "1000",
 "temak": [
-"Law and Government",
-"Politics"
+"Law and Government"
 ],
 "hirek": []
 },
 {
-"kifejezes": "óraátállítás 2026",
+"kifejezes": "magyar államkincstár",
 "volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "hőségriasztás",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Climate"
-],
-"hirek": []
-},
-{
-"kifejezes": "mohu mol hulladékgazdálkodási zrt.",
-"volumen": "5000",
-"novekedes_pct": "600",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
-},
-{
-"kifejezes": "2026",
-"volumen": "5000",
-"novekedes_pct": "800",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "adó",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "termékvisszahívás",
-"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Business and Finance"
@@ -447,7 +438,34 @@
 "hirek": []
 },
 {
-"kifejezes": "katonai repülőgép",
+"kifejezes": "oszkó péter",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "forsthoffer ágnes",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "olaj",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "koós boglárka",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
@@ -456,16 +474,7 @@
 "hirek": []
 },
 {
-"kifejezes": "pécs",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "szuverenitásvédelmi hivatal",
+"kifejezes": "üldözés",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
@@ -474,92 +483,144 @@
 "hirek": []
 },
 {
-"kifejezes": "frakció",
+"kifejezes": "world trade center",
 "volumen": "2000",
-"novekedes_pct": "1000",
+"novekedes_pct": "400",
 "temak": [
 "Law and Government"
 ],
 "hirek": []
 },
 {
-"kifejezes": "kerkez milos",
+"kifejezes": "911",
+"volumen": "2000",
+"novekedes_pct": "500",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "mohu mol hulladékgazdálkodási zrt",
 "volumen": "2000",
 "novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "világgazdaság",
+"volumen": "2000",
+"novekedes_pct": "700",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "óraátállítás",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "prőhle gergely",
+"volumen": "1000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "atlétikai világdöntő",
+"volumen": "1000",
+"novekedes_pct": "500",
 "temak": [
 "Sports"
 ],
 "hirek": []
 },
 {
-"kifejezes": "sarka kata",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "államadósság",
-"volumen": "2000",
-"novekedes_pct": "1000",
+"kifejezes": "kötcse",
+"volumen": "1000",
+"novekedes_pct": "700",
 "temak": [
 "Politics"
 ],
 "hirek": []
 },
 {
-"kifejezes": "hadházy ákos",
-"volumen": "2000",
-"novekedes_pct": "1000",
+"kifejezes": "formula 1 olasz nagydíj",
+"volumen": "1000",
+"novekedes_pct": "900",
 "temak": [
-"Law and Government"
+"Sports"
 ],
-"hirek": []
+"hirek": [
+{
+"hir_cim": "Borult a bili, még változhat az Olasz Nagydíj végeredménye",
+"hir_forras": "Totalcar",
+"hir_url": "https://totalcar.hu/hirek/2026/09/11/olasz-nagydij-audi-fellebbezes-cunoda/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSIoMSACLRGQIHJTmBceFvTYodKCMYhFDckoOaAXjZFYHMcoRP2SCe8Y2YoYN4",
+"hir_kivonat": ""
 },
 {
-"kifejezes": "karácsony gergely",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
+"hir_cim": "Ezért fellebbez az Audi Tsunoda monzai büntetésének elmaradása miatt",
+"hir_forras": "Formula.hu",
+"hir_url": "https://formula.hu/f1/2026/09/10/ezert-fellebbez-az-audi-tsunoda-monzai-buntetesenek-elmaradasa-miatt",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcT4HoGYXcWYN9bFEQsB6Cl72DtKtHPmQv1wERuL2kQ5mp-96YaBg-IPnY5PIJc",
+"hir_kivonat": ""
 },
 {
-"kifejezes": "kötvény",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
+"hir_cim": "Elmaradt F1-büntetés miatt fellebbez az Audi",
+"hir_forras": "Vezess",
+"hir_url": "https://www.vezess.hu/forma-1/2026/09/07/elmaradt-f1-buntetes-miatt-fellebbez-az-audi/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSunvyfLP6TiFQDJQX4Q2PvA0AxAp2amxm5c0LdF8CH_oOA2NEtFIvN9NKoVNY",
+"hir_kivonat": ""
+}
+]
 },
 {
-"kifejezes": "lázár jános",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "pósfai gábor",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "magyarország",
-"volumen": "2000",
+"kifejezes": "vásárhelyi jános",
+"volumen": "1000",
 "novekedes_pct": "800",
 "temak": [
 "Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "botrány",
+"volumen": "1000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "marco rossi",
+"volumen": "1000",
+"novekedes_pct": "500",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "weather",
+"volumen": "1000",
+"novekedes_pct": "100",
+"temak": [
+"Climate"
 ],
 "hirek": []
 }
@@ -759,7 +820,7 @@
 "este_top": [
 {
 "kifejezes": "időjárás",
-"volumen": "100000",
+"volumen": "50000",
 "novekedes_pct": "75",
 "temak": [
 "Other"
@@ -767,63 +828,17 @@
 "hirek": []
 },
 {
-"kifejezes": "blikk",
-"volumen": "50000",
+"kifejezes": "rendőrség",
+"volumen": "20000",
 "novekedes_pct": "1000",
 "temak": [
-"Law and Government",
-"Politics"
+"Law and Government"
 ],
 "hirek": []
 },
 {
-"kifejezes": "óraátállítás 2026",
+"kifejezes": "magyar államkincstár",
 "volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "hőségriasztás",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Climate"
-],
-"hirek": []
-},
-{
-"kifejezes": "mohu mol hulladékgazdálkodási zrt.",
-"volumen": "5000",
-"novekedes_pct": "600",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
-},
-{
-"kifejezes": "2026",
-"volumen": "5000",
-"novekedes_pct": "800",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "adó",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "termékvisszahívás",
-"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Business and Finance"
@@ -831,7 +846,34 @@
 "hirek": []
 },
 {
-"kifejezes": "katonai repülőgép",
+"kifejezes": "oszkó péter",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "forsthoffer ágnes",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "olaj",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "koós boglárka",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
@@ -840,16 +882,7 @@
 "hirek": []
 },
 {
-"kifejezes": "pécs",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "szuverenitásvédelmi hivatal",
+"kifejezes": "üldözés",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
@@ -858,107 +891,178 @@
 "hirek": []
 },
 {
-"kifejezes": "frakció",
+"kifejezes": "world trade center",
 "volumen": "2000",
-"novekedes_pct": "1000",
+"novekedes_pct": "400",
 "temak": [
 "Law and Government"
 ],
 "hirek": []
 },
 {
-"kifejezes": "kerkez milos",
+"kifejezes": "911",
+"volumen": "2000",
+"novekedes_pct": "500",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "mohu mol hulladékgazdálkodási zrt",
 "volumen": "2000",
 "novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "világgazdaság",
+"volumen": "2000",
+"novekedes_pct": "700",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "óraátállítás",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "prőhle gergely",
+"volumen": "1000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "atlétikai világdöntő",
+"volumen": "1000",
+"novekedes_pct": "500",
 "temak": [
 "Sports"
 ],
 "hirek": []
 },
 {
-"kifejezes": "sarka kata",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "államadósság",
-"volumen": "2000",
-"novekedes_pct": "1000",
+"kifejezes": "kötcse",
+"volumen": "1000",
+"novekedes_pct": "700",
 "temak": [
 "Politics"
 ],
 "hirek": []
 },
 {
-"kifejezes": "hadházy ákos",
-"volumen": "2000",
-"novekedes_pct": "1000",
+"kifejezes": "formula 1 olasz nagydíj",
+"volumen": "1000",
+"novekedes_pct": "900",
 "temak": [
-"Law and Government"
+"Sports"
 ],
-"hirek": []
+"hirek": [
+{
+"hir_cim": "Borult a bili, még változhat az Olasz Nagydíj végeredménye",
+"hir_forras": "Totalcar",
+"hir_url": "https://totalcar.hu/hirek/2026/09/11/olasz-nagydij-audi-fellebbezes-cunoda/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSIoMSACLRGQIHJTmBceFvTYodKCMYhFDckoOaAXjZFYHMcoRP2SCe8Y2YoYN4",
+"hir_kivonat": ""
 },
 {
-"kifejezes": "karácsony gergely",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
+"hir_cim": "Ezért fellebbez az Audi Tsunoda monzai büntetésének elmaradása miatt",
+"hir_forras": "Formula.hu",
+"hir_url": "https://formula.hu/f1/2026/09/10/ezert-fellebbez-az-audi-tsunoda-monzai-buntetesenek-elmaradasa-miatt",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcT4HoGYXcWYN9bFEQsB6Cl72DtKtHPmQv1wERuL2kQ5mp-96YaBg-IPnY5PIJc",
+"hir_kivonat": ""
 },
 {
-"kifejezes": "kötvény",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
+"hir_cim": "Elmaradt F1-büntetés miatt fellebbez az Audi",
+"hir_forras": "Vezess",
+"hir_url": "https://www.vezess.hu/forma-1/2026/09/07/elmaradt-f1-buntetes-miatt-fellebbez-az-audi/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSunvyfLP6TiFQDJQX4Q2PvA0AxAp2amxm5c0LdF8CH_oOA2NEtFIvN9NKoVNY",
+"hir_kivonat": ""
+}
+]
 },
 {
-"kifejezes": "lázár jános",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "pósfai gábor",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "magyarország",
-"volumen": "2000",
+"kifejezes": "vásárhelyi jános",
+"volumen": "1000",
 "novekedes_pct": "800",
 "temak": [
 "Other"
 ],
 "hirek": []
+},
+{
+"kifejezes": "botrány",
+"volumen": "1000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "marco rossi",
+"volumen": "1000",
+"novekedes_pct": "500",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "weather",
+"volumen": "1000",
+"novekedes_pct": "100",
+"temak": [
+"Climate"
+],
+"hirek": []
 }
 ],
 "reggel_este_diff": {
-"uj_estere": [],
-"eltunt_estere": [],
-"megmaradt": [
+"uj_estere": [
+"911",
+"atlétikai világdöntő",
+"botrány",
+"formula 1 olasz nagydíj",
+"forsthoffer ágnes",
+"koós boglárka",
+"kötcse",
+"magyar államkincstár",
+"marco rossi",
+"mohu mol hulladékgazdálkodási zrt",
+"olaj",
+"oszkó péter",
+"prőhle gergely",
+"rendőrség",
+"világgazdaság",
+"vásárhelyi jános",
+"weather",
+"world trade center",
+"óraátállítás",
+"üldözés"
+],
+"eltunt_estere": [
 "2026",
 "adó",
 "blikk",
 "frakció",
 "hadházy ákos",
 "hőségriasztás",
-"időjárás",
 "karácsony gergely",
 "katonai repülőgép",
 "kerkez milos",
@@ -973,41 +1077,28 @@
 "termékvisszahívás",
 "államadósság",
 "óraátállítás 2026"
+],
+"megmaradt": [
+"időjárás"
 ]
 },
 "reggel": {
-"szoveg": "Ma reggel a magyar Google-keresésben egyértelműen az időjárás áll az élen: ez a kifejezés kiugróan nagy keresési mennyiséggel vezet, és mellette a hőségriasztás is előkelő helyen szerepel. Ez arra utal, hogy sokakat foglalkoztat, mi várható a következő napokban – feltehetően a meleghez kapcsolódó figyelmeztetések miatt. Szintén sokan keresnek rá az óraátállítás 2026 kifejezésre, ami inkább a tájékozódás, a jövőbeli időpontok utáni érdeklődést jelzi.\n\nA reggeli mezőnyben erős a hírportálok és a közélet jelenléte. A Blikk nevű lap keresése kiemelkedően megugrott, és a politikai, közéleti témák is sűrűn feltűnnek: ide sorolható a szuverenitásvédelmi hivatal, a frakció, az államadósság, valamint több ismert közéleti szereplő neve, köztük Hadházy Ákos, Karácsony Gergely, Lázár János és Pósfai Gábor. Ezekhez konkrét hír nem érkezett, így csak annyi mondható biztosan, hogy ma reggel megnőtt irántuk az érdeklődés.\n\nA gazdasági témák közül feltűnik az adó, a kötvény és a Mohu hulladékgazdálkodási cég keresése, ami arra utalhat, hogy pénzügyi és háztartási ügyek is foglalkoztatják az embereket. Emellett megjelenik a termékvisszahívás is, ez jellemzően valamilyen fogyasztói figyelmeztetéshez szokott kötődni, bár pontos okot most nem tudunk hozzárendelni.\n\nA szórakoztatás és a sport is képviselteti magát: Sarka Kata neve az egyik, míg a sportérdeklődést Kerkez Milos keresése jelzi. Felbukkan a katonai repülőgép kifejezés és Pécs városa is, konkrét háttér nélkül. Összességében a reggeli kép vegyes: az időjárás és a hőség uralja a keresést, emellett erős a közéleti-politikai és a pénzügyi témák jelenléte, ezek együtt rajzolják ki, mi foglalkoztatja ma reggel a keresőket."
+"szoveg": "Reggel kilenc körül a mezőnyt egyértelműen az „időjárás\" vezette, kiemelkedő keresési mennyiséggel, mögötte pedig a „blikk\" pörgött erősen. Feltűnő volt még az „óraátállítás 2026\" és a „hőségriasztás\" jelenléte, ami az évszakhoz és a naptári változáshoz kötődő szezonális érdeklődésre utalhat, bár ezt az adat önmagában nem támasztja alá részletekkel.\n\nA reggeli képben több közéleti és pénzügyi téma is helyet kapott, például az „adó\", az „államadósság\", a „kötvény\", valamint politikai és közszereplőket érintő keresések, mint a „lázár jános\", a „hadházy ákos\", a „karácsony gergely\" és a „frakció\". Emellett néhány helyi és eseti téma is felbukkant, például a „pécs\", a „katonai repülőgép\", a „termékvisszahívás\" és a „kerkez milos\"."
 },
 "este": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "Estére kilenc körül az „időjárás\" tartotta a vezető helyét, de mellé feltűnően felfutott a „rendőrség\" és a „magyar államkincstár\". Több személynév is előtérbe került, köztük az „oszkó péter\", a „forsthoffer ágnes\", a „koós boglárka\", a „prőhle gergely\" és a „vásárhelyi jános\", amelyekhez a bemenetben nem érkezett magyarázó hír, így csak annyi mondható, hogy estére felkapottá váltak.\n\nGazdasági témák is megjelentek, mint az „olaj\" és a „világgazdaság\", valamint néhány visszatérő közéleti szó, például a „botrány\", a „kötcse\" és az „üldözés\". A sport területén az „atlétikai világdöntő\", a „marco rossi\" és a „formula 1 olasz nagydíj\" is felkerült, utóbbihoz több sajtóhír is kapcsolódott: a Totalcar, a Formula.hu és a Vezess beszámolói szerint az Audi fellebbezése nyomán még változhat a monzai versenyhétvége kimenetele. Feltűnt még a „911\" és a „world trade center\" is, amelyek időzítése az évszakhoz köthető emléknaphoz kapcsolódhat, de ezt az adat önmagában nem igazolja."
 },
 "teljes_nap": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A nap dinamikáját nézve egyetlen téma tartott ki végig, az „időjárás\", amely reggel és este is a lista élén állt. A reggeli mezőny inkább a hazai közélet, az adózás és az államháztartás körül forgott, míg estére ez a hangsúly eltolódott a nevekhez, a bűnügyi-rendészeti témák és a gazdasági kulcsszavak felé.\n\nEstére számos új szó lépett be, köztük a „rendőrség\", a „magyar államkincstár\", az „olaj\", a több személynév, valamint a sportos és emléknaphoz kötődő keresések. Ezzel szemben elhalványult a reggel még pörgő „blikk\", az „adó\", a „hőségriasztás\", a „kötvény\", a „lázár jános\", a „karácsony gergely\" és a „hadházy ákos\". Ez a fajta váltás jól mutatja, hogyan mozdul el a figyelem a nap folyamán a hivatali-gazdasági témáktól az esti hírek és személyek felé, bár a mögöttes okokat az adat önmagában nem magyarázza."
 },
 "het": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A hét egészét nézve néhány téma több napon át visszatért. Két-két napon bukkant fel az „időjárás\", a „blikk\", az „euró\", a „forsthoffer ágnes\", a „lázár jános\" és a hulladékgazdálkodáshoz kötődő „mohu mol\" említése, ami arra utal, hogy ezek tartósabban foglalkoztatták a keresőket.\n\nA többség viszont csak egy-egy napon jelent meg, ami jól jelzi a napi hírciklus gyors cserélődését. Ebben a széles mezőnyben megfértek egymás mellett az időjárási jelenségek, mint az „eső\", a „jégeső\" vagy a „hőségriasztás\", a sportesemények hosszú sora a labdarúgó-mérkőzésektől a Forma-1-ig, a közélet és a politika szereplői, valamint a gazdasági és pénzügyi témák, például az „infláció\", az „államadósság\" és az „állampapír\". Ez a sokféleség inkább a figyelem szórtságát mutatja, mintsem egyetlen kiemelkedő, hetet meghatározó ügyet."
 },
 "het_valos": {
 "napok": 7,
 "visszateroek": [
 {
 "kifejezes": "blikk",
-"napok_szama": 3
-},
-{
-"kifejezes": "lázár jános",
-"napok_szama": 3
-},
-{
-"kifejezes": "mohu mol hulladékgazdálkodási zrt.",
-"napok_szama": 3
-},
-{
-"kifejezes": "2026",
-"napok_szama": 2
-},
-{
-"kifejezes": "adó",
 "napok_szama": 2
 },
 {
@@ -1015,15 +1106,7 @@
 "napok_szama": 2
 },
 {
-"kifejezes": "frakció",
-"napok_szama": 2
-},
-{
-"kifejezes": "hadházy ákos",
-"napok_szama": 2
-},
-{
-"kifejezes": "hőségriasztás",
+"kifejezes": "forsthoffer ágnes",
 "napok_szama": 2
 },
 {
@@ -1031,24 +1114,20 @@
 "napok_szama": 2
 },
 {
-"kifejezes": "karácsony gergely",
+"kifejezes": "lázár jános",
 "napok_szama": 2
 },
 {
-"kifejezes": "kötvény",
+"kifejezes": "mohu mol hulladékgazdálkodási zrt",
 "napok_szama": 2
 },
 {
-"kifejezes": "pósfai gábor",
+"kifejezes": "mohu mol hulladékgazdálkodási zrt.",
 "napok_szama": 2
 },
 {
-"kifejezes": "sarka kata",
-"napok_szama": 2
-},
-{
-"kifejezes": "államadósság",
-"napok_szama": 2
+"kifejezes": "2026",
+"napok_szama": 1
 },
 {
 "kifejezes": "2027",
@@ -1059,7 +1138,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "911",
+"napok_szama": 1
+},
+{
 "kifejezes": "adam sandler",
+"napok_szama": 1
+},
+{
+"kifejezes": "adó",
 "napok_szama": 1
 },
 {
@@ -1076,6 +1163,10 @@
 },
 {
 "kifejezes": "arsenal–chelsea",
+"napok_szama": 1
+},
+{
+"kifejezes": "atlétikai világdöntő",
 "napok_szama": 1
 },
 {
@@ -1112,6 +1203,10 @@
 },
 {
 "kifejezes": "borravaló",
+"napok_szama": 1
+},
+{
+"kifejezes": "botrány",
 "napok_szama": 1
 },
 {
@@ -1195,7 +1290,11 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "forsthoffer ágnes",
+"kifejezes": "formula 1 olasz nagydíj",
+"napok_szama": 1
+},
+{
+"kifejezes": "frakció",
 "napok_szama": 1
 },
 {
@@ -1208,6 +1307,10 @@
 },
 {
 "kifejezes": "gregor anikó",
+"napok_szama": 1
+},
+{
+"kifejezes": "hadházy ákos",
 "napok_szama": 1
 },
 {
@@ -1239,6 +1342,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "hőségriasztás",
+"napok_szama": 1
+},
+{
 "kifejezes": "időközi választás",
 "napok_szama": 1
 },
@@ -1263,11 +1370,7 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "katonai repülőgép",
-"napok_szama": 1
-},
-{
-"kifejezes": "kerkez milos",
+"kifejezes": "karácsony gergely",
 "napok_szama": 1
 },
 {
@@ -1279,11 +1382,23 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "koós boglárka",
+"napok_szama": 1
+},
+{
 "kifejezes": "krausz gábor",
 "napok_szama": 1
 },
 {
 "kifejezes": "kubatov gábor",
+"napok_szama": 1
+},
+{
+"kifejezes": "kötcse",
+"napok_szama": 1
+},
+{
+"kifejezes": "kötvény",
 "napok_szama": 1
 },
 {
@@ -1323,7 +1438,7 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "magyarország",
+"kifejezes": "magyar államkincstár",
 "napok_szama": 1
 },
 {
@@ -1336,6 +1451,10 @@
 },
 {
 "kifejezes": "manchester united fc",
+"napok_szama": 1
+},
+{
+"kifejezes": "marco rossi",
 "napok_szama": 1
 },
 {
@@ -1356,10 +1475,6 @@
 },
 {
 "kifejezes": "milliárdos",
-"napok_szama": 1
-},
-{
-"kifejezes": "mohu mol hulladékgazdálkodási zrt",
 "napok_szama": 1
 },
 {
@@ -1399,6 +1514,14 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "olaj",
+"napok_szama": 1
+},
+{
+"kifejezes": "oszkó péter",
+"napok_szama": 1
+},
+{
 "kifejezes": "ozora",
 "napok_szama": 1
 },
@@ -1423,11 +1546,15 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "pécs",
+"kifejezes": "prőhle gergely",
 "napok_szama": 1
 },
 {
 "kifejezes": "pénzügyminisztérium",
+"napok_szama": 1
+},
+{
+"kifejezes": "pósfai gábor",
 "napok_szama": 1
 },
 {
@@ -1436,6 +1563,10 @@
 },
 {
 "kifejezes": "real madrid–inter",
+"napok_szama": 1
+},
+{
+"kifejezes": "rendőrség",
 "napok_szama": 1
 },
 {
@@ -1448,6 +1579,10 @@
 },
 {
 "kifejezes": "rtl+",
+"napok_szama": 1
+},
+{
+"kifejezes": "sarka kata",
 "napok_szama": 1
 },
 {
@@ -1471,10 +1606,6 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "szuverenitásvédelmi hivatal",
-"napok_szama": 1
-},
-{
 "kifejezes": "szél",
 "napok_szama": 1
 },
@@ -1484,10 +1615,6 @@
 },
 {
 "kifejezes": "tanév",
-"napok_szama": 1
-},
-{
-"kifejezes": "termékvisszahívás",
 "napok_szama": 1
 },
 {
@@ -1515,7 +1642,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "világgazdaság",
+"napok_szama": 1
+},
+{
 "kifejezes": "vonat",
+"napok_szama": 1
+},
+{
+"kifejezes": "vásárhelyi jános",
+"napok_szama": 1
+},
+{
+"kifejezes": "weather",
 "napok_szama": 1
 },
 {
@@ -1523,7 +1662,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "world trade center",
+"napok_szama": 1
+},
+{
 "kifejezes": "x faktor 2026",
+"napok_szama": 1
+},
+{
+"kifejezes": "államadósság",
 "napok_szama": 1
 },
 {
@@ -1535,7 +1682,7 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "óraátállítás 2026",
+"kifejezes": "óraátállítás",
 "napok_szama": 1
 },
 {
@@ -1545,8 +1692,142 @@
 {
 "kifejezes": "újságíró",
 "napok_szama": 1
+},
+{
+"kifejezes": "üldözés",
+"napok_szama": 1
 }
 ]
+}
+},
+"youtube": {
+"szamok": [
+{
+"szo": "szorongás",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.04,
+"ervenyes": true,
+"mai_ertek": 50,
+"csucs": 100,
+"atlag": 29.0
+},
+{
+"szo": "edzés",
+"domen": "egeszseg",
+"irany": "stagnal",
+"meredekseg": -0.014,
+"ervenyes": true,
+"mai_ertek": 61,
+"csucs": 100,
+"atlag": 67.1
+},
+{
+"szo": "meditáció",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.052,
+"ervenyes": true,
+"mai_ertek": 87,
+"csucs": 100,
+"atlag": 83.6
+},
+{
+"szo": "befektetés",
+"domen": "penzugy",
+"irany": "stagnal",
+"meredekseg": 0.019,
+"ervenyes": true,
+"mai_ertek": 57,
+"csucs": 100,
+"atlag": 22.6
+},
+{
+"szo": "bitcoin",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.109,
+"ervenyes": true,
+"mai_ertek": 71,
+"csucs": 100,
+"atlag": 49.8
+},
+{
+"szo": "hírek",
+"domen": "kozelet",
+"irany": "stagnal",
+"meredekseg": -0.001,
+"ervenyes": true,
+"mai_ertek": 52,
+"csucs": 100,
+"atlag": 56.3
+},
+{
+"szo": "magyar péter",
+"domen": "kozelet",
+"irany": "novekszik",
+"meredekseg": 0.03,
+"ervenyes": true,
+"mai_ertek": 7,
+"csucs": 100,
+"atlag": 15.7
+},
+{
+"szo": "recept",
+"domen": "haztartas",
+"irany": "csokken",
+"meredekseg": -0.043,
+"ervenyes": true,
+"mai_ertek": 43,
+"csucs": 100,
+"atlag": 46.8
+},
+{
+"szo": "mese",
+"domen": "csalad",
+"irany": "csokken",
+"meredekseg": -0.02,
+"ervenyes": true,
+"mai_ertek": 85,
+"csucs": 100,
+"atlag": 87.5
+},
+{
+"szo": "nyaralás",
+"domen": "szabadido",
+"irany": "novekszik",
+"meredekseg": 0.098,
+"ervenyes": true,
+"mai_ertek": 40,
+"csucs": 100,
+"atlag": 49.1
+},
+{
+"szo": "tanulás",
+"domen": "tanulas",
+"irany": "csokken",
+"meredekseg": -0.046,
+"ervenyes": true,
+"mai_ertek": 81,
+"csucs": 100,
+"atlag": 81.1
+},
+{
+"szo": "klíma",
+"domen": "otthon",
+"irany": "novekszik",
+"meredekseg": 0.08,
+"ervenyes": true,
+"mai_ertek": 12,
+"csucs": 100,
+"atlag": 17.1
+}
+],
+"napi": {
+"szoveg": "A magyarországi YouTube-keresésekben, vagyis a videós figyelemben ma az egészség és a kikapcsolódás témái állnak magasan. A „meditáció\" és a „mese\" a saját szokásos szintjük közelében, de annak felső tájékán mozog, a „tanulás\" szintén tartósan magas értéken áll. Fontos, hogy ezek a szavak külön-külön, saját skálán mérve értelmezendők, tehát nem érdemes őket egymáshoz rangsorolni.\n\nA pénzügyi témák közül a „befektetés\" mai értéke a saját megszokott szintjéhez képest kiugróan magas, jóval élénkebb a szokásosnál, és a „bitcoin\" is az átlaga fölött jár, még ha napon belül csökkenő irányt is mutat. A „szorongás\" a saját átlagánál érezhetően magasabb szinten van. Ezzel szemben a „magyar péter\" és a „klíma\" a szokásos szintjük alatt, csendesebb tartományban mozog, előbbi enyhén emelkedő, utóbbi szintén óvatosan növekvő iránnyal. Az „edzés\", a „recept\", a „hírek\" és a „nyaralás\" nagyjából a megszokott közegükben maradtak."
+},
+"teljes_kep": {
+"szoveg": "A hét ívén a videós érdeklődésben a „befektetés\" mutatta a leglátványosabb erősödést, alacsony szintről indulva markánsan feljebb kúszott, és hasonló irányba mozdult a „szorongás\" is, amely szintén jelentősen emelkedett. Ez a két téma húzta leginkább felfelé a heti képet.\n\nMérsékeltebb emelkedést mutatott a „meditáció\", a „bitcoin\" és a „tanulás\", míg a „recept\" nagyjából egy helyben maradt. A másik oldalon a „nyaralás\" csökkent a legérezhetőbben, ami a szezon fordulójával összhangban lehet, bár ezt az adat önmagában nem bizonyítja. Enyhén visszább lépett a „hírek\", a „mese\" és az „edzés\", a „magyar péter\" és a „klíma\" pedig gyakorlatilag változatlan, alacsony szinten maradt a hét során."
 }
 }
 }
