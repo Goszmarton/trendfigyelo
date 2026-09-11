@@ -186,6 +186,18 @@ function mpSzo(racs, intervallumok, over = {}) {
 }
 function mpNyers(map) { return { kulcsszavak: map }; }
 
+// predikció-blokk fixture (Task 6/7): pont/also/felso JÖVŐ-időbélyeges sorozat (idopont_utc+ertek párok);
+// alapból egyetlen jövő-pont (169. óra), felülírható (over) a Task 7 tesztjeihez (pl. figyelmeztetes:true).
+function predikcioBlokk(over = {}) {
+  return {
+    pont: over.pont ?? [{ idopont_utc: iso(169), ertek: 42 }],
+    also: over.also ?? [{ idopont_utc: iso(169), ertek: 38 }],
+    felso: over.felso ?? [{ idopont_utc: iso(169), ertek: 46 }],
+    rmse_veg: over.rmse_veg ?? 3.1, szezon: over.szezon ?? false, modszer: over.modszer ?? "loess",
+    megbizhatosag: over.megbizhatosag ?? "kozepes", figyelmeztetes: over.figyelmeztetes ?? null,
+  };
+}
+
 const K = "#kulcsszo-blokk";
 
 // ── 1. render + domen-csoportosítás + üres kártya + K1 biconditional ──────────────────────────
@@ -1558,12 +1570,6 @@ test("ML-trend: kikapcsolva → nincs lila görbe, nincs nemlineáris-metrika a 
 // ── PREDIKCIÓ-SÁV (Task 6): 5 egymást kizáró gomb + adat-merge (default KI) ────────────────────
 test("Predikció: 5 egymást kizáró gomb, alapból egyik sincs kiválasztva", async ({ page }) => {
   // a predikcio blokk a KÉT regresszió-fájlból mergelt: elsődleges (1_nap/1_het) + másodlagos (1_ho/3_ho/1_ev)
-  const predikcioBlokk = () => ({
-    pont: [{ idopont_utc: iso(169), ertek: 42 }],
-    also: [{ idopont_utc: iso(169), ertek: 38 }],
-    felso: [{ idopont_utc: iso(169), ertek: 46 }],
-    rmse_veg: 3.1, szezon: false, modszer: "loess", megbizhatosag: "kozepes", figyelmeztetes: null,
-  });
   await mock(page, {
     regObj: reg({ "benzin": { ...regSzo({ domen: "energia" }),
       predikcio: { "1_nap": predikcioBlokk(), "1_het": predikcioBlokk() } } }),
@@ -1592,4 +1598,37 @@ test("Predikció: a sáv + info jelen van, ha van rajzolható kártya", async ({
   await page.goto("/");
   await expect(page.locator("#kulcsszo-blokk .predikcio-sav")).toHaveCount(1);
   await expect(page.locator("#kulcsszo-blokk .predikcio-info")).toHaveCount(1);
+});
+
+// ── Task 7: előrejelző vonal + sáv rajzolása a teljes nézeten + figyelmeztetés ─────────────────
+test("Predikció: kiválasztott horizont előrejelző vonalat + sávot rajzol a jövőbe", async ({ page }) => {
+  // benzin, 1_nap predikcio blokk (pont/also/felso), teljes nézet (az alapnézet MÁR teljes)
+  await mock(page, {
+    regObj: reg({ "benzin": { ...regSzo({ domen: "energia" }),
+      predikcio: { "1_nap": predikcioBlokk() } } }),
+    nyersObj: nyers({ "benzin": [nyersRekord("benzin")] }),
+  });
+  await page.goto("/");
+  await page.locator('#kulcsszo-blokk .predikcio-gomb[data-horizont="1_nap"]').click();
+  await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="benzin"]'))
+    .toHaveAttribute("data-rendered", "true");                    // várjuk meg a lusta re-rendert
+  const van = await page.evaluate(() => {
+    const p = (window.chart_peldanyok || {})["benzin"];
+    return !!p && p.data.datasets.some(d => d.borderColor === "#16a085");  // előrejelző vonal
+  });
+  expect(van).toBe(true);
+});
+
+test("Predikció: 1_ev horizont figyelmeztetést mutat", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "benzin": regSzo({ domen: "energia" }) }),
+    nyersObj: nyers({ "benzin": [nyersRekord("benzin")] }),
+    mpRegObj: mpReg({ "benzin": { ...mpSzo("het", {}, { domen: "energia" }),
+      predikcio: { "1_ev": predikcioBlokk({ figyelmeztetes: true }) } } }),
+    mpNyersObj: mpNyers({}),
+  });
+  await page.goto("/");
+  await page.locator('#kulcsszo-blokk .predikcio-gomb[data-horizont="1_ev"]').click();
+  await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="benzin"]'))
+    .toContainText("nagy bizonytalanság");
 });

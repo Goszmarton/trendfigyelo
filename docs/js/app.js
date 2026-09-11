@@ -94,6 +94,7 @@ const ATTR = {
   mltrend: "data-mltrend",   // a #kulcsszo-blokk ML-trend kapcsoló-állapota: "be" | "ki" (alapból ki)
   nemlin: "data-nemlin",     // a kártyán: van kirajzolható nemlin_xy ÉS a kapcsoló bekapcsolt (Task 6 rajzolja a görbét)
   predikcio: "data-predikcio",   // a #kulcsszo-blokk PREDIKCIÓ-sáv aktív horizontja: "1_nap|1_het|1_ho|3_ho|1_ev|ki" (alapból "ki")
+  predikcio_aktiv: "data-predikcio-aktiv",   // a kártyán: van kirajzolható predikció-blokk a kiválasztott horizonthoz (Task 7 rajzolja)
 };
 // ADATFORRÁS-MARKER: kapcsolóval BE/KI (alapból KI). A jelölt vonal SZÜRKE (meta, nem adat — a kék adattól/
 // piros trendtől/narancs szinttől elüt); a markerre húzva EGYETLEN tooltip mondja meg, mikortól van saját adat.
@@ -113,6 +114,7 @@ const MLTREND_INFO = "Bekapcsolva minden kirajzolható charton egy lila görbe m
 // 3_ho/1_ev — lásd egyesitett_reg). A szín szándékosan elüt a többitől (kék=adat, piros=lineáris trend,
 // narancs=szint, szürke=marker, lila=nemlin, ZÖLD=predikció) — Task 7 rajzolja a görbét/sávot ezzel a színnel.
 const PREDIKCIO_SZIN = "#16a085";
+const PREDIKCIO_SAV_SZIN = "rgba(22, 160, 133, 0.15)";   // halvány kitöltés a bizonytalansági sávhoz (also/felso közt)
 const PREDIKCIO_HORIZONTOK = [
   { kulcs: "1_nap", cimke: "1 nap" },
   { kulcs: "1_het", cimke: "1 hét" },
@@ -781,27 +783,41 @@ function mered_szoveg(x) { return (x < 0 ? "-" : "+") + tizedes2(Math.abs(x)); }
 // az első szám a jel erőssége (pontok_nem_nulla/lezárt), nem a puszta fedettség; a régi "M/M óra" teljes mérést sugallt.
 // A se_meredekseg NEM jelenik meg (autokorreláció-torzított, mint az R², de a ± hamis szignifikanciát
 // sugallna — spec 6:599, a se-döntés). NEVEZŐ = pontok_hasznalt + pontok_hianyzo (= a lezárt órarács, robusztus).
-function merteszamok_szoveg(iv, racs, szint, mltrend_be) {
+function merteszamok_szoveg(iv, racs, szint, mltrend_be, predikcio_info) {
   const nevezo = iv.pontok_hasznalt + iv.pontok_hianyzo;
   const jelerosseg = iv.pontok_nem_nulla + "/" + iv.pontok_hasznalt + " " + racs_szo(racs) + " nem-nulla (" + iv.pontok_hasznalt + "/" + nevezo + " lezárt, " + iv.pontok_kihagyva_reszleges + " részleges kihagyva)";
+  let alap_szoveg;
   if (szint != null) {
     // 6c esemenyjelzo (pl. tüntetés): NINCS irány/meredekség/R² (a backend strippeli a LINEÁRIS trendet) → a
     // mérőszám-sor a SZINT-nézet. A rács ("heti") ÉS a bázis ("52 hét") KIMONDVA: a szint a szó-szintű 52 hetes
     // heti medián, MINDEN rajzoló nézeten UGYANEZ (a 3_ho-n is — nem a 13 hetes ablaké), (a) döntés. + jelerősség.
     // A kapcsoló BE állásában a NEMLINEÁRIS görbe mérőszám-sora is hozzájön (a tüntetés is kap ML-görbét).
     const szintsor = "szint: " + szint_formaz(szint) + " (heti medián, 52 hét) · " + jelerosseg;
-    return mltrend_be ? szintsor + " · " + nemlin_metrika_szoveg(iv.nemlin) : szintsor;
+    alap_szoveg = mltrend_be ? szintsor + " · " + nemlin_metrika_szoveg(iv.nemlin) : szintsor;
+  } else {
+    const alap = [
+      IRANY_MAGYAR[iv.irany] || iv.irany,
+      mered_szoveg(iv.meredekseg_nap) + " relatív pont/nap",
+      "R² = " + tizedes2(iv.r2) + " (illeszkedés-jóság 0–1; a magasabb érték erősebb irányt jelent)",
+      jelerosseg,
+    ];
+    // ML-TREND (Task 6): a kapcsoló BE állásában toldjuk hozzá a nemlineáris mérőszám-sort (a lineáris a
+    // fentiek közt VÁLTOZATLAN marad) — a kapcsoló KI állásában nincs nemlin-szöveg (Global Constraints).
+    if (mltrend_be) alap.push(nemlin_metrika_szoveg(iv.nemlin));
+    alap_szoveg = alap.join(" · ");
   }
-  const alap = [
-    IRANY_MAGYAR[iv.irany] || iv.irany,
-    mered_szoveg(iv.meredekseg_nap) + " relatív pont/nap",
-    "R² = " + tizedes2(iv.r2) + " (illeszkedés-jóság 0–1; a magasabb érték erősebb irányt jelent)",
-    jelerosseg,
-  ];
-  // ML-TREND (Task 6): a kapcsoló BE állásában toldjuk hozzá a nemlineáris mérőszám-sort (a lineáris a
-  // fentiek közt VÁLTOZATLAN marad) — a kapcsoló KI állásában nincs nemlin-szöveg (Global Constraints).
-  if (mltrend_be) alap.push(nemlin_metrika_szoveg(iv.nemlin));
-  return alap.join(" · ");
+  // PREDIKCIÓ (Task 7): a kiválasztott horizont hibasávja MINDKÉT ágra (szint- ÉS lineáris nézet) toldva —
+  // a szó lehet esemenyjelző IS, ha van kimutatható predikció-blokkja. A figyelmeztetett (hosszú) horizontnál
+  // a backend `figyelmeztetes:true`-t ad (FIGYELMEZTETETT = 3_ho/1_ev) → őszinte „nagy bizonytalanság" felirat.
+  if (predikcio_info) alap_szoveg += " · " + predikcio_szoveg(predikcio_info);
+  return alap_szoveg;
+}
+
+// a predikció mérőszám-toldaléka: „80%-os sáv: ±X pont (H-ra)" + figyelmeztetett horizontnál a hosszú-táv jelzés.
+function predikcio_szoveg(info) {
+  let s = "80%-os sáv: ±" + String(info.blk.rmse_veg).replace(".", ",") + " pont (" + info.cimke + "-ra)";
+  if (info.blk.figyelmeztetes) s += " · szemléltető — nagy bizonytalanság";
+  return s;
 }
 
 // a lila görbe mérőszám-sora: "nemlineáris illeszkedés R²=… (lineáris … helyett) · N fordulópont · a görbe X"
@@ -980,7 +996,7 @@ function racs_epit(ablak, iv, racs, szint) {
 
 // egy kulcsszó-kártya (EAGER DOM); a canvas ELEM azonnal, a Chart.js-példány LUSTA (data-rendered).
 // BINÁRIS szerződés: rajzolható → canvas + .merteszamok; nem rajzolható → .ures (mérőszám NÉLKÜL, spec 6:599).
-function kartya_letrehoz(szo, szoreg, aktiv_kulcs, adatforras_be, mltrend_be) {
+function kartya_letrehoz(szo, szoreg, aktiv_kulcs, adatforras_be, mltrend_be, predikcio_horizont) {
   const kartya = document.createElement("div");
   kartya.className = OSZT.kartya;
   kartya.setAttribute(ATTR.kulcsszo, szo);
@@ -1029,6 +1045,22 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs, adatforras_be, mltrend_be) {
   // ML-TREND (Task 5): CSAK a kapcsoló ÁLLAPOTÁTÓL függ, NEM a nézettől (teljes-ág ÉS normál ág egyaránt idejut) —
   // Task 6 a data-nemlin="true" kártyákon rajzolja a lila görbét (racs.nemlin_xy).
   if (mltrend_be && racs.nemlin_xy) kartya.setAttribute(ATTR.nemlin, "true");
+  // PREDIKCIÓ (Task 7): CSAK a TELJES (idő-tengelyű) nézeten — a jövő-időbélyegek nem térképezhetők a
+  // kategória-nézet fix-ablakos label-indexeire (a predikció-gomb kattintása a teljes nézetre vált, lásd lent).
+  // A szónak lehet a kiválasztott horizonthoz mergelt blokkja (predikcio, Task 6) — ha van, additív dataset.
+  const predikcio_blk = (aktiv_kulcs === TELJES_KULCS && predikcio_horizont && predikcio_horizont !== "ki" && szoreg.predikcio)
+    ? szoreg.predikcio[predikcio_horizont] : null;
+  const predikcio_cimke = predikcio_blk
+    ? ((PREDIKCIO_HORIZONTOK.find(function (h) { return h.kulcs === predikcio_horizont; }) || {}).cimke || predikcio_horizont)
+    : null;
+  if (predikcio_blk) {
+    kartya.setAttribute(ATTR.predikcio_aktiv, "true");
+    kartya._predikcio_xy = {
+      pont: predikcio_blk.pont.map(function (p) { return { x: iso_ms(p.idopont_utc), y: p.ertek }; }),
+      also: predikcio_blk.also.map(function (p) { return { x: iso_ms(p.idopont_utc), y: p.ertek }; }),
+      felso: predikcio_blk.felso.map(function (p) { return { x: iso_ms(p.idopont_utc), y: p.ertek }; }),
+    };
+  }
   if (szoreg.szint != null) kartya.setAttribute(ATTR.szint, String(szoreg.szint));   // 6c: a szint-vonal értéke (heti medián)
   kartya.setAttribute(ATTR.ablak_veg, ablak.ablak_veg_utc);   // a kiválasztott nyers ablak KULCSA (regresszió ablak_veg_utc-vel egyező); részleges záró slot
   kartya.setAttribute(ATTR.adat_veg, racs.adat_veg);          // B1: a felirat „adat vége"-je — az utolsó KIRAJZOLT LEZÁRT pont (nem az ablak_veg)
@@ -1051,7 +1083,8 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs, adatforras_be, mltrend_be) {
 
   const m = document.createElement("p");
   m.className = OSZT.merteszamok;
-  m.textContent = merteszamok_szoveg(iv, iv._racs, szoreg.szint, mltrend_be);
+  m.textContent = merteszamok_szoveg(iv, iv._racs, szoreg.szint, mltrend_be,
+    predikcio_blk ? { blk: predikcio_blk, cimke: predikcio_cimke } : null);
   kartya.appendChild(m);
 
   const tf = document.createElement("p");
@@ -1121,11 +1154,26 @@ function chart_letrehoz(kartya) {
     // ML-TREND (Task 6): a lila LOESS-görbe — CSAK ha a kapcsoló BE (data-nemlin="true", Task 5 dönti el) ÉS
     // van racs.nemlin_xy (van_struktura). Additív dataset, a meglévő kék/piros/narancs/szürke VÁLTOZATLAN.
     if (kartya.getAttribute(ATTR.nemlin) === "true" && racs.nemlin_xy) ds.push({ data: racs.nemlin_xy, spanGaps: true, borderColor: NEMLIN_SZIN, borderWidth: 2, pointRadius: 0, tension: 0.3 });
+    // PREDIKCIÓ (Task 7): a kiválasztott horizont ZÖLD előrejelző vonala + halvány bizonytalansági sáv — a
+    // sáv KÉT dataset (also/felso) közti kitöltés (Chart.js inter-dataset fill: a felső a `fill:"-1"`-gyel az
+    // ELŐZŐ (also) datasetre tölt — ezért a KETTŐ EGYMÁS UTÁN kerül a tömbbe). A vonal a sáv FÖLÉ kerül
+    // (utoljára push-olva), hogy jól látszódjon. CSAK ha a kártya_letrehoz kirakta (kartya._predikcio_xy).
+    if (kartya._predikcio_xy) {
+      const pr = kartya._predikcio_xy;
+      ds.push({ data: pr.also, spanGaps: true, borderColor: "rgba(0,0,0,0)", borderWidth: 0, pointRadius: 0, fill: false });
+      ds.push({ data: pr.felso, spanGaps: true, borderColor: "rgba(0,0,0,0)", borderWidth: 0, pointRadius: 0, fill: "-1", backgroundColor: PREDIKCIO_SAV_SZIN });
+      ds.push({ data: pr.pont, spanGaps: true, borderColor: PREDIKCIO_SZIN, borderWidth: 2, borderDash: [5, 3], pointRadius: 0 });
+    }
     // per-szó tengely PONTOS széllel: min/max = az ELSŐ/UTOLSÓ tényleges adatpont (nincs Chart.js grace-padding →
     // a görbe a két szélt ÉRINTI, nincs felesleges gap). A tengelyen CSAK 2 tick: a KEZDŐ + a VÉG dátum (teljes).
     const teljes_pts = racs.xy.filter(function (p) { return p.y !== null; });
     const x_min = teljes_pts.length ? teljes_pts[0].x : undefined;
-    const x_max = teljes_pts.length ? teljes_pts[teljes_pts.length - 1].x : undefined;
+    let x_max = teljes_pts.length ? teljes_pts[teljes_pts.length - 1].x : undefined;
+    // PREDIKCIÓ: a jövő-pontok jobbra nyújtják a tengelyt (a sáv/vonal a mért adat UTÁN folytatódik).
+    if (kartya._predikcio_xy && kartya._predikcio_xy.pont.length) {
+      const pr_veg = kartya._predikcio_xy.pont[kartya._predikcio_xy.pont.length - 1].x;
+      if (x_max === undefined || pr_veg > x_max) x_max = pr_veg;
+    }
     chart_peldanyok[kartya.getAttribute(ATTR.kulcsszo)] = new Chart(canvas, {
       type: "line",
       data: { datasets: ds },
@@ -1368,7 +1416,7 @@ function kulcsszo_blokk_render() {
     h3.textContent = d === null ? "Egyéb" : DOMEN_MAGYAR[d];
     cs.appendChild(h3);
     szavak.forEach(function (szo) {
-      const k = kartya_letrehoz(szo, reg.kulcsszavak[szo], aktiv, adatforras_be, mltrend_be);
+      const k = kartya_letrehoz(szo, reg.kulcsszavak[szo], aktiv, adatforras_be, mltrend_be, predikcio_horizont);
       cs.appendChild(k);
       if (k.getAttribute(ATTR.drawable) === "true") {
         rajzolhatok.push(k);
@@ -1458,8 +1506,13 @@ function kulcsszo_blokk_render() {
       gomb.textContent = h.cimke;
       gomb.addEventListener("click", function () {
         const jelenlegi = blokk.getAttribute(ATTR.predikcio) || "ki";
-        blokk.setAttribute(ATTR.predikcio, jelenlegi === h.kulcs ? "ki" : h.kulcs);
-        kulcsszo_blokk_render();
+        const uj = jelenlegi === h.kulcs ? "ki" : h.kulcs;
+        blokk.setAttribute(ATTR.predikcio, uj);
+        // Task 7: kategória-nézetből (fix ablak) a horizont-választás a TELJES nézetre vált — a jövő-időbélyegek
+        // nem térképezhetők a fix-ablak label-indexeire. aktiv_intervallum_valt maga újrarajzol (a most beállított
+        // predikció-attribútumot olvasva); kikapcsoláskor a nézet VÁLTOZATLAN marad, csak újrarajzolunk.
+        if (uj !== "ki") aktiv_intervallum_valt(TELJES_KULCS);
+        else kulcsszo_blokk_render();
       });
       sav.appendChild(gomb);
     });
