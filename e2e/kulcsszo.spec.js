@@ -1554,3 +1554,42 @@ test("ML-trend: kikapcsolva → nincs lila görbe, nincs nemlineáris-metrika a 
   await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="kórház"] .merteszamok'))
     .not.toContainText("nemlineáris");
 });
+
+// ── PREDIKCIÓ-SÁV (Task 6): 5 egymást kizáró gomb + adat-merge (default KI) ────────────────────
+test("Predikció: 5 egymást kizáró gomb, alapból egyik sincs kiválasztva", async ({ page }) => {
+  // a predikcio blokk a KÉT regresszió-fájlból mergelt: elsődleges (1_nap/1_het) + másodlagos (1_ho/3_ho/1_ev)
+  const predikcioBlokk = () => ({
+    pont: [{ idopont_utc: iso(169), ertek: 42 }],
+    also: [{ idopont_utc: iso(169), ertek: 38 }],
+    felso: [{ idopont_utc: iso(169), ertek: 46 }],
+    rmse_veg: 3.1, szezon: false, modszer: "loess", megbizhatosag: "kozepes", figyelmeztetes: null,
+  });
+  await mock(page, {
+    regObj: reg({ "benzin": { ...regSzo({ domen: "energia" }),
+      predikcio: { "1_nap": predikcioBlokk(), "1_het": predikcioBlokk() } } }),
+    nyersObj: nyers({ "benzin": [nyersRekord("benzin")] }),
+    mpRegObj: mpReg({ "benzin": { ...mpSzo("het", {}, { domen: "energia" }),
+      predikcio: { "1_ev": predikcioBlokk() } } }),
+    mpNyersObj: mpNyers({}),
+  });
+  await page.goto("/");
+  const blokk = page.locator("#kulcsszo-blokk");
+  await expect(blokk).toHaveAttribute("data-predikcio", "ki");           // alap: ki
+  await expect(page.locator("#kulcsszo-blokk .predikcio-gomb")).toHaveCount(5);
+  await page.locator('#kulcsszo-blokk .predikcio-gomb[data-horizont="1_nap"]').click();
+  await expect(blokk).toHaveAttribute("data-predikcio", "1_nap");        // kiválaszt
+  await page.locator('#kulcsszo-blokk .predikcio-gomb[data-horizont="1_ev"]').click();
+  await expect(blokk).toHaveAttribute("data-predikcio", "1_ev");         // VÁLT (kizáró)
+  await page.locator('#kulcsszo-blokk .predikcio-gomb[data-horizont="1_ev"]').click();
+  await expect(blokk).toHaveAttribute("data-predikcio", "ki");           // újrakattintás → ki
+});
+
+test("Predikció: a sáv + info jelen van, ha van rajzolható kártya", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "benzin": regSzo({ domen: "energia" }) }),
+    nyersObj: nyers({ "benzin": [nyersRekord("benzin")] }),
+  });
+  await page.goto("/");
+  await expect(page.locator("#kulcsszo-blokk .predikcio-sav")).toHaveCount(1);
+  await expect(page.locator("#kulcsszo-blokk .predikcio-info")).toHaveCount(1);
+});
