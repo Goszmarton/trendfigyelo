@@ -106,7 +106,7 @@ const ADATFORRAS_INFO = "Bekapcsolva minden charton egy szürke függőleges von
 const NEMLIN_SZIN = "#8e44ad";
 const MLTREND_GOMB_BE = "Nemlineáris (LOESS) trend – bekapcsolva";
 const MLTREND_GOMB_KI = "Nemlineáris (LOESS) trend";
-const MLTREND_INFO = "Bekapcsolva a kirajzolható charton egy lila görbe mutatja a Google-trend nemlineáris illesztését (LOESS-simítás, adatból hangolt simasággal), ha van kimutatható szerkezet a mért adaton. A piros egyenes trendvonal ettől függetlenül megmarad. Részletek az Adatokról oldalon.";
+const MLTREND_INFO = "Bekapcsolva minden kirajzolható charton egy lila görbe mutatja a Google-trend nemlineáris illesztését (LOESS-simítás, adatból hangolt simasággal); a kártya a valós R²-t is kiírja (a gyenge illesztést sem rejti el). A piros egyenes trendvonal ettől függetlenül megmarad. Részletek az Adatokról oldalon.";
 const TENGELY_FELIRAT = "relatív keresési szint (0–100)";   // EN DASH
 const CSUPA_NULLA_SZOVEG = "Ezen az időszakon nincs érdemi keresési aktivitás (a mért értékek végig nulla körül).";
 const URES_NINCS_ABLAK = "Az adatsor ezen az időszakon nem érhető el.";
@@ -767,10 +767,12 @@ function merteszamok_szoveg(iv, racs, szint, mltrend_be) {
   const nevezo = iv.pontok_hasznalt + iv.pontok_hianyzo;
   const jelerosseg = iv.pontok_nem_nulla + "/" + iv.pontok_hasznalt + " " + racs_szo(racs) + " nem-nulla (" + iv.pontok_hasznalt + "/" + nevezo + " lezárt, " + iv.pontok_kihagyva_reszleges + " részleges kihagyva)";
   if (szint != null) {
-    // 6c esemenyjelzo (pl. tüntetés): NINCS irány/meredekség/R² (a backend strippeli) → a mérőszám-sor a
-    // SZINT-nézet. A rács ("heti") ÉS a bázis ("52 hét") KIMONDVA: a szint a szó-szintű 52 hetes heti medián,
-    // MINDEN rajzoló nézeten UGYANEZ (a 3_ho-n is — nem a 13 hetes ablaké), (a) döntés. + a jel erőssége.
-    return "szint: " + szint_formaz(szint) + " (heti medián, 52 hét) · " + jelerosseg;
+    // 6c esemenyjelzo (pl. tüntetés): NINCS irány/meredekség/R² (a backend strippeli a LINEÁRIS trendet) → a
+    // mérőszám-sor a SZINT-nézet. A rács ("heti") ÉS a bázis ("52 hét") KIMONDVA: a szint a szó-szintű 52 hetes
+    // heti medián, MINDEN rajzoló nézeten UGYANEZ (a 3_ho-n is — nem a 13 hetes ablaké), (a) döntés. + jelerősség.
+    // A kapcsoló BE állásában a NEMLINEÁRIS görbe mérőszám-sora is hozzájön (a tüntetés is kap ML-görbét).
+    const szintsor = "szint: " + szint_formaz(szint) + " (heti medián, 52 hét) · " + jelerosseg;
+    return mltrend_be ? szintsor + " · " + nemlin_metrika_szoveg(iv.nemlin) : szintsor;
   }
   const alap = [
     IRANY_MAGYAR[iv.irany] || iv.irany,
@@ -785,10 +787,11 @@ function merteszamok_szoveg(iv, racs, szint, mltrend_be) {
 }
 
 // a lila görbe mérőszám-sora: "nemlineáris illeszkedés R²=… (lineáris … helyett) · N fordulópont · a görbe X"
-// — ha nincs kimutatható struktúra (van_struktura:false VAGY a backend nem is számolt nemlin blokkot, pl.
-// n<12 pont), őszinte „nincs érdemi nemlineáris szerkezet" (nincs kitalált szám).
+// — a görbét MINDIG kirajzoljuk (elég adatnál), ezért MINDIG a VALÓS R²-t írjuk ki (a gyenge/negatív
+// értéket is: a szám a fokmérő). Ha a backend egyáltalán nem számolt nemlin blokkot (pl. n<12 pont),
+// őszinte „nincs elég adat a nemlineáris görbéhez" (nincs kitalált szám).
 function nemlin_metrika_szoveg(nemlin) {
-  if (!nemlin || !nemlin.van_struktura) return "nincs érdemi nemlineáris szerkezet";
+  if (!nemlin || !nemlin.gorbe || !nemlin.gorbe.length) return "nincs elég adat a nemlineáris görbéhez";
   return "nemlineáris illeszkedés R²=" + tizedes2(nemlin.cv_r2)
     + " (lineáris " + tizedes2(nemlin.lin_cv_r2) + " helyett) · "
     + nemlin.fordulopontok + " fordulópont · a görbe " + (NEMLIN_IRANY_MAGYAR[nemlin.irany] || nemlin.irany);
@@ -933,17 +936,17 @@ function racs_epit(ablak, iv, racs, szint) {
   // már ellenőrizte, hogy mindkettő a rajzolt sorozaton van); a szint-vonal konstans, a rajzolt x-tartomány két végén.
   const vonal_xy = vonal_van ? [{ x: iso_ms(v[0].idopont_utc), y: v[0].ertek }, { x: iso_ms(v[1].idopont_utc), y: v[1].ertek }] : null;
   const szint_xy = (szint != null && xy.length) ? [{ x: xy[0].x, y: szint }, { x: xy[xy.length - 1].x, y: szint }] : null;
-  // ML-TREND (Task 5): a nemlineáris illesztés-görbe {x,y} párokban (a lineáris tengelyhez, mint vonal_xy/szint_xy),
-  // CSAK ha a backend `van_struktura` igazat mondott (nincs görbe, ha nincs kimutatható struktúra). A rajzolást
-  // (Task 6) a kapcsoló-állapot dönti el (mltrend_be) — itt csak a NYERS koordináták származnak a rácsépítőben.
-  const nemlin_xy = (iv.nemlin && iv.nemlin.van_struktura)
+  // ML-TREND: a nemlineáris illesztés-görbe {x,y} párokban (a lineáris tengelyhez, mint vonal_xy/szint_xy).
+  // A görbét MINDIG kirajzoljuk, ahol a backend adott görbe-pontokat (elég adatnál) — a `van_struktura` már
+  // NEM kapuz, csak informatív. A rajzolást a kapcsoló-állapot dönti el (mltrend_be); itt a NYERS koordináták.
+  const van_nemlin_gorbe = !!(iv.nemlin && iv.nemlin.gorbe && iv.nemlin.gorbe.length);
+  const nemlin_xy = van_nemlin_gorbe
     ? iv.nemlin.gorbe.map(function (p) { return { x: iso_ms(p.idopont_utc), y: p.ertek }; })
     : null;
   // NORMÁL (category-tengelyes) nézethez: a görbe pontjait a SAJÁT slot-indexükre helyezzük (mint a vonal/
-  // szint_vonal), a köztes null-okat a spanGaps:true hidalja át (Task 6: a lila görbe NEM csak a teljes nézetben
-  // rajzol — a mltrend-sáv minden nézetben elérhető, ellentétben az adatforrás-markerrel).
+  // szint_vonal), a köztes null-okat a spanGaps:true hidalja át (a lila görbe minden nézetben rajzol).
   let nemlin = null;
-  if (iv.nemlin && iv.nemlin.van_struktura) {
+  if (van_nemlin_gorbe) {
     nemlin = new Array(ertekek.length).fill(null);
     iv.nemlin.gorbe.forEach(function (p) {
       const i = slot_index(p.idopont_utc, racs) - rajz_kezd;

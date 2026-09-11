@@ -30,10 +30,10 @@ test("Infó oldal: adat + elemzés dobozok, csoportcímek, aktív fül + üres l
     "Google Trend adatok", "YouTube Trend adatok", "Az elemzés (napi AI-összefoglaló)"]);
   await expect(page.locator("#adatokrol")).toContainText("Google Trends");
   await expect(page.locator("#adatokrol")).toContainText("52 hét heti mediánjához");   // tüntetés-medián
-  // nemlineáris (LOESS) trend doboz: nem-parametrikus statisztikai simítás + out-of-sample R²
+  // nemlineáris (LOESS) trend doboz: nem-parametrikus statisztikai simítás + out-of-sample R² + mindig-görbe
   await expect(page.locator("#adatokrol")).toContainText("nem-parametrikus");
   await expect(page.locator("#adatokrol")).toContainText("out-of-sample");
-  await expect(page.locator("#adatokrol")).toContainText("nincs érdemi nemlineáris szerkezet");
+  await expect(page.locator("#adatokrol")).toContainText("Mindig látszik a görbe");
   // elemzés-rész: pontos, precíz — a modell és a „Python számol / AI csak szöveg" elv nevesítve
   await expect(page.locator("#adatokrol")).toContainText("claude-opus-4-8");
   await expect(page.locator("#adatokrol")).toContainText("Python");

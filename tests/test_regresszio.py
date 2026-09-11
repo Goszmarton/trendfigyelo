@@ -597,12 +597,10 @@ def test_regresszio_egy_ablak_nemlin_hianyzik_ervenytelen_agon():
     assert "nemlin" not in iv
 
 
-def test_esemenyjelzo_szint_intervallum_strippeli_nemlin_blokkot():
-    # Fix-1 (whole-branch review): Task4 óta regresszio_egy_ablak MINDEN érvényes (>=12 pontos)
-    # intervallumra ráteszi a nemlin (LOESS) blokkot — de a _szint_intervallum esemenyjelzo-strip
-    # listája (_ESEMENYJELZO_TREND_MEZOK) csak a lineáris trend-mezőket sorolja fel, a "nemlin"
-    # kimaradt → bennmarad a szeletelt szint-nézeti intervallumban, a frontend hibásan rajzol
-    # nem-lineáris görbét a tüntetés-jellegű, csak-szint-vonalas kártyákra. RED: "nemlin" in strippelt.
+def test_esemenyjelzo_szint_intervallum_megtartja_a_nemlin_gorbet():
+    # USER-döntés: a tüntetés-jellegű (esemenyjelzo) szavak MOST KAPNAK ML-görbét is. A
+    # _szint_intervallum a LINEÁRIS trend-mezőket továbbra is strippeli (nincs piros vonal),
+    # de a nemlin (LOESS) blokkot MEGTARTJA → a szint-vonal mellé lila görbe rajzolódik.
     import numpy as np
     t0 = datetime(2026, 1, 1, tzinfo=timezone.utc)
     pontok = [{"idopont_utc": (t0 + timedelta(days=i)).isoformat(),
@@ -612,4 +610,5 @@ def test_esemenyjelzo_szint_intervallum_strippeli_nemlin_blokkot():
     assert "nemlin" in iv                                    # sanity: van blokk, mielőtt strippelnénk
 
     strippelt = regresszio._szint_intervallum(iv)
-    assert "nemlin" not in strippelt
+    assert "nemlin" in strippelt                             # a nemlin GÖRBE MEGMARAD (tüntetés is kap)
+    assert "irany" not in strippelt and "illesztes_vonal" not in strippelt   # a lineáris trend viszont NEM

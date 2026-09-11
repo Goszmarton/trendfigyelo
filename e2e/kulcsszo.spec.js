@@ -539,6 +539,39 @@ test("2o. esemenyjelzo tüntetés 3_ho/1_ev → data-szint='8' + 'szint: 8 (heti
   await expect(kartya).toContainText("szint: 8 (heti medián, 52 hét)");
 });
 
+test("ML-trend: a tüntetés (esemenyjelzo) szint-kártya IS kap lila görbét (piros trend NÉLKÜL)", async ({ page }) => {
+  // USER-döntés: az esemenyjelző szint-kártyák is kapnak ML-görbét. A szint-intervallum megtartja a
+  // nemlin blokkot (a lineáris trend-mezők viszont strippelve) → lila LOESS-görbe + medián-szintvonal, piros nélkül.
+  const szintNemlin = { ...racs_iv_szint(52, 7), nemlin: { van_struktura: true,
+    gorbe: Array.from({length: 20}, (_, i) => ({ idopont_utc: racs_iso(i * 2, 7), ertek: 6 + (i % 4) })),
+    cv_r2: 0.31, lin_cv_r2: 0.02, span: 0.5, eff_df: 5.0, irany: "hullamzik",
+    fordulopontok: 4, rezidualis_szoras: 2.1 } };
+  await mock(page, {
+    regObj: reg({ "tüntetés": regSzo({ domen: "kozelet", tipus: "esemenyjelzo", intervallumok: {
+      "1_het": ivHibas("esemenyjelzo"), "2_het": ivHibas("esemenyjelzo"), "1_ho": ivHibas("esemenyjelzo"),
+      "3_ho": ivHibas("esemenyjelzo"), "1_ev": ivHibas("esemenyjelzo") } }) }),
+    nyersObj: nyers({ "tüntetés": [nyersRekord("tüntetés")] }),
+    mpRegObj: mpReg({ "tüntetés": mpSzo("het",
+      { "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"), "1_ho": ivHibas("keves_pont"),
+        "3_ho": szintNemlin, "1_ev": szintNemlin },
+      { domen: "kozelet", tipus: "esemenyjelzo", szint: 8 }) }),
+    mpNyersObj: mpNyers({ "tüntetés": [racs_nyersRekord("tüntetés", 52, 7)] }),
+  });
+  await page.goto("/");
+  await page.locator("#kulcsszo-blokk .mltrend-gomb").click();                     // BE
+  const kartya = page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="tüntetés"]');
+  await expect(kartya).toHaveAttribute("data-vonal", "false");                     // NINCS piros trendvonal
+  await expect(kartya).toHaveAttribute("data-nemlin", "true");                     // DE van kirajzolható görbe
+  const vanLila = await page.evaluate(() => {
+    const p = (window.chart_peldanyok || {})["tüntetés"];
+    return !!p && p.data.datasets.some(d => d.borderColor === "#8e44ad");
+  });
+  expect(vanLila).toBe(true);
+  // a szint-kártya mérőszám-sora a szint MELLETT a nemlineáris R²-t is kiírja (kapcsoló BE)
+  await expect(kartya).toContainText("szint: 8 (heti medián, 52 hét)");
+  await expect(kartya).toContainText("nemlineáris illeszkedés R²=");
+});
+
 // ── 6c JAVÍTÓ-SZELET: a racs_epit az iv.ablak_kezdet_utc-re szeleteljen (latens 6b-hiba) ─────────
 // het iv [kezdHet, vegHet) hetekben; ervenyes, trendvonallal (kontroll szintmero szó)
 function hetIvErv(kezdHet, vegHet) {
@@ -1468,28 +1501,34 @@ test("ML-trend: normál (nem teljes) nézetben is rajzol lila görbét", async (
   expect(vanLila).toBe(true);
 });
 
-test("ML-trend: bekapcsolva DE nincs struktúra → nincs lila görbe, 'nincs érdemi nemlineáris szerkezet'", async ({ page }) => {
-  const ivNincsStruktura = { ...hetIvErv(0, 52), nemlin: { van_struktura: false, gorbe: [],
-    cv_r2: 0.05, lin_cv_r2: 0.03, span: 0.3, eff_df: null, irany: null,
-    fordulopontok: null, rezidualis_szoras: null } };
+test("ML-trend: gyenge/negatív R²-nél IS rajzol lila görbét + a VALÓS (negatív) R²-t mutatja", async ({ page }) => {
+  // ÚJ viselkedés (user-döntés): a görbét MINDIG kirajzoljuk — a van_struktura már csak informatív.
+  // Egy gyenge blokk (van_struktura:false, negatív cv_r2) a backendből NEM üres gorbével jön → van görbe.
+  const ivGyenge = { ...hetIvErv(0, 52), nemlin: { van_struktura: false,
+    gorbe: Array.from({length: 20}, (_, i) => ({ idopont_utc: racs_iso(i*2, 7), ertek: 45 + (i % 3) })),
+    cv_r2: -0.16, lin_cv_r2: -0.44, span: 0.5, eff_df: 4.1, irany: "csokken",
+    fordulopontok: 3, rezidualis_szoras: 9.2 } };
   await mock(page, {
     regObj: reg({ "hitel": regSzo({ domen: "gazdasag", intervallumok: {
       "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"), "1_ho": ivHibas("keves_pont"),
       "3_ho": ivHibas("keves_pont"), "1_ev": ivHibas("nincs_lancolas") } }) }),
     nyersObj: nyers({ "hitel": [nyersRekord("hitel")] }),
     mpRegObj: mpReg({ "hitel": mpSzo("het", { "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"),
-      "1_ho": ivHibas("keves_pont"), "3_ho": ivHibas("keves_pont"), "1_ev": ivNincsStruktura }, { domen: "gazdasag" }) }),
+      "1_ho": ivHibas("keves_pont"), "3_ho": ivHibas("keves_pont"), "1_ev": ivGyenge }, { domen: "gazdasag" }) }),
     mpNyersObj: mpNyers({ "hitel": [racs_nyersRekord("hitel", 52, 7)] }),
   });
   await page.goto("/");
   await page.locator("#kulcsszo-blokk .mltrend-gomb").click();
+  await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="hitel"]'))
+    .toHaveAttribute("data-nemlin", "true");                     // várjuk meg a re-rendert (gorbe → data-nemlin)
   const vanLila = await page.evaluate(() => {
     const p = (window.chart_peldanyok || {})["hitel"];
     return !!p && p.data.datasets.some(d => d.borderColor === "#8e44ad");
   });
-  expect(vanLila).toBe(false);
-  await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="hitel"] .merteszamok'))
-    .toContainText("nincs érdemi nemlineáris szerkezet");
+  expect(vanLila).toBe(true);                                    // MOST rajzol (a gyenge illesztésre is)
+  const m = page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="hitel"] .merteszamok');
+  await expect(m).toContainText("nemlineáris illeszkedés R²=");   // a VALÓS számot mutatja (nem rejti el)
+  await expect(m).not.toContainText("nincs érdemi");             // a régi elrejtő üzenet MEGSZŰNT
 });
 
 test("ML-trend: kikapcsolva → nincs lila görbe, nincs nemlineáris-metrika a kártyán", async ({ page }) => {

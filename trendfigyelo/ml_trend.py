@@ -76,16 +76,11 @@ def nemlin_trend(pontok, gorbe_pont=60, margo=0.05, spanok=(0.3, 0.5, 0.7), k=5)
         if best is None or cv > best[1]:
             best = (sp, cv)
     span, cv = best
-    # túltanulás-őr: a nemlineáris görbét CSAK akkor jelöljük struktúrának, ha (1) a
-    # kereszt-validált R² a lineáris bázist legalább `margo`-val veri, ÉS (2) abszolút
-    # értelemben pozitív (out-of-sample jobb a lapos átlagnál). A (2) padló zárja a relatív
-    # őr vakfoltját: ha MINDKÉT illesztés a mérce alatti (negatív cv), a „kevésbé rossz"
-    # nemlineáris se rajzoljon negatív R²-ű görbét (naming-discipline: zajra nincs trend).
+    # A görbét MINDIG kirajzoljuk (elég adatnál) — a `van_struktura` már NEM kapuzza a
+    # rajzolást, csak INFORMATÍV jelző: erős szerkezet, ha a kereszt-validált R² a lineáris
+    # bázist legalább `margo`-val veri ÉS abszolút pozitív. A valós (akár negatív) cv_r2 a
+    # fokmérő — a frontend mindig a valós számot mutatja, nem rejti el a gyenge illesztést.
     van = cv >= lin_cv + margo and cv > 0
-    if not van:
-        return {"van_struktura": False, "gorbe": [], "cv_r2": round(cv, 3),
-                "lin_cv_r2": round(lin_cv, 3), "span": span, "eff_df": None,
-                "irany": None, "fordulopontok": None, "rezidualis_szoras": None}
     sim = loess(x, y, span)
     # metrikák
     resid = float(np.std(y - sim))
@@ -98,7 +93,7 @@ def nemlin_trend(pontok, gorbe_pont=60, margo=0.05, spanok=(0.3, 0.5, 0.7), k=5)
     gorbe = [{"idopont_utc": idok[i], "ertek": round(float(sim[i]), 1)} for i in range(0, n, lep)]
     if gorbe[-1]["idopont_utc"] != idok[-1]:
         gorbe.append({"idopont_utc": idok[-1], "ertek": round(float(sim[-1]), 1)})
-    return {"van_struktura": True, "gorbe": gorbe, "cv_r2": round(cv, 3),
+    return {"van_struktura": van, "gorbe": gorbe, "cv_r2": round(cv, 3),
             "lin_cv_r2": round(lin_cv, 3), "span": span, "eff_df": eff_df,
             "irany": irany, "fordulopontok": fordulo, "rezidualis_szoras": round(resid, 1)}
 

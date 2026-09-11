@@ -273,7 +273,9 @@ _ESEMENYJELZO_TREND_MEZOK = (
     "meredekseg_nap", "se_meredekseg", "se_masodlagos_autokorrelacio",
     "irany", "r2", "r2_masodlagos_autokorrelacio", "illesztes_vonal",
     "mai_ertek", "mai_reziduum", "reziduum_szokasos", "illeszkedes",
-    "nemlin",
+    # "nemlin" SZÁNDÉKOSAN NEM strippelve: az esemenyjelző (tüntetés) szint-kártyák is
+    # kapnak ML-görbét (user-döntés) — a szint-vonal mellé a lila LOESS-görbe rajzolódik,
+    # miközben a LINEÁRIS trend-mezők (fent) továbbra is strippelve maradnak.
 )
 
 
