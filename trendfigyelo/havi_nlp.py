@@ -2,7 +2,11 @@
 grounding-validáció tiszta/determinista; az NLP-hívás a Claude Opus (nem determinista, AI-jelölt)."""
 import glob
 import json
+import logging
 import os
+import time
+
+_log = logging.getLogger(__name__)
 
 def havi_korpusz(docs_data, honap):
     """A hónap (YYYY-MM) felkapott szavai aggregálva: egyedi kifejezés + gyakoriság (hány külön nap),
@@ -39,3 +43,154 @@ def havi_korpusz(docs_data, honap):
     for a in szavak:
         a["temak"] = sorted(a["temak"])
     return {"honap": honap, "napok": len(fajlok), "egyedi_szo": len(szavak), "szavak": szavak}
+
+
+def _nlp_sema():
+    """A havi NLP strukturált válasz sémája (spec §3.2): lemma-térkép, NER (3 csoport),
+    tematikus klaszterek, összegzés. Minden mező kötelező, extra kulcs tiltva (additionalProperties:False)."""
+    entitas_lista = {
+        "type": "array",
+        "items": {
+            "type": "object", "additionalProperties": False,
+            "required": ["nev", "szavak"],
+            "properties": {
+                "nev": {"type": "string"},
+                "szavak": {"type": "array", "items": {"type": "string"}},
+            },
+        },
+    }
+    return {
+        "type": "object", "additionalProperties": False,
+        "required": ["lemmak", "ner", "klaszterek", "osszegzes"],
+        "properties": {
+            "lemmak": {
+                "type": "array",
+                "items": {
+                    "type": "object", "additionalProperties": False,
+                    "required": ["szo", "lemma"],
+                    "properties": {"szo": {"type": "string"}, "lemma": {"type": "string"}},
+                },
+            },
+            "ner": {
+                "type": "object", "additionalProperties": False,
+                "required": ["orszagok", "telepulesek", "szemelyek"],
+                "properties": {
+                    "orszagok": entitas_lista,
+                    "telepulesek": entitas_lista,
+                    "szemelyek": entitas_lista,
+                },
+            },
+            "klaszterek": {
+                "type": "array",
+                "items": {
+                    "type": "object", "additionalProperties": False,
+                    "required": ["cimke", "szavak", "ertelmezes", "uralkodo_temak"],
+                    "properties": {
+                        "cimke": {"type": "string"},
+                        "szavak": {"type": "array", "items": {"type": "string"}},
+                        "ertelmezes": {"type": "string"},
+                        "uralkodo_temak": {"type": "array", "items": {"type": "string"}},
+                    },
+                },
+            },
+            "osszegzes": {"type": "string"},
+        },
+    }
+
+
+RENDSZER_PROMPT_NLP = (
+    "Magyar nyelvi (NLP) elemző vagy egy magyar Google Trends figyelő oldalhoz. A bemeneted egy "
+    "HAVI korpusz: az adott hónapban felkapott (trendelt) magyar keresőszavak, szavanként a "
+    "gyakorisággal (hány külön napon trendelt), a legmagasabb megfigyelt kereső-volumennel, a "
+    "Google-témacímkékkel és néhány kapcsolódó hír-címmel. A feladatod MÉLY, alapos, PONTOS magyar "
+    "NLP-feldolgozás — nem felületes összefoglaló. "
+    "SZABÁLYOK, kivétel nélkül: "
+    "(1) MINDEN kimenet magyar nyelven íródik (lemmák, entitásnevek, klaszter-címkék, értelmezések, "
+    "összegzés). "
+    "(2) GROUNDING: kizárólag a kapott korpusz szavaiból/azok tartalmából dolgozol. NER-entitást, "
+    "klaszter-tagszót vagy bármilyen kifejezést SOHA nem találsz ki — ha egy szó nem szerepel a "
+    "korpuszban, nem veheted fel semmilyen listába. "
+    "(3) TELJES LEFEDETTSÉG: minden egyes korpusz-szóra pontosan egy lemma-bejegyzést adsz (szo→lemma), "
+    "és minden egyes korpusz-szó pontosan EGY klaszterbe kerül — egyetlen szó sem maradhat klaszter "
+    "nélkül, és egyetlen szó sem szerepelhet két klaszterben. "
+    "(4) MAGYAR LEMMATIZÁLÁS: minden szóhoz a helyes magyar tő/szótári alakot add meg (ragozott, "
+    "toldalékolt vagy összetett kifejezésekre is a jelentés szerinti alapalakot). "
+    "(5) MAGYAR NER: azonosítsd a korpusz-szavakban megjelenő ORSZÁGOKAT, (magyar és külföldi) "
+    "TELEPÜLÉSEKET és SZEMÉLYNEVEKET; minden felismert entitáshoz sorold fel, mely korpusz-szavakban "
+    "jelenik meg. Ha egy kategóriában nincs felismerhető entitás, üres listát adsz — nem találsz ki. "
+    "(6) JELENTÉS-ALAPÚ KLASZTEREK: a csoportosítás a TÉMA/JELENTÉS szerint történjen, NEM felszíni "
+    "szó-egyezés vagy karakteres hasonlóság alapján (pl. két teljesen más témájú szó ne kerüljön egy "
+    "klaszterbe csak azért, mert közös szótöredéket tartalmaznak). Minden klaszterhez adj magyar "
+    "CÍMKÉT, rövid magyar ÉRTELMEZÉST (mit jelent ez a csoportosulás a havi keresési érdeklődésben), "
+    "és a domináns Google-témákat (a tagszavak témacímkéiből, ha vannak). "
+    "(7) MÉLYSÉG: használd a gyakoriságot, a volument, a témacímkéket és a hír-címeket is a "
+    "klaszterezés és az értelmezés megalapozásához — ne csak a szó szövegét nézd. Törekedj arra, hogy "
+    "a klaszterek száma és mérete arányos legyen a korpusz méretével és sokszínűségével (se néhány "
+    "óriás gyűjtő-kategória, se egy-egy szavas apró klaszterek tömkelege, hacsak a tartalom ezt nem "
+    "indokolja). "
+    "(8) ÖSSZEGZÉS: az `osszegzes` mező folyó magyar prózai szöveg, amely a hónap keresési "
+    "érdeklődésének egészét értelmezi — miről szólt a hónap a magyar közönség keresései alapján, "
+    "milyen témák domináltak, mik voltak a visszatérő vagy kiugró minták. Kizárólag a kapott adatokból "
+    "vonj le következtetést; ahol óvatosabban fogalmazol, azt a fogalmazás maga hordozza."
+)
+
+
+MODELL_NLP = "claude-opus-4-8"
+MAX_TOKENS_NLP = 32000   # a gondolkodás (adaptive thinking) ÉS a strukturált kimenet közös kerete
+#  (az elemzo.py mintája: nagy séma+prompt esetén 16000 kevés; STREAMING kell 32000 fölött).
+
+
+class _NlpKliens:
+    """A havi NLP kliens-varrat: az anthropic SDK-t STREAMELVE hívja strukturált kimenettel
+    (az elemzo._AnthropicKliens mintája, saját séma+prompt). Az `sdk` injektálható (teszt);
+    None → az anthropic.Anthropic() a környezeti kulccsal."""
+
+    def __init__(self, sdk=None):
+        self._sdk = sdk
+
+    def _kliens(self):
+        if self._sdk is not None:
+            return self._sdk
+        import anthropic
+        return anthropic.Anthropic()   # ANTHROPIC_API_KEY a környezetből
+
+    def uzenet(self, korpusz, modell):
+        kliens = self._kliens()
+        with kliens.messages.stream(   # STREAM: a nagy max_tokens nem üt HTTP-időtúllépésbe
+            model=modell, max_tokens=MAX_TOKENS_NLP,
+            thinking={"type": "adaptive"},
+            output_config={"effort": "medium",
+                           "format": {"type": "json_schema", "schema": _nlp_sema()}},
+            system=RENDSZER_PROMPT_NLP,
+            messages=[{"role": "user", "content":
+                       "Dolgozd fel az alábbi havi felkapott keresőszó-korpuszt (JSON). Csak ebből "
+                       "dolgozz:\n" + json.dumps(korpusz, ensure_ascii=False)}],
+        ) as folyam:
+            valasz = folyam.get_final_message()
+        szoveg = next(b.text for b in valasz.content if b.type == "text")
+        return json.loads(szoveg)
+
+
+RETRY_PROBAK_NLP = 3                 # a Claude-hívás max ennyi próbája
+RETRY_BACKOFF_MP_NLP = (5, 20, 60)   # növekvő várakozás a próbák közt (mp)
+
+
+def havi_nlp_elemez(korpusz, kliens=None, modell=MODELL_NLP,
+                     probak=RETRY_PROBAK_NLP, backoff_mp=RETRY_BACKOFF_MP_NLP, alvo=None):
+    """A havi NLP Claude-hívás BOUNDED RETRY-vel (az elemzo.elemez mintája): az Anthropic API néha
+    intermittens hibát ad egy egyébként érvényes, determinista kérésre; `probak` próba, közöttük
+    `backoff_mp` várakozás — csak az utolsó bukás propagál (a hívón kívüli fail-soft ott lép be).
+    `alvo` = a várakozó (default time.sleep; tesztben no-op)."""
+    kliens = kliens or _NlpKliens()
+    alvo = alvo if alvo is not None else time.sleep
+    utolso = None
+    for i in range(probak):
+        try:
+            return kliens.uzenet(korpusz, modell)
+        except Exception as e:   # noqa: BLE001 — intermittens API-hiba: bounded retry, végül propagál
+            utolso = e
+            if i + 1 < probak:
+                _log.warning("FIGYELEM: a havi NLP-hívás elhasalt (%s); újrapróba %d/%d %d mp múlva.",
+                             e, i + 2, probak, backoff_mp[i])
+                alvo(backoff_mp[i])
+    raise utolso

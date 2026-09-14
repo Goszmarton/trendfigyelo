@@ -24,3 +24,38 @@ def test_havi_korpusz_aggregal_dedup_gyakorisag(tmp_path):
     assert kor["egyedi_szo"] == 3
     # gyakoriság szerint rendezve (csalás elöl)
     assert kor["szavak"][0]["kifejezes"] == "csalás"
+
+
+class _FakeStream:
+    def __init__(self, valasz): self._v = valasz
+    def __enter__(self): return self
+    def __exit__(self, *a): return False
+    def get_final_message(self):
+        class M:
+            content = [type("B", (), {"type": "text", "text": None})()]
+        M.content[0].text = self._v
+        return M
+
+class _FakeSDK:
+    def __init__(self, valasz): self.messages = self; self._v = valasz; self.hivva = 0
+    def stream(self, **kw): self.hivva += 1; self._kw = kw; return _FakeStream(self._v)
+
+def test_havi_nlp_elemez_strukturalt_JSON_mockolt_sdkval():
+    korpusz = {"honap": "2026-09", "napok": 2, "egyedi_szo": 2,
+               "szavak": [{"kifejezes": "csalás", "gyakorisag": 2, "max_volumen": 800, "temak": [], "hirek": []},
+                          {"kifejezes": "debrecen időjárás", "gyakorisag": 1, "max_volumen": 100, "temak": [], "hirek": []}]}
+    valasz = json.dumps({"lemmak": [{"szo": "csalás", "lemma": "csalás"},
+                                    {"szo": "debrecen időjárás", "lemma": "debrecen időjárás"}],
+                         "ner": {"orszagok": [], "telepulesek": [{"nev": "Debrecen", "szavak": ["debrecen időjárás"]}],
+                                 "szemelyek": []},
+                         "klaszterek": [{"cimke": "Bűnügy", "szavak": ["csalás"], "ertelmezes": "…", "uralkodo_temak": []},
+                                        {"cimke": "Időjárás", "szavak": ["debrecen időjárás"], "ertelmezes": "…", "uralkodo_temak": []}],
+                         "osszegzes": "A hónap…"})
+    sdk = _FakeSDK(valasz)
+    kliens = havi_nlp._NlpKliens(sdk=sdk)
+    er = havi_nlp.havi_nlp_elemez(korpusz, kliens=kliens)
+    assert sdk.hivva == 1
+    assert er["ner"]["telepulesek"][0]["nev"] == "Debrecen"
+    assert {k["cimke"] for k in er["klaszterek"]} == {"Bűnügy", "Időjárás"}
+    # a séma-hívás strukturált JSON-t kért:
+    assert sdk._kw["output_config"]["format"]["type"] == "json_schema"
