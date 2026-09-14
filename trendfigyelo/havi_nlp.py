@@ -17,11 +17,14 @@ def havi_korpusz(docs_data, honap):
     minta = os.path.join(docs_data, "napok", honap + "-*.json")
     fajlok = sorted(glob.glob(minta))
     agg = {}
+    beolvasott = 0                                            # csak a sikeresen parse-olt napokat számoljuk
     for f in fajlok:
         try:
-            nap = json.loads(open(f, encoding="utf-8").read())
+            with open(f, encoding="utf-8") as fp:
+                nap = json.loads(fp.read())
         except (OSError, ValueError):
             continue
+        beolvasott += 1
         napi_kif = set()
         for szeg in ("reggel", "este"):
             for tr in (nap.get(szeg) or {}).get("trendek", []) or []:
@@ -45,7 +48,7 @@ def havi_korpusz(docs_data, honap):
     szavak = sorted(agg.values(), key=lambda a: (-a["gyakorisag"], -a["max_volumen"], a["kifejezes"]))
     for a in szavak:
         a["temak"] = sorted(a["temak"])
-    return {"honap": honap, "napok": len(fajlok), "egyedi_szo": len(szavak), "szavak": szavak}
+    return {"honap": honap, "napok": beolvasott, "egyedi_szo": len(szavak), "szavak": szavak}
 
 
 def _nlp_sema():
@@ -205,6 +208,9 @@ def grounding_validal(eredmeny, korpusz):
     kiesik); az emiatt ÜRESSÉ vált NER-entitás egészében kiesik (egy 0 szavas entitás nem auditálható).
     A `lemmak` a korpusz-szavakra korlátozva (a nem-korpuszbeli `szo`-jú bejegyzés kiesik).
     Tiszta/determinista — nem módosítja a bemenetet."""
+    # A `szavak`/`szo` listákat szűrjük a korpuszra; a klaszter `uralkodo_temak`-ja és az entitás `nev`-e
+    # NEM szűrt — ezek a modell értelmezései a MÁR grounded `szavak` fölött, és a látható `szavak` oszlop
+    # tartja auditálhatóan ellenőrizhetőnek (a kitalálás-védelem a tag-szavakon fog).
     korpusz_szavak = {s["kifejezes"] for s in korpusz.get("szavak", [])}
 
     lemmak = [l for l in eredmeny.get("lemmak", []) if l.get("szo") in korpusz_szavak]
@@ -246,6 +252,7 @@ def havi_nlp_generalas(docs_data, honap, keszult_iso, kliens=None):
         return None
 
     eredmeny = grounding_validal(eredmeny, korpusz)
+    eredmeny["honap"] = honap                     # top-level honap: a fejlécet (havi.js) ez táplálja
     eredmeny["keszult"] = keszult_iso
     eredmeny["modell"] = MODELL_NLP
     eredmeny["korpusz"] = {"honap": korpusz["honap"], "napok": korpusz["napok"],

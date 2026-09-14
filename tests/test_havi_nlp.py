@@ -78,3 +78,27 @@ def test_havi_nlp_ir_kulon_fajlba(tmp_path):
     p = havi_nlp.havi_nlp_ir(str(tmp_path), "2026-09", {"honap": "2026-09", "klaszterek": []})
     assert p.name == "2026-09.json" and p.parent.name == "havi_nlp"
     assert json.loads(p.read_text(encoding="utf-8"))["honap"] == "2026-09"
+
+
+def test_havi_korpusz_napok_csak_a_beolvasottakat_szamolja(tmp_path):
+    # egy ép nap + egy sérült (nem-JSON) fájl → a napok csak az épet számolja (nem a glob-találatot)
+    _napfajl(tmp_path, "2026-09-01", [_szo("csalás")])
+    (tmp_path / "napok" / "2026-09-02.json").write_text("{ ez nem JSON", encoding="utf-8")
+    kor = havi_nlp.havi_korpusz(str(tmp_path), "2026-09")
+    assert kor["napok"] == 1                                   # a sérült fájl NEM inflálja a napok-ot
+    assert kor["egyedi_szo"] == 1
+
+
+def test_havi_nlp_generalas_top_level_honapot_ir(tmp_path):
+    # a fejléc (havi.js) az art.honap-ot olvassa → a generált artefaktnak top-level honap-ot KELL írnia
+    _napfajl(tmp_path, "2026-09-01", [_szo("csalás")])
+    valasz = json.dumps({"lemmak": [{"szo": "csalás", "lemma": "csalás"}],
+                         "ner": {"orszagok": [], "telepulesek": [], "szemelyek": []},
+                         "klaszterek": [{"cimke": "Bűnügy", "szavak": ["csalás"],
+                                         "ertelmezes": "…", "uralkodo_temak": []}],
+                         "osszegzes": "A hónap…"})
+    kliens = havi_nlp._NlpKliens(sdk=_FakeSDK(valasz))
+    er = havi_nlp.havi_nlp_generalas(str(tmp_path), "2026-09", "2026-09-30T21:00:00Z", kliens=kliens)
+    assert er["honap"] == "2026-09"                            # visszatérési érték
+    p = tmp_path / "havi_nlp" / "2026-09.json"
+    assert json.loads(p.read_text(encoding="utf-8"))["honap"] == "2026-09"   # a fájlban is
