@@ -158,6 +158,14 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
   padding: .3em .6em; margin: .2em; background: #f5f8ff; }
 @media (max-width: 760px) { #elemzes { grid-template-columns: 1fr; } #elemzes-naptar { position: static; } }
 
+/* „Havi elemzés" fül — klaszter-kártyák tag-listája + a szó→lemma térkép táblázata */
+.havi-tag-lista { list-style: none; display: flex; flex-wrap: wrap; gap: .4rem; margin: .3rem 0 .6rem; padding: 0; }
+.havi-tag { display: inline-block; border: 1px solid #cddcf7; border-radius: 999px;
+  padding: .2em .7em; background: #f0f5ff; font-size: .85rem; color: #2a52a0; }
+.havi-lemma-tablazat { border-collapse: collapse; width: 100%; font-size: .9rem; }
+.havi-lemma-tablazat th, .havi-lemma-tablazat td { text-align: left; padding: .3em .6em; border-bottom: 1px solid #eee; }
+.havi-ner-csoport ul { margin: .3rem 0 0; padding-left: 1.2rem; }
+
 /* Task 9b kulcsszó-blokk — szavankénti chartok, domen-csoportokban (rács, small multiples).
    A kártya-magasság KELL a lusta rendereléshez: enélkül a canvasok összeesnek és nem lóg túl a viewporton. */
 #kulcsszo-blokk .frissesseg,
