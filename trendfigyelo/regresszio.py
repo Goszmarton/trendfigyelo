@@ -364,13 +364,12 @@ def regresszio_szamit(nyers, tortenet, config, szamitva_utc, lanc_map=None):
             "racs": getattr(aktivak.get(szo), "racs", "ora") or "ora",
             "intervallumok": intervallumok,
         }
-        # szó-szintű ELŐREJELZÉS (órás horizontok, Task 5) — additív, a lineáris/nemlin érintetlen
+        # szó-szintű ELŐREJELZÉS — az órás sorozatból MIND az 5 horizont (a lineáris/nemlin érintetlen).
+        # Az 1_nap/1_het natív órás; az 1_ho/3_ho/1_ev fallback: az órás-only szavaknak (benzin/nyugdíj,
+        # nincs napi/heti soruk) ez az EGYETLEN forrás, a többi szónál a másodlagos ág natív (napi/heti)
+        # blokkjai a frontend-merge-ben felülírják ezeket a hosszú horizontokat.
         oras_pontok = _oras_sorozat(nyers, lanc_map, szo)
-        pred = {}
-        for hz in ("1_nap", "1_het"):
-            blk = predikcio.horizont_blokk(oras_pontok, hz, 3600, m=24)
-            if blk is not None:
-                pred[hz] = blk
+        pred = predikcio.sorozat_predikcio(oras_pontok, 3600, ("1_nap", "1_het", "1_ho", "3_ho", "1_ev"))
         if pred:
             ki[szo]["predikcio"] = pred
     return {
@@ -487,16 +486,18 @@ def regresszio_masodlagos_szamit(masodlagos_nyers, tortenet, config, szamitva_ut
         # szó-szintű ELŐREJELZÉS (napi/heti horizontok, Task 5) — additív; a SAJÁT fájljába írja a
         # napi/heti horizontokat (a frontend az elsődleges órás + a másodlagos napi/heti predikciót
         # a két fájlból mergeli, lásd Task-brief)
-        pred = {}
-        napi_pontok = _napi_sorozat(rekordok)
-        for hz in ("1_ho", "3_ho"):
-            blk = predikcio.horizont_blokk(napi_pontok, hz, 86400, m=7)
-            if blk is not None:
-                pred[hz] = blk
-        heti_pontok = _heti_sorozat(rekordok)
-        blk = predikcio.horizont_blokk(heti_pontok, "1_ev", 604800, m=None)
-        if blk is not None:
-            pred["1_ev"] = blk
+        # A teljes-nézet a szó LEGHOSSZABB idejű sorát mutatja (heti=1 év > napi=3 hó). Az előrejelzés
+        # MIND az 5 horizontját ARRÓL a sorról számoljuk (heti, különben napi) → a forecast a chart-tal
+        # AZONOS 0–100 skálán van (nem egy másik felbontás külön-normált szintjén). A rövid horizontok
+        # így kevés lépésesek, de helyes magasságban; a hosszúak (1 év = 52 heti lépés) mint eddig.
+        _ossz = ("1_nap", "1_het", "1_ho", "3_ho", "1_ev")
+        heti, napi = _heti_sorozat(rekordok), _napi_sorozat(rekordok)
+        if len(heti) >= 24:
+            pred = predikcio.sorozat_predikcio(heti, 604800, _ossz)
+        elif len(napi) >= 24:
+            pred = predikcio.sorozat_predikcio(napi, 86400, _ossz)
+        else:
+            pred = {}
         if pred:
             ki[szo]["predikcio"] = pred
     return {

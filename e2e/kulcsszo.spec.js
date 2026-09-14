@@ -193,8 +193,8 @@ function predikcioBlokk(over = {}) {
     pont: over.pont ?? [{ idopont_utc: iso(169), ertek: 42 }],
     also: over.also ?? [{ idopont_utc: iso(169), ertek: 38 }],
     felso: over.felso ?? [{ idopont_utc: iso(169), ertek: 46 }],
-    rmse_veg: over.rmse_veg ?? 3.1, szezon: over.szezon ?? false, modszer: over.modszer ?? "loess",
-    megbizhatosag: over.megbizhatosag ?? "kozepes", figyelmeztetes: over.figyelmeztetes ?? null,
+    rmse_veg: over.rmse_veg ?? 3.1, modszer: over.modszer ?? "damped-LOESS",
+    megbizhatosag: over.megbizhatosag ?? 0.9, figyelmeztetes: over.figyelmeztetes ?? null,
   };
 }
 
