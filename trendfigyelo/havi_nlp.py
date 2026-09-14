@@ -142,8 +142,11 @@ RENDSZER_PROMPT_NLP = (
 
 
 MODELL_NLP = "claude-opus-4-8"
-MAX_TOKENS_NLP = 32000   # a gondolkodás (adaptive thinking) ÉS a strukturált kimenet közös kerete
-#  (az elemzo.py mintája: nagy séma+prompt esetén 16000 kevés; STREAMING kell 32000 fölött).
+MAX_TOKENS_NLP = 64000   # a gondolkodás (adaptive thinking) ÉS a strukturált kimenet KÖZÖS kerete
+#  A havi kimenet nagyságrenddel nagyobb a napinál: MINDEN korpusz-szóra lemma + klaszter-tagság + NER
+#  + prózai összegzés (több száz szónál sok ezer token). 32000-nél a mély gondolkodás elhasználta a
+#  keretet és a JSON levágódott (json.loads „Expecting ',' delimiter") → 64000, hogy a gondolkodásnak
+#  ÉS a teljes strukturált kimenetnek is legyen helye. STREAMING kötelező (nincs HTTP-időtúllépés).
 
 
 class _NlpKliens:

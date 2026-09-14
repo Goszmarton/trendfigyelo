@@ -59,6 +59,9 @@ def test_havi_nlp_elemez_strukturalt_JSON_mockolt_sdkval():
     assert {k["cimke"] for k in er["klaszterek"]} == {"Bűnügy", "Időjárás"}
     # a séma-hívás strukturált JSON-t kért:
     assert sdk._kw["output_config"]["format"]["type"] == "json_schema"
+    # a token-keret elég nagy a havi kimenethez (több száz szó → sok ezer token; a 32000
+    # levágta a JSON-t → csonka, json.loads bukott). Regresszió-őr: ne csússzon vissza.
+    assert sdk._kw["max_tokens"] >= 64000
 
 
 def test_grounding_validal_kiszuri_a_nem_korpuszbeli_entitast():
