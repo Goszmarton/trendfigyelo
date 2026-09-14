@@ -1,16 +1,17 @@
 const { test, expect } = require("@playwright/test");
 
 // Menüsor (Excel-fül) + „Az adatokról" külön oldal — statikus szerkezet-őr (nincs adat-mock, a nav statikus).
-test("menüsor: 4 fül, aktív = Google Trendek; a linkek helyesek + sorrend", async ({ page }) => {
+test("menüsor: 5 fül, aktív = Google Trendek; a linkek helyesek + sorrend", async ({ page }) => {
   await page.goto("/trendek.html");
-  await expect(page.locator("#fomenu a")).toHaveCount(4);
+  await expect(page.locator("#fomenu a")).toHaveCount(5);
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Google Trendek");
-  await expect(page.locator('#fomenu a[href="elemzes.html"]')).toHaveText("Elemzések");
+  await expect(page.locator('#fomenu a[href="elemzes.html"]')).toHaveText("Napi Elemzések");
+  await expect(page.locator('#fomenu a[href="havi.html"]')).toHaveText("Havi elemzés");
   await expect(page.locator('#fomenu a[href="trendek.html"]')).toHaveText("Google Trendek");
   await expect(page.locator('#fomenu a[href="youtube.html"]')).toHaveText("YouTube Trendek");
   await expect(page.locator('#fomenu a[href="adatokrol.html"]')).toHaveText("Infó");
-  // sorrend: Elemzések · Google Trendek · YouTube Trendek · Infó
-  await expect(page.locator("#fomenu a")).toHaveText(["Elemzések", "Google Trendek", "YouTube Trendek", "Infó"]);
+  // sorrend: Napi Elemzések · Havi elemzés · Google Trendek · YouTube Trendek · Infó
+  await expect(page.locator("#fomenu a")).toHaveText(["Napi Elemzések", "Havi elemzés", "Google Trendek", "YouTube Trendek", "Infó"]);
   await expect(page.locator("#labresz")).toBeAttached();          // üres lábléc jelen
   await expect(page.locator("#adatokrol")).toHaveCount(0);        // az infó-tartalom NEM a főoldalon van
 });
@@ -19,6 +20,12 @@ test("youtube.html: a fül betölt, a YouTube menüpont aktív", async ({ page }
   await page.goto("/youtube.html");
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("YouTube Trendek");
   await expect(page.locator("#youtube-blokk")).toBeAttached();
+});
+
+test("havi.html: a fül betölt, a Havi elemzés menüpont aktív", async ({ page }) => {
+  await page.goto("/havi.html");
+  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Havi elemzés");
+  await expect(page.locator("#fomenu a")).toHaveText(["Napi Elemzések", "Havi elemzés", "Google Trendek", "YouTube Trendek", "Infó"]);
 });
 
 test("Infó oldal: adat + elemzés dobozok, csoportcímek, aktív fül + üres lábléc", async ({ page }) => {
@@ -59,5 +66,5 @@ test("navigáció: a Trendek főoldalról az Az adatokról oldalra és vissza", 
 test("landing: a gyökér (/) az Elemzések oldalra irányít át", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveURL(/elemzes\.html$/);                       // átirányítás
-  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Elemzések");
+  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Napi Elemzések");
 });
