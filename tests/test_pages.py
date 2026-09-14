@@ -183,6 +183,12 @@ def _index_html() -> str:
     return (DOCS / "index.html").read_text(encoding="utf-8")
 
 
+def _trendek_html() -> str:
+    # A Google Trendek app-oldal tartalma (a landing-váltás után az index.html → redirect,
+    # a tényleges Google Trendek tartalom a trendek.html-ben él).
+    return (DOCS / "trendek.html").read_text(encoding="utf-8")
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Az oldal létezik és a tartós azonosítót hordozza (Task 1 trimmelt)
 #   A "Phase 3" placeholder és a nyers-adat href-ek KIKERÜLTEK (C döntés) — a
@@ -190,7 +196,11 @@ def _index_html() -> str:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def test_index_html_letezik():
-    html = _index_html()
+    # A landing-váltás után az index.html EGY REDIRECT az Elemzésekre; a Google Trendek
+    # app-oldal tartalom (váz-horgonyok) a trendek.html-ben él.
+    idx = _index_html()
+    assert 'http-equiv="refresh"' in idx and "elemzes.html" in idx   # index.html → Elemzések redirect
+    html = _trendek_html()
     assert "Trendfigyelő" in html                                  # tartós azonosító (Task 1)
     # Task 5 váz-horgonyok: a kétblokkos elrendezés (§7.1) + a két vezérlő + a saját/vendorolt eszközök.
     for horgony in (
@@ -235,20 +245,20 @@ def test_loader_hibakezeles():
 # ─────────────────────────────────────────────────────────────────────────────
 
 def test_nincs_inline_script():
-    assert inline_script_szegmensek(_index_html()) == []
+    assert inline_script_szegmensek(_trendek_html()) == []
 
 
 def test_nincs_inline_event_handler():
-    assert re.search(r"\son[a-z]+\s*=", _index_html(), re.IGNORECASE) is None
+    assert re.search(r"\son[a-z]+\s*=", _trendek_html(), re.IGNORECASE) is None
 
 
 def test_nincs_javascript_url():
     # A teljes dokumentumra: az <a href="javascript:..."> navigációt is tiltja.
-    assert "javascript:" not in _index_html().lower()
+    assert "javascript:" not in _trendek_html().lower()
 
 
 def test_index_html_nincs_kulso_betoltes():
-    assert kulso_hivatkozasok_html(_index_html()) == []
+    assert kulso_hivatkozasok_html(_trendek_html()) == []
 
 
 def test_sajat_js_nincs_kulso_url():
