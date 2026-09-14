@@ -1,105 +1,168 @@
 {
-"frissitve": "2026-09-14T07:26:11+00:00",
+"frissitve": "2026-09-14T19:07:48+00:00",
 "modell": "claude-opus-4-8",
 "nap": "2026-09-14",
-"mode": "reggel",
+"mode": "este",
 "valtozas": {
 "diff": {
-"irany_valtok": [],
-"mozgok": [
+"irany_valtok": [
 {
 "szo": "akciós újság",
-"valtozas": 0.0
+"elozo": "stagnal",
+"mai": "csokken"
 },
 {
 "szo": "albérlet",
-"valtozas": 0.0
+"elozo": "csokken",
+"mai": "stagnal"
 },
 {
-"szo": "benzin",
-"valtozas": 0.0
+"szo": "kormány",
+"elozo": "novekszik",
+"mai": "stagnal"
 },
 {
-"szo": "betegség",
-"valtozas": 0.0
+"szo": "kölcsön",
+"elozo": "stagnal",
+"mai": "csokken"
 },
 {
-"szo": "csőd",
-"valtozas": 0.0
+"szo": "műtét",
+"elozo": "csokken",
+"mai": "stagnal"
+},
+{
+"szo": "napelem",
+"elozo": "novekszik",
+"mai": "stagnal"
+},
+{
+"szo": "nyugdíj",
+"elozo": "csokken",
+"mai": "novekszik"
+},
+{
+"szo": "sürgősségi",
+"elozo": "csokken",
+"mai": "stagnal"
+}
+],
+"mozgok": [
+{
+"szo": "nyugdíj",
+"valtozas": 5.49
+},
+{
+"szo": "kormányablak",
+"valtozas": 3.643
+},
+{
+"szo": "kölcsön",
+"valtozas": -3.167
+},
+{
+"szo": "iskola",
+"valtozas": -2.532
+},
+{
+"szo": "kormány",
+"valtozas": -2.498
 }
 ],
 "felkapott_uj": [
-"anakonda",
-"brest–psg",
-"digitális polgári kör",
-"forma 1",
-"miniszter",
+"2026",
+"bank",
+"benzin",
+"ekler luca",
+"florian wirtz",
+"földrengések magyarországon",
+"grózer györgy",
+"hadházy ákos",
+"halmai gábor",
+"magyar péter kossuth rádió",
+"matolcsy györgy",
 "nemzeti vagyonvisszaszerzési és vagyonvédelmi hivatal",
 "nyugdíj",
-"reacher",
-"real sociedad–atlético madrid",
-"zagyva",
-"zverev"
+"polgármester",
+"rendőrség",
+"renátó",
+"sződliget utca",
+"vitézy dávid",
+"öregségi nyugdíj"
 ],
 "felkapott_eltunt": [
 "alan ritchson",
 "biztosítás",
+"brač",
 "bálint antónia",
+"celeb vagyok ments ki innen",
+"csalás",
+"elversberg–bayern münchen",
+"forbes",
 "formula 1 spanyol nagydíj",
+"hankó balázs",
+"jáva-tenger",
 "kanada",
+"levante–barcelona",
+"man utd–manchester city",
 "mofetta",
+"németh kristóf",
+"presser gábor",
+"párt",
 "péter szabó szilvia",
+"romain lagarde",
 "villamos",
 "wow forever",
 "zöld anakonda",
+"ókovács szilveszter",
 "ötöslottó nyerőszámok"
 ],
 "van_elozo": true
 },
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A tegnapi és a mai kép között több szónál is irányváltás látszik. A leglátványosabb a nyugdíj: korábban csökkenő pályán volt, ma viszont növekvő irányba fordult, és ez a mai nap legnagyobb elmozdulása is egyben. Emellett a kormányablak érdeklődése is felfelé mozdult a korábbi napokhoz mérten. A másik irányba a kölcsön, az iskola és a kormány húzott, ezek mérséklődtek.\n\nAz irány finomabb átrendeződése is megfigyelhető: az akciós újság a korábbi kiegyenlített szintről csökkenésbe fordult, az albérlet, a műtét és a sürgősségi ezzel szemben a korábbi csökkenésből kiegyenlítettebb állapotba került, a napelem pedig a korábbi emelkedés után szintén elcsendesedett.\n\nA napi felkapott szavak között sok az új belépő, köztük a nyugdíj, az öregségi nyugdíj, a benzin, a bank, a rendőrség, valamint több közéleti név, mint Hadházy Ákos, Matolcsy György, Vitézy Dávid és Halmai Gábor, illetve olyan témák, mint a földrengések Magyarországon vagy a Sződliget utca. Ezzel párhuzamosan kikoptak a tegnapi listáról olyan tételek, mint Alan Ritchson, Presser Gábor, Németh Kristóf, a Levante–Barcelona meccs vagy az ötöslottó nyerőszámok. Ez a fajta cserélődés a napi hírfolyam természetes hullámzása."
 },
 "kulcsszavak": {
 "szamok": [
 {
 "szo": "akciós újság",
-"irany": "stagnal",
-"meredekseg": -0.472,
+"irany": "csokken",
+"meredekseg": -1.898,
 "ervenyes": true,
-"mai_ertek": 27,
-"csucs": 100.0,
-"atlag": 46.54
+"mai_ertek": 30,
+"csucs": 77.0,
+"atlag": 39.27
 },
 {
 "szo": "albérlet",
-"irany": "csokken",
-"meredekseg": -1.086,
+"irany": "stagnal",
+"meredekseg": -0.409,
 "ervenyes": true,
-"mai_ertek": 26,
-"csucs": 57.0,
-"atlag": 32.32
+"mai_ertek": 39,
+"csucs": 89.0,
+"atlag": 46.95
 },
 {
 "szo": "benzin",
 "irany": "csokken",
-"meredekseg": -2.76,
+"meredekseg": -2.023,
 "ervenyes": true,
-"mai_ertek": 12,
-"csucs": 38.0,
-"atlag": 20.75
+"mai_ertek": 53,
+"csucs": 24.0,
+"atlag": 16.32
 },
 {
 "szo": "betegség",
 "irany": "stagnal",
-"meredekseg": -0.324,
+"meredekseg": 0.799,
 "ervenyes": true,
-"mai_ertek": 42,
-"csucs": 100.0,
-"atlag": 45.17
+"mai_ertek": 23,
+"csucs": 46.0,
+"atlag": 25.32
 },
 {
 "szo": "csőd",
 "irany": "stagnal",
-"meredekseg": 0.104,
+"meredekseg": -0.483,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -108,79 +171,79 @@
 {
 "szo": "eladó lakás",
 "irany": "stagnal",
-"meredekseg": 0.107,
+"meredekseg": -0.322,
 "ervenyes": true,
-"mai_ertek": 56,
+"mai_ertek": 50,
 "csucs": 68.0,
-"atlag": 51.89
+"atlag": 56.17
 },
 {
 "szo": "fizetés",
 "irany": "csokken",
-"meredekseg": -2.043,
+"meredekseg": -4.25,
 "ervenyes": true,
-"mai_ertek": 53,
+"mai_ertek": 38,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "hitel",
 "irany": "stagnal",
-"meredekseg": -0.652,
+"meredekseg": -0.061,
 "ervenyes": true,
-"mai_ertek": 43,
-"csucs": 100.0,
-"atlag": 37.05
+"mai_ertek": 50,
+"csucs": 82.0,
+"atlag": 60.4
 },
 {
 "szo": "háziorvos",
 "irany": "csokken",
-"meredekseg": -3.403,
+"meredekseg": -4.021,
 "ervenyes": true,
-"mai_ertek": 11,
+"mai_ertek": 86,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "infláció",
 "irany": "csokken",
-"meredekseg": -2.586,
+"meredekseg": -4.854,
 "ervenyes": true,
-"mai_ertek": 0,
+"mai_ertek": 18,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "iskola",
 "irany": "csokken",
-"meredekseg": -6.049,
+"meredekseg": -8.581,
 "ervenyes": true,
-"mai_ertek": 28,
+"mai_ertek": 64,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kormány",
-"irany": "novekszik",
-"meredekseg": 2.281,
+"irany": "stagnal",
+"meredekseg": -0.217,
 "ervenyes": true,
-"mai_ertek": 7,
+"mai_ertek": 8,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kormányablak",
 "irany": "csokken",
-"meredekseg": -7.82,
+"meredekseg": -4.177,
 "ervenyes": true,
-"mai_ertek": 24,
-"csucs": 15.0,
-"atlag": 11.27
+"mai_ertek": 37,
+"csucs": 29.0,
+"atlag": 21.5
 },
 {
 "szo": "korrupció",
 "irany": "csokken",
-"meredekseg": -1.788,
+"meredekseg": -2.787,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -189,79 +252,79 @@
 {
 "szo": "kórház",
 "irany": "csokken",
-"meredekseg": -4.073,
+"meredekseg": -2.812,
 "ervenyes": true,
-"mai_ertek": 21,
-"csucs": 49.0,
-"atlag": 23.14
+"mai_ertek": 29,
+"csucs": 30.0,
+"atlag": 22.7
 },
 {
 "szo": "kölcsön",
-"irany": "stagnal",
-"meredekseg": -0.322,
+"irany": "csokken",
+"meredekseg": -3.489,
 "ervenyes": true,
-"mai_ertek": 62,
+"mai_ertek": 36,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "munkanélküliség",
 "irany": "stagnal",
-"meredekseg": 0.812,
-"ervenyes": true,
-"mai_ertek": 100,
-"csucs": null,
-"atlag": null
-},
-{
-"szo": "műtét",
-"irany": "csokken",
-"meredekseg": -1.496,
-"ervenyes": true,
-"mai_ertek": 39,
-"csucs": null,
-"atlag": null
-},
-{
-"szo": "napelem",
-"irany": "novekszik",
-"meredekseg": 1.173,
-"ervenyes": true,
-"mai_ertek": 7,
-"csucs": 100.0,
-"atlag": 32.6
-},
-{
-"szo": "nyaralás",
-"irany": "stagnal",
-"meredekseg": -0.915,
-"ervenyes": true,
-"mai_ertek": 23,
-"csucs": 64.0,
-"atlag": 40.0
-},
-{
-"szo": "nyugdíj",
-"irany": "csokken",
-"meredekseg": -2.884,
-"ervenyes": true,
-"mai_ertek": 9,
-"csucs": 100.0,
-"atlag": 54.75
-},
-{
-"szo": "pedagógus",
-"irany": "csokken",
-"meredekseg": -1.849,
+"meredekseg": 0.985,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
 "atlag": null
 },
 {
+"szo": "műtét",
+"irany": "stagnal",
+"meredekseg": -0.742,
+"ervenyes": true,
+"mai_ertek": 36,
+"csucs": null,
+"atlag": null
+},
+{
+"szo": "napelem",
+"irany": "stagnal",
+"meredekseg": 0.429,
+"ervenyes": true,
+"mai_ertek": 17,
+"csucs": 23.0,
+"atlag": 12.12
+},
+{
+"szo": "nyaralás",
+"irany": "stagnal",
+"meredekseg": -0.702,
+"ervenyes": true,
+"mai_ertek": 0,
+"csucs": 25.0,
+"atlag": 15.08
+},
+{
+"szo": "nyugdíj",
+"irany": "novekszik",
+"meredekseg": 2.606,
+"ervenyes": true,
+"mai_ertek": 21,
+"csucs": 39.0,
+"atlag": 15.67
+},
+{
+"szo": "pedagógus",
+"irany": "csokken",
+"meredekseg": -1.216,
+"ervenyes": true,
+"mai_ertek": 26,
+"csucs": null,
+"atlag": null
+},
+{
 "szo": "rezsi",
 "irany": "stagnal",
-"meredekseg": 0.13,
+"meredekseg": -0.142,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -270,18 +333,18 @@
 {
 "szo": "segély",
 "irany": "csokken",
-"meredekseg": -4.283,
+"meredekseg": -3.798,
 "ervenyes": true,
-"mai_ertek": 38,
+"mai_ertek": 17,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "sürgősségi",
-"irany": "csokken",
-"meredekseg": -1.457,
+"irany": "stagnal",
+"meredekseg": -0.861,
 "ervenyes": true,
-"mai_ertek": 0,
+"mai_ertek": 66,
 "csucs": null,
 "atlag": null
 },
@@ -291,13 +354,13 @@
 "meredekseg": null,
 "ervenyes": false,
 "mai_ertek": null,
-"csucs": 41.0,
-"atlag": 40.5
+"csucs": null,
+"atlag": null
 },
 {
 "szo": "várólista",
 "irany": "stagnal",
-"meredekseg": -0.316,
+"meredekseg": -0.546,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -306,120 +369,65 @@
 {
 "szo": "állás",
 "irany": "csokken",
-"meredekseg": -2.156,
+"meredekseg": -1.582,
 "ervenyes": true,
-"mai_ertek": 18,
-"csucs": 60.0,
-"atlag": 22.0
+"mai_ertek": 32,
+"csucs": 28.0,
+"atlag": 21.21
 }
 ],
 "napi": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A megfigyelt hétköznapi témák többsége ma a saját szokásos szintje közelében vagy az alatt mozog. Kiemelkedik a háziorvos, amely 86-os mai értékkel jóval élénkebb a nyaláb átlagos szereplőinél, és a sürgősségi is 66-tal a szokásosnál magasabban áll – az egészségügyi keresések tehát ma feltűnően jelen vannak, bár ezt önmagában az adat nem magyarázza meg. A benzin 53-as mai értéke is a saját megszokott szintje fölött van.\n\nA pénzügyi és megélhetési szavak nagy része visszafogott: az infláció 18-on, a nyugdíj 21-en, a napelem 17-en, a segély 17-en áll, a csőd, a rezsi, a munkanélküliség és a várólista pedig ma gyakorlatilag nem mutat mérhető keresést. A hitel és az eladó lakás 50 körül, kiegyenlítetten mozog, az albérlet 39-en, az állás 32-n, a fizetés 38-on áll, ezek nagyjából a szokott képet hozzák. Az iskola 64-es értéke már csökkenő pályán van, ami a tanév beindulása utáni természetes lecsengésre utalhat, de ezt az adat önmagában nem igazolja. A kormány mindössze 8-on áll, ami a saját szintjéhez képest is halványabb."
 }
 },
 "felkapott": {
 "top": [
 {
-"kifejezes": "csalás",
+"kifejezes": "renátó",
 "volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance",
-"Autos and Vehicles"
-],
-"hirek": []
-},
-{
-"kifejezes": "párt",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Politics"
-],
-"hirek": []
-},
-{
-"kifejezes": "levante–barcelona",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "forma 1",
-"volumen": "10000",
-"novekedes_pct": "300",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "ókovács szilveszter",
-"volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
 "Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "presser gábor",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "miniszter",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "nyugdíj",
-"volumen": "5000",
-"novekedes_pct": "300",
-"temak": [
-"Business and Finance",
-"Law and Government"
 ],
 "hirek": [
 {
-"hir_cim": "Fontos tudnivaló a dolgozó nyugdíjasoknak: a pénzük múlhat ezen a különbségen",
+"hir_cim": "Újabb esküvő Házasság első látásra következő epizódjában, egykori ValóVilág-szereplő áll oltár elé",
+"hir_forras": "Index.hu",
+"hir_url": "https://index.hu/mindekozben/poszt/2026/09/14/ujabb-eskuvo-hazassag-elso-latasra-kovetkezo-epizodjaban-egykori-valovilag-szereplo-all-oltar-ele/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQF2BCBmVDlt71lWBj_UNrS9oyBUJaudW848sA7AMsai5cwx-tj15GG4UhMMt0",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Házasság első látásra: „Te vagy a szájbaköpős” – Azonnal keményen nekimentek az új vőlegénynek a többiek",
 "hir_forras": "ORIGO",
-"hir_url": "https://www.origo.hu/gazdasag/2026/09/nyugdij-betegszabadsag-tappenz-dolgozo",
+"hir_url": "https://www.origo.hu/teve/2026/09/hazassag-elso-latasra-bakonyi-renato-uj-par",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSjPCuBp7hjHqCuRt7x3dfLylazP61_sgwhNFhbHzzTf0ObrCrw7LhDPNA3wEk",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQ7LxRZwHWxW8FTdZPU41ETPBmeQygCxgSmnQ8YyGSgr4zzyEVOfd1vBhIEaH8",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Nagy érvágás éri a nyugdíj mellett dolgozókat",
-"hir_forras": "Hirnavigator",
-"hir_url": "https://hirnavigator.hu/hir/10764052-nagy-ervagas-eri-a-nyugdij-mellett-dolgozokat",
+"hir_cim": "„Megcsaltak, átvertek” – Változtatna az életén a Házasság első látásra új szereplője",
+"hir_forras": "Blikk",
+"hir_url": "https://www.blikk.hu/sztarvilag/hazai-sztarok/hazassag-elso-latasra-renato-tv2-parkereses/rwry25x",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFCKpXpLbW9Six3biBfdU9W_8rr7rPN33ks44wTFp3_CAMqZAKykQiruv6Sg4",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Itt a feketeleves a nyugdíj mellett dolgozóknak – ezért bukják el a táppénzt",
-"hir_forras": "ATV",
-"hir_url": "https://www.atv.hu/belfold/20260912/tappenz-nyugdijas-munkavallalo/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQFfnXUw8M1mMLTtcNNR7v-iL_FmOqix31MxfLm9a_650pBnSYMR2MxxFMVKK0",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjIFLSntM3-w7XwGzFMFYhmdtWeX28SOUm0HJZWaHwlGMwadEKyp2nx038l7Y",
 "hir_kivonat": ""
 }
 ]
 },
 {
-"kifejezes": "real sociedad–atlético madrid",
+"kifejezes": "nyugdíj",
+"volumen": "10000",
+"novekedes_pct": "300",
+"temak": [
+"Business and Finance",
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "florian wirtz",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
@@ -428,17 +436,44 @@
 "hirek": []
 },
 {
-"kifejezes": "celeb vagyok ments ki innen",
+"kifejezes": "2026",
 "volumen": "5000",
-"novekedes_pct": "700",
+"novekedes_pct": "1000",
 "temak": [
-"Other"
+"Sports"
 ],
 "hirek": []
 },
 {
-"kifejezes": "brač",
+"kifejezes": "benzin",
 "volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "öregségi nyugdíj",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "rendőrség",
+"volumen": "2000",
+"novekedes_pct": "800",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "bank",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Other"
@@ -446,17 +481,90 @@
 "hirek": []
 },
 {
-"kifejezes": "németh kristóf",
-"volumen": "5000",
+"kifejezes": "hadházy ákos",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "halmai gábor",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "földrengések magyarországon",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "ekler luca",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports",
 "Entertainment"
 ],
 "hirek": []
 },
 {
-"kifejezes": "man utd–manchester city",
-"volumen": "5000",
+"kifejezes": "sződliget utca",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "magyar péter kossuth rádió",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "matolcsy györgy",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "polgármester",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "vitézy dávid",
+"volumen": "2000",
+"novekedes_pct": "600",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "grózer györgy",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Sports"
@@ -470,130 +578,6 @@
 "temak": [
 "Politics",
 "Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "romain lagarde",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "digitális polgári kör",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "brest–psg",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "zverev",
-"volumen": "2000",
-"novekedes_pct": "700",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "anakonda",
-"volumen": "2000",
-"novekedes_pct": "400",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "reacher",
-"volumen": "2000",
-"novekedes_pct": "300",
-"temak": [
-"Entertainment"
-],
-"hirek": [
-{
-"hir_cim": "&apos;Reacher&apos; star Alan Ritchson and wife Catherine splitting up after 2 decades of marriage",
-"hir_forras": "Fox News",
-"hir_url": "https://www.foxnews.com/entertainment/reacher-star-alan-ritchson-wife-catherine-splitting-2-decades-marriage",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSN6vZ9Rnv_yYM0Ha2KCQKwOSZz6L1BWbQlsA5tXG4tGrje6C4IqxFfvdGEWVI",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "‘Reacher’ star getting divorced after 20 years, releases statement",
-"hir_forras": "AL.com",
-"hir_url": "https://www.al.com/life/2026/09/reacher-star-getting-divorced-after-20-years-releases-statement.html",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSwbXmaF3v1i4xs02qWb9lI_zIhMJDp9oG6TwYGc3LtOkgv1sYACNDjKCJ2WOA",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "‘Reacher’ star Alan Ritchson quietly filed for divorce 8 months before shocking announcement",
-"hir_forras": "Page Six",
-"hir_url": "https://pagesix.com/2026/09/13/celebrity-news/reacher-star-alan-ritchson-quietly-filed-for-divorce-8-months-before-shocking-announcement/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQnfzMh5mUrw8I2rlka70wJamDhA7RpdUYlE6jze7aiXpzAzAUAWd1fYfiKFBc",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "hankó balázs",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "zagyva",
-"volumen": "2000",
-"novekedes_pct": "900",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "forbes",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "elversberg–bayern münchen",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "jáva-tenger",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
 ],
 "hirek": []
 }
@@ -880,106 +864,51 @@
 ],
 "este_top": [
 {
-"kifejezes": "csalás",
+"kifejezes": "renátó",
 "volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance",
-"Autos and Vehicles"
-],
-"hirek": []
-},
-{
-"kifejezes": "párt",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Politics"
-],
-"hirek": []
-},
-{
-"kifejezes": "levante–barcelona",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "forma 1",
-"volumen": "10000",
-"novekedes_pct": "300",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "ókovács szilveszter",
-"volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
 "Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "presser gábor",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "miniszter",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "nyugdíj",
-"volumen": "5000",
-"novekedes_pct": "300",
-"temak": [
-"Business and Finance",
-"Law and Government"
 ],
 "hirek": [
 {
-"hir_cim": "Fontos tudnivaló a dolgozó nyugdíjasoknak: a pénzük múlhat ezen a különbségen",
+"hir_cim": "Újabb esküvő Házasság első látásra következő epizódjában, egykori ValóVilág-szereplő áll oltár elé",
+"hir_forras": "Index.hu",
+"hir_url": "https://index.hu/mindekozben/poszt/2026/09/14/ujabb-eskuvo-hazassag-elso-latasra-kovetkezo-epizodjaban-egykori-valovilag-szereplo-all-oltar-ele/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQF2BCBmVDlt71lWBj_UNrS9oyBUJaudW848sA7AMsai5cwx-tj15GG4UhMMt0",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Házasság első látásra: „Te vagy a szájbaköpős” – Azonnal keményen nekimentek az új vőlegénynek a többiek",
 "hir_forras": "ORIGO",
-"hir_url": "https://www.origo.hu/gazdasag/2026/09/nyugdij-betegszabadsag-tappenz-dolgozo",
+"hir_url": "https://www.origo.hu/teve/2026/09/hazassag-elso-latasra-bakonyi-renato-uj-par",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSjPCuBp7hjHqCuRt7x3dfLylazP61_sgwhNFhbHzzTf0ObrCrw7LhDPNA3wEk",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQ7LxRZwHWxW8FTdZPU41ETPBmeQygCxgSmnQ8YyGSgr4zzyEVOfd1vBhIEaH8",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Nagy érvágás éri a nyugdíj mellett dolgozókat",
-"hir_forras": "Hirnavigator",
-"hir_url": "https://hirnavigator.hu/hir/10764052-nagy-ervagas-eri-a-nyugdij-mellett-dolgozokat",
+"hir_cim": "„Megcsaltak, átvertek” – Változtatna az életén a Házasság első látásra új szereplője",
+"hir_forras": "Blikk",
+"hir_url": "https://www.blikk.hu/sztarvilag/hazai-sztarok/hazassag-elso-latasra-renato-tv2-parkereses/rwry25x",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFCKpXpLbW9Six3biBfdU9W_8rr7rPN33ks44wTFp3_CAMqZAKykQiruv6Sg4",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Itt a feketeleves a nyugdíj mellett dolgozóknak – ezért bukják el a táppénzt",
-"hir_forras": "ATV",
-"hir_url": "https://www.atv.hu/belfold/20260912/tappenz-nyugdijas-munkavallalo/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQFfnXUw8M1mMLTtcNNR7v-iL_FmOqix31MxfLm9a_650pBnSYMR2MxxFMVKK0",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjIFLSntM3-w7XwGzFMFYhmdtWeX28SOUm0HJZWaHwlGMwadEKyp2nx038l7Y",
 "hir_kivonat": ""
 }
 ]
 },
 {
-"kifejezes": "real sociedad–atlético madrid",
+"kifejezes": "nyugdíj",
+"volumen": "10000",
+"novekedes_pct": "300",
+"temak": [
+"Business and Finance",
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "florian wirtz",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
@@ -988,17 +917,44 @@
 "hirek": []
 },
 {
-"kifejezes": "celeb vagyok ments ki innen",
+"kifejezes": "2026",
 "volumen": "5000",
-"novekedes_pct": "700",
+"novekedes_pct": "1000",
 "temak": [
-"Other"
+"Sports"
 ],
 "hirek": []
 },
 {
-"kifejezes": "brač",
+"kifejezes": "benzin",
 "volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "öregségi nyugdíj",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "rendőrség",
+"volumen": "2000",
+"novekedes_pct": "800",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "bank",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Other"
@@ -1006,17 +962,90 @@
 "hirek": []
 },
 {
-"kifejezes": "németh kristóf",
-"volumen": "5000",
+"kifejezes": "hadházy ákos",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "halmai gábor",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "földrengések magyarországon",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "ekler luca",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports",
 "Entertainment"
 ],
 "hirek": []
 },
 {
-"kifejezes": "man utd–manchester city",
-"volumen": "5000",
+"kifejezes": "sződliget utca",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "magyar péter kossuth rádió",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "matolcsy györgy",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "polgármester",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "vitézy dávid",
+"volumen": "2000",
+"novekedes_pct": "600",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "grózer györgy",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Sports"
@@ -1032,136 +1061,29 @@
 "Law and Government"
 ],
 "hirek": []
-},
-{
-"kifejezes": "romain lagarde",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "digitális polgári kör",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "brest–psg",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "zverev",
-"volumen": "2000",
-"novekedes_pct": "700",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "anakonda",
-"volumen": "2000",
-"novekedes_pct": "400",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "reacher",
-"volumen": "2000",
-"novekedes_pct": "300",
-"temak": [
-"Entertainment"
-],
-"hirek": [
-{
-"hir_cim": "&apos;Reacher&apos; star Alan Ritchson and wife Catherine splitting up after 2 decades of marriage",
-"hir_forras": "Fox News",
-"hir_url": "https://www.foxnews.com/entertainment/reacher-star-alan-ritchson-wife-catherine-splitting-2-decades-marriage",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSN6vZ9Rnv_yYM0Ha2KCQKwOSZz6L1BWbQlsA5tXG4tGrje6C4IqxFfvdGEWVI",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "‘Reacher’ star getting divorced after 20 years, releases statement",
-"hir_forras": "AL.com",
-"hir_url": "https://www.al.com/life/2026/09/reacher-star-getting-divorced-after-20-years-releases-statement.html",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSwbXmaF3v1i4xs02qWb9lI_zIhMJDp9oG6TwYGc3LtOkgv1sYACNDjKCJ2WOA",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "‘Reacher’ star Alan Ritchson quietly filed for divorce 8 months before shocking announcement",
-"hir_forras": "Page Six",
-"hir_url": "https://pagesix.com/2026/09/13/celebrity-news/reacher-star-alan-ritchson-quietly-filed-for-divorce-8-months-before-shocking-announcement/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQnfzMh5mUrw8I2rlka70wJamDhA7RpdUYlE6jze7aiXpzAzAUAWd1fYfiKFBc",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "hankó balázs",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "zagyva",
-"volumen": "2000",
-"novekedes_pct": "900",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "forbes",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "elversberg–bayern münchen",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "jáva-tenger",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
 }
 ],
 "reggel_este_diff": {
-"uj_estere": [],
-"eltunt_estere": [],
-"megmaradt": [
+"uj_estere": [
+"2026",
+"bank",
+"benzin",
+"ekler luca",
+"florian wirtz",
+"földrengések magyarországon",
+"grózer györgy",
+"hadházy ákos",
+"halmai gábor",
+"magyar péter kossuth rádió",
+"matolcsy györgy",
+"polgármester",
+"rendőrség",
+"renátó",
+"sződliget utca",
+"vitézy dávid",
+"öregségi nyugdíj"
+],
+"eltunt_estere": [
 "anakonda",
 "brač",
 "brest–psg",
@@ -1176,8 +1098,6 @@
 "levante–barcelona",
 "man utd–manchester city",
 "miniszter",
-"nemzeti vagyonvisszaszerzési és vagyonvédelmi hivatal",
-"nyugdíj",
 "németh kristóf",
 "presser gábor",
 "párt",
@@ -1187,57 +1107,41 @@
 "zagyva",
 "zverev",
 "ókovács szilveszter"
+],
+"megmaradt": [
+"nemzeti vagyonvisszaszerzési és vagyonvédelmi hivatal",
+"nyugdíj"
 ]
 },
 "reggel": {
-"szoveg": "Ma reggel a magyar Google-keresésben több téma is egyszerre pörög, és a legnagyobb lendületet néhány igen erős felfutású kifejezés adja. A mezőny élén a „csalás\", a „párt\" és a „levante–barcelona\" áll, mindegyik nagyjából tízezres nagyságrendű kereséssel és meredek növekedéssel – ez a hármas jól mutatja, hogy reggel egyszerre van jelen a pénzügyekhez köthető aggodalom, a politika és a sport iránti érdeklődés. Mellettük a „forma 1\" is a legkeresettebbek között van, ami a hétvégi versenyhez kapcsolódó fokozott figyelemre utalhat.\n\nA sport egyébként is átszövi a reggeli képet: a „real sociedad–atlético madrid\", a „man utd–manchester city\", a „brest–psg\" és az „elversberg–bayern münchen\" mérkőzéspárosítások mellett a teniszhez köthető „zverev\" és a „romain lagarde\" név is felfutott. Ezek jellemzően konkrét meccsekhez, eredményekhez kötődő keresések, bár a pontos háttérről most nincs megerősítő hírünk.\n\nA szórakoztatás világából több ismert név is felkerült a listára: „ókovács szilveszter\", „presser gábor\" és „németh kristóf\" egyaránt komoly érdeklődést váltott ki, csakúgy, mint a „celeb vagyok ments ki innen\" műsorcím. Ezekhez konkrét hír nem érkezett, így csak annyit mondhatunk, hogy reggel sokan keresték őket. A „reacher\" kifejezés esetében viszont van kapaszkodó: több külföldi lap – köztük a Fox News, az AL.com és a Page Six – is arról írt, hogy a sorozat sztárja, Alan Ritchson húsz év után elválik, ami feltehetően magyarázza a megnövekedett figyelmet.\n\nA közéleti és pénzügyi témák szintén hangsúlyosak. A „miniszter\", a „nemzeti vagyonvisszaszerzési és vagyonvédelmi hivatal\", a „digitális polgári kör\", a „forbes\", a „hankó balázs\" és a „zagyva\" kifejezések egyaránt felfutottak, konkrét háttérhír nélkül. A „nyugdíj\" viszont több lap érdeklődését is felkeltette: az Origo, a Hirnavigator és az ATV cikkei egyaránt a nyugdíj mellett dolgozókat érintő szabályokkal, a táppénz és a betegszabadság körüli különbségekkel foglalkoznak, ami feltehetően sok idősebb kereső figyelmét megragadta.\n\nA lista alján néhány kevésbé egyértelmű kifejezés is szerepel, mint a „brač\", a „jáva-tenger\" vagy az „anakonda\", ezek hátteréről nincs információnk. Összességében a reggeli kép vegyes: sport, szórakoztatás, politika és pénzügyi hírek keverednek benne, és a legtöbb felkapott kifejezés mögött egyelőre nem áll megerősített magyarázat, csupán az látszik, hogy sokan keresték őket ma reggel."
+"szoveg": "A reggeli órákban vegyes volt a kép: a csalás, a párt és a Levante–Barcelona meccs, valamint a Forma–1 pörgött a lista élén. Mellettük több szórakoztató és kulturális név jelent meg, mint Ókovács Szilveszter, Presser Gábor és Németh Kristóf, illetve olyan sportesemények, mint a Manchester United–Manchester City vagy az Elversberg–Bayern München találkozó. A nyugdíj már reggel is erős volt, és ehhez több friss hír is kapcsolódott: az Origo, a Hírnavigátor és az ATV is a nyugdíj mellett dolgozókat érintő táppénz- és keresetkérdésekről írt, ami magyarázhatja a téma iránti élénk érdeklődést."
 },
 "este": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "Estére a szórakoztatás került előtérbe: a renátó nevű keresés vezette a mezőnyt, ehhez több lap – az Index, az Origo és a Blikk – is a Házasság első látásra új szereplőjéről szóló cikkeket közölt, ez adja a szó hátterét. Mellette a nyugdíj tartotta magas szintjét, és felfutott az öregségi nyugdíj, a benzin, a bank is. Este erősödtek a közéleti nevek, köztük Hadházy Ákos, Matolcsy György, Halmai Gábor és Vitézy Dávid, valamint sportnevek, mint Florian Wirtz, Grózer György és Ekler Luca."
 },
 "teljes_nap": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A nap íve jól mutatja a hangsúlyeltolódást: reggel inkább a sport és a szórakoztatás dominált, estére viszont a közéleti és pénzügyi témák kerültek előtérbe. Új belépőként jelent meg estére többek között a renátó, a benzin, a bank, az öregségi nyugdíj, a rendőrség és számos közszereplő neve, míg a reggel még pörgő tételek – például az anakonda, a csalás, a párt, a Forma–1, Presser Gábor és a Reacher-hez kötődő keresések – estére elhalványultak. Két téma kitartott egész nap: a nyugdíj és a Nemzeti Vagyonvisszaszerzési és Vagyonvédelmi Hivatal, ezek reggel és este is a listán maradtak, ami tartós napi érdeklődésre utal."
 },
 "het": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A hét egészét nézve néhány téma több napon is vissza-visszatért. Az öregségi nyugdíj, a rendőrség, Hadházy Ákos, Vitézy Dávid, Lázár János, Szoboszlai Dominik, valamint a Blikk és a Forbes két-két napon is felbukkant, ami azt jelzi, hogy ezek nem egyszeri felfutások voltak. A legtöbb más kifejezés csak egy-egy napon jelent meg, ami a sport-, közéleti és bulvártémák gyors cserélődését mutatja. A visszatérők között erős a közélet és a pénzügy jelenléte, de a sport is folyamatosan képviselteti magát a heti mezőnyben."
 },
 "het_valos": {
 "napok": 7,
 "visszateroek": [
 {
-"kifejezes": "forbes",
-"napok_szama": 3
+"kifejezes": "2026",
+"napok_szama": 2
 },
 {
 "kifejezes": "blikk",
 "napok_szama": 2
 },
 {
-"kifejezes": "brač",
+"kifejezes": "forbes",
 "napok_szama": 2
 },
 {
-"kifejezes": "celeb vagyok ments ki innen",
-"napok_szama": 2
-},
-{
-"kifejezes": "csalás",
-"napok_szama": 2
-},
-{
-"kifejezes": "elversberg–bayern münchen",
-"napok_szama": 2
-},
-{
-"kifejezes": "hankó balázs",
-"napok_szama": 2
-},
-{
-"kifejezes": "jáva-tenger",
-"napok_szama": 2
-},
-{
-"kifejezes": "levante–barcelona",
+"kifejezes": "hadházy ákos",
 "napok_szama": 2
 },
 {
@@ -1245,23 +1149,7 @@
 "napok_szama": 2
 },
 {
-"kifejezes": "man utd–manchester city",
-"napok_szama": 2
-},
-{
-"kifejezes": "németh kristóf",
-"napok_szama": 2
-},
-{
-"kifejezes": "presser gábor",
-"napok_szama": 2
-},
-{
-"kifejezes": "párt",
-"napok_szama": 2
-},
-{
-"kifejezes": "romain lagarde",
+"kifejezes": "rendőrség",
 "napok_szama": 2
 },
 {
@@ -1269,16 +1157,16 @@
 "napok_szama": 2
 },
 {
+"kifejezes": "vitézy dávid",
+"napok_szama": 2
+},
+{
 "kifejezes": "vásárhelyi jános",
 "napok_szama": 2
 },
 {
-"kifejezes": "ókovács szilveszter",
+"kifejezes": "öregségi nyugdíj",
 "napok_szama": 2
-},
-{
-"kifejezes": "2026",
-"napok_szama": 1
 },
 {
 "kifejezes": "24.hu",
@@ -1298,10 +1186,6 @@
 },
 {
 "kifejezes": "alkotmánybíróság",
-"napok_szama": 1
-},
-{
-"kifejezes": "anakonda",
 "napok_szama": 1
 },
 {
@@ -1325,11 +1209,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "bank",
+"napok_szama": 1
+},
+{
 "kifejezes": "bankkártya",
 "napok_szama": 1
 },
 {
 "kifejezes": "barcelona–feyenoord",
+"napok_szama": 1
+},
+{
+"kifejezes": "benzin",
 "napok_szama": 1
 },
 {
@@ -1345,7 +1237,7 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "brest–psg",
+"kifejezes": "brač",
 "napok_szama": 1
 },
 {
@@ -1357,7 +1249,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "celeb vagyok ments ki innen",
+"napok_szama": 1
+},
+{
 "kifejezes": "chelsea–hull city",
+"napok_szama": 1
+},
+{
+"kifejezes": "csalás",
 "napok_szama": 1
 },
 {
@@ -1369,11 +1269,15 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "digitális polgári kör",
+"kifejezes": "economx",
 "napok_szama": 1
 },
 {
-"kifejezes": "economx",
+"kifejezes": "ekler luca",
+"napok_szama": 1
+},
+{
+"kifejezes": "elversberg–bayern münchen",
 "napok_szama": 1
 },
 {
@@ -1397,11 +1301,11 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "fogyasztóvédelem",
+"kifejezes": "florian wirtz",
 "napok_szama": 1
 },
 {
-"kifejezes": "forma 1",
+"kifejezes": "fogyasztóvédelem",
 "napok_szama": 1
 },
 {
@@ -1425,11 +1329,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "földrengések magyarországon",
+"napok_szama": 1
+},
+{
 "kifejezes": "fülöp botond",
 "napok_szama": 1
 },
 {
 "kifejezes": "gregor anikó",
+"napok_szama": 1
+},
+{
+"kifejezes": "grózer györgy",
 "napok_szama": 1
 },
 {
@@ -1441,7 +1353,11 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "hadházy ákos",
+"kifejezes": "halmai gábor",
+"napok_szama": 1
+},
+{
+"kifejezes": "hankó balázs",
 "napok_szama": 1
 },
 {
@@ -1462,6 +1378,10 @@
 },
 {
 "kifejezes": "iphone duo",
+"napok_szama": 1
+},
+{
+"kifejezes": "jáva-tenger",
 "napok_szama": 1
 },
 {
@@ -1505,6 +1425,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "levante–barcelona",
+"napok_szama": 1
+},
+{
 "kifejezes": "liverpool",
 "napok_szama": 1
 },
@@ -1529,11 +1453,23 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "magyar péter kossuth rádió",
+"napok_szama": 1
+},
+{
 "kifejezes": "magyar államkincstár",
 "napok_szama": 1
 },
 {
+"kifejezes": "man utd–manchester city",
+"napok_szama": 1
+},
+{
 "kifejezes": "marco rossi",
+"napok_szama": 1
+},
+{
+"kifejezes": "matolcsy györgy",
 "napok_szama": 1
 },
 {
@@ -1546,10 +1482,6 @@
 },
 {
 "kifejezes": "miller zoltán",
-"napok_szama": 1
-},
-{
-"kifejezes": "miniszter",
 "napok_szama": 1
 },
 {
@@ -1585,6 +1517,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "németh kristóf",
+"napok_szama": 1
+},
+{
 "kifejezes": "oktatási hivatal",
 "napok_szama": 1
 },
@@ -1613,7 +1549,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "polgármester",
+"napok_szama": 1
+},
+{
+"kifejezes": "presser gábor",
+"napok_szama": 1
+},
+{
 "kifejezes": "prőhle gergely",
+"napok_szama": 1
+},
+{
+"kifejezes": "párt",
 "napok_szama": 1
 },
 {
@@ -1622,10 +1570,6 @@
 },
 {
 "kifejezes": "pósfai gábor",
-"napok_szama": 1
-},
-{
-"kifejezes": "reacher",
 "napok_szama": 1
 },
 {
@@ -1641,15 +1585,15 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "real sociedad–atlético madrid",
-"napok_szama": 1
-},
-{
-"kifejezes": "rendőrség",
+"kifejezes": "renátó",
 "napok_szama": 1
 },
 {
 "kifejezes": "rogán antal",
+"napok_szama": 1
+},
+{
+"kifejezes": "romain lagarde",
 "napok_szama": 1
 },
 {
@@ -1666,6 +1610,10 @@
 },
 {
 "kifejezes": "sztankay istván",
+"napok_szama": 1
+},
+{
+"kifejezes": "sződliget utca",
 "napok_szama": 1
 },
 {
@@ -1697,10 +1645,6 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "vitézy dávid",
-"napok_szama": 1
-},
-{
 "kifejezes": "vonat",
 "napok_szama": 1
 },
@@ -1718,14 +1662,6 @@
 },
 {
 "kifejezes": "wow forever",
-"napok_szama": 1
-},
-{
-"kifejezes": "zagyva",
-"napok_szama": 1
-},
-{
-"kifejezes": "zverev",
 "napok_szama": 1
 },
 {
@@ -1749,11 +1685,11 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "óraátállítás",
+"kifejezes": "ókovács szilveszter",
 "napok_szama": 1
 },
 {
-"kifejezes": "öregségi nyugdíj",
+"kifejezes": "óraátállítás",
 "napok_szama": 1
 },
 {
@@ -1765,6 +1701,136 @@
 "napok_szama": 1
 }
 ]
+}
+},
+"youtube": {
+"szamok": [
+{
+"szo": "szorongás",
+"domen": "egeszseg",
+"irany": "stagnal",
+"meredekseg": 0.005,
+"ervenyes": true,
+"mai_ertek": 46,
+"csucs": 100,
+"atlag": 37.8
+},
+{
+"szo": "edzés",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.021,
+"ervenyes": true,
+"mai_ertek": 53,
+"csucs": 100,
+"atlag": 67.2
+},
+{
+"szo": "meditáció",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.051,
+"ervenyes": true,
+"mai_ertek": 79,
+"csucs": 100,
+"atlag": 83.3
+},
+{
+"szo": "befektetés",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.031,
+"ervenyes": true,
+"mai_ertek": 57,
+"csucs": 100,
+"atlag": 30.7
+},
+{
+"szo": "bitcoin",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.09,
+"ervenyes": true,
+"mai_ertek": 52,
+"csucs": 100,
+"atlag": 49.5
+},
+{
+"szo": "hírek",
+"domen": "kozelet",
+"irany": "stagnal",
+"meredekseg": -0.008,
+"ervenyes": true,
+"mai_ertek": 48,
+"csucs": 100,
+"atlag": 57.7
+},
+{
+"szo": "magyar péter",
+"domen": "kozelet",
+"irany": "novekszik",
+"meredekseg": 0.025,
+"ervenyes": true,
+"mai_ertek": 7,
+"csucs": 100,
+"atlag": 15.5
+},
+{
+"szo": "recept",
+"domen": "haztartas",
+"irany": "csokken",
+"meredekseg": -0.047,
+"ervenyes": true,
+"mai_ertek": 42,
+"csucs": 100,
+"atlag": 46.8
+},
+{
+"szo": "mese",
+"domen": "csalad",
+"irany": "csokken",
+"meredekseg": -0.02,
+"ervenyes": true,
+"mai_ertek": 88,
+"csucs": 100,
+"atlag": 88.3
+},
+{
+"szo": "nyaralás",
+"domen": "szabadido",
+"irany": "novekszik",
+"meredekseg": 0.089,
+"ervenyes": true,
+"mai_ertek": 30,
+"csucs": 100,
+"atlag": 48.7
+},
+{
+"szo": "tanulás",
+"domen": "tanulas",
+"irany": "csokken",
+"meredekseg": -0.053,
+"ervenyes": true,
+"mai_ertek": 72,
+"csucs": 100,
+"atlag": 78.4
+},
+{
+"szo": "klíma",
+"domen": "otthon",
+"irany": "novekszik",
+"meredekseg": 0.074,
+"ervenyes": true,
+"mai_ertek": 10,
+"csucs": 100,
+"atlag": 16.5
+}
+],
+"napi": {
+"szoveg": "A magyarországi videós keresésekben – ami a webes kereséstől külön, a videós figyelmet közelíti – ma több szó a saját megszokott szintje közelében áll. A mese 88-cal és a tanulás 72-vel tartósan a magasabb tartományban mozog, ez ezeknél a szavaknál megszokott. A meditáció 79-en áll, ami kissé az átlaga alatti, a szorongás 46-tal a saját szintje fölött van. A befektetés 57-es mai értéke a saját átlagához képest kifejezetten élénk, a bitcoin 52-vel nagyjából a szokott helyén mozog. A magyar péter 7-en és a klíma 10-en a saját megszokott szintjük alatt van, bár mindkettőnél enyhe emelkedő irány látszik. Fontos, hogy ezek a szavak külön-külön skálán mozognak, ezért egymással nem érdemes összemérni őket."
+},
+"teljes_kep": {
+"szoveg": "A hét egészét tekintve a videós keresésekben inkább mérséklődés látszik. A legnagyobb visszaesést a bitcoin mutatta, ezt követi kisebb mértékben a meditáció, a nyaralás, a befektetés és a hírek. A többség csak enyhén csökkent vagy gyakorlatilag változatlan maradt: a szorongás a hét elejéhez képest ugyanott áll, a magyar péter épp csak hajszálnyit mozdult felfelé. A családi és tanulási tartalmak, mint a mese és a tanulás, végig a magasabb szinten maradtak, ami arra utal, hogy ez a fajta videós igény a legstabilabb. Összességében a héten inkább lassuló, kiegyenlített kép rajzolódik ki, kiugró felfutás nélkül."
 }
 }
 }
