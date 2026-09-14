@@ -214,7 +214,7 @@ test("1. render + domen-csoportosítás + üres kártya + K1 (.merteszamok == da
     }),
     nyersObj: nyers({ "állás": [nyersRekord("állás")], "albérlet": [nyersRekord("albérlet")], "hitel": [nyersRekord("hitel")] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${K} .domen-csoport`)).toHaveCount(2);                 // Munkaerőpiac + Lakhatás
   await expect(page.locator(`${K} .domen-csoport[data-domen="lakhatas"] h3.domen-fejlec`)).toHaveText("Lakhatás");
   await expect(page.locator(`${K} .kulcsszo-chart`)).toHaveCount(3);                 // szavanként egy kártya
@@ -231,7 +231,7 @@ test("2. mérőszám-sor: irány LEÍRÓ tendencia, 2 tizedes vessző, előjel, 
     regObj: reg({ "állás": regSzo({ iv1het: { meredekseg_nap: 1.5, irany: "novekszik", r2: 0.31 } }) }),
     nyersObj: nyers({ "állás": [nyersRekord("állás")] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const m = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"] .merteszamok`);
   await expect(m).toContainText("iránya növekvő");
   await expect(m).toContainText("+1,50 relatív pont/nap");
@@ -250,7 +250,7 @@ test("2a. nap-config szó MÁSODLAGOS nézete → 'nap nem-nulla' felirat (a con
     mpRegObj: mpReg({ "albérlet": mpSzo("nap", { "1_ho": racs_iv(30, 1) }) }),
     mpNyersObj: mpNyers({ "albérlet": [racs_nyersRekord("albérlet", 30, 1)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.click('#intervallum-vezerlo button[data-intervallum="1_ho"]');   // a másodlagos (napi) nézet
   const m = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="albérlet"] .merteszamok`);
   await expect(m).toContainText("30/30 nap nem-nulla");   // a rács-szó a MÁSODLAGOS m.racs-ából
@@ -266,7 +266,7 @@ test("2a-FIX. nap-config szó PRIMER 1_het → órás (168 pont, 'óra nem-nulla
     regObj: reg({ "albérlet": regSzo({ racs: "nap", domen: "lakhatas" }) }),   // config nap, de a primer 1_het órás (168)
     nyersObj: nyers({ "albérlet": [nyersRekord("albérlet")] }),                 // 168 órás pont
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const k = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="albérlet"]`);
   expect(await k.getAttribute("data-felbontas")).toBe("ora");                   // NEM "nap"
   expect(await k.getAttribute("data-rajzolt-pont")).toBe("168");               // NEM 7 (nap-collapse)
@@ -281,7 +281,7 @@ test("2b. ismeretlen MÁSODLAGOS rács → látható '? <érték>' fallback (nem
     mpRegObj: mpReg({ "állás": mpSzo("negyedev", { "1_ho": racs_iv(30, 1) }, { domen: "munkaeropiac" }) }),
     mpNyersObj: mpNyers({ "állás": [racs_nyersRekord("állás", 30, 1)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.click('#intervallum-vezerlo button[data-intervallum="1_ho"]');   // a másodlagos (ismeretlen rácsú) nézet
   const m = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"] .merteszamok`);
   await expect(m).toContainText("? negyedev nem-nulla");    // a nyers érték LÁTHATÓ
@@ -295,7 +295,7 @@ test("2c. racs nélküli szó → 'óra nem-nulla' (default) — SZANDEKOS_ZOLD 
     regObj: reg({ "állás": regSzo() }),                     // NINCS racs → default "ora"
     nyersObj: nyers({ "állás": [nyersRekord("állás")] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const m = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"] .merteszamok`);
   await expect(m).toContainText("166/168 óra nem-nulla");
 });
@@ -308,7 +308,7 @@ test("2d. nap-rácsú MÁSODLAGOS napi pontokkal → data-szakadas=0 (napi slot,
     mpRegObj: mpReg({ "albérlet": mpSzo("nap", { "1_ho": racs_iv(30, 1) }) }),   // 30 napi lezárt pont, 1-nap köz
     mpNyersObj: mpNyers({ "albérlet": [racs_nyersRekord("albérlet", 30, 1)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.click('#intervallum-vezerlo button[data-intervallum="1_ho"]');
   const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="albérlet"]`);
   await expect(c).toHaveAttribute("data-drawable", "true");
@@ -324,7 +324,7 @@ test("2e. het-rácsú MÁSODLAGOS heti pontokkal → data-szakadas=0 (heti slot,
     mpRegObj: mpReg({ "akciós újság": mpSzo("het", { "3_ho": hetIvErv(0, 12) }, { domen: "fogyasztas" }) }),   // 12 heti pont, 7-nap köz
     mpNyersObj: mpNyers({ "akciós újság": [racs_nyersRekord("akciós újság", 12, 7)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.click('#intervallum-vezerlo button[data-intervallum="3_ho"]');
   const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="akciós újság"]`);
   await expect(c).toHaveAttribute("data-drawable", "true");
@@ -353,7 +353,7 @@ test("2e-b. azonos ablak_veg-ű nap+het ablak → a heti 1_ev a HET ablakot kapj
     mpNyersObj: mpNyers({ "hitel": [nap_ablak_eltolt("hitel", 274, 90),
       Object.assign(racs_nyersRekord("hitel", 52, 7), { racs: "het" })] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.click('#intervallum-vezerlo button[data-intervallum="1_ev"]');
   const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="hitel"]`);
   await expect(c).toHaveAttribute("data-drawable", "true");
@@ -367,7 +367,7 @@ test("2f. órás szó teljes ablakkal → data-szakadas=0 (óra ág változatlan
     regObj: reg({ "állás": regSzo() }),                      // NINCS racs → órás ág, 168 óránkénti pont
     nyersObj: nyers({ "állás": [nyersRekord("állás")] }),    // teljes órás ablak, lyuk nélkül
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`);
   await expect(c).toHaveAttribute("data-drawable", "true");
   await expect(c).toHaveAttribute("data-szakadas", "0");   // órás rács folytonos, most is és a szelet után is
@@ -381,7 +381,7 @@ test("2g. másodlagos 1_ho érvényes → az 1_ho intervallum-gomb engedélyezet
     mpRegObj: mpReg({ "albérlet": mpSzo("nap", { "1_ho": racs_iv(30, 1) }) }),
     mpNyersObj: mpNyers({ "albérlet": [racs_nyersRekord("albérlet", 30, 1)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator('#intervallum-vezerlo button[data-intervallum="1_ho"]')).toBeEnabled();
 });
 
@@ -392,7 +392,7 @@ test("2h. benzin (órás-only) hosszú intervallum → 'órás sorozat láncolá
     nyersObj: nyers({ "benzin": [nyersRekord("benzin")] }),
     // mpRegObj/mpNyersObj: default üres → benzinnek nincs másodlagosa
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const v = page.locator("#intervallum-vezerlo");
   // benzin órás-only (racs="ora") → oras_lanc_kell, NEM a félrevezető "napi/heti adatot" (sosem lesz napi/heti)
   await expect(v).toContainText("Órás felbontású szó – ehhez az ablakhoz az órás sorozat láncolása kell.");
@@ -414,7 +414,7 @@ test("2h-b. benzin (órás-only) 1_ho → 'Várhatóan <dátum>-től lesz elérh
       ablak_kezdet_utc: racs_iso(0, 1), ablak_veg_utc: racs_iso(10, 1),
       pontok: [{ idopont_utc: racs_iso(0, 1), ertek: 50 }] } } },
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.click('#intervallum-vezerlo button[data-intervallum="1_ho"]');
   const u = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="benzin"] .ures`);
   await expect(u).toContainText("Órás felbontású szó");
@@ -433,7 +433,7 @@ test("2h-c. nem-órás szó másodlagos nélkül → nincs_masodlagos + 'Várhat
     mpNyersObj: mpNyers({ "albérlet": [racs_nyersRekord("albérlet", 30, 1)] }),
     // infláció: NINCS másodlagos → 1_ho nincs_masodlagos
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.click('#intervallum-vezerlo button[data-intervallum="1_ho"]');
   const u = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="infláció"] .ures`);
   await expect(u).toContainText("még gyűlik a napi/heti adat");
@@ -448,7 +448,7 @@ test("2i. másodlagos szó 1_ho-ra váltva → kártya drawable, 'nap nem-nulla'
     mpRegObj: mpReg({ "albérlet": mpSzo("nap", { "1_ho": racs_iv(30, 1) }) }),
     mpNyersObj: mpNyers({ "albérlet": [racs_nyersRekord("albérlet", 30, 1)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   // ALAPNEZET (Szelet 3): a default 1_het → a másodlagos 1_ho nézethez kattintani kell
   await page.click('#intervallum-vezerlo button[data-intervallum="1_ho"]');
   const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="albérlet"]`);
@@ -464,7 +464,7 @@ test("2j. 1_het órás marad másodlagos jelenlétében is → 'óra nem-nulla' 
     mpRegObj: mpReg({ "albérlet": mpSzo("nap", { "1_ho": racs_iv(30, 1) }) }),
     mpNyersObj: mpNyers({ "albérlet": [racs_nyersRekord("albérlet", 30, 1)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.click('#intervallum-vezerlo button[data-intervallum="1_het"]');   // váltás az órás nézetre
   const m = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="albérlet"] .merteszamok`);
   await expect(m).toContainText("166/168 óra nem-nulla");   // 1_het = órás, a másodlagos nem írja felül
@@ -478,7 +478,7 @@ test("2k. nap-szó másodlagos 1_ev nincs_lancolas → 'A napi/heti sorozat röv
     mpRegObj: mpReg({ "nyaralás": mpSzo("nap", { "2_het": racs_iv(14, 1), "1_ev": ivHibas("nincs_lancolas") }, { domen: "fogyasztas" }) }),
     mpNyersObj: mpNyers({ "nyaralás": [racs_nyersRekord("nyaralás", 14, 1)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   // a vezérlő minden intervallum ok-szövegét kirakja; az 1_ev tételre szűkítünk (rovid_masodlagos),
   // különben az 1_ho/3_ho nincs_masodlagos "Magától feltöltődik"-je beszivárogna a konténer-szintű assertba
   const iv1ev = page.locator(".intervallum-tetel", { has: page.locator('button[data-intervallum="1_ev"]') });
@@ -495,7 +495,7 @@ test("2l. het-szó 2_het keves_pont → 'A heti rácson ez az ablak túl rövid'
     mpRegObj: mpReg({ "akciós újság": mpSzo("het", { "3_ho": racs_iv(12, 7), "2_het": ivHibas("keves_pont") }, { domen: "fogyasztas" }) }),
     mpNyersObj: mpNyers({ "akciós újság": [racs_nyersRekord("akciós újság", 12, 7)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const v = page.locator("#intervallum-vezerlo");
   await expect(v).toContainText("Heti felbontású szó – ez az ablak túl rövid a heti rácshoz. Ez nem fog feltöltődni.");   // rovid_het_ablak — ELVI
   await expect(v).not.toContainText("Túl kevés mért pont");               // az adathiányt sugalló felirat NEM
@@ -517,7 +517,7 @@ test("2n. esemenyjelzo het-szó 1_het → 'A heti rácson ez az ablak túl rövi
       { domen: "kozelet", tipus: "esemenyjelzo" }) }),
     mpNyersObj: mpNyers({ "tüntetés": [racs_nyersRekord("tüntetés", 52, 7)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const v = page.locator("#intervallum-vezerlo");
   await expect(v).toContainText("Heti felbontású szó – ez az ablak túl rövid a heti rácshoz. Ez nem fog feltöltődni.");  // esemenyjelzo 1_het → rovid_het_ablak (ELVI)
   await expect(v).not.toContainText("Eseményjelző — szint-nézet készül");  // a nyugdíjazott felirat NEM
@@ -539,7 +539,7 @@ test("2o. esemenyjelzo tüntetés 3_ho/1_ev → data-szint='8' + 'szint: 8 (heti
       { domen: "kozelet", tipus: "esemenyjelzo", szint: 8 }) }),
     mpNyersObj: mpNyers({ "tüntetés": [racs_nyersRekord("tüntetés", 52, 7)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${K} .hiba`)).toHaveCount(0);                       // a strippelt esemenyjelzo rajzolása NEM dob (merteszamok szint-ág)
   const kartya = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="tüntetés"]`);
   await expect(kartya).toHaveAttribute("data-szint", "8");                       // az érték a kártyán
@@ -569,7 +569,7 @@ test("ML-trend: a tüntetés (esemenyjelzo) szint-kártya IS kap lila görbét (
       { domen: "kozelet", tipus: "esemenyjelzo", szint: 8 }) }),
     mpNyersObj: mpNyers({ "tüntetés": [racs_nyersRekord("tüntetés", 52, 7)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.locator("#kulcsszo-blokk .mltrend-gomb").click();                     // BE
   const kartya = page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="tüntetés"]');
   await expect(kartya).toHaveAttribute("data-vonal", "false");                     // NINCS piros trendvonal
@@ -620,7 +620,7 @@ test("2p. kontroll het-szó (akciós újság): 3_ho rajzolt=13, 1_ev rajzolt=52 
       "1_ho": ivHibas("keves_pont"), "3_ho": hetIvErv(39, 52), "1_ev": hetIvErv(0, 52) }, { domen: "fogyasztas" }) }),
     mpNyersObj: mpNyers({ "akciós újság": [racs_nyersRekord("akciós újság", 52, 7)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const h3 = await valt_es_olvas(page, "akciós újság", "3_ho");
   const ev = await valt_es_olvas(page, "akciós újság", "1_ev");
   expect(h3.rp).toBe("13");                       // 3_ho: 52-39 = 13 heti slot (a szeletelt ablak)
@@ -641,7 +641,7 @@ test("2q. tüntetés szint-ág: 3_ho rajzolt=12, 1_ev=52, és szint_vonal.length
       { domen: "kozelet", tipus: "esemenyjelzo", szint: 8 }) }),
     mpNyersObj: mpNyers({ "tüntetés": [racs_nyersRekord("tüntetés", 52, 7)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const h3 = await valt_es_olvas(page, "tüntetés", "3_ho");
   const ev = await valt_es_olvas(page, "tüntetés", "1_ev");
   expect(h3.rp).toBe("12");                        // 3_ho: 52-40 = 12
@@ -659,7 +659,7 @@ test("2m. van érvényes intervallum → az ALAPNEZET a TELJES (request 1), nem 
     mpRegObj: mpReg({ "albérlet": mpSzo("nap", { "3_ho": racs_iv(90, 1) }) }),   // 3_ho másodlagos valid
     mpNyersObj: mpNyers({ "albérlet": [racs_nyersRekord("albérlet", 90, 1)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator('#intervallum-vezerlo button[aria-pressed="true"]'))
     .toHaveAttribute("data-intervallum", "teljes");   // a kezdő nézet a teljes időszak (az oldal ezzel nyílik)
 });
@@ -683,7 +683,7 @@ function _korhaz_mock(page, mk) {
 
 test("adatforrás-marker: alapból KI (nincs marker), a gomb + info jelen, kattintás bekapcsolja", async ({ page }) => {
   await _korhaz_mock(page, "2026-10-01");   // mk az ablakon belül
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const k = page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="kórház"]');
   await k.waitFor();
   await expect(k).not.toHaveAttribute("data-elo-marker", /.*/);                  // ALAPBÓL KI: nincs marker
@@ -697,7 +697,7 @@ test("adatforrás-marker: alapból KI (nincs marker), a gomb + info jelen, katti
 
 test("adatforrás-marker: bekapcsolva az ablak ELŐTTI meres_kezdete is markert kap (csípve a szélre)", async ({ page }) => {
   await _korhaz_mock(page, "2026-06-01");   // mk az ablak (2026-08-01) ELŐTT
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.locator("#kulcsszo-blokk .adatforras-gomb").click();               // bekapcsol
   await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="kórház"]'))
     .toHaveAttribute("data-elo-marker", "2026-06-01");                          // MINDEN charton látszik (csípve)
@@ -714,7 +714,7 @@ test("teljes-nezet 1: 'Teljes időszak' gomb + sub-szöveg + kattintás huzaloz�
     regObj: reg({ "állás": regSzo() }),
     nyersObj: nyers({ "állás": [nyersRekord("állás")] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const teljes = page.locator('#intervallum-vezerlo button[data-intervallum="teljes"]');
   expect(await teljes.count()).toBe(1);                                   // AZONNALI: 0 → 1
   expect((await teljes.textContent()).trim()).toContain("Teljes időszak");
@@ -747,7 +747,7 @@ test("teljes-nezet 2: per-szó választás data-teljes-forras (het→1_ev, nap�
       "nyaralás": [racs_nyersRekord("nyaralás", 90, 1)],
     }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator("#kulcsszo-blokk")).toHaveAttribute("data-aktiv-intervallum", "teljes");   // a teljes az ALAPNEZET (request 1)
   const forras = async (szo) => page.locator(`${K} .kulcsszo-chart[data-kulcsszo="${szo}"]`).getAttribute("data-teljes-forras");
   expect(await forras("kórház")).toBe("1_ev");     // het → a leghosszabb érvényes (nem a 3_ho)
@@ -770,7 +770,7 @@ test("teljes-nezet 4: mind-érvénytelen szó → data-ok='teljes_nincs_sorozat'
     }),
     nyersObj: nyers({ "állás": [nyersRekord("állás")] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator("#kulcsszo-blokk")).toHaveAttribute("data-aktiv-intervallum", "teljes");   // a teljes az ALAPNEZET (request 1)
   const k = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="mindenrossz"]`);
   expect(await k.getAttribute("data-drawable")).toBe("false");
@@ -798,7 +798,7 @@ test("teljes-nezet 5: fejléc per-szó szöveg (nincs egyetlen dátum a fejléce
       "albérlet": [racs_nyersRekord("albérlet", 90, 1)],
     }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const fr = page.locator("#kulcsszo-blokk .frissesseg");
   await expect(fr).toContainText("szavanként eltérő időszak, mindegyik a saját adatán");   // per-szó fejléc
   await expect(fr).not.toContainText("2026. 08. 30.");   // NEM az első kártya dátuma
@@ -813,7 +813,7 @@ test("teljes-nezet 6: a Kulcsszavak cím a nézet-leírással bővül (aktív in
     mpRegObj: mpReg({ "albérlet": mpSzo("nap", { "3_ho": racs_iv(90, 1) }) }),   // 3_ho másodlagos valid
     mpNyersObj: mpNyers({ "albérlet": [racs_nyersRekord("albérlet", 90, 1)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const h2 = page.locator("#kulcsszo-blokk h2");
   await expect(h2).toHaveText("Kulcsszavak – a teljes időszakban");        // ALAPNEZET = teljes
   await page.locator('#intervallum-vezerlo button[data-intervallum="1_het"]').click();
@@ -834,7 +834,7 @@ test("3. ablak-választás: a regresszió ablak_veg_utc-jével EGYEZŐ ablak (ne
     regObj: reg({ "állás": regSzo() }),   // regSzo default 1_het ablak_veg = VEG = iso(168) = k=0
     nyersObj: nyers({ "állás": ablakok }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`)).toHaveAttribute("data-ablak-veg", VEG);
 });
 
@@ -844,7 +844,7 @@ test("4. illesztes_vonal + mindkét végpont a címkékben → data-vonal=true",
     regObj: reg({ "állás": regSzo() }),   // vonal végpontjai: ELSO és UTOLSO_LEZART (a nyersben megvannak)
     nyersObj: nyers({ "állás": [nyersRekord("állás")] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`)).toHaveAttribute("data-vonal", "true");
 });
 
@@ -861,7 +861,7 @@ test("5. hiányzó illesztes_vonal (4b) és ablak-elcsúszott végpont (4c) → 
     }),
     nyersObj: nyers({ "nincs": [nyersRekord("nincs")], "drift": [nyersRekord("drift")] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="nincs"]`)).toHaveAttribute("data-vonal", "false");
   await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="drift"]`)).toHaveAttribute("data-vonal", "false");
   await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="drift"] canvas`)).toHaveCount(1);  // a görbe rajzol
@@ -873,7 +873,7 @@ test("6. data-pontok / data-reszleges / data-hianyzo pontos egyenlőség; nevez�
     regObj: reg({ "állás": regSzo({ iv1het: { pontok_hasznalt: 144, pontok_nem_nulla: 140, pontok_kihagyva_reszleges: 1, pontok_hianyzo: 24 } }) }),
     nyersObj: nyers({ "állás": [nyersRekord("állás", 50, { n: 144 })] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`);
   await expect(c).toHaveAttribute("data-pontok", "144");
   await expect(c).toHaveAttribute("data-reszleges", "1");
@@ -901,7 +901,7 @@ test("7. üres intervallum → .ures + data-ok; lyukas sorozat → data-hianyzo>
       ] })],
     }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.locator('#intervallum-vezerlo button[data-intervallum="1_het"]').click();   // a teljes az alap (request 1) → a fix 1_het nézethez kattintunk
   await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="ures"] .ures`)).toBeVisible();
   await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="ures"]`)).toHaveAttribute("data-ok", "nincs_adat");
@@ -927,7 +927,7 @@ test("8. élettartam: fej-csonkolt→mérés kezdete, eltávolított→már nem 
       "mai": [nyersRekord("mai")],
     }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="csonka"] .elettartam`)).toContainText("mérés kezdete");
   await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="regi"] .elettartam`)).toContainText("már nem mérjük");
   await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="mai"]`)).toBeVisible();          // a kártya renderel
@@ -944,7 +944,7 @@ test("9. minden lezárt pont 0 → .csupa-nulla + chart renderel; nem-nulla szó
     }),
     nyersObj: nyers({ "nulla": [nyersRekord("nulla", 0)], "aktiv": [nyersRekord("aktiv", 50)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="nulla"] .csupa-nulla`)).toBeVisible();
   await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="nulla"] canvas`)).toHaveCount(1);
   await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="aktiv"] .csupa-nulla`)).toHaveCount(0);
@@ -967,7 +967,7 @@ test("10. default = teljes; 1_het (nyers) → 2_het (LÁNCBÓL) váltás: data-a
     nyersObj: nyers({ "állás": [nyersRekord("állás", 50, { veg: VEG, n: 168 })] }),
     lancObj: { kulcsszavak: { "állás": lancRek() } },
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(K)).toHaveAttribute("data-aktiv-intervallum", "teljes");
   // VALÓS jelenlegi viselkedés — az órás 1_ho nincs_lancolas → a gombja TILTOTT (ORAS-1HO-FEDES: 30 nap fölött megszólal)
   await expect(page.locator('#intervallum-vezerlo button[data-intervallum="1_ho"]')).toBeDisabled();
@@ -995,7 +995,7 @@ test("CSS: a kulcsszó- és trend-blokk lekerekített kerettel elválik; a vezé
     regObj: reg({ "állás": regSzo({ domen: "munkaeropiac" }) }),
     nyersObj: nyers({ "állás": [nyersRekord("állás")] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   for (const id of ["#kulcsszo-blokk", "#trend-blokk"]) {
     const st = await page.locator(id).evaluate((el) => {
       const s = getComputedStyle(el);
@@ -1031,7 +1031,7 @@ test("Felbontás-sor MINDEN kártyán (rajzolton ÉS üresen): óránkénti/napi
     }),
     nyersObj: nyers({ "benzin": [nyersRekord("benzin")], "hitel": [nyersRekord("hitel")], "tüntetés": [nyersRekord("tüntetés")] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${K} .kulcsszo-chart .felbontas`)).toHaveCount(3);   // MINDEN kártyán, az üreseken is
   const b = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="benzin"]`);
   await expect(b).toHaveAttribute("data-felbontas", "ora");
@@ -1051,7 +1051,7 @@ test("Intervallum-gombok: minden gomb alatt LÁTHATÓ idő-táv magyarázat (sub
     regObj: reg({ "állás": regSzo() }),
     nyersObj: nyers({ "állás": [nyersRekord("állás")] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const magy = page.locator("#intervallum-vezerlo .gomb-magyarazat");
   await expect(magy).toHaveCount(6);                                               // az 5 fix + a "Teljes időszak" gomb alatt
   await expect(magy.first()).toBeVisible();                                        // LÁTHATÓ (nem néma title)
@@ -1085,7 +1085,7 @@ test("11. kis viewport → csak az első kártyák data-rendered; scroll → a l
   // állapot, nem "sosem renderel" hiba). MIÉRT nem prod-hatás: éles adaton 4 szónak VAN másodlagosa → rövidebb
   // vezérlő; a szintetikus 0-másodlagos a friss-telepítés/KULCS-LISTA esete (lásd VEZERLO-MAGAS leltár-megfigyelés).
   await page.setViewportSize({ width: 380, height: 700 });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const rendered = page.locator(`${K} .kulcsszo-chart[data-rendered="true"]`);
   // LOAD-KOR: a panel a fold alá tolja mind a 8 kártyát → egyik sem rendered.
   await expect(rendered).toHaveCount(0);
@@ -1103,7 +1103,7 @@ test("11. kis viewport → csak az első kártyák data-rendered; scroll → a l
 // ── 12. Y-tengely fix 0–100 + felirat (#9) ───────────────────────────────────────────────────
 test("12. data-y-max=100 + tengely-felirat", async ({ page }) => {
   await mock(page, { regObj: reg({ "állás": regSzo() }), nyersObj: nyers({ "állás": [nyersRekord("állás")] }) });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`);
   await expect(c).toHaveAttribute("data-y-max", "100");
   // (a): a tengely-felirat DOM-elemként a kártyán — a Chart.js scales.title a CANVASBA rajzol,
@@ -1126,7 +1126,7 @@ test("13. .frissesseg: cimke + dátum az aktív intervallumból (nem a szamitva_
     nyersObj: nyers({ "állás": [nyersRekord("állás", 50, { veg: VEG })] }),
     lancObj: { kulcsszavak: { "állás": lancRek() } },
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator('#intervallum-vezerlo button[data-intervallum="1_ho"]')).toBeDisabled();   // órás 1_ho nincs_lancolas — fedés
   await page.locator('#intervallum-vezerlo button[data-intervallum="1_het"]').click();   // a teljes az alap → a fix 1_het nézethez kattintunk
   const f = page.locator(`${K} .frissesseg`);
@@ -1144,7 +1144,7 @@ test("14. ervenyes:true de nincs veg-egyező nyers ablak → data-drawable=false
     regObj: reg({ "állás": regSzo() }),                    // 1_het ablak_veg = VEG
     nyersObj: nyers({ "állás": [nyersRekord("állás", 50, { veg: iso(24) })] }),   // NINCS VEG-egyező ablak
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`);
   await expect(c).toHaveAttribute("data-drawable", "false");
   await expect(c.locator(".ures")).toBeVisible();
@@ -1162,7 +1162,7 @@ test("14. ervenyes:true de nincs veg-egyező nyers ablak → data-drawable=false
 // "NINCS .hiba" a 9b nem-dobásáról szóljon, ne a loader 404-jéről.
 test("15a. üres kulcsszo_regresszio.json → nincs 9b-DOM, nincs .hiba, Task 6 URES_NINCS_ADAT megmarad", async ({ page }) => {
   await mock(page, { regObj: reg({}), nyersObj: nyers({}) });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${K} .kulcsszo-chart`)).toHaveCount(0);
   await expect(page.locator(`${K} .frissesseg`)).toHaveCount(0);
   await expect(page.locator(K)).not.toHaveAttribute("data-aktiv-intervallum", /.*/);
@@ -1181,7 +1181,7 @@ test("15b. minden intervallum ervenyes:false → 5 letiltott gomb marad, nincs 9
     } }) }),
     nyersObj: nyers({ "állás": [nyersRekord("állás")] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator("#intervallum-vezerlo .ures")).toBeVisible();            // Task 6 URES_NINCS_ERVENYES
   await expect(page.locator("#intervallum-vezerlo button[disabled]")).toHaveCount(5);
   await expect(page.locator(`${K} .kulcsszo-chart`)).toHaveCount(0);
@@ -1197,7 +1197,7 @@ test("16. veg-egyező nyers ablak LEZÁRT pont nélkül → data-drawable=false,
     nyersObj: nyers({ "állás": [{ kulcsszo: "állás", ablak_kezdet_utc: ELSO, ablak_veg_utc: VEG,
       pontok: [{ idopont_utc: VEG, ertek: 0, reszleges: true }] }] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`);
   await expect(c).toHaveAttribute("data-drawable", "false");
   await expect(c.locator(".ures")).toBeVisible();
@@ -1223,7 +1223,7 @@ test("18. LANC-ORAS Sz2: órás 2_het a LÁNCBÓL rajzol (drawable=true, ~14 nap
     nyersObj: nyers({ "állás": [nyersRekord("állás")] }),           // CSAK a VEG (iso168) ablak — NINCS iso360-egyező
     lancObj: { kulcsszavak: { "állás": lancRek() } },               // a lánc a 2_het forrása
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.click('#intervallum-vezerlo button[data-intervallum="2_het"]');
   const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`);
   await expect(c).toHaveAttribute("data-drawable", "true");         // RED: ma a nyersből próbál → nincs iso360-ablak → false
@@ -1244,7 +1244,7 @@ test("19. LANC-2HET-VONAL (a): lánc-forrású 2_het → a trendvonal dataset L�
     nyersObj: nyers({ "állás": [nyersRekord("állás")] }),
     lancObj: { kulcsszavak: { "állás": lancRek() } },
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.click('#intervallum-vezerlo button[data-intervallum="2_het"]');
   const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`);
   await expect(c).toHaveAttribute("data-drawable", "true");
@@ -1260,7 +1260,7 @@ test("20. LANC-2HET-VONAL (b): lánc-forrású 2_het → az UTOLSÓ PONT is rajz
     nyersObj: nyers({ "állás": [nyersRekord("állás")] }),
     lancObj: { kulcsszavak: { "állás": lancRek() } },
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.click('#intervallum-vezerlo button[data-intervallum="2_het"]');
   const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`);
   // a lánc-farok iso(24)..iso(360) INKLUZÍV = 337 slot (a régi kizárólagos [24,360) csak 336-ot rajzol → RED)
@@ -1285,7 +1285,7 @@ test("21. ŐRZŐ: nyers HÁTSÓ-LYUK változatlan a LANC-2HET-VONAL fix után (d
     } }) }),
     nyersObj: nyers({ "állás": [{ kulcsszo: "állás", ablak_kezdet_utc: ELSO, ablak_veg_utc: VEG, pontok: gapPts }] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.click('#intervallum-vezerlo button[data-intervallum="1_het"]');
   const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`);
   await expect(c).toHaveAttribute("data-drawable", "true");
@@ -1305,7 +1305,7 @@ test("22. 3b: nap-config szó HET-forrású 1_ev-je HETI rácson rajzol (data-fe
     }, { domen: "munkaeropiac" }) }),
     mpNyersObj: mpNyers({ "állás": [racs_nyersRekord("állás", 52, 7)] }),   // 52 heti pont, 7-nap köz
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.click('#intervallum-vezerlo button[data-intervallum="1_ev"]');
   const c = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`);
   await expect(c).toHaveAttribute("data-drawable", "true");
@@ -1330,7 +1330,7 @@ test("17. ablak 2027-12-28 → 2028-01-04 belső lyukkal → data-szakadas ponto
       "3_ho": ivHibas("nincs_lancolas"), "1_ev": ivHibas("nincs_lancolas") } }) }),
     nyersObj: nyers({ "állás": [{ kulcsszo: "állás", ablak_kezdet_utc: yiso(0), ablak_veg_utc: yiso(168), pontok: pts }] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   // a rács [elso_idx, veg_idx) az évhatáron át 168 slot; 144 jelen + 24 null → ha a napok_civil hibázna a
   // hónap-/évhatáron, a rácsméret elcsúszna és a szakadás ≠ 24 lenne
   await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`)).toHaveAttribute("data-szakadas", "24");
@@ -1348,7 +1348,7 @@ test("18. illesztes_vonal végpontja a részleges záró pont → data-vonal=fal
       "3_ho": ivHibas("nincs_lancolas"), "1_ev": ivHibas("nincs_lancolas") } }) }),
     nyersObj: nyers({ "állás": [nyersRekord("állás")] }),   // 168 lezárt + részleges VEG-nél
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"]`)).toHaveAttribute("data-vonal", "false");
   await expect(page.locator(`${K} .kulcsszo-chart[data-kulcsszo="állás"] canvas`)).toHaveCount(1);
   await expect(page.locator(`${K} .hiba`)).toHaveCount(0);
@@ -1370,7 +1370,7 @@ test("20. minden kártyán LÁTHATÓ .kulcsszo-cimke a szó pontos szövegével 
     }),
     nyersObj: nyers({ "albérlet": [nyersRekord("albérlet")], "tüntetés": [nyersRekord("tüntetés")], "hitel": [nyersRekord("hitel")] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   for (const szo of ["albérlet", "tüntetés", "hitel"]) {
     const cimke = page.locator(`${K} .kulcsszo-chart[data-kulcsszo="${szo}"] h4.kulcsszo-cimke`);
     await expect(cimke).toHaveCount(1);
@@ -1403,7 +1403,7 @@ test("21. frissesség-dátum = utolsó kirajzolt lezárt pont napja (00:43-futá
     } }) }),
     nyersObj: nyers({ "állás": [{ kulcsszo: "állás", ablak_kezdet_utc: ABL_KEZD, ablak_veg_utc: ABL_VEG, pontok: lezartPontok }] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.locator('#intervallum-vezerlo button[data-intervallum="1_het"]').click();   // a teljes az alap (request 1) → a fix 1_het nézethez kattintunk
   const f = page.locator(`${K} .frissesseg`);
   await expect(f).toContainText("(1 hét)");
@@ -1420,7 +1420,7 @@ test("23. új társadalmi-feszültség domének magyar címkével jelennek meg",
     }),
     nyersObj: nyers({ "korrupció": [nyersRekord("korrupció")], "hitel": [nyersRekord("hitel")] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${K} .domen-csoport[data-domen="politika"] h3.domen-fejlec`))
     .toHaveText("Politikai elégedetlenség");
   await expect(page.locator(`${K} .domen-csoport[data-domen="megelhetes"] h3.domen-fejlec`))
@@ -1443,7 +1443,7 @@ test("ML-trend: alapból KI (nincs lila görbe), a gomb bekapcsolja", async ({ p
       "1_ho": ivHibas("keves_pont"), "3_ho": ivHibas("keves_pont"), "1_ev": ivNemlin }, { domen: "egeszseg" }) }),
     mpNyersObj: mpNyers({ "kórház": [racs_nyersRekord("kórház", 52, 7)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const gomb = page.locator("#kulcsszo-blokk .mltrend-gomb");
   await expect(gomb).toHaveCount(1);
   await expect(page.locator("#kulcsszo-blokk .mltrend-info")).toHaveCount(1);
@@ -1471,7 +1471,7 @@ test("ML-trend: bekapcsolva lila görbe-dataset + metrika-szöveg a kártyán", 
       "1_ho": ivHibas("keves_pont"), "3_ho": ivHibas("keves_pont"), "1_ev": ivNemlin }, { domen: "egeszseg" }) }),
     mpNyersObj: mpNyers({ "kórház": [racs_nyersRekord("kórház", 52, 7)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.locator("#kulcsszo-blokk .mltrend-gomb").click();
   await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="kórház"]'))
     .toHaveAttribute("data-rendered", "true");
@@ -1501,7 +1501,7 @@ test("ML-trend: normál (nem teljes) nézetben is rajzol lila görbét", async (
       "1_ho": ivHibas("keves_pont"), "3_ho": ivHibas("keves_pont"), "1_ev": ivNemlin }, { domen: "egeszseg" }) }),
     mpNyersObj: mpNyers({ "kórház": [racs_nyersRekord("kórház", 52, 7)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.locator("#kulcsszo-blokk .mltrend-gomb").click();
   await page.locator('button[data-intervallum="1_ev"]').click();
   await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="kórház"]'))
@@ -1529,7 +1529,7 @@ test("ML-trend: gyenge/negatív R²-nél IS rajzol lila görbét + a VALÓS (neg
       "1_ho": ivHibas("keves_pont"), "3_ho": ivHibas("keves_pont"), "1_ev": ivGyenge }, { domen: "gazdasag" }) }),
     mpNyersObj: mpNyers({ "hitel": [racs_nyersRekord("hitel", 52, 7)] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.locator("#kulcsszo-blokk .mltrend-gomb").click();
   await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="hitel"]'))
     .toHaveAttribute("data-nemlin", "true");                     // várjuk meg a re-rendert (gorbe → data-nemlin)
@@ -1557,7 +1557,7 @@ test("ML-trend: kikapcsolva → nincs lila görbe, nincs nemlineáris-metrika a 
       "1_ho": ivHibas("keves_pont"), "3_ho": ivHibas("keves_pont"), "1_ev": ivNemlin }, { domen: "egeszseg" }) }),
     mpNyersObj: mpNyers({ "kórház": [racs_nyersRekord("kórház", 52, 7)] }),
   });
-  await page.goto("/");   // a kapcsoló alapból KI — NEM kattintunk
+  await page.goto("/trendek.html");   // a kapcsoló alapból KI — NEM kattintunk
   const vanLila = await page.evaluate(() => {
     const p = (window.chart_peldanyok || {})["kórház"];
     return !!p && p.data.datasets.some(d => d.borderColor === "#8e44ad");
@@ -1578,7 +1578,7 @@ test("Predikció: 5 egymást kizáró gomb, alapból egyik sincs kiválasztva", 
       predikcio: { "1_ev": predikcioBlokk() } } }),
     mpNyersObj: mpNyers({}),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const blokk = page.locator("#kulcsszo-blokk");
   await expect(blokk).toHaveAttribute("data-predikcio", "ki");           // alap: ki
   await expect(page.locator("#kulcsszo-blokk .predikcio-gomb")).toHaveCount(5);
@@ -1595,7 +1595,7 @@ test("Predikció: a sáv + info jelen van, ha van rajzolható kártya", async ({
     regObj: reg({ "benzin": regSzo({ domen: "energia" }) }),
     nyersObj: nyers({ "benzin": [nyersRekord("benzin")] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator("#kulcsszo-blokk .predikcio-sav")).toHaveCount(1);
   await expect(page.locator("#kulcsszo-blokk .predikcio-info")).toHaveCount(1);
 });
@@ -1608,7 +1608,7 @@ test("Predikció: kiválasztott horizont előrejelző vonalat + sávot rajzol a 
       predikcio: { "1_nap": predikcioBlokk() } } }),
     nyersObj: nyers({ "benzin": [nyersRekord("benzin")] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.locator('#kulcsszo-blokk .predikcio-gomb[data-horizont="1_nap"]').click();
   await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="benzin"]'))
     .toHaveAttribute("data-rendered", "true");                    // várjuk meg a lusta re-rendert
@@ -1633,7 +1633,7 @@ test("Predikció: 1_ev horizont figyelmeztetést mutat", async ({ page }) => {
       predikcio: { "1_ev": predikcioBlokk({ figyelmeztetes: true }) } } }),
     mpNyersObj: mpNyers({}),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.locator('#kulcsszo-blokk .predikcio-gomb[data-horizont="1_ev"]').click();
   await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="benzin"]'))
     .toContainText("nagy bizonytalanság");
@@ -1647,7 +1647,7 @@ test("Predikció: rmse_veg>=50 esetén 'közel a teljes skála' szöveg, nincs s
       predikcio: { "1_nap": predikcioBlokk({ rmse_veg: 148.7 }) } } }),
     nyersObj: nyers({ "benzin": [nyersRekord("benzin")] }),
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.locator('#kulcsszo-blokk .predikcio-gomb[data-horizont="1_nap"]').click();
   const kartya = page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="benzin"]');
   await expect(kartya).toHaveAttribute("data-rendered", "true");   // várjuk meg a lusta re-rendert

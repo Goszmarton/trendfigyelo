@@ -133,7 +133,7 @@ async function mock(page, opts) {
 // ── T1 — lista renderel: kártyaszám + kifejezes + volumen ──────────────────────
 test("1. lista renderel: N kártya, mindegyiken kifejezes + volumen", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${T} .trend-kartya`)).toHaveCount(16);
   const elso = page.locator(`${T} .trend-kartya`).first();
   await expect(elso.locator(".trend-kifejezes")).toHaveText("időjárás");
@@ -147,7 +147,7 @@ test("2. kategória-címke három állapot: van/nincs/hianyzik, [] és hiányzó
     trend("b", "5000", []),
     trend("c", "5000"),
   ] } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${T} .trend-kartya`)).toHaveCount(3);
   const k = function (kif) { return page.locator(`${T} .trend-kartya[data-kifejezes="${kif}"]`); };
   await expect(k("a")).toHaveAttribute("data-kategoria-allapot", "van");
@@ -161,14 +161,14 @@ test("2. kategória-címke három állapot: van/nincs/hianyzik, [] és hiányzó
 // ── T3 — chart megléte kategóriás napon ────────────────────────────────────────
 test("3. kategória-eloszlás chart jelen (canvas) kategóriás napon", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${T} canvas.kategoria-chart`)).toHaveCount(1);
 });
 
 // ── T4 — eloszlás a gombokban + forrás/magyarázat (osztálynévre, NEM színre) ────
 test("4. eloszlás a szűrő-gombokban + Other utolsó/--other + caption (17/16 + Google-forrás)", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${T} .kategoria-szuro .kategoria-gomb`)).toHaveCount(7); // Összes + 6 kategória
   await expect(page.locator(`${T} .kategoria-gomb[data-kategoria="Other"]`)).toHaveAttribute("data-count", "6");
   await expect(page.locator(`${T} .kategoria-gomb[data-kategoria="Law and Government"]`)).toHaveAttribute("data-count", "4");
@@ -185,7 +185,7 @@ test("4. eloszlás a szűrő-gombokban + Other utolsó/--other + caption (17/16 
 // ── T5 — szűrő szűr ────────────────────────────────────────────────────────────
 test("5. »Politics« szűrés: csak a Politics-kártyák láthatók + data-aktiv-kategoria + aria-pressed", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const gomb = page.locator(`${T} .kategoria-gomb[data-kategoria="Politics"]`);
   await expect(gomb).toHaveCount(1);
   await gomb.click();
@@ -199,7 +199,7 @@ test("5. »Politics« szűrés: csak a Politics-kártyák láthatók + data-akti
 // ── T6 — multi-kategóriás elem mindkét szűrésnél ───────────────────────────────
 test("6. multi-kategóriás elem (huth gergely) látszik Politics ÉS Law and Government szűrésnél is", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const huth = page.locator(`${T} .trend-kartya[data-kifejezes="huth gergely"]`);
   const gp = page.locator(`${T} .kategoria-gomb[data-kategoria="Politics"]`);
   const gl = page.locator(`${T} .kategoria-gomb[data-kategoria="Law and Government"]`);
@@ -213,7 +213,7 @@ test("6. multi-kategóriás elem (huth gergely) látszik Politics ÉS Law and Go
 // ── T7 — újrakattintás kikapcsol ───────────────────────────────────────────────
 test("7. az aktív kategóriára újrakattintva a szűrés kikapcsol (data-aktiv-kategoria törlődik)", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const gomb = page.locator(`${T} .kategoria-gomb[data-kategoria="Politics"]`);
   await expect(gomb).toHaveCount(1);
   await gomb.click();
@@ -225,7 +225,7 @@ test("7. az aktív kategóriára újrakattintva a szűrés kikapcsol (data-aktiv
 // ── T8 — eloszlás VÁLTOZATLAN szűrt állapotban ─────────────────────────────────
 test("8. a sávok (data-count) szűrés közben VÁLTOZATLANOK — nem számolódnak újra", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const other = page.locator(`${T} .kategoria-gomb[data-kategoria="Other"]`);
   const politics = page.locator(`${T} .kategoria-gomb[data-kategoria="Politics"]`);
   await expect(politics).toHaveCount(1);
@@ -237,7 +237,7 @@ test("8. a sávok (data-count) szűrés közben VÁLTOZATLANOK — nem számoló
 // ── T9 — nap-függő MEGJELENÉS (kategóriás nap) ─────────────────────────────────
 test("9. kategóriás napon a chart ÉS a szűrő jelen", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${T} canvas.kategoria-chart`)).toHaveCount(1);
   await expect(page.locator(`${T} .kategoria-szuro`)).toHaveCount(1);
 });
@@ -249,7 +249,7 @@ test("10. régi napon (nincs kategória) a chart ÉS a szűrő ELTŰNIK, de a k�
     index: { napok: ["2026-08-01", "2026-08-07"] },
     napok: { "2026-08-01": REGI3, "2026-08-07": MAI16 },
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await napValt(page, "2026-08-01");
   // közös szabály MINDKÉT ága:
   await expect(page.locator(`${T} .trend-kartya`)).toHaveCount(3);        // a kártyalista MEGVAN (régi 3)
@@ -264,7 +264,7 @@ test("11. napváltáskor az aktív szűrés nullázódik", async ({ page }) => {
     index: { napok: ["2026-08-01", "2026-08-07"] },
     napok: { "2026-08-01": REGI3, "2026-08-07": MAI16 },
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const gomb = page.locator(`${T} .kategoria-gomb[data-kategoria="Politics"]`);
   await expect(gomb).toHaveCount(1);
   await gomb.click();
@@ -281,7 +281,7 @@ test("12. a kártyaszám a data hosszát követi: mai 16, régi 3 (nincs fix 15/
     index: { napok: ["2026-08-01", "2026-08-07"] },
     napok: { "2026-08-01": REGI3, "2026-08-07": MAI16 },
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${T} .trend-kartya`)).toHaveCount(16);
   await napValt(page, "2026-08-01");
   await expect(page.locator(`${T} .trend-kartya`)).toHaveCount(3);
@@ -290,7 +290,7 @@ test("12. a kártyaszám a data hosszát követi: mai 16, régi 3 (nincs fix 15/
 // ── T13 — szűrő-gomb aria-szinkron a data-aktiv-kategoria-ból (9b aria_szinkron) ─
 test("13. pontosan egy gomb aria-pressed=true a data-aktiv-kategoria-ból derivál", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const gomb = page.locator(`${T} .kategoria-gomb[data-kategoria="Politics"]`);
   await expect(gomb).toHaveCount(1);
   await gomb.click();
@@ -301,7 +301,7 @@ test("13. pontosan egy gomb aria-pressed=true a data-aktiv-kategoria-ból deriv�
 // ── T14 — üres trendlista → §7.5 üzenet ────────────────────────────────────────
 test("14. üres top_trendek (API-blokk) → .ures §7.5-üzenet a lista helyén", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: [] } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${T} .ures`)).toBeVisible();
   await expect(page.locator(`${T} .trend-kartya`)).toHaveCount(0);
 });
@@ -309,7 +309,7 @@ test("14. üres top_trendek (API-blokk) → .ures §7.5-üzenet a lista helyén"
 // ── T15 — az "Other" szűrés az ["Other"]-kártyákat mutatja, NEM az []/hiányzót ──
 test("15. »Other« szűrés az ['Other']-címkés kártyákat mutatja, az []/hiányzót NEM", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MIX } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const other = page.locator(`${T} .kategoria-gomb[data-kategoria="Other"]`);
   await expect(other).toHaveCount(1);
   await other.click();
@@ -321,7 +321,7 @@ test("15. »Other« szűrés az ['Other']-címkés kártyákat mutatja, az []/hi
 // ── T16 — pipe-tartalmú kategórianév → a JSON-tömb szerializálás biztos (a pipe-változat elhasítaná) ──
 test("16. pipe-tartalmú kategórianév: a teljes néven szűr, a fél-néven NEM (JSON-tömb védi, nem pipe)", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: PIPE } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const teljes = page.locator(`${T} .kategoria-gomb[data-kategoria="Law|Government"]`);
   const felnev = page.locator(`${T} .kategoria-gomb[data-kategoria="Government"]`);
   const multi = page.locator(`${T} .trend-kartya[data-kifejezes="multi"]`);
@@ -339,7 +339,7 @@ test("16. pipe-tartalmú kategórianév: a teljes néven szűr, a fél-néven NE
 // ── T17 — az "Összes" reset-gomb szűrt állapotban HANGSÚLYOS (reset-osztály; DOM-oldali → tesztelhető) ──
 test("17. az »Összes« reset-gomb: szűrt állapotban reset-osztály, szűretlenül és kikapcsolás után nincs", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const ossz = page.locator(`${T} .kategoria-gomb[data-kategoria=""]`);
   const politics = page.locator(`${T} .kategoria-gomb[data-kategoria="Politics"]`);
   await expect(ossz).toHaveCount(1);
@@ -357,7 +357,7 @@ test("18. idősoros kártya → canvas + data-idosor-allapot=van (nem-uniform)",
     trend("beta", "50000", ["Other"], idosor_sorozat(3, "2026-08-06T20:00:00+00:00")),
   ];
   await mock(page, { legfrissebb: { top_trendek: VAN } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const kartyak = page.locator(`${T} .trend-kartya[data-idosor-allapot="van"]`);
   await expect(kartyak).toHaveCount(2);
   await expect(kartyak.first().locator(".trend-sparkline-doboz canvas")).toHaveCount(1);
@@ -370,7 +370,7 @@ test("19. üres idosor → 'nincs idősor ezen a napon' + data-idosor-allapot=ni
     trend("nincs-gorbe", "2000", ["Other"]),   // D1-kiterjesztett: idosor []
   ];
   await mock(page, { legfrissebb: { top_trendek: VEGYES } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const nincs = page.locator(`${T} .trend-kartya[data-idosor-allapot="nincs"]`);
   await expect(nincs).toHaveCount(1);
   await expect(nincs.locator(".trend-idosor-ures")).toHaveText("nincs idősor ezen a napon");
@@ -395,7 +395,7 @@ test("20. kulcsszó-intervallum váltás után a trend-sparkline Chart él (KÜL
   await mock(page, {
     legfrissebb: { top_trendek: [ trend("alfa", "50000", ["Other"], idosor_sorozat(4, "2026-08-06T20:52:00+00:00")) ] },
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const canvas = page.locator(`${T} .trend-sparkline-doboz canvas`).first();
   await expect(canvas).toHaveCount(1);
   // AZONNALI rajzolás: a Chart már a renderkor létezik (nincs scrollIntoView / első poll)
@@ -414,7 +414,7 @@ test("21. mind-üres nap → egyetlen blokk-jelzés, N kártya data-idosor-allap
     trend("harom", "5000", ["Other"]),
   ];
   await mock(page, { legfrissebb: { top_trendek: MIND_URES } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${T} .trend-idosor-ures-blokk`)).toHaveText("Ezen a napon egyetlen felkapott trendhez sincs idősor.");
   await expect(page.locator(`${T} .trend-kartya[data-idosor-allapot="nincs"]`)).toHaveCount(3);
   await expect(page.locator(`${T} .trend-idosor-ures`)).toHaveCount(0);   // az elemenkénti szöveg ÖSSZEVONÓDOTT
@@ -435,7 +435,7 @@ test("22. archív nap → sparkline megvan, kategória-chart+szűrő nincs (disz
     index: { napok: ["2026-07-30", "2026-08-08"] },
     napok: { "2026-07-30": REGI_IDOS },
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await napValt(page, "2026-07-30");
   // sparkline MEGVAN
   await expect(page.locator(`${T} .trend-kartya[data-idosor-allapot="van"]`)).toHaveCount(2);
@@ -453,7 +453,7 @@ test("23. van-görbe napon a normalizálás-magyarázat jelen + kétfelű (volum
     trend("beta", "10000", ["Politics"], idosor_sorozat(3, "2026-08-06T20:00:00+00:00")),
   ];
   await mock(page, { legfrissebb: { top_trendek: VAN_KAT } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const nm = page.locator(`${T} .trend-normalizalas-magyarazat`);
   await expect(nm).toHaveCount(1);
   await expect(nm).toContainText("volumen");    // mi NEM olvasható ki → a keresettséget a volumen mutatja
@@ -467,7 +467,7 @@ test("24. mind-üres nap → nincs normalizálás-magyarázat (van blokk-üres j
     trend("ketto", "5000", ["Politics"]),
   ];
   await mock(page, { legfrissebb: { top_trendek: MIND_URES } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${T} .trend-idosor-ures-blokk`)).toHaveCount(1);        // a blokk-jelzés VAN
   await expect(page.locator(`${T} .trend-normalizalas-magyarazat`)).toHaveCount(0);  // a magyarázat NINCS
 });
@@ -476,7 +476,7 @@ test("24. mind-üres nap → nincs normalizálás-magyarázat (van blokk-üres j
 test("25. a normalizálás-magyarázat a lista ELŐTT áll, és külön elem a kategória-magyarázattól", async ({ page }) => {
   const VAN_KAT = [ trend("alfa", "50000", ["Other"], idosor_sorozat(4, "2026-08-06T19:52:00+00:00")) ];
   await mock(page, { legfrissebb: { top_trendek: VAN_KAT } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${T} .kategoria-magyarazat`)).toHaveCount(1);            // külön elem (kategóriás napon)
   await expect(page.locator(`${T} .trend-normalizalas-magyarazat`)).toHaveCount(1);
   const rend = await page.evaluate(function () {
@@ -499,7 +499,7 @@ test("26. archív nap: görbe van/kategória nincs → normalizálás-magyaráza
     index: { napok: ["2026-07-30", "2026-08-08"] },
     napok: { "2026-07-30": REGI_IDOS },
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await napValt(page, "2026-07-30");
   await expect(page.locator(`${T} .trend-normalizalas-magyarazat`)).toHaveCount(1);   // van görbe → magyarázat kell
   await expect(page.locator(`${T} .trend-osszefoglalo`)).toHaveCount(0);              // nincs kategória → nincs összefoglaló
@@ -508,7 +508,7 @@ test("26. archív nap: görbe van/kategória nincs → normalizálás-magyaráza
 // ── T27 — A3: a látható trend-cím »Ma felkapott keresések« (megkülönböztetés a »Kulcsszavak«-tól; DOM-szerződés-őr) ──
 test("27. a trend-blokk h2 szövege »Ma felkapott keresések« (nem »Napi legfrissebb trendek«)", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${T} h2`)).toHaveText("Ma felkapott keresések");
   await expect(page.locator(T)).toHaveAttribute("aria-label", "Ma felkapott keresések");
 });
@@ -528,7 +528,7 @@ test("28. két azonos kifejezésű trend → napváltás UTÁN nincs árva Chart
     index: { napok: ["2026-07-30", "2026-08-08"] },
     napok: { "2026-07-30": REGI },
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
 
   // KÉT sparkline-canvas rajzolódik (a két azonos nevű kártyához külön canvas)
   const canvasok = page.locator(`${T} .trend-sparkline-doboz canvas`);
@@ -567,7 +567,7 @@ test("N. napi: szegmentált nap két blokkja (Reggeli + Esti), saját chippel", 
     reggel: { trendek: [trend("reggeli-szo", "5000", ["Sports"])], frissitve: "2026-08-31T07:00:00+00:00" },
     este: { trendek: [trend("esti-szo", "9000", ["Politics"]), trend("esti-ketto", "8000", ["Politics"])], frissitve: "2026-08-31T19:00:00+00:00" },
   }) }));
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="reggel"]')).toBeVisible();
   await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="este"]')).toBeVisible();
   await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="reggel"] .trend-kartya')).toHaveCount(1);
@@ -583,7 +583,7 @@ test("N+1. napi: régi (nem szegmentált) nap egyetlen blokk, cím nélkül", as
   await page.route(/napok\/2026-08-20\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({
     nap: "2026-08-20", trendek: [trend("regi-szo", "5000", ["Sports"])],
   }) }));
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator('#trend-blokk .trend-szegmens')).toHaveCount(1);
   await expect(page.locator('#trend-blokk .trend-szegmens-cim')).toHaveCount(0);   // régi napon nincs címke
   await expect(page.locator('#trend-blokk .trend-kartya')).toHaveCount(1);
@@ -599,7 +599,7 @@ test("N+2. napi: kék-vonalas gyűjtés-info a cím alatt + beszédes blokk-fejl
     reggel: { trendek: [trend("reggeli-szo", "5000", ["Sports"])], frissitve: "2026-08-31T07:00:00+00:00" },
     este: { trendek: [trend("esti-szo", "9000", ["Politics"])], frissitve: "2026-08-31T19:00:00+00:00" },
   }) }));
-  await page.goto("/");
+  await page.goto("/trendek.html");
   // (1a) statikus kék-vonalas gyűjtés-info a szekció-cím alatt
   const info = page.locator("#trend-blokk .trend-gyujtes-info");
   await expect(info).toBeVisible();
@@ -627,7 +627,7 @@ function napi_ket_szegmens(page, nap) {
 
 test("N. napi: felkapott szegmens-váltó — 3 gomb, alap Napi összesen, mindkét blokk látszik", async ({ page }) => {
   await napi_ket_szegmens(page, "2026-08-31");
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const gombok = page.locator("#trend-blokk .felkapott-szegmens-valto button");
   await expect(gombok).toHaveCount(3);
   await expect(gombok.nth(0)).toHaveAttribute("data-szegmens", "osszesen");
@@ -642,7 +642,7 @@ test("N. napi: felkapott szegmens-váltó — 3 gomb, alap Napi összesen, mindk
 
 test("N. napi: váltó reggel → csak reggeli blokk; este → csak esti blokk", async ({ page }) => {
   await napi_ket_szegmens(page, "2026-08-31");
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.locator('#trend-blokk .felkapott-szegmens-valto [data-szegmens="reggel"]').click();
   await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="reggel"]')).toBeVisible();
   await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="este"]')).toHaveCount(0);
@@ -658,7 +658,7 @@ test("N. napi: csak-reggeli nap — Esti nézet üres üzenettel (nincs áthúzo
   await page.route(/napok\/2026-09-02\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({
     nap: "2026-09-02", reggel: { trendek: [trend("reggeli-szo", "5000", ["Sports"])], frissitve: "2026-09-02T07:00:00+00:00" },
   }) }));   // NINCS este szegmens (aznap még nem futott az esti)
-  await page.goto("/");
+  await page.goto("/trendek.html");
   // alap osszesen → csak a reggeli blokk (nincs esti szegmens, nincs áthúzott előző esti)
   await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="reggel"]')).toBeVisible();
   await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="este"]')).toHaveCount(0);
@@ -676,7 +676,7 @@ test("N. napi: régi (nem szegmentált) nap → nincs szegmens-váltó, egy blok
   await page.route(/napok\/2026-08-20\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({
     nap: "2026-08-20", trendek: [trend("regi-szo", "5000", ["Sports"])],
   }) }));
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator("#trend-blokk .felkapott-szegmens-valto")).toHaveCount(0);
   await expect(page.locator('#trend-blokk .trend-szegmens')).toHaveCount(1);
 });
@@ -685,7 +685,7 @@ test("N. napi: régi (nem szegmentált) nap → nincs szegmens-váltó, egy blok
 // A tükör a null-rés / első-megjelenés / valós-0 szabályt hordozza (JSON-tömb data-ertekek, mint a data-kategoriak).
 test("idősor-adat: a tengely CSAK a mért napokat tartalmazza (08-06 hiányzó nap KIMARAD)", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const adat = page.locator(`${I} .idosor-adat`);
   await expect(adat).toHaveCount(1);
   await expect(adat).toHaveAttribute("data-napok",
@@ -696,7 +696,7 @@ test("idősor-adat: a tengely CSAK a mért napokat tartalmazza (08-06 hiányzó 
 
 test("idősor-adat: a kategória első megjelenése ELŐTT null (nem lapos nulla)", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const adat = page.locator(`${I} .idosor-adat`);
   await expect(adat).toHaveCount(1);
   // C csak 08-07-en tűnik fel → 08-05 null (a vonal a feltűnéskor kezdődik), 08-08-on valós 0
@@ -705,7 +705,7 @@ test("idősor-adat: a kategória első megjelenése ELŐTT null (nem lapos nulla
 
 test("idősor-adat: jelen-napon a 0-előfordulás VALÓS 0 (nem null)", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const adat = page.locator(`${I} .idosor-adat`);
   await expect(adat).toHaveCount(1);
   // A a 08-08-on hiányzik a kategoriak-mapből, DE már megjelent → VALÓS 0 (index 2); B a 08-07-en 0 (index 1)
@@ -715,7 +715,7 @@ test("idősor-adat: jelen-napon a 0-előfordulás VALÓS 0 (nem null)", async ({
 
 test("idősor-adat: a vonalak száma == az előfordult kategóriák (a nem-látott NINCS)", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const adat = page.locator(`${I} .idosor-adat`);
   await expect(adat).toHaveCount(1);
   await expect(adat).toHaveAttribute("data-vonal-szam", "3");      // A, B, C — nem több
@@ -727,7 +727,7 @@ test("idősor-adat: a vonalak száma == az előfordult kategóriák (a nem-láto
 // állapota (.kiemelt) + a data-idosor-aktiv tükör DOM-assertálható. ──
 test("idősor-chart: canvas + data-idosor-chart-rendered a JOBB #idosor-blokk-ban", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_TOP });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${I} canvas.idosor-chart`)).toHaveCount(1);
   await expect(page.locator(`${I} canvas.idosor-chart`)).toHaveAttribute("data-idosor-chart-rendered", "true");
   await expect(page.locator(`${T} canvas.idosor-chart`)).toHaveCount(0);   // NEM a trend-blokkban (átköltözött)
@@ -737,13 +737,13 @@ test("idősor-chart: canvas + data-idosor-chart-rendered a JOBB #idosor-blokk-ba
 // a korábbi top-5-default / per-kategória-szín SZABÁLY MEGSZŰNT. A DOM-assertálható: cím, elhelyezés, caption, tükör.
 test("idősor-chart: a jobb doboz h2 címe »Napi keresési kategóriák idősora«", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_TOP });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${I} h2`)).toHaveText("Napi keresési kategóriák idősora");
 });
 
 test("idősor-elrendezés: az idősor SAJÁT #idosor-blokk szekció, a DOM-ban a #trend-blokk ELŐTT", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_TOP });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(I)).toHaveCount(1);
   const elotte = await page.evaluate(function () {
     const idos = document.querySelector("#idosor-blokk");
@@ -757,7 +757,7 @@ test("idősor-elrendezés: az idősor SAJÁT #idosor-blokk szekció, a DOM-ban a
 
 test("idősor-chart: a cím a canvas ELŐTT, a magyarázat a canvas UTÁN (a jobb dobozban)", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });   // legkorábbi 2026-08-05
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const mag = page.locator(`${I} .idosor-magyarazat`);
   await expect(mag).toContainText("2026-08-05");
   await expect(mag).toContainText("Google Trends");
@@ -784,7 +784,7 @@ test("N. idősor: szegmens-váltó — alap Napi összesen, váltásra a reggeli
   await page.route(/kategoriak\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify(KJ) }));
   await page.route(/legfrissebb\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ top_trendek: [] }) }));
   await page.route(/napok\/index\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ napok: ["2026-08-10"] }) }));
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const tukor = page.locator("#idosor-blokk .idosor-adat");
   await expect(tukor).toHaveAttribute("data-vonal-szam", "2");                 // osszesen: Sports + Politics
   await expect(page.locator('.idosor-szegmens-valto [data-szegmens="osszesen"]')).toHaveAttribute("aria-pressed", "true");
@@ -797,7 +797,7 @@ test("N. idősor: Napi összesen — reggel+este darabszám-összeg", async ({ p
   await mock(page, { kategoriak: { napok: [
     { nap: "2026-09-01", reggel: { kategoriak: { Sports: 3, Other: 8 } },
                           este:   { kategoriak: { Sports: 1, Politics: 2, Other: 12 } } } ] } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const tukor = page.locator("#idosor-blokk .idosor-adat");
   await expect(tukor.locator('.idosor-vonal[data-kategoria="Sports"]')).toHaveAttribute("data-ertekek", "[4]");
   await expect(tukor.locator('.idosor-vonal[data-kategoria="Politics"]')).toHaveAttribute("data-ertekek", "[2]");
@@ -807,7 +807,7 @@ test("N. idősor: Napi összesen — reggel+este darabszám-összeg", async ({ p
 test("N. idősor: Napi összesen — csak reggeli nap → csak a reggeli számít (nincs áthúzott este)", async ({ page }) => {
   await mock(page, { kategoriak: { napok: [
     { nap: "2026-09-01", reggel: { kategoriak: { Sports: 3 } } } ] } });   // NINCS este
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator('#idosor-blokk .idosor-adat .idosor-vonal[data-kategoria="Sports"]'))
     .toHaveAttribute("data-ertekek", "[3]");
 });
@@ -815,7 +815,7 @@ test("N. idősor: Napi összesen — csak reggeli nap → csak a reggeli számí
 test("N. idősor: Napi összesen — régi lapos rekord EGYSZER számít", async ({ page }) => {
   await mock(page, { kategoriak: { napok: [
     { nap: "2026-08-05", kategoriak: { A: 2 } } ] } });   // legacy (nincs reggel/este)
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator('#idosor-blokk .idosor-adat .idosor-vonal[data-kategoria="A"]'))
     .toHaveAttribute("data-ertekek", "[2]");
 });
@@ -823,7 +823,7 @@ test("N. idősor: Napi összesen — régi lapos rekord EGYSZER számít", async
 test("N. idősor: három szegmens-gomb, sorrend Napi összesen · Reggeli · Esti, alap az összesen", async ({ page }) => {
   await mock(page, { kategoriak: { napok: [
     { nap: "2026-09-01", reggel: { kategoriak: { Sports: 3 } }, este: { kategoriak: { Politics: 2 } } } ] } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const gombok = page.locator(".idosor-szegmens-valto button");
   await expect(gombok).toHaveCount(3);
   await expect(gombok.nth(0)).toHaveAttribute("data-szegmens", "osszesen");
@@ -836,7 +836,7 @@ test("N. idősor: három szegmens-gomb, sorrend Napi összesen · Reggeli · Est
 test("N. idősor: állandó info-doboz a három nézetről + frissülési időkről, nincs duplikáció", async ({ page }) => {
   await mock(page, { kategoriak: { napok: [
     { nap: "2026-09-01", reggel: { kategoriak: { Sports: 3 } }, este: { kategoriak: { Politics: 2 } } } ] } });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const info = page.locator("#idosor-blokk .idosor-info");
   await expect(info).toHaveCount(1);
   await expect(info).toBeVisible();
@@ -855,7 +855,7 @@ test("N. idősor: üres szegmensen a váltó látszik + vissza lehet váltani", 
   await page.route(/kategoriak\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify(KJ) }));
   await page.route(/legfrissebb\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ top_trendek: [] }) }));
   await page.route(/napok\/index\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ napok: ["2026-08-10"] }) }));
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator("#idosor-blokk .idosor-adat")).toHaveAttribute("data-vonal-szam", "1");   // este: van chart
   // váltás reggelre → nincs adat, DE a váltó marad + jelzés
   await page.locator('.idosor-szegmens-valto [data-szegmens="reggel"]').click();
@@ -871,7 +871,7 @@ test("N. idősor: üres szegmensen a váltó látszik + vissza lehet váltani", 
 // ── HTML-legend a BAL #idosor-legend dobozban (a Chart.js belső legend kikapcsolva) — DOM-assertálható ──
 test("idősor-legend: a bal #idosor-legend N kattintható elemet tartalmaz (data-kategoria), a jobb dobozban NINCS legend", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });   // A, B, C → 3 vonal
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const legend = page.locator("#idosor-legend .idosor-legend-elem");
   await expect(legend).toHaveCount(3);
   await expect(page.locator('#idosor-legend .idosor-legend-elem[data-kategoria="A"]')).toHaveCount(1);
@@ -882,7 +882,7 @@ test("idősor-legend: a bal #idosor-legend N kattintható elemet tartalmaz (data
 
 test("idősor-legend: kattintásra az elem .kiemelt lesz + data-idosor-aktiv tükör; újrakatt törli (toggle)", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const bE = page.locator('#idosor-legend .idosor-legend-elem[data-kategoria="B"]');
   await expect(bE).toHaveCount(1);
   // alap (user-kérés): az ELSŐ kategória KIEMELT (nem „mind szürke")

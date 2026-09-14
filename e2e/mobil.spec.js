@@ -36,7 +36,7 @@ async function mock_kulcsszo(page) {
 test("G1. render-on-load 360x640-en: a #attekinto-blokk miatt load-kor 0 kártya rendered; zónába görgetve az első IGEN, a TÁVOLI (utolsó) NEM", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 640 });
   await mock_kulcsszo(page);
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const kartyak = page.locator("#kulcsszo-blokk .kulcsszo-chart");
   await expect(kartyak).toHaveCount(3);
   await page.evaluate(() => window.scrollTo(0, 0));
@@ -53,7 +53,7 @@ test("G1. render-on-load 360x640-en: a #attekinto-blokk miatt load-kor 0 kártya
 // ── G2 — a dátum-<select> érintési célmérete >= 24px (WCAG 2.5.8 AA); MÉRT ma: 19px (BUKIK) ──
 test("G2. a naptár nap-cella érintési célmérete >= 24px (WCAG 2.5.8 AA; a select-magasság helyett)", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 640 });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const cella = page.locator("#datum-valaszto .nap-cella[aria-current='date']");   // a kiválasztott nap (pontosan 1)
   await expect(cella).toHaveCount(1);
   const bb = await cella.boundingBox();

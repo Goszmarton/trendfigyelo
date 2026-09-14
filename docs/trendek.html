@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trendfigyelő – magyarországi keresési trendek</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <nav id="fomenu" aria-label="Fő menü">
+    <a href="elemzes.html">Elemzések</a>
+    <a href="trendek.html" class="aktiv" aria-current="page">Google Trendek</a>
+    <a href="youtube.html">YouTube Trendek</a>
+    <a href="adatokrol.html">Infó</a>
+  </nav>
+
+  <header class="fejlec-doboz">
+    <h1>Google Trendek – Mire keresnek rá Magyarországon?</h1>
+    <p class="halvany">Magyarországi (geo=HU) Google Trends adatok, napi frissítéssel.</p>
+  </header>
+
+  <div id="dashboard">
+    <hr class="blokk-vonal">
+    <!-- felső panel: a szavak TREND-iránya (növekvő/stagnáló/csökkenő) — az id a POZÍCIÓT jelöli (felül), a tartalmat a data-mod -->
+    <section id="attekinto-blokk" class="attekinto-panel" data-mod="trend" aria-label="A kulcsszavak trendje">
+      <h2>A kulcsszavak trendje</h2>
+    </section>
+    <!-- §7.1 per-szekció elrendezés: minden szekció a SAJÁT (sticky) vezérlősávjával -->
+    <div class="szekcio">
+      <aside class="vezerlo-sav">
+        <p class="vezerlo-cim">Kulcsszó-időszak</p>
+        <div id="intervallum-vezerlo" aria-label="Kulcsszó időtartomány">
+          <!-- 1 hét / 2 hét / 1 hó / 3 hó / 1 év — a gombok elérhetősége a kulcsszo_regresszio.json-ból (Task 6) -->
+        </div>
+      </aside>
+      <section id="kulcsszo-blokk" aria-label="Kulcsszavak">
+        <h2>Kulcsszavak</h2>
+        <!-- szavanként külön chart regresszióval + mérőszámokkal — Task 9b -->
+      </section>
+    </div>
+
+    <!-- a Kulcsszavak ALATT, a napi kategória-idősor ELŐTT: a szavak MAI ELTÉRÉSE a saját trendjüktől -->
+    <section id="attekinto-blokk-alul" class="attekinto-panel" data-mod="elteres" aria-label="Áttekintő – mai eltérés a trendtől">
+      <h2>Mai eltérés a kulcsszavak trendjétől</h2>
+    </section>
+
+    <hr class="blokk-vonal">
+
+    <!-- innen a NAPI (nem a követett kulcsszavak) keresések: kategória-idősor + felkapott keresőszavak -->
+    <h2 class="szakasz-cim">Napi leggyakoribb keresések</h2>
+
+    <div class="szekcio">
+      <aside class="vezerlo-sav">
+        <p class="vezerlo-cim">Kategóriák</p>
+        <div id="idosor-legend" aria-label="Kategória-idősor jelmagyarázat">
+          <!-- a kategória-idősor kattintható legendje (szürke→kék kiemelés) — a Chart.js belső legend helyett -->
+        </div>
+      </aside>
+      <section id="idosor-blokk" aria-label="Napi keresési kategóriák idősora">
+        <h2>Napi keresési kategóriák idősora</h2>
+        <!-- chart-doboz (canvas) + rejtett DOM-tükör + magyarázat — a JS tölti (kategoriak.json) -->
+      </section>
+    </div>
+
+    <div class="szekcio">
+      <aside class="vezerlo-sav">
+        <p class="vezerlo-cim">Melyik nap felkapottjai?</p>
+        <div id="datum-valaszto" aria-label="Trend dátumválasztó">
+          <!-- napok/index.json alapján; belépéskor a legfrissebb nap (Task 6) -->
+        </div>
+      </aside>
+      <section id="trend-blokk" aria-label="Ma felkapott keresések">
+        <h2>Ma felkapott keresések</h2>
+        <p class="trend-gyujtes-info">A felkapott kereséseket naponta kétszer gyűjtjük – reggel 9:00-kor és este 21:00-kor (budapesti idő). A két pillanatképet külön, egymás alatt mutatjuk.</p>
+        <!-- lista + kategória-címke + napi görbe (regresszió nélkül) — Task 7/8 -->
+      </section>
+    </div>
+
+    <div class="szekcio">
+      <aside class="vezerlo-sav">
+        <p class="vezerlo-cim">Melyik hét felkapottjai?</p>
+        <div id="heti-valaszto" aria-label="Hét választó">
+          <!-- napok/index.json → ISO-hetek (hétfő–vasárnap); alap a legfrissebb hét -->
+        </div>
+      </aside>
+      <section id="heti-blokk" aria-label="Heti felkapott keresések">
+        <h2>Heti felkapott keresések</h2>
+        <!-- a kiválasztott hét napi táblázata (nap · dátum → aznapi felkapott szavak) -->
+      </section>
+    </div>
+  </div>
+
+  <footer id="labresz" aria-label="Lábléc"></footer>
+
+  <script src="vendor/chartjs/chart.umd.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

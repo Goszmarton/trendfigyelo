@@ -2,11 +2,11 @@ const { test, expect } = require("@playwright/test");
 
 // Menüsor (Excel-fül) + „Az adatokról" külön oldal — statikus szerkezet-őr (nincs adat-mock, a nav statikus).
 test("menüsor: 4 fül, aktív = Google Trendek; a linkek helyesek + sorrend", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator("#fomenu a")).toHaveCount(4);
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Google Trendek");
   await expect(page.locator('#fomenu a[href="elemzes.html"]')).toHaveText("Elemzések");
-  await expect(page.locator('#fomenu a[href="index.html"]')).toHaveText("Google Trendek");
+  await expect(page.locator('#fomenu a[href="trendek.html"]')).toHaveText("Google Trendek");
   await expect(page.locator('#fomenu a[href="youtube.html"]')).toHaveText("YouTube Trendek");
   await expect(page.locator('#fomenu a[href="adatokrol.html"]')).toHaveText("Infó");
   // sorrend: Elemzések · Google Trendek · YouTube Trendek · Infó
@@ -47,11 +47,17 @@ test("Infó oldal: adat + elemzés dobozok, csoportcímek, aktív fül + üres l
 });
 
 test("navigáció: a Trendek főoldalról az Az adatokról oldalra és vissza", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.locator('#fomenu a[href="adatokrol.html"]').click();
   await expect(page).toHaveURL(/adatokrol\.html$/);
   await expect(page.locator("#adatokrol .adat-doboz").first()).toBeVisible();
-  await page.locator('#fomenu a[href="index.html"]').click();
-  await expect(page).toHaveURL(/\/(index\.html)?$/);
+  await page.locator('#fomenu a[href="trendek.html"]').click();
+  await expect(page).toHaveURL(/trendek\.html$/);
   await expect(page.locator("#dashboard")).toBeVisible();
+});
+
+test("landing: a gyökér (/) az Elemzések oldalra irányít át", async ({ page }) => {
+  await page.goto("/");
+  await expect(page).toHaveURL(/elemzes\.html$/);                       // átirányítás
+  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Elemzések");
 });

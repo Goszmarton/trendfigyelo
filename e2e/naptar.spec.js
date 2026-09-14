@@ -11,7 +11,7 @@ const N = "#datum-valaszto";
 
 test("naptár 1. a legfrissebb hónap rajzol, a legfrissebb nap kiválasztva", async ({ page }) => {
   await mockNapok(page, ["2026-07-30", "2026-08-18", "2026-08-20"]);
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${N} .naptar`)).toBeVisible();
   await expect(page.locator(N)).toHaveAttribute("data-valasztott-nap", "2026-08-20");
   await expect(page.locator(N)).toHaveAttribute("data-honap", "2026-08");
@@ -22,7 +22,7 @@ test("naptár 1. a legfrissebb hónap rajzol, a legfrissebb nap kiválasztva", a
 
 test("naptár 2. adat-napok kattinthatók; adat-nélküli + szomszéd-hónap napok szürkék (nem-választható)", async ({ page }) => {
   await mockNapok(page, ["2026-08-18", "2026-08-20"]);   // csak 2 adat-nap augusztusban
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${N} button.nap-cella:not([disabled])`)).toHaveCount(2);   // pontosan a 2 adat-nap
   await expect(page.locator(`${N} .nap-cella[data-nap="2026-08-18"]:not([disabled])`)).toBeVisible();
   await expect(page.locator(`${N} .nap-cella[data-nap="2026-08-19"]`)).toHaveClass(/nem-valaszthato/);  // nincs adat → szürke
@@ -31,7 +31,7 @@ test("naptár 2. adat-napok kattinthatók; adat-nélküli + szomszéd-hónap nap
 
 test("naptár 3. nap-kattintás → data-valasztott-nap + a #trend-blokk napja követi", async ({ page }) => {
   await mockNapok(page, ["2026-08-18", "2026-08-20"]);
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.locator(`${N} .nap-cella[data-nap="2026-08-18"]`).click();
   await expect(page.locator(N)).toHaveAttribute("data-valasztott-nap", "2026-08-18");
   await expect(page.locator(`${N} .nap-cella.valasztott`)).toHaveText("18");
@@ -40,7 +40,7 @@ test("naptár 3. nap-kattintás → data-valasztott-nap + a #trend-blokk napja k
 
 test("naptár 4. ‹ › hónap-navigáció az adat-tartományban, a széleken letiltva; a kiválasztást nem változtatja", async ({ page }) => {
   await mockNapok(page, ["2026-07-30", "2026-08-20"]);   // tartomány: 2026-07 .. 2026-08
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${N} .honap-lep.elore`)).toBeDisabled();     // aug az utolsó adat-hónap → előre tiltva
   await expect(page.locator(`${N} .honap-lep.vissza`)).toBeEnabled();
   await page.locator(`${N} .honap-lep.vissza`).click();                   // júliusra

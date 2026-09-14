@@ -60,7 +60,7 @@ test("(b) minden intervallum ervenyes:false → 5 LETILTOTT gomb ok-szöveggel +
   await mock_regresszio(page, {
     "1_het": { ervenyes: false, ok: "nincs_adat" }, "2_het": NL, "1_ho": NL, "3_ho": NL, "1_ev": NL,
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator("#intervallum-vezerlo .ures")).toBeVisible();                  // fejléc
   await expect(page.locator("#intervallum-vezerlo button")).toHaveCount(5);                // mind az 5 gomb jelen
   await expect(page.locator("#intervallum-vezerlo button[disabled]")).toHaveCount(5);       // mind letiltott
@@ -75,7 +75,7 @@ test("(b2) a letiltott intervallum-gomb OLVASHATÓ marad (a11y: jelentést hordo
   await mock_regresszio(page, {
     "1_het": { ervenyes: false, ok: "nincs_adat" }, "2_het": NL, "1_ho": NL, "3_ho": NL, "1_ev": NL,
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const gomb = page.locator("#intervallum-vezerlo button[disabled]").first();
   await expect(gomb).toBeVisible();
   const szin = await gomb.evaluate(function (el) { return getComputedStyle(el).color; });
@@ -86,14 +86,14 @@ test("(a) hiányzó kulcsszo_regresszio.json → .ures üzenet ÉS NULLA gomb (e
   await page.route(/kulcsszo_regresszio\.json/, function (route) {
     route.fulfill({ status: 404, contentType: "text/plain", body: "Not Found" });
   });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator("#intervallum-vezerlo .ures")).toBeVisible();
   await expect(page.locator("#intervallum-vezerlo button")).toHaveCount(0); // NINCS gomb (szemben a (b) 5 gombjával)
 });
 
 test("1_het ervenyes, többi false → az 1_het KIVÁLASZTVA; a 2_het tiltott, magyar magyarázattal", async ({ page }) => {
   await mock_regresszio(page, { "1_het": erv(), "2_het": NL, "1_ho": NL, "3_ho": NL, "1_ev": NL });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator('#intervallum-vezerlo button[aria-pressed="true"]'))
     .toHaveAttribute("data-intervallum", "teljes");   // ALAPNEZET = teljes (request 1); az 1_het gomb elérhető, de nem az alap
   await expect(page.locator('#intervallum-vezerlo button[data-intervallum="2_het"]')).toBeDisabled();
@@ -109,7 +109,7 @@ test("több érvényes intervallum → az ALAPNEZET a TELJES (request 1, SZEMLE 
   // SZEMLE 08-19 / request 1: a kezdő nézet a TELJES időszak (közös tengely) — az oldal ezzel nyílik.
   // (A korábbi 1_het-default [ALAPNEZET-KONSTANS] ezzel lezárult; a fix intervallumok kattintásra jönnek.)
   await mock_regresszio(page, { "1_het": erv(), "2_het": NL, "1_ho": erv(), "3_ho": NL, "1_ev": NL });
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator('#intervallum-vezerlo button[aria-pressed="true"]'))
     .toHaveAttribute("data-intervallum", "teljes");
 });
@@ -118,7 +118,7 @@ test("több érvényes intervallum → az ALAPNEZET a TELJES (request 1, SZEMLE 
 
 test("normál napok/index.json → naptár a legfrissebb hónapot rajzolja, alapból a LEGFRISSEBB nap kiválasztva", async ({ page }) => {
   await mock_napok_index(page, ["2026-08-02", "2026-08-03", "2026-08-04"]);
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator("#datum-valaszto .naptar")).toBeVisible();
   await expect(page.locator("#datum-valaszto")).toHaveAttribute("data-valasztott-nap", "2026-08-04");   // alap: legfrissebb
   await expect(page.locator("#datum-valaszto")).toHaveAttribute("data-honap", "2026-08");
@@ -128,7 +128,7 @@ test("normál napok/index.json → naptár a legfrissebb hónapot rajzolja, alap
 
 test("naptár: pontosan az adat-napok kattinthatók, a hónap többi napja nem-választható (szürke)", async ({ page }) => {
   await mock_napok_index(page, ["2026-08-02", "2026-08-03", "2026-08-04"]);
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator("#datum-valaszto button.nap-cella:not([disabled])")).toHaveCount(3);   // pontosan a 3 adat-nap
   await expect(page.locator('#datum-valaszto .nap-cella[data-nap="2026-08-04"]:not([disabled])')).toBeVisible();
   await expect(page.locator('#datum-valaszto .nap-cella[data-nap="2026-08-01"]')).toHaveClass(/nem-valaszthato/);   // nincs adat → szürke
@@ -136,7 +136,7 @@ test("naptár: pontosan az adat-napok kattinthatók, a hónap többi napja nem-v
 
 test("üres napok/index.json → dátumválasztó ÜRES állapot, nincs select", async ({ page }) => {
   await mock_napok_index(page, []);
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator("#datum-valaszto .ures")).toBeVisible();
   await expect(page.locator("#datum-valaszto select")).toHaveCount(0);
 });

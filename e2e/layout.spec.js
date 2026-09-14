@@ -14,7 +14,7 @@ const { test, expect } = require("@playwright/test");
 //   page.locator(".szekcio").filter({ has: page.locator("#kulcsszo-blokk") }).locator("#intervallum-vezerlo")
 
 test("ST1. per-szekció szerkezet: intervallum-vezérlő a Kulcsszavak szekcióban, dátumválasztó a Trend szekcióban (keresztben nem)", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/trendek.html");
   // POZITÍV előbb: ez adja a valódi RED-et (a .szekcio wrapper hiányzik → count 0), NEM a keresztellenőrzés.
   await expect(page.locator(".szekcio:has(#kulcsszo-blokk) #intervallum-vezerlo")).toHaveCount(1);
   await expect(page.locator(".szekcio:has(#trend-blokk) #datum-valaszto")).toHaveCount(1);
@@ -23,7 +23,7 @@ test("ST1. per-szekció szerkezet: intervallum-vezérlő a Kulcsszavak szekciób
 });
 
 test("ST2. a .vezerlo-sav computed position: sticky (asztali)", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/trendek.html");
   // RED itt: nincs .vezerlo-sav → Received 0 (viselkedésbeli, nem hard-timeout); a guard eldob, így az
   // evaluate le sem fut, nem lesz 30 s-es locator-timeout.
   await expect(page.locator(".vezerlo-sav")).not.toHaveCount(0);

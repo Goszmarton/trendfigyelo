@@ -41,7 +41,7 @@ test("attekinto: eltérés-panel a Kulcsszavak alatt, kategória-sor (domén bal
     "állás": szo({ domen: "munkaeropiac", illeszkedes: "felette" }),
     "albérlet": szo({ domen: "lakhatas", illeszkedes: "illeszkedik" }),
   }));
-  await page.goto("/");
+  await page.goto("/trendek.html");
   // az eltérés-panel a #kulcsszo-blokk UTÁN áll a DOM-ban (a helycsere óta)
   const sorrend = await page.evaluate(() => {
     const k = document.querySelector("#kulcsszo-blokk");
@@ -67,7 +67,7 @@ test("attekinto: három eltérés-állapot (▲ felette / ▼ alatta / ✓ illes
     "hitel": szo({ domen: "haztartasi_penzugy", illeszkedes: "illeszkedik" }),
     "benzin": szo({ domen: "energia", iv1het: { ervenyes: false, ok: "keves_pont" } }),
   }));
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(A + " .attekinto-kartya[data-kulcsszo='állás'] .attekinto-ikon")).toHaveAttribute("data-illeszkedes", "felette");
   await expect(page.locator(A + " .attekinto-kartya[data-kulcsszo='állás']")).toHaveAttribute("title", /a trendje fölé ugrott/);
   await expect(page.locator(A + " .attekinto-kartya[data-kulcsszo='kórház'] .attekinto-ikon")).toHaveAttribute("data-illeszkedes", "alatta");
@@ -80,7 +80,7 @@ test("attekinto: három eltérés-állapot (▲ felette / ▼ alatta / ✓ illes
 
 test("attekinto: magyarázó doboz a blokk ALJÁN (a lista után)", async ({ page }) => {
   await mock(page, reg({ "állás": szo({ domen: "munkaeropiac" }) }));
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(A + " .attekinto-magyarazat")).toHaveCount(1);
   const utan = await page.evaluate(() => {
     const lista = document.querySelector("#attekinto-blokk-alul .attekinto-lista");
@@ -104,7 +104,7 @@ test("attekinto: tüntetés esemenyjelzo — a MEDIÁNTÓL való eltérés ikonj
     szint: 8, szint_modszer: "median", mai_szint: 30, mai_elteres: 22, szint_szokasos: 1,
     illeszkedes: "felette", intervallumok: {} } });
   await mock(page, regObj, mp);
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const kartya = page.locator(A + " .attekinto-kartya[data-kulcsszo='tüntetés']");
   await expect(kartya).toHaveCount(1);
   await expect(kartya.locator(".attekinto-ikon")).toHaveAttribute("data-illeszkedes", "felette");
@@ -121,7 +121,7 @@ test("trend-panel: a chip ikonja a TREND-irányt kódolja (data-trend az irany-b
     "hitel": szo({ domen: "haztartasi_penzugy", irany: "csokken", illeszkedes: "illeszkedik" }),
     "benzin": szo({ domen: "energia", irany: "stagnal", illeszkedes: "illeszkedik" }),
   }));
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(B + " .attekinto-kartya[data-kulcsszo='állás'] .attekinto-ikon")).toHaveAttribute("data-trend", "novekszik");
   await expect(page.locator(B + " .attekinto-kartya[data-kulcsszo='állás']")).toHaveAttribute("title", /trendje növekvő/);
   await expect(page.locator(B + " .attekinto-kartya[data-kulcsszo='hitel'] .attekinto-ikon")).toHaveAttribute("data-trend", "csokken");
@@ -138,7 +138,7 @@ test("trend-panel: tüntetés esemenyjelzo → 'esemeny' (nincs trend), a title 
     szint: 8, szint_modszer: "median", mai_szint: 30, mai_elteres: 22, szint_szokasos: 1,
     illeszkedes: "felette", intervallumok: {} } });
   await mock(page, regObj, mp);
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const kartya = page.locator(B + " .attekinto-kartya[data-kulcsszo='tüntetés']");
   await expect(kartya.locator(".attekinto-ikon")).toHaveAttribute("data-trend", "esemeny");
   await expect(kartya).toHaveAttribute("title", /medián/);
@@ -156,7 +156,7 @@ test("mindkét panel a TELJES (leghosszabb) ablakot használja, nem a legrövide
       intervallumok: { "1_het": rovid, "2_het": ivHibas("nincs_lancolas"),
         "1_ho": ivHibas("nincs_lancolas"), "3_ho": ivHibas("nincs_lancolas"), "1_ev": hosszu } },
   }));
-  await page.goto("/");
+  await page.goto("/trendek.html");
   // eltérés-panel: a HOSSZÚ ablak "alatta" (▼), NEM a rövid "felette"
   await expect(page.locator(A + " .attekinto-kartya[data-kulcsszo='állás'] .attekinto-ikon")).toHaveAttribute("data-illeszkedes", "alatta");
   // trend-panel: a HOSSZÚ ablak "csokken", NEM a rövid "novekszik"
@@ -167,7 +167,7 @@ test("mindkét panel a TELJES (leghosszabb) ablakot használja, nem a legrövide
 // (#attekinto-blokk-alul) — a két blokk címe + data-mod-ja + DOM-sorrendje ─────────────────────────────────
 test("helycsere: felül 'A kulcsszavak trendje' (trend), a Kulcsszavak alatt 'Mai eltérés…' (eltérés)", async ({ page }) => {
   await mock(page, reg({ "állás": szo({ domen: "munkaeropiac", irany: "novekszik", illeszkedes: "felette" }) }));
-  await page.goto("/");
+  await page.goto("/trendek.html");
   // felső panel = TREND
   await expect(page.locator("#attekinto-blokk")).toHaveAttribute("data-mod", "trend");
   await expect(page.locator("#attekinto-blokk h2")).toHaveText("A kulcsszavak trendje");
@@ -189,7 +189,7 @@ test("helycsere: felül 'A kulcsszavak trendje' (trend), a Kulcsszavak alatt 'Ma
 // ── SZAKASZ-CÍM-ŐR: a „Napi leggyakoribb keresések" elválasztó a kategória-idősor (#idosor-blokk) ELŐTT ──
 test("szakasz-cím: 'Napi leggyakoribb keresések' a napi keresések rész előtt (a kategória-idősor ELŐTT)", async ({ page }) => {
   await mock(page, reg({ "állás": szo({ domen: "munkaeropiac" }) }));
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const cim = page.locator(".szakasz-cim");
   await expect(cim).toHaveText("Napi leggyakoribb keresések");
   const elotte = await page.evaluate(() => {

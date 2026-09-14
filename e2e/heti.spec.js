@@ -35,7 +35,7 @@ async function mock(page) {
 // ── 1. hét-kiemelő naptár: a legfrissebb hét sora kiemelve (alap = 34. hét, hétfő 08-17) ──
 test("1. hét-kiemelő naptár: alap = a legfrissebb hét, mind a 7 napja kiemelve (34. hét, 08-17..08-23)", async ({ page }) => {
   await mock(page);
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator("#heti-valaszto .naptar")).toBeVisible();
   await expect(page.locator("#heti-valaszto")).toHaveAttribute("data-valasztott-het", "2026-08-17");   // legfrissebb hét hétfője
   await expect(page.locator("#heti-valaszto")).toHaveAttribute("data-honap", "2026-08");
@@ -47,7 +47,7 @@ test("1. hét-kiemelő naptár: alap = a legfrissebb hét, mind a 7 napja kiemel
 // ── 2. adat-hét napjai kattinthatók; az adat-nélküli hét napjai szürkék ──
 test("2. adat-hét napjai kattinthatók, adat-nélküli hét szürke (nem-választható)", async ({ page }) => {
   await mock(page);
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator('#heti-valaszto .nap-cella[data-nap="2026-08-10"]:not([disabled])')).toBeVisible();  // 33. hét
   await expect(page.locator('#heti-valaszto .nap-cella[data-nap="2026-08-17"]:not([disabled])')).toBeVisible();  // 34. hét
   await expect(page.locator('#heti-valaszto .nap-cella[data-nap="2026-08-05"]')).toHaveClass(/nem-valaszthato/); // 08-03..09 hét: nincs adat
@@ -56,7 +56,7 @@ test("2. adat-hét napjai kattinthatók, adat-nélküli hét szürke (nem-válas
 // ── 3. alap-hét (34.) táblázata: csak 08-17 (a legfrissebb elérhető napig; 08-18+ NEM) ──
 test("3. alap-hét táblázata a hétfőtől a legfrissebb elérhető napig; a jövő nap NEM jelenik meg", async ({ page }) => {
   await mock(page);
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator(`${H} .heti-nap-sor`)).toHaveCount(1);                 // csak 08-17 (a vágás)
   const sor = page.locator(`${H} .heti-nap-sor[data-nap="2026-08-17"]`);
   await expect(sor.locator(".heti-nap")).toContainText("Hétfő");
@@ -66,7 +66,7 @@ test("3. alap-hét táblázata a hétfőtől a legfrissebb elérhető napig; a j
 // ── 4. hét-váltás → a 33. hét mind a 7 napja; a hiányzó nap „nincs adat" ──
 test("4. 33. hét: 7 nap (hétfő–vasárnap), a hiányzó nap »nincs adat«, nem marad ki", async ({ page }) => {
   await mock(page);
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.locator('#heti-valaszto .nap-cella[data-nap="2026-08-10"]').click();  // a 33. hét egy napja → az egész hét
   await expect(page.locator("#heti-valaszto")).toHaveAttribute("data-valasztott-het", "2026-08-10");
   await expect(page.locator(`${H} .heti-nap-sor`)).toHaveCount(7);                  // hétfő–vasárnap MIND
@@ -78,7 +78,7 @@ test("4. 33. hét: 7 nap (hétfő–vasárnap), a hiányzó nap »nincs adat«, 
 // ── 5. egy nap sora az aznapi ÖSSZES felkapott szót tartalmazza, tárolt sorrendben ──
 test("5. napi sor = az aznapi összes felkapott szó, tárolt (volumen) sorrendben", async ({ page }) => {
   await mock(page);
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await page.locator('#heti-valaszto .nap-cella[data-nap="2026-08-10"]').click();
   await expect(page.locator(`${H} .heti-nap-sor[data-nap="2026-08-13"] .heti-szavak`)).toHaveText("delta, epszilon, zéta");
 });
@@ -86,7 +86,7 @@ test("5. napi sor = az aznapi összes felkapott szó, tárolt (volumen) sorrendb
 // ── 6. FÜGGETLEN a dátumválasztótól: a fenti chartok napja nem változik ──
 test("6. hét-váltás FÜGGETLEN — a #datum-valaszto értéke és a trend-blokk napja VÁLTOZATLAN", async ({ page }) => {
   await mock(page);
-  await page.goto("/");
+  await page.goto("/trendek.html");
   await expect(page.locator("#datum-valaszto")).toHaveAttribute("data-valasztott-nap", "2026-08-17");   // alap: legfrissebb nap
   await expect(page.locator("#trend-blokk")).toHaveAttribute("data-nap", "2026-08-17");
   await page.locator('#heti-valaszto .nap-cella[data-nap="2026-08-10"]').click();   // hét-váltás (a heti naptár KÜLÖN vezérlő maradt)
@@ -105,7 +105,7 @@ test("N. heti: szegmentált nap reggel/este elválasztóval, régi nap egy lista
     reggel: { trendek: [{ kifejezes: "reg1" }, { kifejezes: "reg2" }], frissitve: "2026-08-17T07:00:00+00:00" },
     este: { trendek: [{ kifejezes: "est1" }], frissitve: "2026-08-17T19:00:00+00:00" },
   }) }));
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const sor = page.locator('#heti-blokk .heti-nap-sor[data-nap="2026-08-17"]');
   await expect(sor.locator('.heti-szegmens[data-szegmens="reggel"]')).toContainText("reg1, reg2");
   await expect(sor.locator('.heti-szegmens[data-szegmens="este"]')).toContainText("est1");
@@ -122,7 +122,7 @@ test("N+1. heti: csak-reggel szegmentált nap → címkézett Reggel lista, este
     nap: "2026-08-17",
     reggel: { trendek: [{ kifejezes: "reg1" }, { kifejezes: "reg2" }], frissitve: "2026-08-17T07:00:00+00:00" },
   }) }));
-  await page.goto("/");
+  await page.goto("/trendek.html");
   const sor = page.locator('#heti-blokk .heti-nap-sor[data-nap="2026-08-17"]');
   const reggel = sor.locator('.heti-szegmens[data-szegmens="reggel"]');
   await expect(reggel).toBeVisible();
