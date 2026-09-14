@@ -5,6 +5,9 @@ import json
 import logging
 import os
 import time
+from pathlib import Path
+
+from trendfigyelo import json_export
 
 _log = logging.getLogger(__name__)
 
@@ -194,3 +197,58 @@ def havi_nlp_elemez(korpusz, kliens=None, modell=MODELL_NLP,
                              e, i + 2, probak, backoff_mp[i])
                 alvo(backoff_mp[i])
     raise utolso
+
+
+def grounding_validal(eredmeny, korpusz):
+    """A hallucináció-védelem (spec §3.1/3): a korpusz kifejezés-halmaza az egyetlen igazságforrás —
+    minden NER-entitás és klaszter `szavak` listája erre a halmazra szűrve (a nem-korpuszbeli tag
+    kiesik); az emiatt ÜRESSÉ vált NER-entitás egészében kiesik (egy 0 szavas entitás nem auditálható).
+    A `lemmak` a korpusz-szavakra korlátozva (a nem-korpuszbeli `szo`-jú bejegyzés kiesik).
+    Tiszta/determinista — nem módosítja a bemenetet."""
+    korpusz_szavak = {s["kifejezes"] for s in korpusz.get("szavak", [])}
+
+    lemmak = [l for l in eredmeny.get("lemmak", []) if l.get("szo") in korpusz_szavak]
+
+    ner = {}
+    for csoport, entitasok in (eredmeny.get("ner") or {}).items():
+        szurt = []
+        for e in entitasok or []:
+            szavak = [sz for sz in (e.get("szavak") or []) if sz in korpusz_szavak]
+            if szavak:   # az üressé vált entitás kiesik
+                szurt.append({**e, "szavak": szavak})
+        ner[csoport] = szurt
+
+    klaszterek = []
+    for k in eredmeny.get("klaszterek", []):
+        szavak = [sz for sz in (k.get("szavak") or []) if sz in korpusz_szavak]
+        klaszterek.append({**k, "szavak": szavak})
+
+    return {**eredmeny, "lemmak": lemmak, "ner": ner, "klaszterek": klaszterek}
+
+
+def havi_nlp_ir(docs_data, honap, eredmeny):
+    """A havi NLP-eredmény külön `havi_nlp/<honap>.json` fájlba, atomi írással (a meglévő
+    json_export._ir_json mintája — nincs a fő json_export.py-t érintő duplikáció)."""
+    mappa = Path(docs_data) / "havi_nlp"
+    mappa.mkdir(parents=True, exist_ok=True)
+    return json_export._ir_json(mappa / (honap + ".json"), eredmeny)
+
+
+def havi_nlp_generalas(docs_data, honap, keszult_iso, kliens=None):
+    """A havi NLP-elemzés generáló belépési pontja: korpusz → Claude-hívás (fail-soft: tartós
+    hibán None, NEM dob) → grounding-validáció → keszult/modell/korpusz-meta hozzáadva → írás.
+    A `keszult_iso` PARAMÉTER (nincs argless datetime.now() a determinizmus miatt)."""
+    korpusz = havi_korpusz(docs_data, honap)
+    try:
+        eredmeny = havi_nlp_elemez(korpusz, kliens=kliens)
+    except Exception as e:   # noqa: BLE001 — tartós API-hiba a bounded retry után: fail-soft
+        _log.error("HIBA: a havi NLP-elemzés tartósan elhasalt (%s hónap): %s", honap, e)
+        return None
+
+    eredmeny = grounding_validal(eredmeny, korpusz)
+    eredmeny["keszult"] = keszult_iso
+    eredmeny["modell"] = MODELL_NLP
+    eredmeny["korpusz"] = {"honap": korpusz["honap"], "napok": korpusz["napok"],
+                            "egyedi_szo": korpusz["egyedi_szo"]}
+    havi_nlp_ir(docs_data, honap, eredmeny)
+    return eredmeny

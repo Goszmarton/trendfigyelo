@@ -59,3 +59,22 @@ def test_havi_nlp_elemez_strukturalt_JSON_mockolt_sdkval():
     assert {k["cimke"] for k in er["klaszterek"]} == {"Bűnügy", "Időjárás"}
     # a séma-hívás strukturált JSON-t kért:
     assert sdk._kw["output_config"]["format"]["type"] == "json_schema"
+
+
+def test_grounding_validal_kiszuri_a_nem_korpuszbeli_entitast():
+    korpusz = {"szavak": [{"kifejezes": "csalás"}, {"kifejezes": "albérlet"}]}
+    er = {"lemmak": [{"szo": "csalás", "lemma": "csalás"}],
+          "ner": {"orszagok": [{"nev": "Kitalált", "szavak": ["nincs ilyen szó"]}], "telepulesek": [], "szemelyek": []},
+          "klaszterek": [{"cimke": "A", "szavak": ["csalás", "kamu szó"], "ertelmezes": "…"}],
+          "osszegzes": "…"}
+    v = havi_nlp.grounding_validal(er, korpusz)
+    # a nem-korpuszbeli entitás/tag KIESIK
+    assert v["ner"]["orszagok"] == []                                  # a "nincs ilyen szó" nem korpusz-szó
+    assert "kamu szó" not in v["klaszterek"][0]["szavak"]              # a lógó tag kiesik
+    assert "csalás" in v["klaszterek"][0]["szavak"]
+
+
+def test_havi_nlp_ir_kulon_fajlba(tmp_path):
+    p = havi_nlp.havi_nlp_ir(str(tmp_path), "2026-09", {"honap": "2026-09", "klaszterek": []})
+    assert p.name == "2026-09.json" and p.parent.name == "havi_nlp"
+    assert json.loads(p.read_text(encoding="utf-8"))["honap"] == "2026-09"
