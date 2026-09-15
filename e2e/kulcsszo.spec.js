@@ -1639,6 +1639,25 @@ test("Predikció: 1_ev horizont figyelmeztetést mutat", async ({ page }) => {
     .toContainText("nagy bizonytalanság");
 });
 
+test("Predikció: órás-only szó hosszú horizontja 'nem becsülhető' üzenet, NINCS görbe", async ({ page }) => {
+  await mock(page, {
+    regObj: reg({ "benzin": { ...regSzo({ domen: "energia" }),
+      predikcio: { "1_nap": predikcioBlokk(), "1_het": predikcioBlokk(), "1_ho": predikcioBlokk(),
+                   "3_ho": { nem_becsulheto: true }, "1_ev": { nem_becsulheto: true } } } }),
+    nyersObj: nyers({ "benzin": [nyersRekord("benzin")] }),
+  });
+  await page.goto("/trendek.html");
+  await page.locator('#kulcsszo-blokk .predikcio-gomb[data-horizont="1_ev"]').click();
+  const kartya = page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="benzin"]');
+  await expect(kartya).toHaveAttribute("data-rendered", "true");
+  await expect(kartya.locator(".predikcio-nem-becsulheto")).toContainText("nem becsülhető megbízhatóan");
+  const vanGorbe = await page.evaluate(() => {
+    const p = (window.chart_peldanyok || {})["benzin"];
+    return !!p && p.data.datasets.some(d => d.borderColor === "#16a085");   // előrejelző vonal színe
+  });
+  expect(vanGorbe).toBe(false);   // sentinel → NINCS előrejelző görbe
+});
+
 // ── display-fix: nagy rmse_veg (≥50, a 0–100 skála felét eléri/meghaladja) → őszinte szöveges sáv-jelzés,
 // NEM egy skálán kívüli pontos ± szám (ami töröttnek tűnne, pl. „±148,7 pont" egy 0–100 charton).
 test("Predikció: rmse_veg>=50 esetén 'közel a teljes skála' szöveg, nincs skálán-kívüli pontos ± szám", async ({ page }) => {

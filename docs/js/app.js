@@ -1053,9 +1053,12 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs, adatforras_be, mltrend_be, pr
   if (mltrend_be && racs.nemlin_xy) kartya.setAttribute(ATTR.nemlin, "true");
   // PREDIKCIÓ (Task 7): CSAK a TELJES (idő-tengelyű) nézeten — a jövő-időbélyegek nem térképezhetők a
   // kategória-nézet fix-ablakos label-indexeire (a predikció-gomb kattintása a teljes nézetre vált, lásd lent).
-  // A szónak lehet a kiválasztott horizonthoz mergelt blokkja (predikcio, Task 6) — ha van, additív dataset.
-  const predikcio_blk = (aktiv_kulcs === TELJES_KULCS && predikcio_horizont && predikcio_horizont !== "ki" && szoreg.predikcio)
+  // A szónak lehet a kiválasztott horizonthoz mergelt blokkja (predikcio) — VAGY egy sentinel
+  // ({nem_becsulheto:true}, órás-only hosszú táv, Task 1): az utóbbi NEM rajzolható, üzenetet kap.
+  const predikcio_nyers = (aktiv_kulcs === TELJES_KULCS && predikcio_horizont && predikcio_horizont !== "ki" && szoreg.predikcio)
     ? szoreg.predikcio[predikcio_horizont] : null;
+  const predikcio_nem_becsulheto = !!(predikcio_nyers && predikcio_nyers.nem_becsulheto);
+  const predikcio_blk = (predikcio_nyers && !predikcio_nem_becsulheto) ? predikcio_nyers : null;
   const predikcio_horizont_def = predikcio_blk
     ? (PREDIKCIO_HORIZONTOK.find(function (h) { return h.kulcs === predikcio_horizont; }) || {})
     : null;
@@ -1139,6 +1142,16 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs, adatforras_be, mltrend_be, pr
       // a tooltip-lábléc közelség-küszöbe: a pontok átlagos térközének fele (így csak a marker fölé húzva villan)
       kartya._marker_kuszob_ms = rajzolt.length > 1 ? (utolso - elso) / (rajzolt.length - 1) / 2 : 0;
     }
+  }
+  // SENTINEL (órás-only hosszú táv): őszinte felirat forecast helyett (a horizont ragozott nevével).
+  if (predikcio_nem_becsulheto) {
+    const hdef = PREDIKCIO_HORIZONTOK.find(function (h) { return h.kulcs === predikcio_horizont; }) || {};
+    const nb = document.createElement("p");
+    nb.className = "predikcio-nem-becsulheto";
+    nb.textContent = (hdef.ragozott || predikcio_horizont)
+      + " ezen a szón nem becsülhető megbízhatóan – csak órás mérés áll rendelkezésre, "
+      + "amiből ilyen hosszú távra nem adunk előrejelzést.";
+    kartya.appendChild(nb);
   }
   return kartya;
 }
