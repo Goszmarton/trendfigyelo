@@ -364,10 +364,9 @@ def regresszio_szamit(nyers, tortenet, config, szamitva_utc, lanc_map=None):
             "racs": getattr(aktivak.get(szo), "racs", "ora") or "ora",
             "intervallumok": intervallumok,
         }
-        # szó-szintű ELŐREJELZÉS — az órás sorozatból MIND az 5 horizont (a lineáris/nemlin érintetlen).
-        # Az 1_nap/1_het natív órás; az 1_ho/3_ho/1_ev fallback: az órás-only szavaknak (benzin/nyugdíj,
-        # nincs napi/heti soruk) ez az EGYETLEN forrás, a többi szónál a másodlagos ág natív (napi/heti)
-        # blokkjai a frontend-merge-ben felülírják ezeket a hosszú horizontokat.
+        # szó-szintű ELŐREJELZÉS — az órás sorozatból rövid/közép horizontok (1_nap/1_het/1_ho) +
+        # hosszú (3_ho/1_ev) sentinelok. Az órás-only szavaknak (benzin/nyugdíj) ez az EGYETLEN forrás;
+        # a másodlagos ág (napi/heti) valós hosszú-horizontja a frontend-merge-ben felülírja a sentinelt.
         oras_pontok = _oras_sorozat(nyers, lanc_map, szo)
         # Az órás sorozatból CSAK a rövid/közép horizontokat becsüljük valósnak; a 3_ho/1_ev egy pár
         # hónapnyi órás pillanatkép-láncból nem megbízható → SENTINEL. A másodlagos (napi/heti) ág valós
