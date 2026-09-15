@@ -414,3 +414,11 @@ def test_forras_prozai_sor_nem_bejegyzes():                # (i)
 def test_vendor_valos_docs_ma_zold():
     # Ma nincs docs/vendor/ → []. Task 4 vendorolás után ugyanez a guard igazol élesben.
     assert vendor_integritas_ellenorzes(DOCS / "vendor") == []
+
+
+def test_adatokrol_predikcio_uj_viselkedesek():
+    # az infó-oldal dokumentálja a rövid-horizont ráközelítést ÉS az órás-only hosszú táv "nem becsülhető"-t
+    szoveg = (DOCS / "adatokrol.html").read_text(encoding="utf-8")
+    assert "ráközelít" in szoveg                       # rövid horizont láthatóság
+    assert "nem becsülhető" in szoveg                  # órás-only 3hó/1év
+    assert "csak órás" in szoveg                       # az ok: nincs napi/heti forrás
