@@ -125,6 +125,8 @@ const PREDIKCIO_HORIZONTOK = [
   { kulcs: "1_ev", cimke: "1 év", ragozott: "1 évre" },
 ];
 const PREDIKCIO_INFO = "Egy horizontot választva a chartokon egy zöld előrejelzés-görbe (LOESS-alapú) és bizonytalansági sáv jelenik meg a mért adat után. Alapból egyik horizont sincs kiválasztva. Részletek az Adatokról oldalon.";
+const PREDIKCIO_ZOOM_KUSZOB = 0.25;   // ha a forecast-szakasz < ennyi · előzmény → RÖVID horizont: ráközelítünk
+const PREDIKCIO_ZOOM_SZORZO = 4;      // az x_min a forecast-hossz ennyiszeresével a mért vég elé (forecast ~1/5 szélesség)
 const TENGELY_FELIRAT = "relatív keresési szint (0–100)";   // EN DASH
 const CSUPA_NULLA_SZOVEG = "Ezen az időszakon nincs érdemi keresési aktivitás (a mért értékek végig nulla körül).";
 const URES_NINCS_ABLAK = "Az adatsor ezen az időszakon nem érhető el.";
@@ -1189,12 +1191,23 @@ function chart_letrehoz(kartya) {
     // per-szó tengely PONTOS széllel: min/max = az ELSŐ/UTOLSÓ tényleges adatpont (nincs Chart.js grace-padding →
     // a görbe a két szélt ÉRINTI, nincs felesleges gap). A tengelyen CSAK 2 tick: a KEZDŐ + a VÉG dátum (teljes).
     const teljes_pts = racs.xy.filter(function (p) { return p.y !== null; });
-    const x_min = teljes_pts.length ? teljes_pts[0].x : undefined;
+    let x_min = teljes_pts.length ? teljes_pts[0].x : undefined;
     let x_max = teljes_pts.length ? teljes_pts[teljes_pts.length - 1].x : undefined;
     // PREDIKCIÓ: a jövő-pontok jobbra nyújtják a tengelyt (a sáv/vonal a mért adat UTÁN folytatódik).
     if (kartya._predikcio_xy && kartya._predikcio_xy.pont.length) {
       const pr_veg = kartya._predikcio_xy.pont[kartya._predikcio_xy.pont.length - 1].x;
       if (x_max === undefined || pr_veg > x_max) x_max = pr_veg;
+      // RÖVID HORIZONT AUTO-ZOOM: ha a forecast jövő-szakasza kicsi a mért előzményhez képest, az x_min-t
+      // a közelmúltra emeljük → a rövid előrejelzés kitölti a szélesség jó részét (jól látszódjon). Hosszú
+      // horizontnál (nagy forecast-szakasz) a feltétel nem teljesül → nincs zoom, a teljes előzmény látszik.
+      const adat_veg = teljes_pts.length ? teljes_pts[teljes_pts.length - 1].x : undefined;
+      if (adat_veg !== undefined && x_min !== undefined) {
+        const forecast_span = pr_veg - adat_veg;
+        const elozmeny_span = adat_veg - x_min;
+        if (forecast_span > 0 && elozmeny_span > 0 && forecast_span < PREDIKCIO_ZOOM_KUSZOB * elozmeny_span) {
+          x_min = Math.max(x_min, adat_veg - PREDIKCIO_ZOOM_SZORZO * forecast_span);
+        }
+      }
     }
     chart_peldanyok[kartya.getAttribute(ATTR.kulcsszo)] = new Chart(canvas, {
       type: "line",

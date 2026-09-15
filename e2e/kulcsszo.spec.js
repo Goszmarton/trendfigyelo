@@ -1625,6 +1625,27 @@ test("Predikció: kiválasztott horizont előrejelző vonalat + sávot rajzol a 
   await expect(kartya).toContainText("±3,1 pont");   // rmse_veg=3,1 < 50 → pontos szám marad
 });
 
+test("Predikció: rövid horizont ráközelít – az x-tengely a közelmúltra szűkül", async ({ page }) => {
+  // benzin órás-only, 1_nap blokk (default pont a 169. óránál) → a 168 órás előzményhez képest a
+  // forecast-szakasz apró → az x_min a mért kezdet ELÉ emelkedik (ráközelítés).
+  await mock(page, {
+    regObj: reg({ "benzin": { ...regSzo({ domen: "energia" }),
+      predikcio: { "1_nap": predikcioBlokk() } } }),
+    nyersObj: nyers({ "benzin": [nyersRekord("benzin")] }),
+  });
+  await page.goto("/trendek.html");
+  await page.locator('#kulcsszo-blokk .predikcio-gomb[data-horizont="1_nap"]').click();
+  await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="benzin"]'))
+    .toHaveAttribute("data-rendered", "true");
+  const kozelit = await page.evaluate(() => {
+    const p = (window.chart_peldanyok || {})["benzin"];
+    if (!p) return null;
+    const mert = p.data.datasets[0].data.filter(d => d.y !== null);
+    return { xmin: p.scales.x.min, elso: mert[0].x };
+  });
+  expect(kozelit.xmin).toBeGreaterThan(kozelit.elso);   // az x_min a mért kezdet ELÉ emelve = ráközelítés
+});
+
 test("Predikció: 1_ev horizont figyelmeztetést mutat", async ({ page }) => {
   await mock(page, {
     regObj: reg({ "benzin": regSzo({ domen: "energia" }) }),
