@@ -630,6 +630,23 @@ def test_regresszio_szo_predikcio_blokkot_kap_eleg_oras_ponttal():
     assert len(szo["predikcio"]["1_nap"]["pont"]) > 0
 
 
+def test_regresszio_oras_only_hosszu_horizont_nem_becsulheto_sentinel():
+    # elég órás pont → 1_nap/1_het/1_ho VALÓS, DE 3_ho/1_ev SENTINEL ({nem_becsulheto:True}),
+    # mert az órás-only szónak (nincs napi/heti forrása) a hosszú táv nem becsülhető megbízhatóan
+    import numpy as np
+    t0 = datetime(2026, 8, 1, tzinfo=timezone.utc)
+    pontok = [{"idopont_utc": (t0 + timedelta(hours=i)).isoformat(),
+               "ertek": int(50 + 20 * np.sin(i / 12.0)), "reszleges": False} for i in range(400)]
+    nyers = {"kulcsszavak": {"benzin": [{"kulcsszo": "benzin",
+             "ablak_kezdet_utc": pontok[0]["idopont_utc"], "ablak_veg_utc": pontok[-1]["idopont_utc"],
+             "pontok": pontok}]}}
+    out = regresszio.regresszio_szamit(nyers, _tortenet({}), _config(["benzin"]), "2026-08-18T00:00:00+00:00")
+    pred = out["kulcsszavak"]["benzin"]["predikcio"]
+    assert len(pred["1_nap"]["pont"]) > 0 and len(pred["1_ho"]["pont"]) > 0   # rövid/közép VALÓS
+    assert pred["3_ho"] == {"nem_becsulheto": True}                           # hosszú táv SENTINEL
+    assert pred["1_ev"] == {"nem_becsulheto": True}
+
+
 def test_regresszio_szo_predikcio_hianyzik_keves_oras_pontnal():
     # kevés (<72) órás pont → nincs 'predikcio' kulcs (a horizont_blokk None-t ad minden horizontra)
     pontok = [_pont(KEZD + timedelta(hours=i), 50 + 0.1 * i) for i in range(10)]

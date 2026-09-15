@@ -369,8 +369,14 @@ def regresszio_szamit(nyers, tortenet, config, szamitva_utc, lanc_map=None):
         # nincs napi/heti soruk) ez az EGYETLEN forrás, a többi szónál a másodlagos ág natív (napi/heti)
         # blokkjai a frontend-merge-ben felülírják ezeket a hosszú horizontokat.
         oras_pontok = _oras_sorozat(nyers, lanc_map, szo)
-        pred = predikcio.sorozat_predikcio(oras_pontok, 3600, ("1_nap", "1_het", "1_ho", "3_ho", "1_ev"))
+        # Az órás sorozatból CSAK a rövid/közép horizontokat becsüljük valósnak; a 3_ho/1_ev egy pár
+        # hónapnyi órás pillanatkép-láncból nem megbízható → SENTINEL. A másodlagos (napi/heti) ág valós
+        # hosszú-horizontja a frontend-merge-ben felülírja, ha a szónak van napi/heti sora → a sentinel
+        # CSAK az órás-only szónál (benzin/nyugdíj) marad meg.
+        pred = predikcio.sorozat_predikcio(oras_pontok, 3600, ("1_nap", "1_het", "1_ho"))
         if pred:
+            pred["3_ho"] = {"nem_becsulheto": True}
+            pred["1_ev"] = {"nem_becsulheto": True}
             ki[szo]["predikcio"] = pred
     return {
         "szamitva_utc": szamitva_utc,
