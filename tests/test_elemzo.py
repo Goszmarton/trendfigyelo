@@ -917,28 +917,42 @@ def _pred_blk(pontok, sav=4.0, megb=0.9):
     felso = [{"idopont_utc": p["idopont_utc"], "ertek": p["ertek"] + sav} for p in pont]
     return {"pont": pont, "also": also, "felso": felso, "megbizhatosag": megb}
 
+
 def test_predikcio_kozeltav_merge_nearterm_irany_osszesites():
     # órás-only szó: 1_nap 2+ pontból, emelkedő; heti szó: 1_nap/1_het 1-pontos (kihagyva) → 1_ho a near-term
+    # másodlagos felülír primert: benzin 1_nap OK, albérlet 1_ho különbözik (prim emelkedik, masod csökken → masod nyer)
     reg = {"kulcsszavak": {
         "benzin": {"domen": "energia", "predikcio": {
             "1_nap": _pred_blk([50, 62]),                     # +12 → emelkedik
             "3_ho": {"nem_becsulheto": True}, "1_ev": {"nem_becsulheto": True}}},
         "albérlet": {"domen": "lakhatas", "predikcio": {
             "1_nap": _pred_blk([70]), "1_het": _pred_blk([70]),   # 1-pontos → kihagyva
-            "1_ho": _pred_blk([70, 66], sav=10.0, megb=0.3)}},     # -4 → csökken, széles sáv
+            "1_ho": _pred_blk([70, 82])}},                         # prim: +12 → emelkedik (de felülírásra vár)
     }}
     masod = {"kulcsszavak": {"albérlet": {"domen": "lakhatas", "predikcio": {
-        "1_ho": _pred_blk([70, 66], sav=10.0, megb=0.3)}}}}       # a másodlagos NYER (ugyanaz itt)
+        "1_ho": _pred_blk([70, 66], sav=10.0, megb=0.3)}}}}       # masod: -4 → csökken (NYER)
     out = elemzo._predikcio_kozeltav(reg, masod)
     sz = {s["szo"]: s for s in out["szavak"]}
     assert sz["benzin"]["horizont"] == "1 nap" and sz["benzin"]["irany"] == "emelkedik"
     assert sz["benzin"]["valtozas_pont"] == 12.0
     assert sz["albérlet"]["horizont"] == "1 hó" and sz["albérlet"]["irany"] == "csökken"
+    assert sz["albérlet"]["valtozas_pont"] == -4.0               # másodlagos értéke, nem a primer +12
     assert sz["albérlet"]["sav_pont"] == 10.0                  # (felso-also)/2 = (76-56)/2
     assert out["osszesites"] == {"emelkedo": 1, "csokkeno": 1, "stagnalo": 0}
+
 
 def test_predikcio_kozeltav_stagnal_deadband_es_ures_none():
     reg = {"kulcsszavak": {"csőd": {"domen": "penzugy", "predikcio": {"1_nap": _pred_blk([40, 41])}}}}  # +1 < 2 → stagnál
     out = elemzo._predikcio_kozeltav(reg, {})
     assert out["szavak"][0]["irany"] == "stagnál" and out["osszesites"]["stagnalo"] == 1
     assert elemzo._predikcio_kozeltav({}, {}) is None          # nincs szó → None
+
+
+def test_predikcio_kozeltav_deadband_szigoru_hatar():
+    # valtozas_pont == 2.0 (a deadband határa) → stagnál (nem emelkedik: szigorú >)
+    # valtozas_pont == -2.0 → stagnál (nem csökken: szigorú <)
+    reg = {"kulcsszavak": {"adat": {"domen": "test", "predikcio": {"1_nap": _pred_blk([40, 42])}}}}  # +2.0
+    out = elemzo._predikcio_kozeltav(reg, {})
+    assert out["szavak"][0]["irany"] == "stagnál"
+    assert out["szavak"][0]["valtozas_pont"] == 2.0
+    assert out["osszesites"] == {"emelkedo": 0, "csokkeno": 0, "stagnalo": 1}
