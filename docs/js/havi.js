@@ -95,6 +95,9 @@ function havi_barchart(kulcs, canvasId, cimkek, ertekek) {
   canvas.id = canvasId;
   doboz.appendChild(canvas);
   if (typeof Chart !== "undefined" && cimkek.length) {
+    if (havi_chartok[kulcs] && typeof havi_chartok[kulcs].destroy === "function") {
+      havi_chartok[kulcs].destroy();
+    }
     havi_chartok[kulcs] = new Chart(canvas, {
       type: "bar",
       data: { labels: cimkek, datasets: [{ data: ertekek, backgroundColor: "#3366cc" }] },

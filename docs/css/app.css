@@ -166,6 +166,12 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
   padding: .3em .6em; margin: .2em; background: #f5f8ff; }
 @media (max-width: 760px) { #elemzes { grid-template-columns: 1fr; } #elemzes-naptar { position: static; } }
 
+/* napi→havi átugrás-link (a hónap utolsó napján) — kattintható pill */
+.havi-atugras { display: inline-block; border: 1px solid #3366cc; border-radius: 999px;
+  padding: .35em .9em; margin: .3em 0; background: #f0f5ff; color: #3366cc; font-weight: 600;
+  text-decoration: none; }
+.havi-atugras:hover { background: #3366cc; color: #fff; }
+
 /* „Havi elemzés" fül — klaszter-kártyák tag-listája + a szó→lemma térkép táblázata */
 .havi-tag-lista { list-style: none; display: flex; flex-wrap: wrap; gap: .4rem; margin: .3rem 0 .6rem; padding: 0; }
 .havi-tag { display: inline-block; border: 1px solid #cddcf7; border-radius: 999px;
