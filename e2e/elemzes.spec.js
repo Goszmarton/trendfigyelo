@@ -205,3 +205,30 @@ test("Előrejelzések szekció KIMARAD, ha nincs art.predikcio (régi archív-na
   await page.goto("/elemzes.html");
   await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Előrejelzések – mire számíthatunk?"))')).toHaveCount(0);
 });
+
+test("Napi → havi link: a hónap utolsó napján megjelenik (nem-utolsón nem)", async ({ page }) => {
+  const alap = (nap) => ({ frissitve: "x", modell: "m", nap, mode: "este",
+    valtozas: { diff: { van_elozo: true, mozgok: [] }, szoveg: "V." },
+    kulcsszavak: { szamok: [], napi: { szoveg: "N." } },
+    felkapott: { top: [], reggel_top: [], este_top: [], reggel_este_diff: {}, het_valos: [],
+      reggel: { szoveg: "R." }, este: { szoveg: "E." }, teljes_nap: { szoveg: "Í." }, het: { szoveg: "H." } } });
+  await page.route("**/data/elemzesek/index.json", r => r.fulfill({ status: 404, body: "" }));
+  // 2026-09-30 = szeptember utolsó napja → van link
+  await page.route("**/data/elemzes.json", r => r.fulfill({ json: alap("2026-09-30") }));
+  await page.goto("/elemzes.html");
+  const link = page.locator('a.havi-atugras[href="havi.html?honap=2026-09"]');
+  await expect(link).toHaveCount(1);
+  await expect(link).toContainText("Havi elemzés");
+});
+
+test("Napi → havi link: nem-utolsó napon NINCS", async ({ page }) => {
+  const alap = { frissitve: "x", modell: "m", nap: "2026-09-15", mode: "este",
+    valtozas: { diff: { van_elozo: true, mozgok: [] }, szoveg: "V." },
+    kulcsszavak: { szamok: [], napi: { szoveg: "N." } },
+    felkapott: { top: [], reggel_top: [], este_top: [], reggel_este_diff: {}, het_valos: [],
+      reggel: { szoveg: "R." }, este: { szoveg: "E." }, teljes_nap: { szoveg: "Í." }, het: { szoveg: "H." } } };
+  await page.route("**/data/elemzesek/index.json", r => r.fulfill({ status: 404, body: "" }));
+  await page.route("**/data/elemzes.json", r => r.fulfill({ json: alap }));
+  await page.goto("/elemzes.html");
+  await expect(page.locator("a.havi-atugras")).toHaveCount(0);
+});

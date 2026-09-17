@@ -4,6 +4,25 @@
 // jelenik meg (.elemzes-megfigyeles); az AI narratíva folyó prózaként, <p class="elemzes-szoveg">
 // bekezdésekben — nincs külön ELMÉLETI/feltételezés-réteg.
 
+const HONAP_NEV_E = ["január", "február", "március", "április", "május", "június",
+  "július", "augusztus", "szeptember", "október", "november", "december"];
+
+function napok_a_honapban(ev, ho) {              // ho: 1..12 ; NINCS new Date()
+  const szoko = (ev % 4 === 0 && ev % 100 !== 0) || ev % 400 === 0;
+  return [31, szoko ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][ho - 1];
+}
+function havi_atugras_link(nap) {                // "YYYY-MM-DD" → <a> ha a hó utolsó napja, különben null
+  const m = (nap || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return null;
+  const ev = parseInt(m[1], 10), ho = parseInt(m[2], 10), d = parseInt(m[3], 10);
+  if (ho < 1 || ho > 12 || d !== napok_a_honapban(ev, ho)) return null;
+  const a = document.createElement("a");
+  a.className = "havi-atugras";
+  a.href = `havi.html?honap=${m[1]}-${m[2]}`;
+  a.textContent = `→ Havi elemzés (${m[1]}. ${HONAP_NEV_E[ho - 1]})`;
+  return a;
+}
+
 async function elemzes_betolt(datum) {
   const url = datum ? `data/elemzesek/${datum}.json` : "data/elemzes.json";
   const r = await fetch(url);
@@ -63,6 +82,9 @@ function rajzol(art) {
   t.textContent = "";
   document.getElementById("elemzes-fejlec").textContent =
     `Elemzés – ${art.nap} (${art.modell})`;
+
+  const atug = havi_atugras_link(art.nap);
+  if (atug) t.appendChild(atug);
 
   t.appendChild(szegmens_cim("Google keresések napi elemzése"));
 
