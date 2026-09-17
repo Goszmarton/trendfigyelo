@@ -956,3 +956,29 @@ def test_predikcio_kozeltav_deadband_szigoru_hatar():
     assert out["szavak"][0]["irany"] == "stagnál"
     assert out["szavak"][0]["valtozas_pont"] == 2.0
     assert out["osszesites"] == {"emelkedo": 0, "csokkeno": 0, "stagnalo": 1}
+
+
+def test_epit_payload_predikcio_csak_este():
+    reg = {"kulcsszavak": {"benzin": {"domen": "energia",
+        "predikcio": {"1_nap": _pred_blk([50, 62])}}}}
+    adatok = {"regresszio": reg, "masodlagos_regresszio": {}, "tortenet": {},
+              "legfrissebb": {}, "napok_trendek": {}, "ma_szegmensek": {}, "lanc": {}}
+    este = elemzo.epit_payload(adatok, mode="este")
+    reggel = elemzo.epit_payload(adatok, mode="reggel")
+    assert "predikcio" in este and este["predikcio"]["szavak"][0]["szo"] == "benzin"
+    assert "predikcio" not in reggel                          # reggel scoped → nincs predikció
+
+
+def test_valasz_sema_predikcio_flaggel_keri_a_szekciot():
+    s_van = elemzo._valasz_sema(mode="este", predikcio=True)
+    s_nincs = elemzo._valasz_sema(mode="este", predikcio=False)
+    assert "predikcio" in s_van["required"] and "predikcio" in s_van["properties"]
+    assert "predikcio" not in s_nincs["required"]
+
+
+def test_artefakt_predikcio_bekerul_ha_van_payloadban():
+    payload = _payload_szegmensekkel(van_reggel=True, van_este=True)
+    payload["predikcio"] = {"szavak": [], "osszesites": {}}    # jelenlét → az artefakt átveszi az AI-szöveget
+    ai = _ai_valasz(); ai["predikcio"] = {"szoveg": "Előrejelzés-próza."}
+    art = elemzo.valasz_to_artefakt(ai, payload, nap="2026-08-31", modell="m")
+    assert art["predikcio"]["szoveg"] == "Előrejelzés-próza."

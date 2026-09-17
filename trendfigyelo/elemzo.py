@@ -60,7 +60,15 @@ RENDSZER_PROMPT = (
     "NAP ÍVE (mi lett estére új, mi halványult el, mi tartott ki egész nap — a nap dinamikája, "
     "nem a két lista újramondása), és a HETI kép (a több napon vissza-visszatérő szavak). Ha "
     "egy pillanatkép hiányzik, egy rövid tényszerű mondattal jelzed, nem találsz ki adatot. "
-    "(10) Gondolatjelként MINDIG a rövid „–\" jelet használod, SOHA nem a hosszú „—\" jelet."
+    "(10) Gondolatjelként MINDIG a rövid „–\" jelet használod, SOHA nem a hosszú „—\" jelet. "
+    "(11) Ha a bemenet előrejelzés-részt is tartalmaz: írj egy TÖMÖR „Előrejelzések\" bekezdést arról, "
+    "mely követett keresések iránya mutat a közeljövőben emelkedést vagy csökkenést, és melyik a "
+    "legmagabiztosabb. FONTOS őszinteség: ez a közelmúlt trendjének matematikai FOLYTATÁSA, NEM "
+    "eseményjóslat – a valóság eltérhet; ezt a fogalmazás hordozza. A nagyon bizonytalan (széles "
+    "bizonytalansági sávú vagy alacsony megbízhatóságú) előrejelzéseket őszintén jelzed, nem állítod "
+    "biztosnak. NEM sorolod fel újra minden szót – a szembetűnő mozgókat emeled ki, a stagnáló többséget "
+    "egy-két mondattal, csoportosítva összefoglalod. A szokásos szabályok itt is: folyó bekezdés, "
+    "felsorolás/mezőnév tilalma, óvatos fogalmazás, rövid „–\" gondolatjel, számot sosem találsz ki. "
 )
 
 _RENDSZER_PROMPT_REGGEL = (
@@ -374,6 +382,9 @@ def epit_payload(adatok, tegnapi_szamok=None, tegnapi_top=None, mode="este"):
         "kulcsszo_het": _kulcsszo_het(adatok.get("lanc", {})),
     }
     if mode != "reggel":
+        p = _predikcio_kozeltav(regresszio, adatok.get("masodlagos_regresszio", {}))
+        if p:
+            payload["predikcio"] = p
         yt_szamok = _youtube_szamok(adatok.get("youtube_regresszio"), adatok.get("youtube_nyers"))
         if yt_szamok:
             payload["youtube"] = {"szamok": yt_szamok,
@@ -396,7 +407,7 @@ def _szekcio_csoport(*kulcsok):
             "properties": {k: sz for k in kulcsok}}
 
 
-def _valasz_sema(youtube=False, mode="este"):
+def _valasz_sema(youtube=False, mode="este", predikcio=False):
     if mode == "reggel":
         return {"type": "object", "additionalProperties": False,
                 "required": ["felkapott"],
@@ -407,6 +418,9 @@ def _valasz_sema(youtube=False, mode="este"):
         "felkapott": _szekcio_csoport("reggel", "este", "teljes_nap", "het"),
     }
     required = ["valtozas", "kulcsszavak", "felkapott"]
+    if predikcio:
+        props["predikcio"] = _szekcio_sema()
+        required = required + ["predikcio"]
     if youtube:
         props["youtube"] = _szekcio_csoport("napi", "teljes_kep")
         required = required + ["youtube"]
@@ -440,7 +454,8 @@ class _AnthropicKliens:
             thinking={"type": "adaptive"},
             output_config={"effort": "medium",
                            "format": {"type": "json_schema",
-                                      "schema": _valasz_sema(youtube="youtube" in payload, mode=mode)}},
+                                      "schema": _valasz_sema(youtube="youtube" in payload, mode=mode,
+                                                   predikcio="predikcio" in payload)}},
             system=_rendszer_prompt(mode),
             messages=[{"role": "user", "content":
                        "Elemezd az alábbi VALÓS számokat (JSON). Csak ezekből dolgozz:\n"
@@ -553,6 +568,8 @@ def valasz_to_artefakt(ai_valasz, payload, nap, modell, mode="este"):
             "napi": ai_valasz["youtube"]["napi"],
             "teljes_kep": ai_valasz["youtube"]["teljes_kep"],
         }
+    if "predikcio" in payload:
+        art["predikcio"] = ai_valasz["predikcio"]
     return art
 
 
@@ -598,6 +615,7 @@ def futtat(docs_data, nap, mode="este", kliens=None, alvo=None):
     docs_data = Path(docs_data)
     adatok = {
         "regresszio": _betolt(docs_data / "kulcsszo_regresszio.json") or {},
+        "masodlagos_regresszio": _betolt(docs_data / "kulcsszo_masodlagos_regresszio.json") or {},
         "tortenet": _betolt(docs_data / "tortenet.json") or {},
         "legfrissebb": _betolt(docs_data / "legfrissebb.json") or {},
         "napok_trendek": _utolso_napok_trendek(docs_data),
