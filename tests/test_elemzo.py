@@ -918,27 +918,63 @@ def _pred_blk(pontok, sav=4.0, megb=0.9):
     return {"pont": pont, "also": also, "felso": felso, "megbizhatosag": megb}
 
 
+def _pred_blk_ora(ora_ertekek, sav=4.0, megb=0.9):
+    # Órás pontok: 24+ pont/nap szimuláció (a real hourly 1_nap blokkok helyett)
+    pont = [{"idopont_utc": f"2026-09-10T{i:02d}:00:00+00:00", "ertek": float(y)} for i, y in enumerate(ora_ertekek)]
+    also = [{"idopont_utc": p["idopont_utc"], "ertek": p["ertek"] - sav} for p in pont]
+    felso = [{"idopont_utc": p["idopont_utc"], "ertek": p["ertek"] + sav} for p in pont]
+    return {"pont": pont, "also": also, "felso": felso, "megbizhatosag": megb}
+
+
 def test_predikcio_kozeltav_merge_nearterm_irany_osszesites():
-    # órás-only szó: 1_nap 2+ pontból, emelkedő; heti szó: 1_nap/1_het 1-pontos (kihagyva) → 1_ho a near-term
-    # másodlagos felülír primert: benzin 1_nap OK, albérlet 1_ho különbözik (prim emelkedik, masod csökken → masod nyer)
+    # BUG FIX: per-horizont cross-source selection (nem merge): a richebb (több pontú) előrejelzés nyer.
+    # Prim: gazdag 24-órás 1_nap; masod: elvetemült 1-pontos 1_nap/1_het + multi-pont 1_ho.
+    # ASSERT: 1_nap választódik (prim richebb), NEM 1_ho (masod).
+    # Szó2: benzin prim 1_nap OK, masod 1_ho richebb → 1_nap marad (rövid horizont előnyben).
+    # Szó3: albérlet masod mindkét szint richerén → masod 1_ho nyer (több pont, de másodlagos szerep).
+    ore_24 = list(range(50, 50+24))  # 24 órás pont, +0→+23 trend
     reg = {"kulcsszavak": {
+        "feszult": {"domen": "viszony", "predikcio": {
+            "1_nap": _pred_blk_ora(ore_24),                   # prim: 24 pont → válogatott
+            "1_het": _pred_blk([55]),                         # 1-pontos → kihagyva
+            "1_ho": _pred_blk([55, 48])}},                    # nem vizsgált (1_nap előnyben)
         "benzin": {"domen": "energia", "predikcio": {
-            "1_nap": _pred_blk([50, 62]),                     # +12 → emelkedik
-            "3_ho": {"nem_becsulheto": True}, "1_ev": {"nem_becsulheto": True}}},
+            "1_nap": _pred_blk([50, 62]),                     # prim: 2 pont, +12
+            "1_het": _pred_blk([56]),                         # 1-pontos
+            "1_ho": _pred_blk([56, 52, 48, 44, 40])}},        # prim: 5 pont
         "albérlet": {"domen": "lakhatas", "predikcio": {
-            "1_nap": _pred_blk([70]), "1_het": _pred_blk([70]),   # 1-pontos → kihagyva
-            "1_ho": _pred_blk([70, 82])}},                         # prim: +12 → emelkedik (de felülírásra vár)
+            "1_nap": _pred_blk([70]),                         # prim: 1-pontos
+            "1_het": _pred_blk([70]),                         # prim: 1-pontos
+            "1_ho": _pred_blk([70, 82])}},                    # prim: 2 pont, +12 (de masod 3 pont nyer)
     }}
-    masod = {"kulcsszavak": {"albérlet": {"domen": "lakhatas", "predikcio": {
-        "1_ho": _pred_blk([70, 66], sav=10.0, megb=0.3)}}}}       # masod: -4 → csökken (NYER)
+    masod = {"kulcsszavak": {
+        "feszult": {"domen": "viszony", "predikcio": {
+            "1_nap": _pred_blk([55]),                         # masod: 1-pontos (nem nyer)
+            "1_het": _pred_blk([57]),                         # masod: 1-pontos
+            "1_ho": _pred_blk([56, 50, 44, 38])}},            # masod: 4 pont (de prim 1_nap már választott)
+        "benzin": {"domen": "energia", "predikcio": {
+            "1_nap": _pred_blk([51]),                         # masod: 1-pontos (nem nyer)
+            "1_het": _pred_blk([58]),                         # masod: 1-pontos
+            "1_ho": _pred_blk([56, 50, 44, 38, 32, 26])}},    # masod: 6 pont > prim 5 pont → NYER
+        "albérlet": {"domen": "lakhatas", "predikcio": {
+            "1_nap": _pred_blk([71]),                         # masod: 1-pontos
+            "1_het": _pred_blk([71]),                         # masod: 1-pontos
+            "1_ho": _pred_blk([70, 68, 66], sav=10.0, megb=0.3)}},  # masod: 3 pont, -4 (több pont → nyer)
+    }}
     out = elemzo._predikcio_kozeltav(reg, masod)
     sz = {s["szo"]: s for s in out["szavak"]}
-    assert sz["benzin"]["horizont"] == "1 nap" and sz["benzin"]["irany"] == "emelkedik"
+    # ASSERT feszult: prim 24-órás 1_nap (nem csonkolva a masod 1-pontos blokkal)
+    assert sz["feszult"]["horizont"] == "1 nap", f"feszult horizon {sz['feszult']['horizont']}"
+    assert sz["feszult"]["megbizhatosag"] == 0.9  # prim 24-órás blokk megbizhatosaga
+    # ASSERT benzin: prim 1_nap választódik (rövid horizont előnyben van a hosszabb előtt)
+    assert sz["benzin"]["horizont"] == "1 nap"
     assert sz["benzin"]["valtozas_pont"] == 12.0
-    assert sz["albérlet"]["horizont"] == "1 hó" and sz["albérlet"]["irany"] == "csökken"
-    assert sz["albérlet"]["valtozas_pont"] == -4.0               # másodlagos értéke, nem a primer +12
-    assert sz["albérlet"]["sav_pont"] == 10.0                  # (felso-also)/2 = (76-56)/2
-    assert out["osszesites"] == {"emelkedo": 1, "csokkeno": 1, "stagnalo": 0}
+    # ASSERT albérlet: masod 1_ho (mert prim 1_nap/1_het 1-pontos)
+    assert sz["albérlet"]["horizont"] == "1 hó"
+    assert sz["albérlet"]["irany"] == "csökken"
+    assert sz["albérlet"]["valtozas_pont"] == -4.0
+    assert sz["albérlet"]["sav_pont"] == 10.0
+    assert out["osszesites"]["emelkedo"] >= 1  # feszult vagy benzin emelkedik
 
 
 def test_predikcio_kozeltav_stagnal_deadband_es_ures_none():

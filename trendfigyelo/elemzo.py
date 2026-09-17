@@ -172,20 +172,23 @@ IRANY_DEADBAND = 2.0                                 # |változás_pont| ennél 
 
 
 def _predikcio_kozeltav(regresszio, masodlagos):
-    """A követett szavak KÖZELTÁVÚ előrejelzés-összefoglalója (csak esti). A két regresszió merge-e
-    (a másodlagos NYER, mint a frontend); szavanként a legrövidebb ≥2-pontos horizont, az irányt a
+    """A követett szavak KÖZELTÁVÚ előrejelzés-összefoglalója (csak esti). Per-horizont cross-source
+    selection (nem merge): szavanként a legrövidebb ≥2-pontos horizont, ha több usable jelölt van
+    az adott horizonton az egyik forrásból sem: a finomabb (több pontú) választódik. Az irányt a
     forecast SAJÁT trajektóriájából (skála-konzisztens). Determinista. Üres → None."""
     primer = (regresszio or {}).get("kulcsszavak", {}) if isinstance(regresszio, dict) else {}
     masod = (masodlagos or {}).get("kulcsszavak", {}) if isinstance(masodlagos, dict) else {}
     szavak = []
     for szo, prec in primer.items():
-        pred = dict((prec or {}).get("predikcio", {}) or {})
-        pred.update((masod.get(szo, {}) or {}).get("predikcio", {}) or {})   # másodlagos felülír
+        p_pred = (prec or {}).get("predikcio", {}) or {}
+        m_pred = (masod.get(szo, {}) or {}).get("predikcio", {}) or {}
         blk = hz = None
         for h in NEAR_TERM_HORIZONTOK:
-            b = pred.get(h)
-            if isinstance(b, dict) and not b.get("nem_becsulheto") and len(b.get("pont") or []) >= 2:
-                blk, hz = b, h
+            jeloltek = [b for b in (p_pred.get(h), m_pred.get(h))
+                        if isinstance(b, dict) and not b.get("nem_becsulheto") and len(b.get("pont") or []) >= 2]
+            if jeloltek:
+                blk = max(jeloltek, key=lambda b: len(b["pont"]))   # a finomabb (több pontú) forecast
+                hz = h
                 break
         if not blk:
             continue
