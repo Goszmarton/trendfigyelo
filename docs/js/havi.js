@@ -7,6 +7,9 @@
 // az (opcionális) data/havi_nlp/index.json-ból VAGY egy fix aktuális hónapból (1. fázis).
 
 const HAVI_ALAPHONAP = "2026-09"; // 1. fázis: fix jelenlegi hónap — index.json hiányában esünk erre vissza
+const SZEMELY_TOP = 18;
+const havi_chartok = {};
+window.havi_chartok = havi_chartok;
 
 async function havi_honap_dontes() {
   try {
@@ -84,6 +87,36 @@ function ner_csoport(cimSzoveg, entitasok) {
   return box;
 }
 
+// vízszintes barchart egy szekcióba (cimkek + ertekek), a Chart-példányt kulcson eltárolva
+function havi_barchart(kulcs, canvasId, cimkek, ertekek) {
+  const doboz = document.createElement("div");
+  doboz.className = "havi-chart-doboz";
+  const canvas = document.createElement("canvas");
+  canvas.id = canvasId;
+  doboz.appendChild(canvas);
+  if (typeof Chart !== "undefined" && cimkek.length) {
+    havi_chartok[kulcs] = new Chart(canvas, {
+      type: "bar",
+      data: { labels: cimkek, datasets: [{ data: ertekek, backgroundColor: "#3366cc" }] },
+      options: { indexAxis: "y", responsive: true, maintainAspectRatio: false, animation: false,
+        plugins: { legend: { display: false } },
+        scales: { x: { beginAtZero: true, title: { display: true, text: "volumen" } } } },
+    });
+  }
+  // képernyőolvasó-alternatíva: a canvas fallback-tartalma nem jelenik meg (és nem olvasható ki),
+  // ezért a cimke+érték párokat egy vizuálisan elrejtett listában is felsoroljuk (a szavak NÉLKÜL).
+  if (cimkek.length) {
+    const lista = document.createElement("ul");
+    lista.className = "havi-chart-adatlista";
+    cimkek.forEach((c, i) => {
+      const li = elem("li", null, `${c} – ${ertekek[i] != null ? ertekek[i] : 0}`);
+      lista.appendChild(li);
+    });
+    doboz.appendChild(lista);
+  }
+  return doboz;
+}
+
 function rajzol(art) {
   const t = document.getElementById("havi-tartalom");
   t.textContent = "";
@@ -104,7 +137,19 @@ function rajzol(art) {
   const ner = art.ner || {};
   t.appendChild(ner_csoport("Országok", ner.orszagok));
   t.appendChild(ner_csoport("Települések", ner.telepulesek));
-  t.appendChild(ner_csoport("Személyek", ner.szemelyek));
+
+  const szemSzek = document.createElement("section");
+  szemSzek.className = "elemzes-szekcio havi-szemely-szekcio";
+  szemSzek.appendChild(elem("h3", null, "Személyek (leggyakoribbak)"));
+  const szemelyek = (ner.szemelyek || []).filter((e) => e && e.nev)
+    .sort((a, b) => (b.volumen || 0) - (a.volumen || 0)).slice(0, SZEMELY_TOP);
+  if (!szemelyek.length) {
+    szemSzek.appendChild(elem("p", "ures", "Nincs felismert személy ebben a hónapban."));
+  } else {
+    szemSzek.appendChild(havi_barchart("szemely", "havi-szemely-chart",
+      szemelyek.map((e) => e.nev), szemelyek.map((e) => e.volumen || 0)));
+  }
+  t.appendChild(szemSzek);
 
   // 3) Klaszterek — LEGALUL (a grounding-perem szerint az üres szó-listájú klaszter NEM jelenik meg)
   t.appendChild(elem("h2", "elemzes-csoport-cim", "Témák (klaszterek)"));
@@ -112,6 +157,9 @@ function rajzol(art) {
   if (!klaszterek.length) {
     t.appendChild(elem("p", "ures", "Nincs megjeleníthető téma ebben a hónapban."));
   } else {
+    const kSorolt = klaszterek.slice().sort((a, b) => (b.volumen || 0) - (a.volumen || 0));
+    t.appendChild(havi_barchart("klaszter", "havi-klaszter-chart",
+      kSorolt.map((k) => k.cimke || "Névtelen"), kSorolt.map((k) => k.volumen || 0)));
     klaszterek.forEach((k) => t.appendChild(klaszter_kartya(k)));
   }
 }
