@@ -908,3 +908,37 @@ def test_artefakt_hosszu_gondolatjel_rovidre_valt():
     art = elemzo.valasz_to_artefakt(ai, payload, nap="2026-08-26", modell="m")
     assert "—" not in art["valtozas"]["szoveg"]
     assert art["valtozas"]["szoveg"] == "Ma – röviden – ez történt."
+
+
+def _pred_blk(pontok, sav=4.0, megb=0.9):
+    # pontok: y-értékek listája → pont/also/felso blokk (idő nem számít az aggregátornak)
+    pont = [{"idopont_utc": f"2026-09-{10+i:02d}T00:00:00+00:00", "ertek": float(y)} for i, y in enumerate(pontok)]
+    also = [{"idopont_utc": p["idopont_utc"], "ertek": p["ertek"] - sav} for p in pont]
+    felso = [{"idopont_utc": p["idopont_utc"], "ertek": p["ertek"] + sav} for p in pont]
+    return {"pont": pont, "also": also, "felso": felso, "megbizhatosag": megb}
+
+def test_predikcio_kozeltav_merge_nearterm_irany_osszesites():
+    # órás-only szó: 1_nap 2+ pontból, emelkedő; heti szó: 1_nap/1_het 1-pontos (kihagyva) → 1_ho a near-term
+    reg = {"kulcsszavak": {
+        "benzin": {"domen": "energia", "predikcio": {
+            "1_nap": _pred_blk([50, 62]),                     # +12 → emelkedik
+            "3_ho": {"nem_becsulheto": True}, "1_ev": {"nem_becsulheto": True}}},
+        "albérlet": {"domen": "lakhatas", "predikcio": {
+            "1_nap": _pred_blk([70]), "1_het": _pred_blk([70]),   # 1-pontos → kihagyva
+            "1_ho": _pred_blk([70, 66], sav=10.0, megb=0.3)}},     # -4 → csökken, széles sáv
+    }}
+    masod = {"kulcsszavak": {"albérlet": {"domen": "lakhatas", "predikcio": {
+        "1_ho": _pred_blk([70, 66], sav=10.0, megb=0.3)}}}}       # a másodlagos NYER (ugyanaz itt)
+    out = elemzo._predikcio_kozeltav(reg, masod)
+    sz = {s["szo"]: s for s in out["szavak"]}
+    assert sz["benzin"]["horizont"] == "1 nap" and sz["benzin"]["irany"] == "emelkedik"
+    assert sz["benzin"]["valtozas_pont"] == 12.0
+    assert sz["albérlet"]["horizont"] == "1 hó" and sz["albérlet"]["irany"] == "csökken"
+    assert sz["albérlet"]["sav_pont"] == 10.0                  # (felso-also)/2 = (76-56)/2
+    assert out["osszesites"] == {"emelkedo": 1, "csokkeno": 1, "stagnalo": 0}
+
+def test_predikcio_kozeltav_stagnal_deadband_es_ures_none():
+    reg = {"kulcsszavak": {"csőd": {"domen": "penzugy", "predikcio": {"1_nap": _pred_blk([40, 41])}}}}  # +1 < 2 → stagnál
+    out = elemzo._predikcio_kozeltav(reg, {})
+    assert out["szavak"][0]["irany"] == "stagnál" and out["osszesites"]["stagnalo"] == 1
+    assert elemzo._predikcio_kozeltav({}, {}) is None          # nincs szó → None

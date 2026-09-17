@@ -158,6 +158,49 @@ def _kulcsszo_het(lanc):
     return {"ablak_napok": HET_ABLAK_NAPOK, "szavak": szavak}
 
 
+NEAR_TERM_HORIZONTOK = ("1_nap", "1_het", "1_ho")   # near-term jelöltek, legfinomabbtól
+_HORIZONT_CIMKE = {"1_nap": "1 nap", "1_het": "1 hét", "1_ho": "1 hó"}
+IRANY_DEADBAND = 2.0                                 # |változás_pont| ennél kisebb → stagnál
+
+
+def _predikcio_kozeltav(regresszio, masodlagos):
+    """A követett szavak KÖZELTÁVÚ előrejelzés-összefoglalója (csak esti). A két regresszió merge-e
+    (a másodlagos NYER, mint a frontend); szavanként a legrövidebb ≥2-pontos horizont, az irányt a
+    forecast SAJÁT trajektóriájából (skála-konzisztens). Determinista. Üres → None."""
+    primer = (regresszio or {}).get("kulcsszavak", {}) if isinstance(regresszio, dict) else {}
+    masod = (masodlagos or {}).get("kulcsszavak", {}) if isinstance(masodlagos, dict) else {}
+    szavak = []
+    for szo, prec in primer.items():
+        pred = dict((prec or {}).get("predikcio", {}) or {})
+        pred.update((masod.get(szo, {}) or {}).get("predikcio", {}) or {})   # másodlagos felülír
+        blk = hz = None
+        for h in NEAR_TERM_HORIZONTOK:
+            b = pred.get(h)
+            if isinstance(b, dict) and not b.get("nem_becsulheto") and len(b.get("pont") or []) >= 2:
+                blk, hz = b, h
+                break
+        if not blk:
+            continue
+        pont = blk["pont"]
+        valtozas = round(float(pont[-1]["ertek"]) - float(pont[0]["ertek"]), 1)
+        irany = ("emelkedik" if valtozas > IRANY_DEADBAND
+                 else "csökken" if valtozas < -IRANY_DEADBAND else "stagnál")
+        also, felso = blk.get("also") or [], blk.get("felso") or []
+        sav = (round((float(felso[-1]["ertek"]) - float(also[-1]["ertek"])) / 2, 1)
+               if also and felso else None)
+        domen = (prec or {}).get("domen") or (masod.get(szo, {}) or {}).get("domen")
+        szavak.append({"szo": szo, "domen": domen, "horizont": _HORIZONT_CIMKE[hz],
+                       "irany": irany, "valtozas_pont": valtozas,
+                       "megbizhatosag": blk.get("megbizhatosag"), "sav_pont": sav})
+    if not szavak:
+        return None
+    szavak.sort(key=lambda s: -abs(s["valtozas_pont"]))
+    osszesites = {"emelkedo": sum(1 for s in szavak if s["irany"] == "emelkedik"),
+                  "csokkeno": sum(1 for s in szavak if s["irany"] == "csökken"),
+                  "stagnalo": sum(1 for s in szavak if s["irany"] == "stagnál")}
+    return {"szavak": szavak, "osszesites": osszesites}
+
+
 def _nyers_heti_sorozat(youtube_nyers, szo):
     """A szó LEGKORÁBBI ablak_kezdetű nyers sorozata = a 12-m heti sáv (a legteljesebb tartomány)."""
     kw = (youtube_nyers or {}).get("kulcsszavak", {}) if isinstance(youtube_nyers, dict) else {}
