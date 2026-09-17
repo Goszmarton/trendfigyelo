@@ -11,16 +11,16 @@ const SZEMELY_TOP = 18;
 const havi_chartok = {};
 window.havi_chartok = havi_chartok;
 
-async function havi_honap_dontes() {
-  try {
-    const r = await fetch("data/havi_nlp/index.json");
-    if (r.ok) {
-      const idx = await r.json();
-      if (idx && typeof idx.legutolso === "string" && idx.legutolso) return idx.legutolso;
-      if (idx && Array.isArray(idx.honapok) && idx.honapok.length) return idx.honapok.slice().sort().pop();
-    }
-  } catch (e) { /* nincs index.json — fix hónapra esünk vissza */ }
-  return HAVI_ALAPHONAP;
+const HONAP_NEV = ["január", "február", "március", "április", "május", "június",
+                   "július", "augusztus", "szeptember", "október", "november", "december"];
+function honap_cimke(h) {                       // "2026-09" → "2026. szeptember"
+  const [ev, ho] = (h || "").split("-");
+  const i = parseInt(ho, 10) - 1;
+  return (i >= 0 && i < 12) ? `${ev}. ${HONAP_NEV[i]}` : h;
+}
+function url_honap() {                           // ?honap=YYYY-MM (NINCS new Date())
+  const m = (location.search || "").match(/[?&]honap=(\d{4}-\d{2})/);
+  return m ? m[1] : null;
 }
 
 async function havi_betolt(honap) {
@@ -165,10 +165,39 @@ function rajzol(art) {
 }
 
 async function havi_indit() {
+  let idx = { honapok: [], legutolso: null };
   try {
-    const honap = await havi_honap_dontes();
-    rajzol(await havi_betolt(honap));
-  } catch (e) {
+    const r = await fetch("data/havi_nlp/index.json");
+    if (r.ok) idx = await r.json();
+  } catch (e) { /* nincs index — HAVI_ALAPHONAP-ra esünk */ }
+  const honapok = (idx.honapok && idx.honapok.length) ? idx.honapok.slice() : [HAVI_ALAPHONAP];
+  const kert = url_honap();
+  const kezdo = (kert && honapok.indexOf(kert) >= 0) ? kert
+    : (idx.legutolso && honapok.indexOf(idx.legutolso) >= 0 ? idx.legutolso : honapok[honapok.length - 1]);
+  honap_panel_epit(honapok, kezdo);
+  await honap_valt(kezdo);
+}
+function honap_panel_epit(honapok, aktiv) {
+  const panel = document.getElementById("havi-honap-panel");
+  panel.textContent = "";
+  panel.appendChild(elem("h2", "halvany", "Hónap"));
+  honapok.slice().sort().reverse().forEach((h) => {
+    const g = document.createElement("button");
+    g.type = "button"; g.className = "havi-honap-gomb";
+    g.setAttribute("data-honap", h);
+    g.setAttribute("aria-pressed", h === aktiv ? "true" : "false");
+    g.textContent = honap_cimke(h);
+    g.addEventListener("click", () => {
+      panel.querySelectorAll(".havi-honap-gomb").forEach((b) =>
+        b.setAttribute("aria-pressed", b.getAttribute("data-honap") === h ? "true" : "false"));
+      honap_valt(h);
+    });
+    panel.appendChild(g);
+  });
+}
+async function honap_valt(honap) {
+  try { rajzol(await havi_betolt(honap)); }
+  catch (e) {
     document.getElementById("havi-fejlec").textContent = "Havi elemzés – nem érhető el";
     document.getElementById("havi-tartalom").textContent =
       "A havi elemzés jelenleg nem érhető el (még nem készült el ehhez a hónaphoz).";

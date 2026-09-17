@@ -62,3 +62,18 @@ test("Havi barchartok: személy-barchart (top N, nincs '— szavak') + klaszter-
   expect(adat.szem).toBe(2);
   expect(adat.kl).toBe(2);
 });
+
+test("Havi hónap-naptár: index.json-ból gombok + ?honap= URL-param a kezdő hónap", async ({ page }) => {
+  await page.route("**/data/havi_nlp/index.json", r => r.fulfill({ json: { honapok: ["2026-08", "2026-09"], legutolso: "2026-09" } }));
+  const art = (h) => ({ honap: h, modell: "m", korpusz: { egyedi_szo: 1, napok: 1 }, lemmak: [],
+    ner: { orszagok: [], telepulesek: [], szemelyek: [] }, klaszterek: [], osszegzes: "össz-" + h });
+  await page.route("**/data/havi_nlp/2026-08.json", r => r.fulfill({ json: art("2026-08") }));
+  await page.route("**/data/havi_nlp/2026-09.json", r => r.fulfill({ json: art("2026-09") }));
+  // ?honap=2026-08 → a 2026-08 töltődik be
+  await page.goto("/havi.html?honap=2026-08");
+  await expect(page.locator("#havi-tartalom")).toContainText("össz-2026-08");
+  await expect(page.locator("#havi-honap-panel .havi-honap-gomb")).toHaveCount(2);   // két hónap-gomb
+  // kattintás a 2026-09-re → átvált
+  await page.locator('#havi-honap-panel .havi-honap-gomb[data-honap="2026-09"]').click();
+  await expect(page.locator("#havi-tartalom")).toContainText("össz-2026-09");
+});

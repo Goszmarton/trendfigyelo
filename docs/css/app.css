@@ -48,6 +48,14 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 #idosor-legend .idosor-legend-elem:focus-visible { outline: 2px solid #3366cc; outline-offset: 2px; }
 #idosor-blokk .idosor-adat { display: none; }   /* rejtett DOM-tükör (data-* assertálható, nem látszik) */
 #idosor-blokk .idosor-chart-doboz { position: relative; height: 440px; width: 100%; }
+
+/* Havi elemzés fül — bal oldali hónap-naptár panel + jobb oldali tartalom */
+#havi { display: flex; gap: 1.5rem; align-items: flex-start; }
+#havi-honap-panel { flex: 0 0 12rem; }
+#havi-tartalom { flex: 1 1 auto; min-width: 0; }
+#havi-honap-panel .havi-honap-gomb { display: block; width: 100%; text-align: left; margin: .25rem 0; padding: .4rem .6rem; cursor: pointer; }
+#havi-honap-panel .havi-honap-gomb[aria-pressed="true"] { font-weight: 700; }
+@media (max-width: 640px) { #havi { flex-direction: column; } #havi-honap-panel { flex-basis: auto; } }
 #idosor-blokk .idosor-magyarazat { color: #666; font-size: .85rem; margin: .6rem 0 0; max-width: 55rem; }
 #heti-blokk .heti-tabla { width: 100%; border-collapse: collapse; }
 #heti-blokk .heti-nap-sor { border-top: 1px solid #eee; }
