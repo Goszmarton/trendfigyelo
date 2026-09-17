@@ -1,7 +1,7 @@
 "use strict";
 // „Havi elemzés" fül — a havi NLP-alapú korpusz-elemzés (docs/data/havi_nlp/<honap>.json)
-// renderelése: klaszterek (jelentés-alapú témák), NER (ország/település/személy), szó→lemma
-// térkép (auditálhatóság) és összegzés. TELJES EGÉSZÉBEN gépi (AI) elemzés — Claude-modellel
+// renderelése: összegzés (felül), NER (ország/település/személy, volumen szerint rendezve),
+// klaszterek (jelentés-alapú témák, alul). TELJES EGÉSZÉBEN gépi (AI) elemzés — Claude-modellel
 // generálva és a korpuszra grounding-validálva (lásd trendfigyelo/havi_nlp.py) — ezért a fülön
 // mindenhol egyértelmű „gépi elemzés" jelölés szerepel. NINCS new Date() — a hónap-választás
 // az (opcionális) data/havi_nlp/index.json-ból VAGY egy fix aktuális hónapból (1. fázis).
@@ -62,7 +62,8 @@ function ner_csoport(cimSzoveg, entitasok) {
   const box = document.createElement("section");
   box.className = "elemzes-szekcio havi-ner-csoport";
   box.appendChild(elem("h3", null, cimSzoveg));
-  const lista = (entitasok || []).filter((e) => e && e.nev);
+  const lista = (entitasok || []).filter((e) => e && e.nev)
+    .sort((a, b) => (b.volumen || 0) - (a.volumen || 0));
   if (!lista.length) {
     box.appendChild(elem("p", "ures", "Nincs felismert entitás ebben a csoportban."));
     return box;
@@ -73,40 +74,13 @@ function ner_csoport(cimSzoveg, entitasok) {
     const nev = document.createElement("strong");
     nev.textContent = e.nev;
     li.appendChild(nev);
+    li.appendChild(document.createTextNode("  ·  " + (e.volumen || 0)));
     if (Array.isArray(e.szavak) && e.szavak.length) {
       li.appendChild(document.createTextNode(" — " + e.szavak.join(", ")));
     }
     ul.appendChild(li);
   });
   box.appendChild(ul);
-  return box;
-}
-
-// szó → lemma térkép — auditálhatóság: mit egyszerűsített a modell mire
-function lemma_terkep(lemmak) {
-  const box = document.createElement("section");
-  box.className = "elemzes-szekcio havi-lemma";
-  box.appendChild(elem("h3", null, "Szó → lemma térkép"));
-  if (!Array.isArray(lemmak) || !lemmak.length) {
-    box.appendChild(elem("p", "ures", "Nincs lemma-adat."));
-    return box;
-  }
-  const table = document.createElement("table");
-  table.className = "havi-lemma-tablazat";
-  const thead = document.createElement("thead");
-  thead.innerHTML = "<tr><th>Szó</th><th>Lemma</th></tr>";
-  table.appendChild(thead);
-  const tbody = document.createElement("tbody");
-  lemmak.forEach((l) => {
-    const tr = document.createElement("tr");
-    const td1 = elem("td", null, l.szo || "");
-    const td2 = elem("td", null, l.lemma || "");
-    tr.appendChild(td1);
-    tr.appendChild(td2);
-    tbody.appendChild(tr);
-  });
-  table.appendChild(tbody);
-  box.appendChild(table);
   return box;
 }
 
@@ -121,7 +95,18 @@ function rajzol(art) {
   t.appendChild(elem("p", "halvany",
     `Gépi elemzés — a(z) ${art.modell || "AI"} modell automatikusan generálta a hónap felkapott keresései alapján.`));
 
-  // Klaszterek — a grounding-perem szerint az üres szó-listájú klaszter NEM jelenik meg (ledger-döntés)
+  // 1) Összegzés — LEGFELÜL
+  t.appendChild(elem("h2", "elemzes-csoport-cim", "Összegzés"));
+  t.appendChild(elem("p", "elemzes-szoveg", art.osszegzes || ""));
+
+  // 2) NER — Országok / Települések (volumen-listák; Fázis B → térképek), majd Személyek
+  t.appendChild(elem("h2", "elemzes-csoport-cim", "Felismert entitások (NER)"));
+  const ner = art.ner || {};
+  t.appendChild(ner_csoport("Országok", ner.orszagok));
+  t.appendChild(ner_csoport("Települések", ner.telepulesek));
+  t.appendChild(ner_csoport("Személyek", ner.szemelyek));
+
+  // 3) Klaszterek — LEGALUL (a grounding-perem szerint az üres szó-listájú klaszter NEM jelenik meg)
   t.appendChild(elem("h2", "elemzes-csoport-cim", "Témák (klaszterek)"));
   const klaszterek = (art.klaszterek || []).filter((k) => Array.isArray(k.szavak) && k.szavak.length);
   if (!klaszterek.length) {
@@ -129,21 +114,6 @@ function rajzol(art) {
   } else {
     klaszterek.forEach((k) => t.appendChild(klaszter_kartya(k)));
   }
-
-  // NER — 3 csoport
-  t.appendChild(elem("h2", "elemzes-csoport-cim", "Felismert entitások (NER)"));
-  const ner = art.ner || {};
-  t.appendChild(ner_csoport("Országok", ner.orszagok));
-  t.appendChild(ner_csoport("Települések", ner.telepulesek));
-  t.appendChild(ner_csoport("Személyek", ner.szemelyek));
-
-  // Szó → lemma térkép
-  t.appendChild(elem("h2", "elemzes-csoport-cim", "Szó → lemma térkép (auditálhatóság)"));
-  t.appendChild(lemma_terkep(art.lemmak));
-
-  // Összegzés
-  t.appendChild(elem("h2", "elemzes-csoport-cim", "Összegzés"));
-  t.appendChild(elem("p", "elemzes-szoveg", art.osszegzes || ""));
 }
 
 async function havi_indit() {
