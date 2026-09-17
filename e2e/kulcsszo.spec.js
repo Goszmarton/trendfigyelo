@@ -1643,7 +1643,45 @@ test("Predikció: rövid horizont ráközelít – az x-tengely a közelmúltra 
     const mert = p.data.datasets[0].data.filter(d => d.y !== null);
     return { xmin: p.scales.x.min, elso: mert[0].x };
   });
-  expect(kozelit.xmin).toBeGreaterThan(kozelit.elso);   // az x_min a mért kezdet ELÉ emelve = ráközelítés
+  expect(kozelit.xmin).toBeGreaterThan(kozelit.elso);   // az x_min a mért kezdet ELÉ emelve = ráközelítés (CSAK órás)
+});
+
+test("Predikció: napi/heti chart TELJES nézetben marad (nincs zoom) + a forecast jól látható (anchor + jelölő)", async ({ page }) => {
+  // heti szó (data-felbontas=het): a rövid horizont NEM zoomol (visszaáll a teljes nézet), de a forecast
+  // JÓL LÁTHATÓ: a mért utolsó pontból indul (anchor) + látható zöld pont-jelölő a ritkás forecaston.
+  await mock(page, {
+    // heti-only szó: az órás intervallumok érvénytelenek → a teljes-nézet egyértelműen a heti 1_ev-et választja
+    regObj: reg({ "akciós újság": regSzo({ domen: "fogyasztas", intervallumok: {
+      "1_het": ivHibas("nincs_adat"), "2_het": ivHibas("nincs_lancolas"),
+      "1_ho": ivHibas("nincs_lancolas"), "3_ho": ivHibas("nincs_lancolas"), "1_ev": ivHibas("nincs_lancolas") } }) }),
+    nyersObj: nyers({ "akciós újság": [nyersRekord("akciós újság")] }),
+    mpRegObj: mpReg({ "akciós újság": { ...mpSzo("het", { "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"),
+      "1_ho": ivHibas("keves_pont"), "3_ho": hetIvErv(39, 52), "1_ev": hetIvErv(0, 52) }, { domen: "fogyasztas" }),
+      predikcio: { "1_het": {
+        pont: [{ idopont_utc: racs_iso(53, 7), ertek: 60 }],
+        also: [{ idopont_utc: racs_iso(53, 7), ertek: 50 }],
+        felso: [{ idopont_utc: racs_iso(53, 7), ertek: 70 }],
+        rmse_veg: 3.1, modszer: "damped-LOESS", megbizhatosag: 0.9, figyelmeztetes: null } } } }),
+    mpNyersObj: mpNyers({ "akciós újság": [racs_nyersRekord("akciós újság", 52, 7)] }),
+  });
+  await page.goto("/trendek.html");
+  await page.locator('#kulcsszo-blokk .predikcio-gomb[data-horizont="1_het"]').click();
+  const kartya = page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="akciós újság"]');
+  await expect(kartya).toHaveAttribute("data-felbontas", "het");
+  await expect(kartya).toHaveAttribute("data-rendered", "true");
+  const r = await page.evaluate(() => {
+    const p = (window.chart_peldanyok || {})["akciós újság"];
+    if (!p) return null;
+    const mert = p.data.datasets[0].data.filter((d) => d.y !== null);
+    const utolso = mert[mert.length - 1];
+    const pd = p.data.datasets.find((d) => d.borderColor === "#16a085");   // forecast-vonal
+    return { xmin: p.scales.x.min, elso: mert[0].x,
+      anchored: !!pd && pd.data[0].x === utolso.x && pd.data[0].y === utolso.y,
+      marker: !!pd && (typeof pd.pointRadius === "number" ? pd.pointRadius : 0) > 0 };
+  });
+  expect(r.xmin).toBe(r.elso);        // TELJES nézet: NINCS zoom a heti charton (visszaállítva)
+  expect(r.anchored).toBe(true);      // a forecast a mért utolsó pontból indul → látható vonal + sáv
+  expect(r.marker).toBe(true);        // látható zöld pont-jelölő a ritkás forecaston
 });
 
 test("Predikció: 1_ev horizont figyelmeztetést mutat", async ({ page }) => {

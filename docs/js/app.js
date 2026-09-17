@@ -1178,30 +1178,38 @@ function chart_letrehoz(kartya) {
     // ML-TREND (Task 6): a lila LOESS-görbe — CSAK ha a kapcsoló BE (data-nemlin="true", Task 5 dönti el) ÉS
     // van racs.nemlin_xy (van_struktura). Additív dataset, a meglévő kék/piros/narancs/szürke VÁLTOZATLAN.
     if (kartya.getAttribute(ATTR.nemlin) === "true" && racs.nemlin_xy) ds.push({ data: racs.nemlin_xy, spanGaps: true, borderColor: NEMLIN_SZIN, borderWidth: 2, pointRadius: 0, tension: 0.3 });
+    // a mért adatpontok (a predikció-anchorhoz ÉS a lenti x-tengelyhez is); a kártya felbontása a zoom-döntéshez
+    const teljes_pts = racs.xy.filter(function (p) { return p.y !== null; });
+    const felb = kartya.getAttribute(ATTR.felbontas);   // "ora" / "nap" / "het"
     // PREDIKCIÓ (Task 7): a kiválasztott horizont ZÖLD előrejelző vonala + halvány bizonytalansági sáv — a
     // sáv KÉT dataset (also/felso) közti kitöltés (Chart.js inter-dataset fill: a felső a `fill:"-1"`-gyel az
-    // ELŐZŐ (also) datasetre tölt — ezért a KETTŐ EGYMÁS UTÁN kerül a tömbbe). A vonal a sáv FÖLÉ kerül
-    // (utoljára push-olva), hogy jól látszódjon. CSAK ha a kártya_letrehoz kirakta (kartya._predikcio_xy).
+    // ELŐZŐ (also) datasetre tölt). A forecast a mért adat UTOLSÓ pontjából INDUL (anchor előfűzve) → a vonal
+    // ÉS a sáv láthatóan onnan nyúlik ki, a sáv a 0 szélességből tágul (enélkül egy 1-pontos heti forecast
+    // láthatatlan lenne). Ritkás (≤12 pontú) forecaston látható zöld PONT-JELÖLŐ, hogy a napi/heti teljes
+    // nézeten is jól látszódjon; a sűrű (órás) forecast marad tiszta vonal. CSAK ha van _predikcio_xy.
     if (kartya._predikcio_xy) {
       const pr = kartya._predikcio_xy;
-      ds.push({ data: pr.also, spanGaps: true, borderColor: "rgba(0,0,0,0)", borderWidth: 0, pointRadius: 0, fill: false });
-      ds.push({ data: pr.felso, spanGaps: true, borderColor: "rgba(0,0,0,0)", borderWidth: 0, pointRadius: 0, fill: "-1", backgroundColor: PREDIKCIO_SAV_SZIN });
-      ds.push({ data: pr.pont, spanGaps: true, borderColor: PREDIKCIO_SZIN, borderWidth: 2, borderDash: [5, 3], pointRadius: 0 });
+      const um = teljes_pts.length ? teljes_pts[teljes_pts.length - 1] : null;
+      const horgony = function (arr) { return um ? [{ x: um.x, y: um.y }].concat(arr) : arr; };
+      const also_h = horgony(pr.also), felso_h = horgony(pr.felso), pont_h = horgony(pr.pont);
+      const jelolo = pont_h.length <= 12 ? 4 : 0;
+      ds.push({ data: also_h, spanGaps: true, borderColor: "rgba(0,0,0,0)", borderWidth: 0, pointRadius: 0, fill: false });
+      ds.push({ data: felso_h, spanGaps: true, borderColor: "rgba(0,0,0,0)", borderWidth: 0, pointRadius: 0, fill: "-1", backgroundColor: PREDIKCIO_SAV_SZIN });
+      ds.push({ data: pont_h, spanGaps: true, borderColor: PREDIKCIO_SZIN, borderWidth: 2, borderDash: [5, 3], pointRadius: jelolo, pointBackgroundColor: PREDIKCIO_SZIN });
     }
     // per-szó tengely PONTOS széllel: min/max = az ELSŐ/UTOLSÓ tényleges adatpont (nincs Chart.js grace-padding →
     // a görbe a két szélt ÉRINTI, nincs felesleges gap). A tengelyen CSAK 2 tick: a KEZDŐ + a VÉG dátum (teljes).
-    const teljes_pts = racs.xy.filter(function (p) { return p.y !== null; });
     let x_min = teljes_pts.length ? teljes_pts[0].x : undefined;
     let x_max = teljes_pts.length ? teljes_pts[teljes_pts.length - 1].x : undefined;
     // PREDIKCIÓ: a jövő-pontok jobbra nyújtják a tengelyt (a sáv/vonal a mért adat UTÁN folytatódik).
     if (kartya._predikcio_xy && kartya._predikcio_xy.pont.length) {
       const pr_veg = kartya._predikcio_xy.pont[kartya._predikcio_xy.pont.length - 1].x;
       if (x_max === undefined || pr_veg > x_max) x_max = pr_veg;
-      // RÖVID HORIZONT AUTO-ZOOM: ha a forecast jövő-szakasza kicsi a mért előzményhez képest, az x_min-t
-      // a közelmúltra emeljük → a rövid előrejelzés kitölti a szélesség jó részét (jól látszódjon). Hosszú
-      // horizontnál (nagy forecast-szakasz) a feltétel nem teljesül → nincs zoom, a teljes előzmény látszik.
+      // RÖVID HORIZONT AUTO-ZOOM — CSAK ÓRÁS charton: ott a rövid forecast sok pontból áll, a ráközelítés
+      // szépen kitölti. NAPI/HETI charton NINCS zoom → marad a TELJES nézet (a forecast láthatóságát az
+      // anchor + a pont-jelölő adja, nem a ráközelítés). Hosszú horizontnál (nagy forecast-szakasz) órán se zoomol.
       const adat_veg = teljes_pts.length ? teljes_pts[teljes_pts.length - 1].x : undefined;
-      if (adat_veg !== undefined && x_min !== undefined) {
+      if (felb === "ora" && adat_veg !== undefined && x_min !== undefined) {
         const forecast_span = pr_veg - adat_veg;
         const elozmeny_span = adat_veg - x_min;
         if (forecast_span > 0 && elozmeny_span > 0 && forecast_span < PREDIKCIO_ZOOM_KUSZOB * elozmeny_span) {
