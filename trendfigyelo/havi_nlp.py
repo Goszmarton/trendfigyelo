@@ -235,6 +235,41 @@ def grounding_validal(eredmeny, korpusz):
     return {**eredmeny, "lemmak": lemmak, "ner": ner, "klaszterek": klaszterek}
 
 
+def _volumen_terkep(korpusz):
+    return {s["kifejezes"]: int(s.get("max_volumen") or 0) for s in (korpusz.get("szavak") or [])}
+
+
+def _entitas_volumen(szavak, vol_map):
+    return sum(int(vol_map.get(sz, 0)) for sz in (szavak or []))
+
+
+def volumen_dusit(eredmeny, korpusz):
+    """Minden NER-entitáshoz és klaszterhez `volumen` = a kötött korpusz-szavak max_volumen-összege.
+    Determinista; NEM mutálja a bemenetet (a barchartok magassága + a Fázis-B térkép-színezés forrása)."""
+    vol = _volumen_terkep(korpusz)
+    ner = {}
+    for csoport, entitasok in (eredmeny.get("ner") or {}).items():
+        ner[csoport] = [{**e, "volumen": _entitas_volumen(e.get("szavak"), vol)} for e in (entitasok or [])]
+    klaszterek = [{**k, "volumen": _entitas_volumen(k.get("szavak"), vol)}
+                  for k in (eredmeny.get("klaszterek") or [])]
+    return {**eredmeny, "ner": ner, "klaszterek": klaszterek}
+
+
+def havi_nlp_index_ir(docs_data):
+    """A havi_nlp mappa hónapjainak index-e a frontend hónap-választójához (az index.json-t kihagyva)."""
+    mappa = Path(docs_data) / "havi_nlp"
+    honapok = sorted(p.stem for p in mappa.glob("*.json") if p.stem != "index")
+    return json_export._ir_json(mappa / "index.json",
+                                {"honapok": honapok, "legutolso": honapok[-1] if honapok else None})
+
+
+def havi_nlp_volumen_utodusit(docs_data, honap):
+    """A meglévő artefaktot a korpuszból volumen-dúsítja és visszaírja (determinista, LLM/kulcs NÉLKÜL)."""
+    p = Path(docs_data) / "havi_nlp" / (honap + ".json")
+    eredmeny = json.loads(p.read_text(encoding="utf-8"))
+    return havi_nlp_ir(docs_data, honap, volumen_dusit(eredmeny, havi_korpusz(docs_data, honap)))
+
+
 def havi_nlp_ir(docs_data, honap, eredmeny):
     """A havi NLP-eredmény külön `havi_nlp/<honap>.json` fájlba, atomi írással (a meglévő
     json_export._ir_json mintája — nincs a fő json_export.py-t érintő duplikáció)."""
@@ -255,6 +290,7 @@ def havi_nlp_generalas(docs_data, honap, keszult_iso, kliens=None):
         return None
 
     eredmeny = grounding_validal(eredmeny, korpusz)
+    eredmeny = volumen_dusit(eredmeny, korpusz)
     eredmeny["honap"] = honap                     # top-level honap: a fejlécet (havi.js) ez táplálja
     eredmeny["keszult"] = keszult_iso
     eredmeny["modell"] = MODELL_NLP

@@ -105,3 +105,35 @@ def test_havi_nlp_generalas_top_level_honapot_ir(tmp_path):
     assert er["honap"] == "2026-09"                            # visszatérési érték
     p = tmp_path / "havi_nlp" / "2026-09.json"
     assert json.loads(p.read_text(encoding="utf-8"))["honap"] == "2026-09"   # a fájlban is
+
+
+def test_volumen_dusit_entitas_es_klaszter():
+    korpusz = {"szavak": [{"kifejezes": "csalás", "max_volumen": 800},
+                          {"kifejezes": "átverés", "max_volumen": 200},
+                          {"kifejezes": "debrecen", "max_volumen": 500}]}
+    er = {"ner": {"orszagok": [], "telepulesek": [{"nev": "Debrecen", "szavak": ["debrecen"]}], "szemelyek": []},
+          "klaszterek": [{"cimke": "Bűnügy", "szavak": ["csalás", "átverés"]}], "osszegzes": "…"}
+    v = havi_nlp.volumen_dusit(er, korpusz)
+    assert v["klaszterek"][0]["volumen"] == 1000                 # 800 + 200
+    assert v["ner"]["telepulesek"][0]["volumen"] == 500
+    assert er["klaszterek"][0].get("volumen") is None            # NEM mutálja a bemenetet
+
+
+def test_havi_nlp_index_ir(tmp_path):
+    mappa = tmp_path / "havi_nlp"; mappa.mkdir()
+    (mappa / "2026-08.json").write_text("{}", encoding="utf-8")
+    (mappa / "2026-09.json").write_text("{}", encoding="utf-8")
+    p = havi_nlp.havi_nlp_index_ir(str(tmp_path))
+    idx = json.loads(p.read_text(encoding="utf-8"))
+    assert idx["honapok"] == ["2026-08", "2026-09"] and idx["legutolso"] == "2026-09"
+
+
+def test_havi_nlp_volumen_utodusit(tmp_path):
+    _napfajl(tmp_path, "2026-09-01", [_szo("csalás", 800)])
+    (tmp_path / "havi_nlp").mkdir()
+    (tmp_path / "havi_nlp" / "2026-09.json").write_text(json.dumps(
+        {"ner": {"orszagok": [], "telepulesek": [], "szemelyek": []},
+         "klaszterek": [{"cimke": "B", "szavak": ["csalás"]}], "osszegzes": "x"}), encoding="utf-8")
+    havi_nlp.havi_nlp_volumen_utodusit(str(tmp_path), "2026-09")
+    art = json.loads((tmp_path / "havi_nlp" / "2026-09.json").read_text(encoding="utf-8"))
+    assert art["klaszterek"][0]["volumen"] == 800
