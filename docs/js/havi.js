@@ -131,14 +131,18 @@ function havi_barchart(kulcs, canvasId, cimkek, ertekek) {
 let _geo = null;
 async function geo_assetek() {
   if (_geo) return _geo;
-  const [vilag, iso, huk, varos] = await Promise.all([
-    fetch("vendor/geo/vilag-orszagok.geojson").then(r => r.json()),
-    fetch("vendor/geo/orszag-nev-iso.json").then(r => r.json()),
-    fetch("vendor/geo/hu-telepules-koord.json").then(r => r.json()),
-    fetch("vendor/geo/varos-koord.json").then(r => r.json()),
-  ]);
-  _geo = { vilag, iso, huk, varos };
-  return _geo;
+  try {
+    const [vilag, iso, huk, varos] = await Promise.all([
+      fetch("vendor/geo/vilag-orszagok.geojson").then(r => r.json()),
+      fetch("vendor/geo/orszag-nev-iso.json").then(r => r.json()),
+      fetch("vendor/geo/hu-telepules-koord.json").then(r => r.json()),
+      fetch("vendor/geo/varos-koord.json").then(r => r.json()),
+    ]);
+    _geo = { vilag, iso, huk, varos };
+    return _geo;
+  } catch (e) {
+    return null;   // fail-soft: a hívó erre a Fázis A volumen-listára esik vissza
+  }
 }
 function kulcs(nev) { return (nev || "").trim().toLowerCase(); }
 function szin_skala(v, max) {   // világos→sötét kék a volumen arányában
@@ -178,6 +182,7 @@ async function vilag_terkep(orszagok, telepulesek) {
   const szavakDoboz = elem("div", "havi-terkep-szavak");
   if (typeof L === "undefined") { return _terkep_fallback("Országok", orszagok); }   // fail-soft
   const g = await geo_assetek();
+  if (!g) { return _terkep_fallback("Országok", orszagok); }   // fail-soft: geo-asset betöltés bukott
   const featureIdek = new Set(g.vilag.features.map(f => f.id));
   const orszMap = {}; (orszagok || []).forEach(o => { const iso = g.iso[kulcs(o.nev)]; if (iso && featureIdek.has(iso)) orszMap[iso] = o; });
   const maxO = Math.max(1, ...(orszagok || []).map(o => o.volumen || 0));
@@ -192,6 +197,9 @@ async function vilag_terkep(orszagok, telepulesek) {
   const telepNemIllesztheto = (telepulesek || []).filter((t) => !g.huk[kulcs(t.nev)] && !g.varos[kulcs(t.nev)]);
   // térkép (későn, a doboz DOM-ba kerülése után inicializálva — Leaflet-nek méretezett konténer kell)
   setTimeout(() => {
+    if (havi_terkepek.vilag && typeof havi_terkepek.vilag.remove === "function") {
+      try { havi_terkepek.vilag.remove(); } catch (e) { /* stale/elszabadult ref — nem dől el */ }
+    }
     const map = L.map(doboz, { attributionControl: true }).setView([30, 10], 1.4);
     L.geoJSON(g.vilag, {
       style: f => { const o = orszMap[f.id]; return { weight: 1, color: "#888",
@@ -226,10 +234,14 @@ async function hu_terkep(telepulesek) {
   const szavakDoboz = elem("div", "havi-terkep-szavak");
   if (typeof L === "undefined") { return _terkep_fallback("Települések", telepulesek); }   // fail-soft
   const g = await geo_assetek();
+  if (!g) { return _terkep_fallback("Települések", telepulesek); }   // fail-soft: geo-asset betöltés bukott
   const hazai = (telepulesek || []).filter(t => g.huk[kulcs(t.nev)]);
   const maxV = Math.max(1, ...hazai.map(t => t.volumen || 0));
   // térkép (későn, a doboz DOM-ba kerülése után inicializálva — Leaflet-nek méretezett konténer kell)
   setTimeout(() => {
+    if (havi_terkepek.hu && typeof havi_terkepek.hu.remove === "function") {
+      try { havi_terkepek.hu.remove(); } catch (e) { /* stale/elszabadult ref — nem dől el */ }
+    }
     const map = L.map(doboz, { attributionControl: true }).setView([47.16, 19.5], 6.6);
     hazai.forEach(t => { const c = g.huk[kulcs(t.nev)];
       L.circleMarker(c, { radius: 5 + 9 * ((t.volumen || 0) / maxV), color: "#c0392b", fillColor: "#e74c3c", fillOpacity: 0.8, weight: 1 })

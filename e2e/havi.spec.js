@@ -161,3 +161,26 @@ test("Havi térkép jelmagyarázat + nem-illeszthető nevek fallback-lista (grou
   // Debrecen (van HU-koord) NEM jelenik meg egyik fallback-listában sem
   await expect(page.locator(".havi-terkep-fallback")).not.toContainText("Debrecen");
 });
+
+test("Havi geo-asset betöltési hiba: fail-soft — a térképek listára esnek vissza, a fül többi része renderel", async ({ page }) => {
+  await page.route("**/data/havi_nlp/index.json", r => r.fulfill({ json: { honapok: ["2026-09"], legutolso: "2026-09" } }));
+  await page.route("**/data/havi_nlp/2026-09.json", r => r.fulfill({ json: {
+    honap: "2026-09", modell: "m", korpusz: { egyedi_szo: 3, napok: 2 }, lemmak: [],
+    ner: { orszagok: [{ nev: "Magyarország", szavak: ["magyar hír"], volumen: 900 }],
+           telepulesek: [{ nev: "Debrecen", szavak: ["debrecen időjárás"], volumen: 400 }],
+           szemelyek: [{ nev: "Orbán Viktor", szavak: ["orbán viktor"], volumen: 900 }] },
+    klaszterek: [{ cimke: "Sport", szavak: ["foci"], ertelmezes: "s", uralkodo_temak: [], volumen: 700 }],
+    osszegzes: "A hónap keresései…" } }));
+  await page.route("**/vendor/geo/**", r => r.fulfill({ status: 404, body: "nem elérhető" }));
+  await page.goto("/havi.html");
+  // a térképek NEM inicializálódnak (geo-asset hiányzik) — a Fázis A listákra esünk vissza
+  await expect(page.locator("#havi-vilag-terkep")).toHaveCount(0);
+  await expect(page.locator("#havi-hu-terkep")).toHaveCount(0);
+  await expect(page.locator("#havi-tartalom .havi-ner-csoport", { hasText: "Országok" })).toHaveCount(1);
+  await expect(page.locator("#havi-tartalom .havi-ner-csoport", { hasText: "Települések" })).toHaveCount(1);
+  // a fül többi része (összegzés, személy-barchart, klaszter) VÁLTOZATLANUL renderel
+  await expect(page.locator("#havi")).toContainText("A hónap keresései");
+  await expect(page.locator("#havi-szemely-chart")).toHaveCount(1);
+  await expect(page.locator("#havi-klaszter-chart")).toHaveCount(1);
+  await expect(page.locator("#havi")).toContainText("Sport");
+});
