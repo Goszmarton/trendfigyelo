@@ -172,3 +172,36 @@ test("Elemzés — reggeli scoped artefakt: reggeli bekezdés + \"frissül este\
   // reggel NINCS YouTube-blokk
   await expect(page.locator("#youtube-szegmens")).toHaveCount(0);
 });
+
+test("Előrejelzések szekció megjelenik, ha van art.predikcio (és kimarad, ha nincs)", async ({ page }) => {
+  const alap = {
+    frissitve: "2026-08-31T19:00:00+00:00", modell: "m", nap: "2026-08-31", mode: "este",
+    valtozas: { diff: { van_elozo: true, mozgok: [] }, szoveg: "Változás." },
+    kulcsszavak: { szamok: [], napi: { szoveg: "Napi." } },
+    felkapott: { top: [], reggel_top: [], este_top: [], reggel_este_diff: {}, het_valos: [],
+      reggel: { szoveg: "R." }, este: { szoveg: "E." }, teljes_nap: { szoveg: "Í." }, het: { szoveg: "H." } },
+  };
+  // (1) VAN predikció → a szekció megjelenik, a „Mi változott ma?" UTÁN
+  await page.route("**/data/elemzes.json", (r) => r.fulfill({ json: { ...alap, predikcio: { szoveg: "Előrejelzés-próza." } } }));
+  await page.route("**/data/elemzesek/index.json", (r) => r.fulfill({ status: 404, body: "" }));
+  await page.goto("/elemzes.html");
+  const szek = page.locator('.elemzes-szekcio:has(h3:text-is("Előrejelzések – mire számíthatunk?"))');
+  await expect(szek).toHaveCount(1);
+  await expect(szek.locator(".elemzes-szoveg")).toContainText("Előrejelzés-próza.");
+  const cimek = await page.locator(".elemzes-szekcio h3").allTextContents();
+  expect(cimek.indexOf("Mi változott ma?")).toBeLessThan(cimek.indexOf("Előrejelzések – mire számíthatunk?"));
+});
+
+test("Előrejelzések szekció KIMARAD, ha nincs art.predikcio (régi archív-nap)", async ({ page }) => {
+  const alap = {
+    frissitve: "2026-08-31T19:00:00+00:00", modell: "m", nap: "2026-08-31", mode: "este",
+    valtozas: { diff: { van_elozo: true, mozgok: [] }, szoveg: "Változás." },
+    kulcsszavak: { szamok: [], napi: { szoveg: "Napi." } },
+    felkapott: { top: [], reggel_top: [], este_top: [], reggel_este_diff: {}, het_valos: [],
+      reggel: { szoveg: "R." }, este: { szoveg: "E." }, teljes_nap: { szoveg: "Í." }, het: { szoveg: "H." } },
+  };
+  await page.route("**/data/elemzes.json", (r) => r.fulfill({ json: alap }));   // NINCS predikcio
+  await page.route("**/data/elemzesek/index.json", (r) => r.fulfill({ status: 404, body: "" }));
+  await page.goto("/elemzes.html");
+  await expect(page.locator('.elemzes-szekcio:has(h3:text-is("Előrejelzések – mire számíthatunk?"))')).toHaveCount(0);
+});

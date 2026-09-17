@@ -71,6 +71,9 @@ function rajzol(art) {
   t.appendChild(szekcio_elem("Kulcsszavak – mit látunk ma", art.kulcsszavak.napi));
   t.appendChild(szekcio_elem("Mi változott ma?", art.valtozas));
 
+  // Előrejelzések – közeltávú forecast-összefoglaló (csak esti elemzésben van art.predikcio; fail-soft)
+  if (art.predikcio) t.appendChild(szekcio_elem("Előrejelzések – mire számíthatunk?", art.predikcio));
+
   // „Google napi friss keresőszavak" — a napi felkapott keresések
   t.appendChild(csoport_cim("Google napi friss keresőszavak"));
   if (art.felkapott.reggel) {
