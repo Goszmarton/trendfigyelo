@@ -11,6 +11,9 @@ const SZEMELY_TOP = 18;
 const havi_chartok = {};
 window.havi_chartok = havi_chartok;
 
+const havi_terkepek = {};
+window.havi_terkepek = havi_terkepek;
+
 const HONAP_NEV = ["január", "február", "március", "április", "május", "június",
                    "július", "augusztus", "szeptember", "október", "november", "december"];
 function honap_cimke(h) {                       // "2026-09" → "2026. szeptember"
@@ -123,7 +126,68 @@ function havi_barchart(kulcs, canvasId, cimkek, ertekek) {
   return doboz;
 }
 
-function rajzol(art) {
+// Világtérkép (Fázis B): a vendored geo-assetek (Task 1) betöltése + cache-elése — egyszer töltjük,
+// a hónap-váltások közt újra felhasználjuk.
+let _geo = null;
+async function geo_assetek() {
+  if (_geo) return _geo;
+  const [vilag, iso, huk, varos] = await Promise.all([
+    fetch("vendor/geo/vilag-orszagok.geojson").then(r => r.json()),
+    fetch("vendor/geo/orszag-nev-iso.json").then(r => r.json()),
+    fetch("vendor/geo/hu-telepules-koord.json").then(r => r.json()),
+    fetch("vendor/geo/varos-koord.json").then(r => r.json()),
+  ]);
+  _geo = { vilag, iso, huk, varos };
+  return _geo;
+}
+function kulcs(nev) { return (nev || "").trim().toLowerCase(); }
+function szin_skala(v, max) {   // világos→sötét kék a volumen arányában
+  const t = max > 0 ? Math.min(1, v / max) : 0;
+  const l = Math.round(85 - 55 * t);       // 85%→30% világosság
+  return `hsl(212, 70%, ${l}%)`;
+}
+
+// fail-soft: ha nincs Leaflet, a Fázis A volumen-listára esünk vissza (ner_csoport)
+function _terkep_fallback(cimSzoveg, entitasok) {
+  return ner_csoport(cimSzoveg, entitasok);
+}
+
+// Világtérkép-építő — ország-choropleth (volumen szerinti kék-skála) + külföldi-város kör-jelölők,
+// hover-tooltip, kattintásra a kötött szavak a .havi-terkep-szavak dobozban jelennek meg.
+async function vilag_terkep(orszagok, telepulesek) {
+  const doboz = elem("div"); doboz.id = "havi-vilag-terkep"; doboz.className = "havi-terkep-doboz";
+  const szavakDoboz = elem("div", "havi-terkep-szavak");
+  if (typeof L === "undefined") { return _terkep_fallback("Országok", orszagok); }   // fail-soft
+  const g = await geo_assetek();
+  const orszMap = {}; (orszagok || []).forEach(o => { const iso = g.iso[kulcs(o.nev)]; if (iso) orszMap[iso] = o; });
+  const maxO = Math.max(1, ...(orszagok || []).map(o => o.volumen || 0));
+  // térkép (későn, a doboz DOM-ba kerülése után inicializálva — Leaflet-nek méretezett konténer kell)
+  setTimeout(() => {
+    const map = L.map(doboz, { attributionControl: true }).setView([30, 10], 1.4);
+    L.geoJSON(g.vilag, {
+      style: f => { const o = orszMap[f.id]; return { weight: 1, color: "#888",
+        fillColor: o ? szin_skala(o.volumen || 0, maxO) : "#eee", fillOpacity: o ? 0.85 : 0.25 }; },
+      onEachFeature: (f, layer) => { const o = orszMap[f.id]; if (o) {
+        layer.bindTooltip(`${o.nev} · volumen: ${o.volumen || 0}`);
+        layer.on("click", () => { szavakDoboz.textContent = `${o.nev}: ${(o.szavak || []).join(", ")}`; }); } },
+    }).addTo(map);
+    // külföldi városok (nincs HU-koordinátájuk) kör-jelölőként
+    const kulf = (telepulesek || []).filter(t => !g.huk[kulcs(t.nev)] && g.varos[kulcs(t.nev)]);
+    const maxV = Math.max(1, ...kulf.map(t => t.volumen || 0));
+    kulf.forEach(t => { const c = g.varos[kulcs(t.nev)];
+      L.circleMarker(c, { radius: 5 + 9 * ((t.volumen || 0) / maxV), color: "#c0392b", fillColor: "#e74c3c", fillOpacity: 0.8, weight: 1 })
+        .bindTooltip(`${t.nev} · volumen: ${t.volumen || 0}`)
+        .on("click", () => { szavakDoboz.textContent = `${t.nev}: ${(t.szavak || []).join(", ")}`; })
+        .addTo(map); });
+    havi_terkepek.vilag = map;
+  }, 0);
+  const wrap = elem("section", "elemzes-szekcio");
+  wrap.appendChild(elem("h3", null, "Országok és külföldi városok (térkép)"));
+  wrap.appendChild(doboz); wrap.appendChild(szavakDoboz);
+  return wrap;
+}
+
+async function rajzol(art) {
   const t = document.getElementById("havi-tartalom");
   t.textContent = "";
   const korpusz = art.korpusz || {};
@@ -141,7 +205,7 @@ function rajzol(art) {
   // 2) NER — Országok / Települések (volumen-listák; Fázis B → térképek), majd Személyek
   t.appendChild(elem("h2", "elemzes-csoport-cim", "Felismert entitások (NER)"));
   const ner = art.ner || {};
-  t.appendChild(ner_csoport("Országok", ner.orszagok));
+  t.appendChild(await vilag_terkep(ner.orszagok, ner.telepulesek));
   t.appendChild(ner_csoport("Települések", ner.telepulesek));
 
   const szemSzek = document.createElement("section");
@@ -202,7 +266,7 @@ function honap_panel_epit(honapok, aktiv) {
   });
 }
 async function honap_valt(honap) {
-  try { rajzol(await havi_betolt(honap)); }
+  try { await rajzol(await havi_betolt(honap)); }
   catch (e) {
     document.getElementById("havi-fejlec").textContent = "Havi elemzés – nem érhető el";
     document.getElementById("havi-tartalom").textContent =

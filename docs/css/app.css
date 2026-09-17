@@ -181,6 +181,10 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 /* képernyőolvasó-alternatíva a canvas-hoz — vizuálisan elrejtve, de a szöveges tartalomban jelen */
 .havi-chart-adatlista { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
 
+/* Fázis B — világtérkép (ország-choropleth + külföldi városok) */
+#havi-tartalom .havi-terkep-doboz { height: 26rem; margin: .5rem 0; }
+.havi-terkep-szavak { font-size: .85rem; color: #333; margin: .3rem 0 1rem; min-height: 1.2rem; }
+
 /* Task 9b kulcsszó-blokk — szavankénti chartok, domen-csoportokban (rács, small multiples).
    A kártya-magasság KELL a lusta rendereléshez: enélkül a canvasok összeesnek és nem lóg túl a viewporton. */
 #kulcsszo-blokk .frissesseg,

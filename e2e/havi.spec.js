@@ -33,9 +33,10 @@ test("Havi reorg: összegzés ELÖL, klaszterek ALUL, nincs lemma-térkép, orsz
   expect(cimek.indexOf("Összegzés")).toBeLessThan(cimek.indexOf("Témák (klaszterek)"));
   // nincs lemma-térkép
   await expect(page.locator("#havi-tartalom")).not.toContainText("lemma térkép");
-  // országok volumen szerint csökkenő: Magyarország (900) a Németország (100) ELŐTT
-  const orsz = await page.locator("#havi-tartalom .havi-ner-csoport", { hasText: "Országok" }).innerText();
-  expect(orsz.indexOf("Magyarország")).toBeLessThan(orsz.indexOf("Németország"));
+  // az „Országok" lista HELYETT a világtérkép jelenik meg (a volumen szerinti szinezést/rendezést
+  // a dedikált világtérkép-teszt fedi le)
+  await expect(page.locator("#havi-tartalom .havi-ner-csoport", { hasText: "Országok" })).toHaveCount(0);
+  await expect(page.locator("#havi-vilag-terkep.leaflet-container")).toHaveCount(1);
 });
 
 test("Havi barchartok: személy-barchart (top N, nincs '— szavak') + klaszter-eloszlás", async ({ page }) => {
@@ -76,4 +77,30 @@ test("Havi hónap-naptár: index.json-ból gombok + ?honap= URL-param a kezdő h
   // kattintás a 2026-09-re → átvált
   await page.locator('#havi-honap-panel .havi-honap-gomb[data-honap="2026-09"]').click();
   await expect(page.locator("#havi-tartalom")).toContainText("össz-2026-09");
+});
+
+test("Havi világtérkép: ország-choropleth + külföldi város-jelölő + kattintás→szavak", async ({ page }) => {
+  await page.route("**/data/havi_nlp/index.json", r => r.fulfill({ json: { honapok: ["2026-09"], legutolso: "2026-09" } }));
+  await page.route("**/data/havi_nlp/2026-09.json", r => r.fulfill({ json: {
+    honap: "2026-09", modell: "m", korpusz: { egyedi_szo: 3, napok: 2 }, lemmak: [],
+    ner: { orszagok: [{ nev: "Magyarország", szavak: ["magyar hír"], volumen: 900 },
+                      { nev: "Németország", szavak: ["német hír"], volumen: 100 }],
+           telepulesek: [{ nev: "Moszkva", szavak: ["moszkva hír"], volumen: 250 }],
+           szemelyek: [] },
+    klaszterek: [], osszegzes: "össz" } }));
+  await page.goto("/havi.html");
+  // a térkép-konténer maga kapja a Leaflet-DOM-osztályt (L.map a doboz elemre inicializál, nem beágyazva)
+  await expect(page.locator("#havi-vilag-terkep.leaflet-container")).toHaveCount(1);
+  // legalább egy ország-choropleth path (a szin_skala hsl(212,…) kitöltéssel)
+  const orszagPath = page.locator('#havi-vilag-terkep path.leaflet-interactive[fill^="hsl(212"]').first();
+  await expect(orszagPath).toBeVisible();
+  // legalább egy külföldi-város kör-jelölő (a vörös fillColor #e74c3c)
+  const varosMarker = page.locator('#havi-vilag-terkep path.leaflet-interactive[fill="#e74c3c"]').first();
+  await expect(varosMarker).toBeVisible();
+  // kattintás egy országra → a hozzá kötött szavak megjelennek a .havi-terkep-szavak dobozban
+  await orszagPath.click();
+  await expect(page.locator(".havi-terkep-szavak")).toContainText("hír");
+  // kattintás a városra → a hozzá kötött szavak megjelennek
+  await varosMarker.click();
+  await expect(page.locator(".havi-terkep-szavak")).toContainText("moszkva hír");
 });
