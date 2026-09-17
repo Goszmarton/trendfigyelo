@@ -184,6 +184,10 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 /* Fázis B — világtérkép (ország-choropleth + külföldi városok) */
 #havi-tartalom .havi-terkep-doboz { height: 26rem; margin: .5rem 0; }
 .havi-terkep-szavak { font-size: .85rem; color: #333; margin: .3rem 0 1rem; min-height: 1.2rem; }
+/* jelmagyarázat + „nem térképezhető" fallback-lista (grounding/a11y: semmi ne tűnjön el csendben) */
+.havi-terkep-jelmagyarazat { font-size: .8rem; color: #666; margin: 0 0 .4rem; }
+.havi-terkep-fallback { font-size: .85rem; color: #333; margin: 0 0 1rem; }
+.havi-terkep-fallback ul { margin: .2rem 0 0; padding-left: 1.2rem; }
 
 /* Task 9b kulcsszó-blokk — szavankénti chartok, domen-csoportokban (rács, small multiples).
    A kártya-magasság KELL a lusta rendereléshez: enélkül a canvasok összeesnek és nem lóg túl a viewporton. */

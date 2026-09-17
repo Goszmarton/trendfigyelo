@@ -131,3 +131,33 @@ test("Havi Magyarország-térkép: magyar településjelölő + hover + kattint�
   const huSzavak = page.locator("#havi-hu-terkep").locator("xpath=following-sibling::div[contains(@class,'havi-terkep-szavak')]");
   await expect(huSzavak).toContainText("debrecen időjárás");
 });
+
+test("Havi térkép jelmagyarázat + nem-illeszthető nevek fallback-lista (grounding/a11y)", async ({ page }) => {
+  await page.route("**/data/havi_nlp/index.json", r => r.fulfill({ json: { honapok: ["2026-09"], legutolso: "2026-09" } }));
+  await page.route("**/data/havi_nlp/2026-09.json", r => r.fulfill({ json: {
+    honap: "2026-09", modell: "m", korpusz: { egyedi_szo: 3, napok: 2 }, lemmak: [],
+    ner: { orszagok: [{ nev: "Magyarország", szavak: ["magyar hír"], volumen: 900 },
+                      { nev: "Seholország", szavak: ["seholország hír"], volumen: 42 }],
+           telepulesek: [{ nev: "Debrecen", szavak: ["debrecen időjárás"], volumen: 400 },
+                         { nev: "Sehol-falva", szavak: ["sehol-falva hír"], volumen: 17 }],
+           szemelyek: [] },
+    klaszterek: [], osszegzes: "össz" } }));
+  await page.goto("/havi.html");
+  await expect(page.locator("#havi-vilag-terkep.leaflet-container")).toHaveCount(1);
+  await expect(page.locator("#havi-hu-terkep.leaflet-container")).toHaveCount(1);
+  // jelmagyarázat mindkét térkép alatt
+  await expect(page.locator(".havi-terkep-jelmagyarazat")).toHaveCount(2);
+  // világtérkép fallback: nincs ISO-match ("Seholország") ÉS nincs koordináta ("Sehol-falva" — se HU, se külföldi város)
+  const vilagFallback = page.locator("#havi-vilag-terkep").locator(
+    "xpath=following-sibling::*[contains(@class,'havi-terkep-fallback')][1]");
+  await expect(vilagFallback).toContainText("Seholország");
+  await expect(vilagFallback).toContainText("42");
+  await expect(vilagFallback).toContainText("Sehol-falva");
+  await expect(vilagFallback).toContainText("17");
+  // HU-térkép fallback: ugyanaz a "Sehol-falva" NEM ismétlődik meg (se HU, se varos koord → csak a világ-fallback-ban)
+  const huFallback = page.locator("#havi-hu-terkep").locator(
+    "xpath=following-sibling::*[contains(@class,'havi-terkep-fallback')][1]");
+  await expect(huFallback).toHaveCount(0);
+  // Debrecen (van HU-koord) NEM jelenik meg egyik fallback-listában sem
+  await expect(page.locator(".havi-terkep-fallback")).not.toContainText("Debrecen");
+});

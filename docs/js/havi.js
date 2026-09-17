@@ -152,6 +152,25 @@ function _terkep_fallback(cimSzoveg, entitasok) {
   return ner_csoport(cimSzoveg, entitasok);
 }
 
+// jelmagyarázat-sor egy térkép alá (szín/méret = volumen)
+function _terkep_jelmagyarazat(szoveg) {
+  return elem("p", "havi-terkep-jelmagyarazat", szoveg);
+}
+
+// „nem térképezhető" fallback-lista (grounding/a11y: semmi ne tűnjön el csendben) — csak ha van tartalma
+function _nem_illesztheto_lista(entitasok) {
+  const lista = (entitasok || []).filter((e) => e && e.nev);
+  if (!lista.length) return null;
+  const box = elem("div", "havi-terkep-fallback");
+  box.appendChild(elem("p", "halvany", "Nem térképezhető:"));
+  const ul = document.createElement("ul");
+  lista.forEach((e) => {
+    ul.appendChild(elem("li", null, `${e.nev} · ${e.volumen || 0}`));
+  });
+  box.appendChild(ul);
+  return box;
+}
+
 // Világtérkép-építő — ország-choropleth (volumen szerinti kék-skála) + külföldi-város kör-jelölők,
 // hover-tooltip, kattintásra a kötött szavak a .havi-terkep-szavak dobozban jelennek meg.
 async function vilag_terkep(orszagok, telepulesek) {
@@ -159,8 +178,18 @@ async function vilag_terkep(orszagok, telepulesek) {
   const szavakDoboz = elem("div", "havi-terkep-szavak");
   if (typeof L === "undefined") { return _terkep_fallback("Országok", orszagok); }   // fail-soft
   const g = await geo_assetek();
-  const orszMap = {}; (orszagok || []).forEach(o => { const iso = g.iso[kulcs(o.nev)]; if (iso) orszMap[iso] = o; });
+  const featureIdek = new Set(g.vilag.features.map(f => f.id));
+  const orszMap = {}; (orszagok || []).forEach(o => { const iso = g.iso[kulcs(o.nev)]; if (iso && featureIdek.has(iso)) orszMap[iso] = o; });
   const maxO = Math.max(1, ...(orszagok || []).map(o => o.volumen || 0));
+  // nem-illeszthető: ország nincs ISO-match VAGY az ISO nincs feature-ként a GeoJSON-ban; ÉS
+  // külföldi (nem HU) település, aminek se HU-, se külföldi-város koordinátája nincs
+  // (a HU-koordinátás települést a hu_terkep, a külföldi-koordinátásat ez a térkép jelöli — így
+  // egy név legfeljebb egy helyen szerepel: térkép VAGY pontosan egy fallback-lista).
+  const orszNemIllesztheto = (orszagok || []).filter((o) => {
+    const iso = g.iso[kulcs(o.nev)];
+    return !iso || !featureIdek.has(iso);
+  });
+  const telepNemIllesztheto = (telepulesek || []).filter((t) => !g.huk[kulcs(t.nev)] && !g.varos[kulcs(t.nev)]);
   // térkép (későn, a doboz DOM-ba kerülése után inicializálva — Leaflet-nek méretezett konténer kell)
   setTimeout(() => {
     const map = L.map(doboz, { attributionControl: true }).setView([30, 10], 1.4);
@@ -184,6 +213,9 @@ async function vilag_terkep(orszagok, telepulesek) {
   const wrap = elem("section", "elemzes-szekcio");
   wrap.appendChild(elem("h3", null, "Országok és külföldi városok (térkép)"));
   wrap.appendChild(doboz); wrap.appendChild(szavakDoboz);
+  wrap.appendChild(_terkep_jelmagyarazat("Sötétebb szín / nagyobb pont = nagyobb volumen."));
+  const fallback = _nem_illesztheto_lista(orszNemIllesztheto.concat(telepNemIllesztheto));
+  if (fallback) wrap.appendChild(fallback);
   return wrap;
 }
 
@@ -206,9 +238,15 @@ async function hu_terkep(telepulesek) {
         .addTo(map); });
     havi_terkepek.hu = map;
   }, 0);
+  // nem-illeszthető (HU-térkép szempontjából): a HU-koordináta nélküli település vagy külföldi
+  // (van g.varos-koordinátája → már a világtérképen szerepel — NEM ismételjük itt), vagy teljesen
+  // koordináta nélküli (se HU, se külföldi) → azt a világtérkép fallback-listája már felsorolja
+  // (lásd vilag_terkep telepNemIllesztheto) — így ide NEM kerül duplán, a HU fallback ezért
+  // ebben az adatmodellben jellemzően üres marad (nincs kettős felsorolás).
   const wrap = elem("section", "elemzes-szekcio");
   wrap.appendChild(elem("h3", null, "Magyarországi települések (térkép)"));
   wrap.appendChild(doboz); wrap.appendChild(szavakDoboz);
+  wrap.appendChild(_terkep_jelmagyarazat("Nagyobb pont = nagyobb volumen."));
   return wrap;
 }
 
