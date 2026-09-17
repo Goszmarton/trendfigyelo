@@ -243,6 +243,13 @@ async function hu_terkep(telepulesek) {
       try { havi_terkepek.hu.remove(); } catch (e) { /* stale/elszabadult ref — nem dől el */ }
     }
     const map = L.map(doboz, { attributionControl: true }).setView([47.16, 19.5], 6.6);
+    // Magyarország körvonala alaprétegként (a már vendorelt világ-GeoJSON HUN feature-jéből) → a pontok
+    // ne üres háttéren lebegjenek; a nézetet az ország határaira illesztjük.
+    const hun = (g.vilag.features || []).find((f) => f.id === "HUN");
+    if (hun) {
+      const alap = L.geoJSON(hun, { interactive: false, style: { color: "#888", weight: 1, fillColor: "#f2f2f2", fillOpacity: 0.9 } }).addTo(map);
+      try { map.fitBounds(alap.getBounds(), { padding: [12, 12] }); } catch (e) { /* üres bounds — marad a setView */ }
+    }
     hazai.forEach(t => { const c = g.huk[kulcs(t.nev)];
       L.circleMarker(c, { radius: 5 + 9 * ((t.volumen || 0) / maxV), color: "#c0392b", fillColor: "#e74c3c", fillOpacity: 0.8, weight: 1 })
         .bindTooltip(`${t.nev} · volumen: ${t.volumen || 0}`)
