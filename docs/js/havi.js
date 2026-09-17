@@ -187,6 +187,31 @@ async function vilag_terkep(orszagok, telepulesek) {
   return wrap;
 }
 
+// Magyarország-térkép — magyar települések kör-jelölőkkel (volumen szerinti méret), hover-tooltip,
+// kattintásra a kötött szavak a .havi-terkep-szavak dobozban jelennek meg (a vilag_terkep mintájára).
+async function hu_terkep(telepulesek) {
+  const doboz = elem("div"); doboz.id = "havi-hu-terkep"; doboz.className = "havi-terkep-doboz";
+  const szavakDoboz = elem("div", "havi-terkep-szavak");
+  if (typeof L === "undefined") { return _terkep_fallback("Települések", telepulesek); }   // fail-soft
+  const g = await geo_assetek();
+  const hazai = (telepulesek || []).filter(t => g.huk[kulcs(t.nev)]);
+  const maxV = Math.max(1, ...hazai.map(t => t.volumen || 0));
+  // térkép (későn, a doboz DOM-ba kerülése után inicializálva — Leaflet-nek méretezett konténer kell)
+  setTimeout(() => {
+    const map = L.map(doboz, { attributionControl: true }).setView([47.16, 19.5], 6.6);
+    hazai.forEach(t => { const c = g.huk[kulcs(t.nev)];
+      L.circleMarker(c, { radius: 5 + 9 * ((t.volumen || 0) / maxV), color: "#c0392b", fillColor: "#e74c3c", fillOpacity: 0.8, weight: 1 })
+        .bindTooltip(`${t.nev} · volumen: ${t.volumen || 0}`)
+        .on("click", () => { szavakDoboz.textContent = `${t.nev}: ${(t.szavak || []).join(", ")}`; })
+        .addTo(map); });
+    havi_terkepek.hu = map;
+  }, 0);
+  const wrap = elem("section", "elemzes-szekcio");
+  wrap.appendChild(elem("h3", null, "Magyarországi települések (térkép)"));
+  wrap.appendChild(doboz); wrap.appendChild(szavakDoboz);
+  return wrap;
+}
+
 async function rajzol(art) {
   const t = document.getElementById("havi-tartalom");
   t.textContent = "";
@@ -206,7 +231,7 @@ async function rajzol(art) {
   t.appendChild(elem("h2", "elemzes-csoport-cim", "Felismert entitások (NER)"));
   const ner = art.ner || {};
   t.appendChild(await vilag_terkep(ner.orszagok, ner.telepulesek));
-  t.appendChild(ner_csoport("Települések", ner.telepulesek));
+  t.appendChild(await hu_terkep(ner.telepulesek));
 
   const szemSzek = document.createElement("section");
   szemSzek.className = "elemzes-szekcio havi-szemely-szekcio";

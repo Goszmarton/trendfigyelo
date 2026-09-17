@@ -11,7 +11,7 @@ test("Havi elemzés fül: klaszterek + NER + összegzés renderel", async ({ pag
     osszegzes: "A hónap keresései…" } }));
   await page.goto("/havi.html");
   await expect(page.locator("#havi")).toContainText("Bűnügy");
-  await expect(page.locator("#havi")).toContainText("Debrecen");         // NER település
+  await expect(page.locator("#havi-hu-terkep.leaflet-container")).toHaveCount(1); // NER település → térkép
   await expect(page.locator("#havi")).toContainText("csalás");           // klaszter-tag
   await expect(page.locator("#havi")).toContainText("A hónap keresései");// összegzés
 });
@@ -98,9 +98,36 @@ test("Havi világtérkép: ország-choropleth + külföldi város-jelölő + kat
   const varosMarker = page.locator('#havi-vilag-terkep path.leaflet-interactive[fill="#e74c3c"]').first();
   await expect(varosMarker).toBeVisible();
   // kattintás egy országra → a hozzá kötött szavak megjelennek a .havi-terkep-szavak dobozban
+  // (közvetlen testvér-szűkítés szükséges, mert a Magyarország-térkép is kap saját
+  // .havi-terkep-szavak dobozt — a Playwright :has(#id) szelektor ID-t dokumentum-szinten oldja
+  // fel, nem a jelölt elemre szűkítve, ezért azt itt szándékosan kerüljük)
+  const vilagSzavak = page.locator("#havi-vilag-terkep").locator("xpath=following-sibling::div[contains(@class,'havi-terkep-szavak')]");
   await orszagPath.click();
-  await expect(page.locator(".havi-terkep-szavak")).toContainText("hír");
+  await expect(vilagSzavak).toContainText("hír");
   // kattintás a városra → a hozzá kötött szavak megjelennek
   await varosMarker.click();
-  await expect(page.locator(".havi-terkep-szavak")).toContainText("moszkva hír");
+  await expect(vilagSzavak).toContainText("moszkva hír");
+});
+
+test("Havi Magyarország-térkép: magyar településjelölő + hover + kattintás→szavak", async ({ page }) => {
+  await page.route("**/data/havi_nlp/index.json", r => r.fulfill({ json: { honapok: ["2026-09"], legutolso: "2026-09" } }));
+  await page.route("**/data/havi_nlp/2026-09.json", r => r.fulfill({ json: {
+    honap: "2026-09", modell: "m", korpusz: { egyedi_szo: 3, napok: 2 }, lemmak: [],
+    ner: { orszagok: [],
+           telepulesek: [{ nev: "Debrecen", szavak: ["debrecen időjárás"], volumen: 400 }],
+           szemelyek: [] },
+    klaszterek: [], osszegzes: "össz" } }));
+  await page.goto("/havi.html");
+  // a Magyarország-térkép konténere maga kapja a Leaflet-DOM-osztályt
+  await expect(page.locator("#havi-hu-terkep.leaflet-container")).toHaveCount(1);
+  // az „Országok" listát felváltó világtérkép mellett a Települések-lista HELYETT a Magyarország-térkép jelenik meg
+  await expect(page.locator("#havi-tartalom .havi-ner-csoport", { hasText: "Települések" })).toHaveCount(0);
+  // legalább egy magyar település kör-jelölő
+  const varosMarker = page.locator('#havi-hu-terkep path.leaflet-interactive').first();
+  await expect(varosMarker).toBeVisible();
+  // kattintás a településre → a hozzá kötött szavak megjelennek
+  // (közvetlen testvér-szűkítés szükséges, mert a Világtérkép is kap saját .havi-terkep-szavak dobozt)
+  await varosMarker.click();
+  const huSzavak = page.locator("#havi-hu-terkep").locator("xpath=following-sibling::div[contains(@class,'havi-terkep-szavak')]");
+  await expect(huSzavak).toContainText("debrecen időjárás");
 });
