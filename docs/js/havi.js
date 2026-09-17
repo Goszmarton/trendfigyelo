@@ -91,6 +91,8 @@ function ner_csoport(cimSzoveg, entitasok) {
 function havi_barchart(kulcs, canvasId, cimkek, ertekek) {
   const doboz = document.createElement("div");
   doboz.className = "havi-chart-doboz";
+  // a magasság a sávok számához igazodik (min 320px, ~34px/sáv) → minden címke elfér, nem lapul össze
+  doboz.style.height = Math.max(320, (cimkek.length || 0) * 34) + "px";
   const canvas = document.createElement("canvas");
   canvas.id = canvasId;
   doboz.appendChild(canvas);
@@ -103,7 +105,8 @@ function havi_barchart(kulcs, canvasId, cimkek, ertekek) {
       data: { labels: cimkek, datasets: [{ data: ertekek, backgroundColor: "#3366cc" }] },
       options: { indexAxis: "y", responsive: true, maintainAspectRatio: false, animation: false,
         plugins: { legend: { display: false } },
-        scales: { x: { beginAtZero: true, title: { display: true, text: "volumen" } } } },
+        scales: { x: { beginAtZero: true, title: { display: true, text: "volumen" } },
+                  y: { ticks: { autoSkip: false } } } },   // MINDEN kategória-név látsszon (ne skip-eljen)
     });
   }
   // képernyőolvasó-alternatíva: a canvas fallback-tartalma nem jelenik meg (és nem olvasható ki),
