@@ -163,6 +163,34 @@
       <p>Minden nap <strong>automatikusan</strong> fut, közvetlenül a napi adatgyűjtés után. Ha az AI-hívás bármiért nem sikerül, <strong>az előző napi elemzés változatlanul megmarad</strong> - sosem jelenik meg félkész szöveg.</p>
       <p class="adat-magyarazat">Minden nap elemzése elmentődik; az „Elemzés" fül naptárából bármelyik korábbi nap <strong>visszalapozható</strong>.</p>
     </section>
+
+    <h2 class="adat-csoport">A havi elemzés (havi AI-összefoglaló)</h2>
+    <section class="adat-doboz">
+      <h2>Mi a havi elemzés?</h2>
+      <p>A „Havi elemzés" fül egy <strong>egész hónap</strong> felkapott kereséseiről ad gépi összefoglalót, magyarul: milyen <strong>témák</strong> (klaszterek) uralták a hónapot, mely <strong>országok, települések és személyek</strong> jelentek meg a keresésekben, és egy összefüggő <strong>szöveges összegzés</strong> a hónap ívéről. Mindezt interaktív <strong>térképek</strong> és <strong>diagramok</strong> egészítik ki.</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Milyen adat alapján, és ki készíti?</h2>
+      <p>Az alap a hónap során <strong>naponta összegyűjtött felkapott keresőszavak</strong> (a reggeli és esti pillanatképek), egy hónapra összesítve: a kódunk kiszűri az ismétléseket, és minden kifejezéshez kiszámolja a <strong>gyakoriságot</strong> (hány külön napon bukkant fel), a <strong>legmagasabb keresési volument</strong>, valamint a hozzá mentett híreket és témákat.</p>
+      <p>Erre a hónapra összegyűjtött adatra a <strong>Claude Opus 4.8</strong> (<code>claude-opus-4-8</code>) egyetlen hívásban végzi el a magyar nyelvi feldolgozást - <strong>szótövezés, névfelismerés</strong> (országok, települések, személyek) és <strong>témákba sorolás</strong> -, és megírja az összefoglaló szöveget.</p>
+      <p class="adat-magyarazat">A <strong>számokat itt is a saját kódunk adja</strong>: az összesítés és a „volumen" (a térképek színe/mérete és a diagramok oszlopmagassága) determinisztikusan, a lementett adatból számolódik - egy országhoz, személyhez vagy témához tartozó volumen a hozzá kötött keresőszavak legmagasabb keresési szintjeinek összege.</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Mit mutatnak a térképek és a diagramok?</h2>
+      <p>Két térkép szerepel: egy <strong>világtérkép</strong> (a keresésekben megjelent országok a volumen szerint színezve, a külföldi városok pontként) és egy <strong>Magyarország-térkép</strong> (a megjelent magyar települések pontként, a megyék rajzolatán). A <strong>diagramok</strong> a legtöbbet keresett <strong>személyneveket</strong> és a <strong>témák eloszlását</strong> mutatják. Mindenhol a <strong>volumen</strong> adja a méretet vagy a hosszt; egy térkép-jelölőre vagy egy oszlopra kattintva előjönnek a <strong>hozzá kötött keresőszavak</strong>.</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Mennyire megbízható? (grounding)</h2>
+      <p>A havi elemzés <strong>csak a hónap valós adatából</strong> dolgozik. Egy külön ellenőrző lépés <strong>kiszűri</strong> azt a nevet vagy témát, ami nem szerepel a hónap kereséseiben - így az AI <strong>nem talál ki</strong> országot, személyt, témát vagy számot. Az AI feladata kizárólag a magyar szöveg és a besorolás; hír vagy esemény említése is csak a mentett adatból származhat.</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Mikor készül el?</h2>
+      <p>A havi elemzés egy <strong>teljes naptári hónapot</strong> fed le, és a <strong>hónap lezárása után</strong>, a teljes havi adat összegyűltével készül el. A „Napi elemzés" fül naptárában a <strong>hó utolsó napján</strong> a „Havi" jelölő visz rá; a Havi fülön pedig a bal oldali <strong>hónap-naptárból</strong> bármelyik korábbi, már elkészült hónap előhívható.</p>
+    </section>
   </main>
 
   <footer id="labresz" aria-label="Lábléc"></footer>
