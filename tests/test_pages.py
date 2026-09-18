@@ -422,3 +422,9 @@ def test_adatokrol_predikcio_uj_viselkedesek():
     assert "ráközelít" in szoveg                       # rövid horizont láthatóság
     assert "nem becsülhető" in szoveg                  # órás-only 3hó/1év
     assert "csak órás" in szoveg                       # az ok: nincs napi/heti forrás
+
+
+def test_adatokrol_predikcio_nem_csak_utolso_pont():
+    sz = (DOCS / "adatokrol.html").read_text(encoding="utf-8")
+    assert "utolsó feléből" in sz                      # a helyes, kóddal egyező megfogalmazás
+    assert "utolsó néhány pontjára" not in sz          # a téves/félrevezető mondat MEGSZŰNT
