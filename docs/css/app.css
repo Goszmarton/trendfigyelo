@@ -148,6 +148,8 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 .nap-cella.szomszed-honap { color: #ddd; }
 .nap-cella.valasztott { background: #3366cc; color: #fff; font-weight: 600; }
 .nap-cella.valasztott:hover { background: #2a52a0; }
+.nap-havi-jelolo { display: inline-block; margin-left: .15rem; font-size: .6rem; font-weight: 700; color: #fff;
+  background: #3366cc; border-radius: 3px; padding: 0 .2rem; vertical-align: super; cursor: pointer; }
 /* heti naptár: a kiválasztott HÉT mind a 7 napja UGYANÚGY néz ki, mint a napi kiválasztott (kék kör, fehér szám) */
 #heti-valaszto .nap-cella.valasztott-het { background: #3366cc; color: #fff; font-weight: 600; }
 #heti-valaszto .nap-cella.valasztott-het:hover { background: #2a52a0; }

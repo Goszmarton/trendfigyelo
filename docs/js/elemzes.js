@@ -135,7 +135,12 @@ function elemzes_naptar_render() {
   el.textContent = "";
   el.appendChild(naptar_epit(honap, elso_ho, utolso_ho, function (iso, szomszed) {
     const vanAdat = !szomszed && keszlet.has(iso);
-    return { valaszthato: vanAdat, extraOsztaly: iso === valasztott ? "valasztott" : "", aria: iso === valasztott ? "date" : null };
+    const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    const utolsoNapja = !szomszed && m && +m[3] === napok_a_honapban(+m[1], +m[2]);
+    return {
+      valaszthato: vanAdat, extraOsztaly: iso === valasztott ? "valasztott" : "", aria: iso === valasztott ? "date" : null,
+      haviHonap: utolsoNapja ? iso.slice(0, 7) : undefined,
+    };
   }));
 }
 
@@ -144,6 +149,8 @@ function elemzes_esemeny_kot() {
   const el = document.getElementById("elemzes-naptar");
   if (!el) return;
   el.addEventListener("click", async function (ev) {
+    const jel = ev.target && ev.target.closest ? ev.target.closest(".nap-havi-jelolo") : null;
+    if (jel) { window.location.href = "havi.html?honap=" + jel.getAttribute("data-havi"); return; }
     const btn = ev.target && ev.target.closest ? ev.target.closest("button") : null;
     if (!btn || btn.disabled) return;
     if (btn.classList.contains("nap-cella")) {                  // nap kiválasztása → új elemzés betöltése

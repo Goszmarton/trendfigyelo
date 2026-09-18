@@ -232,3 +232,21 @@ test("Napi → havi link: nem-utolsó napon NINCS", async ({ page }) => {
   await page.goto("/elemzes.html");
   await expect(page.locator("a.havi-atugras")).toHaveCount(0);
 });
+
+test('Naptár „Havi elemzés" jelölő: a hó utolsó napi cellája hordozza, nem-utolsó nem; kattintásra Havi fülre navigál', async ({ page }) => {
+  const alap = { frissitve: "x", modell: "m", nap: "2026-09-30", mode: "este",
+    valtozas: { diff: { van_elozo: true, mozgok: [] }, szoveg: "V." },
+    kulcsszavak: { szamok: [], napi: { szoveg: "N." } },
+    felkapott: { top: [], reggel_top: [], este_top: [], reggel_este_diff: {}, het_valos: [],
+      reggel: { szoveg: "R." }, este: { szoveg: "E." }, teljes_nap: { szoveg: "Í." }, het: { szoveg: "H." } } };
+  await page.route("**/data/elemzesek/index.json", r => r.fulfill({ json: { napok: ["2026-09-01", "2026-09-30"] } }));
+  await page.route("**/data/elemzes.json", r => r.fulfill({ json: alap }));
+  await page.goto("/elemzes.html");
+  const utolso = page.locator('#elemzes-naptar button.nap-cella[data-nap="2026-09-30"]:not(.szomszed-honap)');
+  await expect(utolso.locator(".nap-havi-jelolo")).toHaveCount(1);
+  await expect(utolso.locator(".nap-havi-jelolo")).toHaveAttribute("data-havi", "2026-09");
+  const nem_utolso = page.locator('#elemzes-naptar button.nap-cella[data-nap="2026-09-15"]:not(.szomszed-honap)');
+  await expect(nem_utolso.locator(".nap-havi-jelolo")).toHaveCount(0);
+  await utolso.locator(".nap-havi-jelolo").click();
+  await page.waitForURL(/havi\.html\?honap=2026-09/);
+});

@@ -551,6 +551,14 @@ function naptar_epit(honap, elso_ho, utolso_ho, cellaAllapot) {
     cella.setAttribute("data-nap", iso);
     if (!st.valaszthato) cella.disabled = true;                // nem-választható → letiltva
     if (st.aria) cella.setAttribute("aria-current", st.aria);
+    if (st.haviHonap) {
+      const jel = document.createElement("span");
+      jel.className = "nap-havi-jelolo";
+      jel.setAttribute("data-havi", st.haviHonap);
+      jel.setAttribute("title", "Havi elemzés");
+      jel.textContent = "H";
+      cella.appendChild(jel);
+    }
     racs.appendChild(cella);
   }
   naptar.appendChild(racs);
