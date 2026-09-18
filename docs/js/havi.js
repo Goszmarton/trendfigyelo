@@ -171,10 +171,10 @@ async function geo_assetek() {
   }
 }
 function kulcs(nev) { return (nev || "").trim().toLowerCase(); }
-function szin_skala(v, max) {   // világos→sötét kék a volumen arányában
+function szin_skala(v, max) {   // világos→sötét kék a volumen arányában (lágyabb, kevésbé rikító tartomány)
   const t = max > 0 ? Math.min(1, v / max) : 0;
-  const l = Math.round(85 - 55 * t);       // 85%→30% világosság
-  return `hsl(212, 70%, ${l}%)`;
+  const l = Math.round(88 - 46 * t);       // 88%→42% világosság
+  return `hsl(212, 62%, ${l}%)`;
 }
 
 // fail-soft: ha nincs Leaflet, a Fázis A volumen-listára esünk vissza (ner_csoport)
@@ -185,6 +185,29 @@ function _terkep_fallback(cimSzoveg, entitasok) {
 // jelmagyarázat-sor egy térkép alá (szín/méret = volumen)
 function _terkep_jelmagyarazat(szoveg) {
   return elem("p", "havi-terkep-jelmagyarazat", szoveg);
+}
+
+// szép, XSS-mentes popup egy jelölőhöz/országhoz: név (félkövér) + volumen + a kötött keresőszavak
+function _terkep_popup(nev, volumen, szavak) {
+  const box = document.createElement("div"); box.className = "havi-terkep-popup";
+  const cim = document.createElement("strong"); cim.textContent = nev; box.appendChild(cim);
+  const vol = elem("div", "havi-terkep-popup-vol", "volumen: " + (volumen || 0)); box.appendChild(vol);
+  const sz = (szavak || []).filter(Boolean);
+  if (sz.length) box.appendChild(elem("div", "havi-terkep-popup-szavak", sz.join(", ")));
+  return box;
+}
+
+// egységes városmarker (világ- és HU-térkép): fehér glória-perem, meleg szín, hover-nagyítás,
+// hover-tooltip + kattintásra kiugró popup a jelölő fölött ÉS a kötött szavak a szavak-dobozban.
+function _varos_marker(c, t, maxV, szavakDoboz) {
+  const alap = 4 + 8 * ((t.volumen || 0) / maxV);
+  const m = L.circleMarker(c, { radius: alap, color: "#fff", weight: 2, fillColor: "#ef6c33", fillOpacity: 0.85 });
+  m.bindTooltip(`${t.nev} · volumen: ${t.volumen || 0}`, { direction: "top", offset: [0, -3] });
+  m.bindPopup(_terkep_popup(t.nev, t.volumen, t.szavak), { closeButton: true });
+  m.on("mouseover", () => m.setRadius(alap + 3));
+  m.on("mouseout", () => m.setRadius(alap));
+  m.on("click", () => { szavakDoboz.textContent = `${t.nev}: ${(t.szavak || []).join(", ")}`; });
+  return m;
 }
 
 // „nem térképezhető" fallback-lista (grounding/a11y: semmi ne tűnjön el csendben) — csak ha van tartalma
@@ -228,24 +251,24 @@ async function vilag_terkep(orszagok, telepulesek) {
     }
     const map = L.map(doboz, { attributionControl: true }).setView([30, 10], 1.4);
     L.geoJSON(g.vilag, {
-      style: f => { const o = orszMap[f.id]; return { weight: 1, color: "#888",
-        fillColor: o ? szin_skala(o.volumen || 0, maxO) : "#eee", fillOpacity: o ? 0.85 : 0.25 }; },
+      // szárazföld: meleg papírszín, lágy határ; adatos ország: kék choropleth, kissé erősebb határ
+      style: f => { const o = orszMap[f.id]; return o
+        ? { weight: 0.8, color: "#5a7fb0", fillColor: szin_skala(o.volumen || 0, maxO), fillOpacity: 0.92 }
+        : { weight: 0.6, color: "#c3ccd6", fillColor: "#f3f0e9", fillOpacity: 1 }; },
       onEachFeature: (f, layer) => { const o = orszMap[f.id]; if (o) {
-        layer.bindTooltip(`${o.nev} · volumen: ${o.volumen || 0}`);
+        layer.bindTooltip(`${o.nev} · volumen: ${o.volumen || 0}`, { sticky: true });
+        layer.on("mouseover", () => layer.setStyle({ weight: 1.8, color: "#2c4a73" }));
+        layer.on("mouseout", () => layer.setStyle({ weight: 0.8, color: "#5a7fb0" }));
         layer.on("click", () => { szavakDoboz.textContent = `${o.nev}: ${(o.szavak || []).join(", ")}`; }); } },
     }).addTo(map);
-    // külföldi városok (nincs HU-koordinátájuk) kör-jelölőként
+    // külföldi városok (nincs HU-koordinátájuk) kör-jelölőként — egységes, szép markerrel
     const kulf = (telepulesek || []).filter(t => !g.huk[kulcs(t.nev)] && g.varos[kulcs(t.nev)]);
     const maxV = Math.max(1, ...kulf.map(t => t.volumen || 0));
-    kulf.forEach(t => { const c = g.varos[kulcs(t.nev)];
-      L.circleMarker(c, { radius: 5 + 9 * ((t.volumen || 0) / maxV), color: "#c0392b", fillColor: "#e74c3c", fillOpacity: 0.8, weight: 1 })
-        .bindTooltip(`${t.nev} · volumen: ${t.volumen || 0}`)
-        .on("click", () => { szavakDoboz.textContent = `${t.nev}: ${(t.szavak || []).join(", ")}`; })
-        .addTo(map); });
+    kulf.forEach(t => { _varos_marker(g.varos[kulcs(t.nev)], t, maxV, szavakDoboz).addTo(map); });
     havi_terkepek.vilag = map;
   }, 0);
   const wrap = elem("section", "elemzes-szekcio");
-  wrap.appendChild(elem("h3", null, "Havonta megjelent országok és nem-magyar települések a keresésekben"));
+  wrap.appendChild(elem("h3", null, "Ebben a hónapban megjelent országok és nem-magyar települések a keresésekben"));
   wrap.appendChild(doboz); wrap.appendChild(szavakDoboz);
   wrap.appendChild(_terkep_jelmagyarazat("Sötétebb szín / nagyobb pont = nagyobb volumen."));
   const fallback = _nem_illesztheto_lista(orszNemIllesztheto.concat(telepNemIllesztheto));
@@ -273,20 +296,16 @@ async function hu_terkep(telepulesek) {
     // háttéren lebegjenek, hanem a megyék tagolása is látszódjon; a nézetet a rétegre illesztjük.
     // Fallback (megye-asset hiányzik): a már vendorelt világ-GeoJSON HUN feature-je (a korábbi viselkedés).
     if (g.megyek && (g.megyek.features || []).length) {
-      const alap = L.geoJSON(g.megyek, { interactive: false, style: { color: "#999", weight: 1, fillColor: "#f2f2f2", fillOpacity: 0.9 } }).addTo(map);
+      const alap = L.geoJSON(g.megyek, { interactive: false, style: { color: "#999", weight: 1, fillColor: "#f3f0e9", fillOpacity: 1 } }).addTo(map);
       try { map.fitBounds(alap.getBounds(), { padding: [12, 12] }); } catch (e) { /* üres bounds — marad a setView */ }
     } else {
       const hun = (g.vilag.features || []).find((f) => f.id === "HUN");
       if (hun) {
-        const alap = L.geoJSON(hun, { interactive: false, style: { color: "#888", weight: 1, fillColor: "#f2f2f2", fillOpacity: 0.9 } }).addTo(map);
+        const alap = L.geoJSON(hun, { interactive: false, style: { color: "#888", weight: 1, fillColor: "#f3f0e9", fillOpacity: 1 } }).addTo(map);
         try { map.fitBounds(alap.getBounds(), { padding: [12, 12] }); } catch (e) { /* üres bounds — marad a setView */ }
       }
     }
-    hazai.forEach(t => { const c = g.huk[kulcs(t.nev)];
-      L.circleMarker(c, { radius: 5 + 9 * ((t.volumen || 0) / maxV), color: "#c0392b", fillColor: "#e74c3c", fillOpacity: 0.8, weight: 1 })
-        .bindTooltip(`${t.nev} · volumen: ${t.volumen || 0}`)
-        .on("click", () => { szavakDoboz.textContent = `${t.nev}: ${(t.szavak || []).join(", ")}`; })
-        .addTo(map); });
+    hazai.forEach(t => { _varos_marker(g.huk[kulcs(t.nev)], t, maxV, szavakDoboz).addTo(map); });
     havi_terkepek.hu = map;
   }, 0);
   // nem-illeszthető (HU-térkép szempontjából): a HU-koordináta nélküli település vagy külföldi
@@ -295,7 +314,7 @@ async function hu_terkep(telepulesek) {
   // (lásd vilag_terkep telepNemIllesztheto) — így ide NEM kerül duplán, a HU fallback ezért
   // ebben az adatmodellben jellemzően üres marad (nincs kettős felsorolás).
   const wrap = elem("section", "elemzes-szekcio");
-  wrap.appendChild(elem("h3", null, "Havonta megjelent magyar települések a keresésekben"));
+  wrap.appendChild(elem("h3", null, "Ebben a hónapban megjelent magyar települések a keresésekben"));
   wrap.appendChild(doboz); wrap.appendChild(szavakDoboz);
   wrap.appendChild(_terkep_jelmagyarazat("Nagyobb pont = nagyobb volumen."));
   return wrap;
@@ -317,7 +336,7 @@ async function rajzol(art) {
   t.appendChild(elem("p", "elemzes-szoveg", art.osszegzes || ""));
 
   // 2) NER — Országok / Települések (volumen-listák; Fázis B → térképek), majd Személyek
-  t.appendChild(elem("h2", "elemzes-csoport-cim", "Országok és települések a havi keresésekben"));
+  t.appendChild(elem("h2", "elemzes-csoport-cim", "Ebben a hónapban keresett országok és települések"));
   t.appendChild(havi_info(
     "A térképeken a havi keresőszavakban felismert ország- és településnevek jelennek meg, " +
     "gyakoriság (volumen) szerint színezve/méretezve — minél sötétebb/nagyobb a jelölés, annál " +
@@ -329,7 +348,7 @@ async function rajzol(art) {
 
   const szemSzek = document.createElement("section");
   szemSzek.className = "elemzes-szekcio havi-szemely-szekcio";
-  szemSzek.appendChild(elem("h3", null, "Megjelent személynevek a havi keresésekben"));
+  szemSzek.appendChild(elem("h3", null, "Ebben a hónapban megjelent személynevek a keresésekben"));
   szemSzek.appendChild(havi_info(
     "A sáv hossza a volument mutatja: a személyhez kötött keresőszavak legmagasabb kereső-" +
     "szintjeinek összegét. Minél hosszabb egy sáv, annál nagyobb figyelmet kapott az adott " +

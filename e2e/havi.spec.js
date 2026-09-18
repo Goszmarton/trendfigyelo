@@ -96,8 +96,8 @@ test("Havi világtérkép: ország-choropleth + külföldi város-jelölő + kat
   // legalább egy ország-choropleth path (a szin_skala hsl(212,…) kitöltéssel)
   const orszagPath = page.locator('#havi-vilag-terkep path.leaflet-interactive[fill^="hsl(212"]').first();
   await expect(orszagPath).toBeVisible();
-  // legalább egy külföldi-város kör-jelölő (a vörös fillColor #e74c3c)
-  const varosMarker = page.locator('#havi-vilag-terkep path.leaflet-interactive[fill="#e74c3c"]').first();
+  // legalább egy külföldi-város kör-jelölő (a meleg fillColor #ef6c33, fehér perem)
+  const varosMarker = page.locator('#havi-vilag-terkep path.leaflet-interactive[fill="#ef6c33"]').first();
   await expect(varosMarker).toBeVisible();
   // kattintás egy országra → a hozzá kötött szavak megjelennek a .havi-terkep-szavak dobozban
   // (közvetlen testvér-szűkítés szükséges, mert a Magyarország-térkép is kap saját
@@ -204,12 +204,13 @@ test("Havi csiszolás: jobb szekció-címek + kék-csíkos infók + klaszter-ká
     osszegzes: "A hónap keresései…" } }));
   await page.goto("/havi.html");
   // C) NER-cím + térkép-alcímek (a "(térkép)" törölve)
-  await expect(page.locator("#havi-tartalom .elemzes-csoport-cim", { hasText: "Országok és települések a havi keresésekben" })).toHaveCount(1);
-  await expect(page.locator("#havi-tartalom")).toContainText("Havonta megjelent országok és nem-magyar települések a keresésekben");
-  await expect(page.locator("#havi-tartalom")).toContainText("Havonta megjelent magyar települések a keresésekben");
+  await expect(page.locator("#havi-tartalom .elemzes-csoport-cim", { hasText: "Ebben a hónapban keresett országok és települések" })).toHaveCount(1);
+  await expect(page.locator("#havi-tartalom")).toContainText("Ebben a hónapban megjelent országok és nem-magyar települések a keresésekben");
+  await expect(page.locator("#havi-tartalom")).toContainText("Ebben a hónapban megjelent magyar települések a keresésekben");
   await expect(page.locator("#havi-tartalom")).not.toContainText("(térkép)");
+  await expect(page.locator("#havi-tartalom")).not.toContainText("Havonta");
   // D) Személyek-cím
-  await expect(page.locator("#havi-tartalom")).toContainText("Megjelent személynevek a havi keresésekben");
+  await expect(page.locator("#havi-tartalom")).toContainText("Ebben a hónapban megjelent személynevek a keresésekben");
   // E) Klaszterek-cím
   await expect(page.locator("#havi-tartalom .elemzes-csoport-cim", { hasText: "Tematikus besorolás" })).toHaveCount(1);
   // kék-csíkos infók: legalább 3

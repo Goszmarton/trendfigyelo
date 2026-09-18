@@ -552,14 +552,24 @@ function naptar_epit(honap, elso_ho, utolso_ho, cellaAllapot) {
     if (!st.valaszthato) cella.disabled = true;                // nem-választható → letiltva
     if (st.aria) cella.setAttribute("aria-current", st.aria);
     if (st.haviHonap) {
-      const jel = document.createElement("span");
+      // A jelölő NEM a nap-gomb gyereke: a hó utolsó napján gyakran nincs napi adat, ilyenkor a
+      // nap-gomb letiltott, és a letiltott <button> a böngészőben elnyeli a kattintást a
+      // leszármazottairól is → a jelölő nem lenne kattintható. Ezért önálló <button> a jelölő,
+      // a nap-gomb mellett, egy közös cella-wrapperben (a rács-cella így is EGY grid-elem marad).
+      const wrap = document.createElement("div");
+      wrap.className = "nap-cella-wrap";
+      wrap.appendChild(cella);
+      const jel = document.createElement("button");
+      jel.type = "button";
       jel.className = "nap-havi-jelolo";
       jel.setAttribute("data-havi", st.haviHonap);
-      jel.setAttribute("title", "Havi elemzés");
-      jel.textContent = "H";
-      cella.appendChild(jel);
+      jel.setAttribute("title", "Havi elemzés – kattints a megnyitáshoz");
+      jel.textContent = "Havi";
+      wrap.appendChild(jel);
+      racs.appendChild(wrap);
+    } else {
+      racs.appendChild(cella);
     }
-    racs.appendChild(cella);
   }
   naptar.appendChild(racs);
   return naptar;

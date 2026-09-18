@@ -242,11 +242,32 @@ test('Naptár „Havi elemzés" jelölő: a hó utolsó napi cellája hordozza, 
   await page.route("**/data/elemzesek/index.json", r => r.fulfill({ json: { napok: ["2026-09-01", "2026-09-30"] } }));
   await page.route("**/data/elemzes.json", r => r.fulfill({ json: alap }));
   await page.goto("/elemzes.html");
-  const utolso = page.locator('#elemzes-naptar button.nap-cella[data-nap="2026-09-30"]:not(.szomszed-honap)');
-  await expect(utolso.locator(".nap-havi-jelolo")).toHaveCount(1);
-  await expect(utolso.locator(".nap-havi-jelolo")).toHaveAttribute("data-havi", "2026-09");
-  const nem_utolso = page.locator('#elemzes-naptar button.nap-cella[data-nap="2026-09-15"]:not(.szomszed-honap)');
-  await expect(nem_utolso.locator(".nap-havi-jelolo")).toHaveCount(0);
-  await utolso.locator(".nap-havi-jelolo").click();
+  // a jelölő önálló gomb a nap-gomb MELLETT, közös .nap-cella-wrap-ben (nem a nap-gomb gyereke)
+  const utolsoJel = page.locator('#elemzes-naptar .nap-cella-wrap:has(button.nap-cella[data-nap="2026-09-30"]) .nap-havi-jelolo');
+  await expect(utolsoJel).toHaveCount(1);
+  await expect(utolsoJel).toHaveAttribute("data-havi", "2026-09");
+  await expect(utolsoJel).toContainText("Havi");
+  // nem-utolsó napnak nincs jelölője (és nincs wrappere sem)
+  await expect(page.locator('#elemzes-naptar .nap-cella-wrap:has(button[data-nap="2026-09-15"])')).toHaveCount(0);
+  await utolsoJel.click();
   await page.waitForURL(/havi\.html\?honap=2026-09/);
+});
+
+test('Naptár „Havi" jelölő: az utolsó napon NAPI ADAT NÉLKÜL (letiltott nap-gomb) is kattintható → Havi fülre navigál', async ({ page }) => {
+  const alap = { frissitve: "x", modell: "m", nap: "2026-09-01", mode: "este",
+    valtozas: { diff: { van_elozo: true, mozgok: [] }, szoveg: "V." },
+    kulcsszavak: { szamok: [], napi: { szoveg: "N." } },
+    felkapott: { top: [], reggel_top: [], este_top: [], reggel_este_diff: {}, het_valos: [],
+      reggel: { szoveg: "R." }, este: { szoveg: "E." }, teljes_nap: { szoveg: "Í." }, het: { szoveg: "H." } } };
+  // 2026-09-30 NINCS az elérhető napok közt → a nap-gomb letiltott, de a jelölőnek kattinthatónak kell lennie
+  await page.route("**/data/elemzesek/index.json", r => r.fulfill({ json: { napok: ["2026-09-01"] } }));
+  await page.route("**/data/elemzes.json", r => r.fulfill({ json: alap }));
+  await page.goto("/elemzes.html");
+  const napGomb = page.locator('#elemzes-naptar .nap-cella-wrap:has(button.nap-cella[data-nap="2026-09-30"]) button.nap-cella');
+  await expect(napGomb).toBeDisabled();                                   // adat híján letiltott nap-gomb
+  const jel = page.locator('#elemzes-naptar .nap-cella-wrap:has(button.nap-cella[data-nap="2026-09-30"]) .nap-havi-jelolo');
+  await expect(jel).toHaveCount(1);
+  await expect(jel).toBeEnabled();                                        // a jelölő ÖNÁLLÓ, engedélyezett gomb
+  await jel.click();
+  await page.waitForURL(/havi\.html\?honap=2026-09/);                     // a letiltott nap ellenére navigál
 });
