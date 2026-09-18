@@ -30,7 +30,7 @@ test("Havi reorg: összegzés ELÖL, klaszterek ALUL, nincs lemma-térkép, orsz
   await expect(page.locator("#havi")).toContainText("A hónap keresései");
   // sorrend: az összegzés a klaszter-cím ELŐTT van a DOM-ban
   const cimek = await page.locator("#havi-tartalom .elemzes-csoport-cim").allTextContents();
-  expect(cimek.indexOf("Összegzés")).toBeLessThan(cimek.indexOf("Témák (klaszterek)"));
+  expect(cimek.indexOf("Összegzés")).toBeLessThan(cimek.indexOf("Tematikus besorolás"));
   // nincs lemma-térkép
   await expect(page.locator("#havi-tartalom")).not.toContainText("lemma térkép");
   // az „Országok" lista HELYETT a világtérkép jelenik meg (a volumen szerinti szinezést/rendezést
@@ -189,4 +189,37 @@ test("Havi geo-asset betöltési hiba: fail-soft — a térképek listára esnek
   await expect(page.locator("#havi-szemely-chart")).toHaveCount(1);
   await expect(page.locator("#havi-klaszter-chart")).toHaveCount(1);
   await expect(page.locator("#havi")).toContainText("Sport");
+});
+
+test("Havi csiszolás: jobb szekció-címek + kék-csíkos infók + klaszter-kártya szöveg-elöl sorrend", async ({ page }) => {
+  await page.route("**/data/havi_nlp/index.json", r => r.fulfill({ json: { honapok: ["2026-09"], legutolso: "2026-09" } }));
+  await page.route("**/data/havi_nlp/2026-09.json", r => r.fulfill({ json: {
+    honap: "2026-09", modell: "m", korpusz: { egyedi_szo: 3, napok: 2 }, lemmak: [],
+    ner: { orszagok: [{ nev: "Magyarország", szavak: ["magyar hír"], volumen: 900 }],
+           telepulesek: [{ nev: "Debrecen", szavak: ["debrecen időjárás"], volumen: 400 }],
+           szemelyek: [{ nev: "Orbán Viktor", szavak: ["orbán viktor kötcse"], volumen: 900 }] },
+    klaszterek: [{ cimke: "Bűnügy", szavak: ["csalás"], ertelmezes: "leírás a témáról", uralkodo_temak: [], volumen: 500 }],
+    osszegzes: "A hónap keresései…" } }));
+  await page.goto("/havi.html");
+  // C) NER-cím + térkép-alcímek (a "(térkép)" törölve)
+  await expect(page.locator("#havi-tartalom .elemzes-csoport-cim", { hasText: "Országok és települések a havi keresésekben" })).toHaveCount(1);
+  await expect(page.locator("#havi-tartalom")).toContainText("Havonta megjelent országok és nem-magyar települések a keresésekben");
+  await expect(page.locator("#havi-tartalom")).toContainText("Havonta megjelent magyar települések a keresésekben");
+  await expect(page.locator("#havi-tartalom")).not.toContainText("(térkép)");
+  // D) Személyek-cím
+  await expect(page.locator("#havi-tartalom")).toContainText("Megjelent személynevek a havi keresésekben");
+  // E) Klaszterek-cím
+  await expect(page.locator("#havi-tartalom .elemzes-csoport-cim", { hasText: "Tematikus besorolás" })).toHaveCount(1);
+  // kék-csíkos infók: legalább 3
+  const infoSzam = await page.locator("#havi-tartalom .havi-info").count();
+  expect(infoSzam).toBeGreaterThanOrEqual(3);
+  // F) klaszter-kártya: az ertelmezes-szöveg a tag-chipek ELŐTT áll a DOM-ban
+  const sorrend = await page.locator(".havi-klaszter").first().evaluate((box) => {
+    const szoveg = box.querySelector(".elemzes-szoveg");
+    const chipek = box.querySelector(".havi-tag-lista");
+    if (!szoveg || !chipek) return null;
+    // DOCUMENT_POSITION_FOLLOWING (4) === szoveg a chipek ELŐTT van
+    return !!(szoveg.compareDocumentPosition(chipek) & Node.DOCUMENT_POSITION_FOLLOWING);
+  });
+  expect(sorrend).toBe(true);
 });

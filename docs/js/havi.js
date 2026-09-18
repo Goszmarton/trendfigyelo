@@ -39,6 +39,11 @@ function elem(tag, cls, szoveg) {
   return h;
 }
 
+// kék-csíkos infó-jegyzet (a .mltrend-info/.predikcio-info mintájára — lásd docs/css/app.css .havi-info)
+function havi_info(szoveg) {
+  return elem("p", "havi-info", szoveg);
+}
+
 // tag-lista (szavak) — inline chipek
 function tag_lista(szavak) {
   const ul = document.createElement("ul");
@@ -55,8 +60,8 @@ function klaszter_kartya(k) {
   const box = document.createElement("section");
   box.className = "elemzes-szekcio havi-klaszter";
   box.appendChild(elem("h3", null, k.cimke || "Névtelen téma"));
-  box.appendChild(tag_lista(k.szavak));
   if (k.ertelmezes) box.appendChild(elem("p", "elemzes-szoveg", k.ertelmezes));
+  box.appendChild(tag_lista(k.szavak));
   if (Array.isArray(k.uralkodo_temak) && k.uralkodo_temak.length) {
     box.appendChild(elem("p", "halvany", "Domináns témák: " + k.uralkodo_temak.join(", ")));
   }
@@ -220,7 +225,7 @@ async function vilag_terkep(orszagok, telepulesek) {
     havi_terkepek.vilag = map;
   }, 0);
   const wrap = elem("section", "elemzes-szekcio");
-  wrap.appendChild(elem("h3", null, "Országok és külföldi városok (térkép)"));
+  wrap.appendChild(elem("h3", null, "Havonta megjelent országok és nem-magyar települések a keresésekben"));
   wrap.appendChild(doboz); wrap.appendChild(szavakDoboz);
   wrap.appendChild(_terkep_jelmagyarazat("Sötétebb szín / nagyobb pont = nagyobb volumen."));
   const fallback = _nem_illesztheto_lista(orszNemIllesztheto.concat(telepNemIllesztheto));
@@ -270,7 +275,7 @@ async function hu_terkep(telepulesek) {
   // (lásd vilag_terkep telepNemIllesztheto) — így ide NEM kerül duplán, a HU fallback ezért
   // ebben az adatmodellben jellemzően üres marad (nincs kettős felsorolás).
   const wrap = elem("section", "elemzes-szekcio");
-  wrap.appendChild(elem("h3", null, "Magyarországi települések (térkép)"));
+  wrap.appendChild(elem("h3", null, "Havonta megjelent magyar települések a keresésekben"));
   wrap.appendChild(doboz); wrap.appendChild(szavakDoboz);
   wrap.appendChild(_terkep_jelmagyarazat("Nagyobb pont = nagyobb volumen."));
   return wrap;
@@ -292,14 +297,23 @@ async function rajzol(art) {
   t.appendChild(elem("p", "elemzes-szoveg", art.osszegzes || ""));
 
   // 2) NER — Országok / Települések (volumen-listák; Fázis B → térképek), majd Személyek
-  t.appendChild(elem("h2", "elemzes-csoport-cim", "Felismert entitások (NER)"));
+  t.appendChild(elem("h2", "elemzes-csoport-cim", "Országok és települések a havi keresésekben"));
+  t.appendChild(havi_info(
+    "A térképeken a havi keresőszavakban felismert ország- és településnevek jelennek meg, " +
+    "gyakoriság (volumen) szerint színezve/méretezve — minél sötétebb/nagyobb a jelölés, annál " +
+    "nagyobb volumen tartozik hozzá. Egy jelölésre kattintva a hozzá kötött keresőszavak jelennek " +
+    "meg. A térképre nem illeszthető nevek a lista alatt szerepelnek."));
   const ner = art.ner || {};
   t.appendChild(await vilag_terkep(ner.orszagok, ner.telepulesek));
   t.appendChild(await hu_terkep(ner.telepulesek));
 
   const szemSzek = document.createElement("section");
   szemSzek.className = "elemzes-szekcio havi-szemely-szekcio";
-  szemSzek.appendChild(elem("h3", null, "Személyek (leggyakoribbak)"));
+  szemSzek.appendChild(elem("h3", null, "Megjelent személynevek a havi keresésekben"));
+  szemSzek.appendChild(havi_info(
+    "A sáv hossza a volument mutatja: a személyhez kötött keresőszavak legmagasabb kereső-" +
+    "szintjeinek összegét. Minél hosszabb egy sáv, annál nagyobb figyelmet kapott az adott " +
+    "személy a hónap kereséseiben."));
   const szemelyek = (ner.szemelyek || []).filter((e) => e && e.nev)
     .sort((a, b) => (b.volumen || 0) - (a.volumen || 0)).slice(0, SZEMELY_TOP);
   if (!szemelyek.length) {
@@ -311,7 +325,10 @@ async function rajzol(art) {
   t.appendChild(szemSzek);
 
   // 3) Klaszterek — LEGALUL (a grounding-perem szerint az üres szó-listájú klaszter NEM jelenik meg)
-  t.appendChild(elem("h2", "elemzes-csoport-cim", "Témák (klaszterek)"));
+  t.appendChild(elem("h2", "elemzes-csoport-cim", "Tematikus besorolás"));
+  t.appendChild(havi_info(
+    "Egy téma volumene a hozzá tartozó keresőszavak volumenének összege — ez adja a barchart " +
+    "oszlopainak magasságát is."));
   const klaszterek = (art.klaszterek || []).filter((k) => Array.isArray(k.szavak) && k.szavak.length);
   if (!klaszterek.length) {
     t.appendChild(elem("p", "ures", "Nincs megjeleníthető téma ebben a hónapban."));
