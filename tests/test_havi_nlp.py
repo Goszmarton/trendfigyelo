@@ -8,9 +8,41 @@ def _napfajl(tmp, nap, reggel_szavak, este_szavak=None):
     (tmp / "napok").mkdir(exist_ok=True)
     (tmp / "napok" / f"{nap}.json").write_text(json.dumps(d), encoding="utf-8")
 
+def _napfajl_regi(tmp, nap, szavak):
+    """Régi (2026-08 eleji) lapos szerkezet: top-level `trendek`, NINCS reggel/este szegmens."""
+    (tmp / "napok").mkdir(exist_ok=True)
+    (tmp / "napok" / f"{nap}.json").write_text(
+        json.dumps({"nap": nap, "trendek": szavak}), encoding="utf-8")
+
 def _szo(kif, vol=100, temak=None, hirek=None):
     return {"kifejezes": kif, "volumen": str(vol), "novekedes_pct": "100",
             "temak": temak or ["Hírek"], "hirek": hirek or []}
+
+
+def test_havi_korpusz_regi_lapos_trendek_visszafele_kompat(tmp_path):
+    # 2026-08: régi lapos napok (top-level `trendek`, nincs reggel/este) + egy szegmentált este-only nap
+    _napfajl_regi(tmp_path, "2026-08-01", [_szo("jég", 500), _szo("mvm zrt")])
+    _napfajl_regi(tmp_path, "2026-08-02", [_szo("jég", 800)])
+    _napfajl(tmp_path, "2026-08-31", [], [_szo("időjárás")])          # szegmentált, csak este
+    kor = havi_nlp.havi_korpusz(str(tmp_path), "2026-08")
+    assert kor["napok"] == 3
+    szavak = {s["kifejezes"]: s for s in kor["szavak"]}
+    # a régi LAPOS napok ÉS a szegmentált este-only nap szavai IS bekerülnek
+    assert set(szavak) == {"jég", "mvm zrt", "időjárás"}
+    assert szavak["jég"]["gyakorisag"] == 2                           # két külön lapos napon
+    assert szavak["jég"]["max_volumen"] == 800
+    assert szavak["időjárás"]["gyakorisag"] == 1                      # a szegmentált este-only napról
+
+
+def test_havi_korpusz_szegmentalt_nap_nem_olvas_top_level_trendeket(tmp_path):
+    # regresszió-őr: ha egy napnak VAN reggel/este szegmense, a top-level `trendek` NEM számít
+    (tmp_path / "napok").mkdir(exist_ok=True)
+    (tmp_path / "napok" / "2026-09-01.json").write_text(json.dumps({
+        "nap": "2026-09-01", "reggel": {"trendek": [_szo("valós")]},
+        "trendek": [_szo("kamu")],   # ezt figyelmen kívül kell hagyni
+    }), encoding="utf-8")
+    kor = havi_nlp.havi_korpusz(str(tmp_path), "2026-09")
+    assert {s["kifejezes"] for s in kor["szavak"]} == {"valós"}
 
 def test_havi_korpusz_aggregal_dedup_gyakorisag(tmp_path):
     _napfajl(tmp_path, "2026-09-01", [_szo("csalás", 500), _szo("albérlet")])

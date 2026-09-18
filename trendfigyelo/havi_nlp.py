@@ -26,23 +26,31 @@ def havi_korpusz(docs_data, honap):
             continue
         beolvasott += 1
         napi_kif = set()
+        # szegmentált (reggel/este) VAGY régi lapos (top-level `trendek`) napszerkezet: a
+        # 2026-08 eleji napokon nincs reggel/este szegmens, csak közvetlen `trendek` — ilyenkor
+        # arra esünk vissza (visszafelé-kompatibilitás, hogy a régi hónapok is teljes korpuszt
+        # adjanak). Ha VAN szegmens-adat, a top-level `trendek` NEM számít.
+        trend_lista = []
         for szeg in ("reggel", "este"):
-            for tr in (nap.get(szeg) or {}).get("trendek", []) or []:
-                kif = (tr.get("kifejezes") or "").strip()
-                if not kif:
-                    continue
-                napi_kif.add(kif)
-                a = agg.setdefault(kif, {"kifejezes": kif, "gyakorisag": 0, "max_volumen": 0,
-                                         "temak": set(), "hirek": []})
-                try:
-                    a["max_volumen"] = max(a["max_volumen"], int(tr.get("volumen") or 0))
-                except (TypeError, ValueError):
-                    pass
-                a["temak"].update(tr.get("temak") or [])
-                for h in (tr.get("hirek") or [])[:2]:
-                    cim = h.get("cim") if isinstance(h, dict) else h
-                    if cim and cim not in a["hirek"] and len(a["hirek"]) < 3:
-                        a["hirek"].append(cim)
+            trend_lista += (nap.get(szeg) or {}).get("trendek", []) or []
+        if not trend_lista:
+            trend_lista = nap.get("trendek") or []
+        for tr in trend_lista:
+            kif = (tr.get("kifejezes") or "").strip()
+            if not kif:
+                continue
+            napi_kif.add(kif)
+            a = agg.setdefault(kif, {"kifejezes": kif, "gyakorisag": 0, "max_volumen": 0,
+                                     "temak": set(), "hirek": []})
+            try:
+                a["max_volumen"] = max(a["max_volumen"], int(tr.get("volumen") or 0))
+            except (TypeError, ValueError):
+                pass
+            a["temak"].update(tr.get("temak") or [])
+            for h in (tr.get("hirek") or [])[:2]:
+                cim = h.get("cim") if isinstance(h, dict) else h
+                if cim and cim not in a["hirek"] and len(a["hirek"]) < 3:
+                    a["hirek"].append(cim)
         for kif in napi_kif:
             agg[kif]["gyakorisag"] += 1                       # naponta EGYSZER számít
     szavak = sorted(agg.values(), key=lambda a: (-a["gyakorisag"], -a["max_volumen"], a["kifejezes"]))
