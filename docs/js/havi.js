@@ -296,6 +296,10 @@ async function hu_terkep(telepulesek) {
     // háttéren lebegjenek, hanem a megyék tagolása is látszódjon; a nézetet a rétegre illesztjük.
     // Fallback (megye-asset hiányzik): a már vendorelt világ-GeoJSON HUN feature-je (a korábbi viselkedés).
     if (g.megyek && (g.megyek.features || []).length) {
+      // tömör HUN land-alapréteg a megye-réteg ALÁ: a megye-GeoJSON belső lyukait
+      // (megyei jogú városok / tavak kivágva) ez tölti ki, így NEM süt át a tengerszín-háttér
+      const hun = (g.vilag.features || []).find((f) => f.id === "HUN");
+      if (hun) L.geoJSON(hun, { interactive: false, style: { stroke: false, fillColor: "#f3f0e9", fillOpacity: 1 } }).addTo(map);
       const alap = L.geoJSON(g.megyek, { interactive: false, style: { color: "#999", weight: 1, fillColor: "#f3f0e9", fillOpacity: 1 } }).addTo(map);
       try { map.fitBounds(alap.getBounds(), { padding: [12, 12] }); } catch (e) { /* üres bounds — marad a setView */ }
     } else {
