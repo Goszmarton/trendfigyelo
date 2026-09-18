@@ -31,10 +31,11 @@ test("havi.html: a fül betölt, a Havi elemzés menüpont aktív", async ({ pag
 test("Infó oldal: adat + elemzés dobozok, csoportcímek, aktív fül + üres lábléc", async ({ page }) => {
   await page.goto("/adatokrol.html");
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Infó");
-  await expect(page.locator("#adatokrol .adat-doboz")).toHaveCount(19);  // 10 Google (+ nemlin-trend, adatforrás-marker, előrejelzés) + 5 YouTube + 3 elemzés doboz
-  await expect(page.locator("#adatokrol .adat-csoport")).toHaveCount(3);  // „Google Trend adatok" + „YouTube Trend adatok" + „Az elemzés"
+  await expect(page.locator("#adatokrol .adat-doboz")).toHaveCount(24);  // 10 Google (+ nemlin-trend, adatforrás-marker, előrejelzés) + 5 YouTube + 3 napi elemzés + 5 havi elemzés doboz
+  await expect(page.locator("#adatokrol .adat-csoport")).toHaveCount(4);  // Google + YouTube + „Az elemzés" (napi) + „A havi elemzés"
   await expect(page.locator("#adatokrol .adat-csoport")).toHaveText([
-    "Google Trend adatok", "YouTube Trend adatok", "Az elemzés (napi AI-összefoglaló)"]);
+    "Google Trend adatok", "YouTube Trend adatok", "Az elemzés (napi AI-összefoglaló)",
+    "A havi elemzés (havi AI-összefoglaló)"]);
   await expect(page.locator("#adatokrol")).toContainText("Google Trends");
   await expect(page.locator("#adatokrol")).toContainText("52 hét heti mediánjához");   // tüntetés-medián
   // nemlineáris (LOESS) trend doboz: nem-parametrikus statisztikai simítás + out-of-sample R² + mindig-görbe
