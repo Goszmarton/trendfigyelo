@@ -223,3 +223,27 @@ test("Havi csiszolás: jobb szekció-címek + kék-csíkos infók + klaszter-ká
   });
   expect(sorrend).toBe(true);
 });
+
+test("Havi klaszter-barchart oszlop-kattintás: a megfelelő téma-kártyára ugrás + kiemelés", async ({ page }) => {
+  await page.route("**/data/havi_nlp/index.json", r => r.fulfill({ json: { honapok: ["2026-09"], legutolso: "2026-09" } }));
+  await page.route("**/data/havi_nlp/2026-09.json", r => r.fulfill({ json: {
+    honap: "2026-09", modell: "m", korpusz: { egyedi_szo: 3, napok: 2 }, lemmak: [],
+    ner: { orszagok: [], telepulesek: [], szemelyek: [] },
+    klaszterek: [{ cimke: "Sport", szavak: ["foci"], ertelmezes: "s", uralkodo_temak: [], volumen: 300 },
+                 { cimke: "Bűnügy", szavak: ["csalás"], ertelmezes: "b", uralkodo_temak: [], volumen: 700 }],
+    osszegzes: "össz" } }));
+  await page.goto("/havi.html");
+  // minden klaszter-kártya kapjon data-klaszter-cimke attribútumot
+  await expect(page.locator('#havi-tartalom .havi-klaszter[data-klaszter-cimke="Sport"]')).toHaveCount(1);
+  await expect(page.locator('#havi-tartalom .havi-klaszter[data-klaszter-cimke="Bűnügy"]')).toHaveCount(1);
+  // a havi_klaszter_ugras hívása a megfelelő kártyát kiemeli (a Chart.js onClick-et ez a fv. hordozza)
+  await page.evaluate(() => window.havi_klaszter_ugras("Bűnügy"));
+  await expect(page.locator('#havi-tartalom .havi-klaszter[data-klaszter-cimke="Bűnügy"]'))
+    .toHaveClass(/havi-klaszter-kiemelt/);
+  // a másik kártya NEM kap kiemelést
+  await expect(page.locator('#havi-tartalom .havi-klaszter[data-klaszter-cimke="Sport"]'))
+    .not.toHaveClass(/havi-klaszter-kiemelt/);
+  // a kiemelés kb. 1600ms után eltűnik
+  await expect(page.locator('#havi-tartalom .havi-klaszter[data-klaszter-cimke="Bűnügy"]'))
+    .not.toHaveClass(/havi-klaszter-kiemelt/, { timeout: 3000 });
+});

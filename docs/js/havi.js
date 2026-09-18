@@ -59,6 +59,7 @@ function tag_lista(szavak) {
 function klaszter_kartya(k) {
   const box = document.createElement("section");
   box.className = "elemzes-szekcio havi-klaszter";
+  box.setAttribute("data-klaszter-cimke", k.cimke || "");
   box.appendChild(elem("h3", null, k.cimke || "Névtelen téma"));
   if (k.ertelmezes) box.appendChild(elem("p", "elemzes-szoveg", k.ertelmezes));
   box.appendChild(tag_lista(k.szavak));
@@ -67,6 +68,18 @@ function klaszter_kartya(k) {
   }
   return box;
 }
+
+// klaszter-barchart oszlopkattintás → a megfelelő téma-kártyára görgetés + rövid kiemelés
+// (NINCS new Date() — a kiemelés eltávolítása setTimeout-tal történik, nem időbélyeg-alapon)
+function havi_klaszter_ugras(cimke) {
+  const kartya = document.querySelector(
+    '#havi-tartalom .havi-klaszter[data-klaszter-cimke="' + (cimke || "").replace(/"/g, '\\"') + '"]');
+  if (!kartya) return;
+  kartya.scrollIntoView({ behavior: "smooth", block: "start" });
+  kartya.classList.add("havi-klaszter-kiemelt");
+  setTimeout(() => kartya.classList.remove("havi-klaszter-kiemelt"), 1600);
+}
+window.havi_klaszter_ugras = havi_klaszter_ugras;
 
 // egy NER-csoport (Országok / Települések / Személyek) — entitásonként a nevet kiváltó szavakkal
 function ner_csoport(cimSzoveg, entitasok) {
@@ -96,7 +109,8 @@ function ner_csoport(cimSzoveg, entitasok) {
 }
 
 // vízszintes barchart egy szekcióba (cimkek + ertekek), a Chart-példányt kulcson eltárolva
-function havi_barchart(kulcs, canvasId, cimkek, ertekek) {
+// opcionális onOszlop(index): oszlopra kattintva hívjuk (pl. klaszter-kártyára ugráshoz)
+function havi_barchart(kulcs, canvasId, cimkek, ertekek, onOszlop) {
   const doboz = document.createElement("div");
   doboz.className = "havi-chart-doboz";
   // a magasság a sávok számához igazodik (min 320px, ~34px/sáv) → minden címke elfér, nem lapul össze
@@ -114,7 +128,11 @@ function havi_barchart(kulcs, canvasId, cimkek, ertekek) {
       options: { indexAxis: "y", responsive: true, maintainAspectRatio: false, animation: false,
         plugins: { legend: { display: false } },
         scales: { x: { beginAtZero: true, title: { display: true, text: "volumen" } },
-                  y: { ticks: { autoSkip: false } } } },   // MINDEN kategória-név látsszon (ne skip-eljen)
+                  y: { ticks: { autoSkip: false } } },   // MINDEN kategória-név látsszon (ne skip-eljen)
+        onClick: (e, elemek) => { if (onOszlop && elemek && elemek.length) onOszlop(elemek[0].index); },
+        onHover: (e, elemek) => {
+          if (e.native && e.native.target) e.native.target.style.cursor = (onOszlop && elemek && elemek.length) ? "pointer" : "default";
+        } },
     });
   }
   // képernyőolvasó-alternatíva: a canvas fallback-tartalma nem jelenik meg (és nem olvasható ki),
@@ -335,7 +353,8 @@ async function rajzol(art) {
   } else {
     const kSorolt = klaszterek.slice().sort((a, b) => (b.volumen || 0) - (a.volumen || 0));
     t.appendChild(havi_barchart("klaszter", "havi-klaszter-chart",
-      kSorolt.map((k) => k.cimke || "Névtelen"), kSorolt.map((k) => k.volumen || 0)));
+      kSorolt.map((k) => k.cimke || "Névtelen"), kSorolt.map((k) => k.volumen || 0),
+      (i) => havi_klaszter_ugras(kSorolt[i].cimke)));
     klaszterek.forEach((k) => t.appendChild(klaszter_kartya(k)));
   }
 }

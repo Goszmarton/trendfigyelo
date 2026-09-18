@@ -309,6 +309,8 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 /* HAVI-FÜL kék-csíkos infó (csiszolás C/D/E) — a mltrend-info/predikcio-info mintájára. */
 #havi-tartalom .havi-info { border-left: 3px solid #3366cc; padding: .3rem 0 .3rem .6rem;
   margin: .4rem 0 .8rem; max-width: 44rem; color: #333; font-size: .9rem; }
+/* klaszter-barchart oszlopra kattintás → a téma-kártya rövid kiemelése (Task 3) */
+#havi-tartalom .havi-klaszter-kiemelt { outline: 2px solid #3366cc; outline-offset: 2px; transition: outline-color .3s; }
 #kulcsszo-blokk .frissesseg::before,
 #youtube-blokk .frissesseg::before,
 #trend-blokk .kategoria-magyarazat::before,
