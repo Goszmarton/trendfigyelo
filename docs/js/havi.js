@@ -160,7 +160,9 @@ async function geo_assetek() {
       fetch("vendor/geo/orszag-nev-iso.json").then(r => r.json()),
       fetch("vendor/geo/hu-telepules-koord.json").then(r => r.json()),
       fetch("vendor/geo/varos-koord.json").then(r => r.json()),
-      fetch("vendor/geo/hu-megyek.geojson").then(r => r.json()),
+      // a megye-alapréteg IZOLÁLT hibával: ha CSAK ez hiányzik, a HU-térkép a
+      // HUN-körvonalra esik vissza, a többi térkép/pont érintetlen (párhuzamos betöltés)
+      fetch("vendor/geo/hu-megyek.geojson").then(r => r.json()).catch(() => null),
     ]);
     _geo = { vilag, iso, huk, varos, megyek };
     return _geo;

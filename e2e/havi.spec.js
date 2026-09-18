@@ -28,6 +28,8 @@ test("Havi reorg: összegzés ELÖL, klaszterek ALUL, nincs lemma-térkép, orsz
     osszegzes: "A hónap keresései…" } }));
   await page.goto("/havi.html");
   await expect(page.locator("#havi")).toContainText("A hónap keresései");
+  // a klaszter-szekció a térkép-await-ek UTÁN renderel → várjuk meg, mielőtt sorrendet ellenőrzünk
+  await expect(page.locator("#havi-tartalom .elemzes-csoport-cim", { hasText: "Tematikus besorolás" })).toHaveCount(1);
   // sorrend: az összegzés a klaszter-cím ELŐTT van a DOM-ban
   const cimek = await page.locator("#havi-tartalom .elemzes-csoport-cim").allTextContents();
   expect(cimek.indexOf("Összegzés")).toBeLessThan(cimek.indexOf("Tematikus besorolás"));
