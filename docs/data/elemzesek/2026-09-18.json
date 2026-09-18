@@ -1,53 +1,120 @@
 {
-"frissitve": "2026-09-18T07:07:36+00:00",
+"frissitve": "2026-09-18T19:07:43+00:00",
 "modell": "claude-opus-4-8",
 "nap": "2026-09-18",
-"mode": "reggel",
+"mode": "este",
 "valtozas": {
 "diff": {
-"irany_valtok": [],
-"mozgok": [
-{
-"szo": "akciós újság",
-"valtozas": 0.0
-},
-{
-"szo": "albérlet",
-"valtozas": 0.0
-},
-{
-"szo": "benzin",
-"valtozas": 0.0
-},
+"irany_valtok": [
 {
 "szo": "betegség",
-"valtozas": 0.0
+"elozo": "novekszik",
+"mai": "stagnal"
 },
 {
-"szo": "csőd",
-"valtozas": 0.0
+"szo": "fizetés",
+"elozo": "csokken",
+"mai": "stagnal"
+},
+{
+"szo": "korrupció",
+"elozo": "csokken",
+"mai": "novekszik"
+},
+{
+"szo": "kölcsön",
+"elozo": "csokken",
+"mai": "stagnal"
+},
+{
+"szo": "munkanélküliség",
+"elozo": "stagnal",
+"mai": "csokken"
+},
+{
+"szo": "műtét",
+"elozo": "stagnal",
+"mai": "novekszik"
+},
+{
+"szo": "nyaralás",
+"elozo": "csokken",
+"mai": "stagnal"
+},
+{
+"szo": "nyugdíj",
+"elozo": "stagnal",
+"mai": "novekszik"
+},
+{
+"szo": "segély",
+"elozo": "stagnal",
+"mai": "novekszik"
+},
+{
+"szo": "sürgősségi",
+"elozo": "stagnal",
+"mai": "csokken"
+}
+],
+"mozgok": [
+{
+"szo": "korrupció",
+"valtozas": 4.722
+},
+{
+"szo": "nyaralás",
+"valtozas": 2.489
+},
+{
+"szo": "műtét",
+"valtozas": 2.127
+},
+{
+"szo": "háziorvos",
+"valtozas": 1.869
+},
+{
+"szo": "kölcsön",
+"valtozas": 1.677
 }
 ],
 "felkapott_uj": [
-"európai parlament",
-"gáz",
+"amerikai űrhaderő",
+"arsenal fc",
+"bayern münchen–union berlin",
+"daniel arzani",
+"elektromos áram",
+"havasi bertalan",
 "index.hu",
-"költségvetési csalás",
+"integritás hatóság",
+"interjú",
+"kormányzat",
 "magyar péter",
-"magyar rendőrség",
 "mesterséges intelligencia",
+"nemzeti vagyonvisszaszerzési és vagyonvédelmi hivatal",
 "pedagógus",
-"real sociedad–bournemouth",
-"transparency international"
+"rogán antal",
+"transparency international",
+"vitézy dávid",
+"észak korea",
+"ónodi henrietta"
 ],
 "felkapott_eltunt": [
 "144 es busz",
 "barcelona",
+"bayer show",
+"celtic–ftc",
+"deák bill gyula",
+"dzsudzsák balázs",
 "franciaország",
 "gimnázium",
 "hacker",
 "házasság első látásra",
 "inter miami–cruz azul",
+"korrupció",
+"központi nyomozó főügyészség",
+"manchester city–norwich",
 "orbán viktor",
 "palanyi nora",
 "repülőgép",
@@ -58,50 +125,50 @@
 ],
 "van_elozo": true
 },
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A tegnapi képhez képest több szó is irányt váltott, de a legszembetűnőbb mozgás a korrupció körül zajlik: a korábbi csökkenésből határozott emelkedésbe fordult, és a hét egészét nézve is ez ugrott a legnagyobbat. Mellette a műtét és a nyugdíj is a korábbi lapos szintjéből növekvő pályára állt, a segély szintén emelkedő irányba mozdult el – bár utóbbi a napi keresésekben lényegében a nulla közelében marad, tehát az irány önmagában óvatosan kezelendő.\n\nMás szavak inkább csillapodtak: a fizetés, a kölcsön és a nyaralás a korábbi csökkenő vagy növekvő állapotából stagnálásba fordult, a betegség szintén kifulladt. A munkanélküliség és a sürgősségi ellenkező irányba, csökkenésbe váltott – mindkettő a mai napon a nulla szintjén áll.\n\nA napi felkapott témák jócskán kicserélődtek. Estére új szereplők jöttek be, mint Havasi Bertalan, több futballmérkőzés, az amerikai űrhaderő, valamint politikai és közéleti nevek – Vitézy Dávid, Rogán Antal, Magyar Péter. Eltűnt a listáról több reggeli téma, köztük a Celtic–FTC, Deák Bill Gyula és Orbán Viktor. Ez a fajta cserélődés a napi hírfolyam természetes velejárója."
 },
 "kulcsszavak": {
 "szamok": [
 {
 "szo": "akciós újság",
 "irany": "stagnal",
-"meredekseg": 0.132,
+"meredekseg": -0.148,
 "ervenyes": true,
-"mai_ertek": 34,
-"csucs": 57.0,
-"atlag": 48.29
+"mai_ertek": 36,
+"csucs": 78.0,
+"atlag": 47.26
 },
 {
 "szo": "albérlet",
 "irany": "stagnal",
-"meredekseg": 0.58,
+"meredekseg": -0.498,
 "ervenyes": true,
-"mai_ertek": 15,
-"csucs": 21.0,
-"atlag": 15.16
+"mai_ertek": 44,
+"csucs": 51.0,
+"atlag": 38.32
 },
 {
 "szo": "benzin",
 "irany": "novekszik",
-"meredekseg": 2.967,
+"meredekseg": 3.041,
 "ervenyes": true,
-"mai_ertek": 51,
-"csucs": 49.0,
-"atlag": 27.12
+"mai_ertek": 33,
+"csucs": 67.0,
+"atlag": 35.79
 },
 {
 "szo": "betegség",
-"irany": "novekszik",
-"meredekseg": 1.291,
+"irany": "stagnal",
+"meredekseg": -0.103,
 "ervenyes": true,
-"mai_ertek": 56,
-"csucs": 64.0,
-"atlag": 54.71
+"mai_ertek": 20,
+"csucs": 23.0,
+"atlag": 18.47
 },
 {
 "szo": "csőd",
 "irany": "stagnal",
-"meredekseg": -0.003,
+"meredekseg": -0.22,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -110,106 +177,106 @@
 {
 "szo": "eladó lakás",
 "irany": "stagnal",
-"meredekseg": 0.156,
+"meredekseg": 0.633,
 "ervenyes": true,
-"mai_ertek": 67,
-"csucs": 71.0,
-"atlag": 49.89
+"mai_ertek": 56,
+"csucs": 100.0,
+"atlag": 55.58
 },
 {
 "szo": "fizetés",
-"irany": "csokken",
-"meredekseg": -1.225,
+"irany": "stagnal",
+"meredekseg": -0.574,
 "ervenyes": true,
-"mai_ertek": 29,
+"mai_ertek": 13,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "hitel",
 "irany": "novekszik",
-"meredekseg": 1.952,
+"meredekseg": 2.073,
 "ervenyes": true,
-"mai_ertek": 43,
-"csucs": 100.0,
-"atlag": 49.0
+"mai_ertek": 74,
+"csucs": 79.0,
+"atlag": 60.58
 },
 {
 "szo": "háziorvos",
 "irany": "novekszik",
-"meredekseg": 1.327,
+"meredekseg": 3.196,
 "ervenyes": true,
-"mai_ertek": 0,
+"mai_ertek": 49,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "infláció",
 "irany": "novekszik",
-"meredekseg": 2.978,
+"meredekseg": 3.894,
 "ervenyes": true,
-"mai_ertek": 100,
+"mai_ertek": 5,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "iskola",
 "irany": "novekszik",
-"meredekseg": 1.883,
+"meredekseg": 3.359,
 "ervenyes": true,
-"mai_ertek": 65,
+"mai_ertek": 45,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kormány",
 "irany": "csokken",
-"meredekseg": -4.863,
+"meredekseg": -3.664,
 "ervenyes": true,
-"mai_ertek": 14,
+"mai_ertek": 22,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kormányablak",
 "irany": "novekszik",
-"meredekseg": 4.616,
+"meredekseg": 5.363,
 "ervenyes": true,
-"mai_ertek": 26,
-"csucs": 89.0,
-"atlag": 56.26
+"mai_ertek": 17,
+"csucs": 83.0,
+"atlag": 52.21
 },
 {
 "szo": "korrupció",
-"irany": "csokken",
-"meredekseg": -1.819,
+"irany": "novekszik",
+"meredekseg": 2.903,
 "ervenyes": true,
-"mai_ertek": 0,
+"mai_ertek": 10,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kórház",
 "irany": "novekszik",
-"meredekseg": 3.395,
+"meredekseg": 4.172,
 "ervenyes": true,
-"mai_ertek": 39,
-"csucs": 93.0,
-"atlag": 53.22
+"mai_ertek": 47,
+"csucs": 90.0,
+"atlag": 52.1
 },
 {
 "szo": "kölcsön",
-"irany": "csokken",
-"meredekseg": -2.222,
+"irany": "stagnal",
+"meredekseg": -0.545,
 "ervenyes": true,
-"mai_ertek": 0,
+"mai_ertek": 20,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "munkanélküliség",
-"irany": "stagnal",
-"meredekseg": 0.007,
+"irany": "csokken",
+"meredekseg": -1.029,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -217,46 +284,46 @@
 },
 {
 "szo": "műtét",
-"irany": "stagnal",
-"meredekseg": 0.584,
+"irany": "novekszik",
+"meredekseg": 2.711,
 "ervenyes": true,
-"mai_ertek": 0,
+"mai_ertek": 36,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "napelem",
 "irany": "csokken",
-"meredekseg": -1.63,
+"meredekseg": -2.257,
 "ervenyes": true,
-"mai_ertek": 0,
-"csucs": 18.0,
-"atlag": 10.65
+"mai_ertek": 8,
+"csucs": 12.0,
+"atlag": 8.86
 },
 {
 "szo": "nyaralás",
-"irany": "csokken",
-"meredekseg": -2.64,
+"irany": "stagnal",
+"meredekseg": -0.151,
 "ervenyes": true,
-"mai_ertek": 0,
-"csucs": 69.0,
-"atlag": 54.07
+"mai_ertek": 14,
+"csucs": 18.0,
+"atlag": 12.46
 },
 {
 "szo": "nyugdíj",
-"irany": "stagnal",
-"meredekseg": 0.202,
+"irany": "novekszik",
+"meredekseg": 1.243,
 "ervenyes": true,
-"mai_ertek": 48,
-"csucs": 39.0,
-"atlag": 19.58
+"mai_ertek": 63,
+"csucs": 62.0,
+"atlag": 27.04
 },
 {
 "szo": "pedagógus",
 "irany": "novekszik",
-"meredekseg": 2.879,
+"meredekseg": 2.746,
 "ervenyes": true,
-"mai_ertek": 0,
+"mai_ertek": 59,
 "csucs": null,
 "atlag": null
 },
@@ -271,8 +338,8 @@
 },
 {
 "szo": "segély",
-"irany": "stagnal",
-"meredekseg": 0.431,
+"irany": "novekszik",
+"meredekseg": 1.331,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -280,8 +347,8 @@
 },
 {
 "szo": "sürgősségi",
-"irany": "stagnal",
-"meredekseg": 0.377,
+"irany": "csokken",
+"meredekseg": -1.262,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -293,13 +360,13 @@
 "meredekseg": null,
 "ervenyes": false,
 "mai_ertek": null,
-"csucs": 100.0,
-"atlag": 82.86
+"csucs": 25.0,
+"atlag": 24.5
 },
 {
 "szo": "várólista",
 "irany": "stagnal",
-"meredekseg": 0.261,
+"meredekseg": -0.031,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -308,48 +375,30 @@
 {
 "szo": "állás",
 "irany": "novekszik",
-"meredekseg": 1.478,
+"meredekseg": 1.148,
 "ervenyes": true,
-"mai_ertek": 32,
-"csucs": 61.0,
-"atlag": 45.08
+"mai_ertek": 30,
+"csucs": 56.0,
+"atlag": 42.22
 }
 ],
 "napi": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A ma követett szavak közül a hitel emelkedik ki a legmagasabb mai értékkel, jóval a saját szokásos szintje fölött – ez élénk érdeklődésre utal a hitelek iránt. A nyugdíj szintén feltűnően magasan áll: mai értéke a szokásos átlagának több mint kétszerese, ami a témát a megszokottnál sokkal keresettebbé teszi. A pedagógus is élénk, a szokásosnál erősebb szinten mozog.\n\nAz egészségügyi témák közül a kórház, a háziorvos és a műtét egyaránt növekvő irányt mutat, a kórház a szokásos szintje közelében, a háziorvos pedig élénkülőben. A benzin is emelkedő pályán van, bár mai értéke nagyjából a saját átlaga körül marad.\n\nAz ingatlanhoz kötődő szavak – eladó lakás, albérlet – nagyjából a megszokott szintjükön állnak. Az akciós újság a szokásosnál visszafogottabb, a nyaralás az őszi időszaknak megfelelően alacsony. Több szó a napi keresésekben lényegében a nulla közelében áll: a csőd, a rezsi, a munkanélküliség, a várólista, a segély és a sürgősségi ma alig kap figyelmet. Az infláció mai értéke is nagyon alacsony, miközben az iránya emelkedő. A kormányablak és a napelem szintén visszafogott szinten mozog."
 }
 },
 "felkapott": {
 "top": [
 {
-"kifejezes": "deák bill gyula",
-"volumen": "50000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "celtic–ftc",
-"volumen": "20000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "korrupció",
+"kifejezes": "havasi bertalan",
 "volumen": "10000",
 "novekedes_pct": "1000",
 "temak": [
-"Other"
+"Sports"
 ],
 "hirek": []
 },
 {
-"kifejezes": "manchester city–norwich",
+"kifejezes": "arsenal fc",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
@@ -358,8 +407,69 @@
 "hirek": []
 },
 {
-"kifejezes": "központi nyomozó főügyészség",
+"kifejezes": "daniel arzani",
 "volumen": "5000",
+"novekedes_pct": "800",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "bayern münchen–union berlin",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": [
+{
+"hir_cim": "Der Bayern-Plan gegen den FC Bayern",
+"hir_forras": "Kicker",
+"hir_url": "https://www.kicker.de/der-bayern-plan-gegen-den-fc-bayern-1253522/artikel",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7PiZL97nrSmL-Oj8vzt_EjAOLOItIabR7ovUeUv1HXZCeVz8u5G5ul2p6yUU",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Fußball-Bundesliga: Jetzt live hören und im Ticker: Was geht für Union in München?",
+"hir_forras": "sportschau.de",
+"hir_url": "https://www.sportschau.de/regional/rbb/rbb-jetzt-live-hoeren-und-im-ticker-was-geht-fuer-union-in-muenchen-100.html",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQTLlcmIb5ZbNPLRlHgGbm0nQodwmn5HMBUdsF5L_cFlcZibRVnapwwkip2GDw",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "FC Bayern wieder mit Musiala in der Startelf",
+"hir_forras": "Ligaportal",
+"hir_url": "https://www.ligaportal.at/international/deutsche-bundesliga/93935-fc-bayern-wieder-mit-musiala-in-der-startelf",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRElWxHaqOm1MiT11Gr5XNIZXSbAtQgxAISQEFVKTgocGuzpw4YV96rDfg7-EI",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "amerikai űrhaderő",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "ónodi henrietta",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "nemzeti vagyonvisszaszerzési és vagyonvédelmi hivatal",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Law and Government"
@@ -367,11 +477,48 @@
 "hirek": []
 },
 {
-"kifejezes": "gáz",
-"volumen": "5000",
+"kifejezes": "kormányzat",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
-"Business and Finance"
+"Health"
+],
+"hirek": []
+},
+{
+"kifejezes": "interjú",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "integritás hatóság",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Politics",
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "vitézy dávid",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "észak korea",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
 ],
 "hirek": []
 },
@@ -385,33 +532,6 @@
 "hirek": []
 },
 {
-"kifejezes": "magyar rendőrség",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "európai parlament",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "dzsudzsák balázs",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
 "kifejezes": "mesterséges intelligencia",
 "volumen": "2000",
 "novekedes_pct": "300",
@@ -421,11 +541,29 @@
 "hirek": []
 },
 {
-"kifejezes": "költségvetési csalás",
+"kifejezes": "elektromos áram",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
-"Law and Government"
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "rogán antal",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "pedagógus",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Jobs and Education"
 ],
 "hirek": []
 },
@@ -434,42 +572,8 @@
 "volumen": "2000",
 "novekedes_pct": "300",
 "temak": [
-"Law and Government",
-"Politics"
-],
-"hirek": [
-{
-"hir_cim": "Tisza-kormány: vizsgálat indulhat politikusok ellen",
-"hir_forras": "Portfolio.hu",
-"hir_url": "https://www.portfolio.hu/gazdasag/20260918/tisza-kormany-vizsgalat-indulhat-politikusok-ellen-863616",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcROOvkCcuDrsJqM4--zWSSH6uKeAngFiecE7K8sVR41XFk8_tL1-NHLSr039rQ",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Magyar Péter fontos bejelentéseket tett: ekkor jöhet a nyugdíjas SZÉP-kártya, húsz évre visszamenőleg vizsgálódhat a NAV",
-"hir_forras": "Pénzcentrum",
-"hir_url": "https://www.penzcentrum.hu/gazdasag/20260918/magyar-peter-fontos-bejelenteseket-tett-ekkor-johet-a-nyugdijas-szep-kartya-husz-evre-visszamenoleg-vizsgalodhat-a-nav-1205679",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS1a7eRE330uehQ3k1z-A-InGo7auOibY2ZM-RAhuNEvjOvzPfGaapEvFdIyR8",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Élő adásban ismerte el Magyar Péter: eddig egyetlen egy eurócent sem érkezett Magyarországra",
-"hir_forras": "Világgazdaság",
-"hir_url": "https://www.vg.hu/vilaggazdasag-magyar-gazdasag/2026/09/magyar-peter-unios-penzek-forras-brusszel-atv-elo",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQW90smJ4cZK_EO1v2yeBz6QBooyVsnV9UGU8VSKz7icuZY4sQl9iiOW97yR_g",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "pedagógus",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
+"Politics",
+"Law and Government"
 ],
 "hirek": []
 },
@@ -479,50 +583,6 @@
 "novekedes_pct": "700",
 "temak": [
 "Law and Government"
-],
-"hirek": [
-{
-"hir_cim": "Magyar Péter: a 2027-es költségvetésben lesz döntés a nyugdíjasok plusz támogatásáról",
-"hir_forras": "Portfolio.hu",
-"hir_url": "https://www.portfolio.hu/gazdasag/20260917/magyar-peter-a-2027-es-koltsegvetesben-lesz-dontes-a-nyugdijasok-plusz-tamogatasarol-863568",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQEPXjOqpNK42xTeODypweRaaGtnZUTFNW58bYm5vzErGhVKoeWleG55riUQQ8",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Magyar Péter visszatáncolt az idei őszi nyugdíjas SZÉP-kártyától",
-"hir_forras": "Economx.hu",
-"hir_url": "https://www.economx.hu/belfold/2026/09/18/magyar-peter-nyugdijas-szep-kartya-2027-koltsegvetes/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRDR-s12fIv84nJLFow1xj_Q28sVw1Z_Z2TfSXUx9_0kqFaQRmAiknNWBD9kcA",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Magyar Péter nagy ígéretet tett a nyugdíjasoknak",
-"hir_forras": "nlc",
-"hir_url": "https://nlc.hu/csalad/20260918/magyar-peter-nyugdijasok-szep-kartya-utalas-2027/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcToS_iIEie9LY2hGUHf8SxcaOn1-qWQw6AqqnDn9aKxl0CYiKp7lfVPY_r__nU",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "bayer show",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government",
-"Politics"
-],
-"hirek": []
-},
-{
-"kifejezes": "real sociedad–bournemouth",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
 ],
 "hirek": []
 }
@@ -736,34 +796,16 @@
 ],
 "este_top": [
 {
-"kifejezes": "deák bill gyula",
-"volumen": "50000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "celtic–ftc",
-"volumen": "20000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "korrupció",
+"kifejezes": "havasi bertalan",
 "volumen": "10000",
 "novekedes_pct": "1000",
 "temak": [
-"Other"
+"Sports"
 ],
 "hirek": []
 },
 {
-"kifejezes": "manchester city–norwich",
+"kifejezes": "arsenal fc",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
@@ -772,8 +814,69 @@
 "hirek": []
 },
 {
-"kifejezes": "központi nyomozó főügyészség",
+"kifejezes": "daniel arzani",
 "volumen": "5000",
+"novekedes_pct": "800",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "bayern münchen–union berlin",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": [
+{
+"hir_cim": "Der Bayern-Plan gegen den FC Bayern",
+"hir_forras": "Kicker",
+"hir_url": "https://www.kicker.de/der-bayern-plan-gegen-den-fc-bayern-1253522/artikel",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7PiZL97nrSmL-Oj8vzt_EjAOLOItIabR7ovUeUv1HXZCeVz8u5G5ul2p6yUU",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Fußball-Bundesliga: Jetzt live hören und im Ticker: Was geht für Union in München?",
+"hir_forras": "sportschau.de",
+"hir_url": "https://www.sportschau.de/regional/rbb/rbb-jetzt-live-hoeren-und-im-ticker-was-geht-fuer-union-in-muenchen-100.html",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQTLlcmIb5ZbNPLRlHgGbm0nQodwmn5HMBUdsF5L_cFlcZibRVnapwwkip2GDw",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "FC Bayern wieder mit Musiala in der Startelf",
+"hir_forras": "Ligaportal",
+"hir_url": "https://www.ligaportal.at/international/deutsche-bundesliga/93935-fc-bayern-wieder-mit-musiala-in-der-startelf",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRElWxHaqOm1MiT11Gr5XNIZXSbAtQgxAISQEFVKTgocGuzpw4YV96rDfg7-EI",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "amerikai űrhaderő",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "ónodi henrietta",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "nemzeti vagyonvisszaszerzési és vagyonvédelmi hivatal",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Law and Government"
@@ -781,11 +884,48 @@
 "hirek": []
 },
 {
-"kifejezes": "gáz",
-"volumen": "5000",
+"kifejezes": "kormányzat",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
-"Business and Finance"
+"Health"
+],
+"hirek": []
+},
+{
+"kifejezes": "interjú",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "integritás hatóság",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Politics",
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "vitézy dávid",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "észak korea",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
 ],
 "hirek": []
 },
@@ -799,33 +939,6 @@
 "hirek": []
 },
 {
-"kifejezes": "magyar rendőrség",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "európai parlament",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "dzsudzsák balázs",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
 "kifejezes": "mesterséges intelligencia",
 "volumen": "2000",
 "novekedes_pct": "300",
@@ -835,11 +948,29 @@
 "hirek": []
 },
 {
-"kifejezes": "költségvetési csalás",
+"kifejezes": "elektromos áram",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
-"Law and Government"
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "rogán antal",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "pedagógus",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Jobs and Education"
 ],
 "hirek": []
 },
@@ -848,42 +979,8 @@
 "volumen": "2000",
 "novekedes_pct": "300",
 "temak": [
-"Law and Government",
-"Politics"
-],
-"hirek": [
-{
-"hir_cim": "Tisza-kormány: vizsgálat indulhat politikusok ellen",
-"hir_forras": "Portfolio.hu",
-"hir_url": "https://www.portfolio.hu/gazdasag/20260918/tisza-kormany-vizsgalat-indulhat-politikusok-ellen-863616",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcROOvkCcuDrsJqM4--zWSSH6uKeAngFiecE7K8sVR41XFk8_tL1-NHLSr039rQ",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Magyar Péter fontos bejelentéseket tett: ekkor jöhet a nyugdíjas SZÉP-kártya, húsz évre visszamenőleg vizsgálódhat a NAV",
-"hir_forras": "Pénzcentrum",
-"hir_url": "https://www.penzcentrum.hu/gazdasag/20260918/magyar-peter-fontos-bejelenteseket-tett-ekkor-johet-a-nyugdijas-szep-kartya-husz-evre-visszamenoleg-vizsgalodhat-a-nav-1205679",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS1a7eRE330uehQ3k1z-A-InGo7auOibY2ZM-RAhuNEvjOvzPfGaapEvFdIyR8",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Élő adásban ismerte el Magyar Péter: eddig egyetlen egy eurócent sem érkezett Magyarországra",
-"hir_forras": "Világgazdaság",
-"hir_url": "https://www.vg.hu/vilaggazdasag-magyar-gazdasag/2026/09/magyar-peter-unios-penzek-forras-brusszel-atv-elo",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQW90smJ4cZK_EO1v2yeBz6QBooyVsnV9UGU8VSKz7icuZY4sQl9iiOW97yR_g",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "pedagógus",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
+"Politics",
+"Law and Government"
 ],
 "hirek": []
 },
@@ -894,121 +991,69 @@
 "temak": [
 "Law and Government"
 ],
-"hirek": [
-{
-"hir_cim": "Magyar Péter: a 2027-es költségvetésben lesz döntés a nyugdíjasok plusz támogatásáról",
-"hir_forras": "Portfolio.hu",
-"hir_url": "https://www.portfolio.hu/gazdasag/20260917/magyar-peter-a-2027-es-koltsegvetesben-lesz-dontes-a-nyugdijasok-plusz-tamogatasarol-863568",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQEPXjOqpNK42xTeODypweRaaGtnZUTFNW58bYm5vzErGhVKoeWleG55riUQQ8",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Magyar Péter visszatáncolt az idei őszi nyugdíjas SZÉP-kártyától",
-"hir_forras": "Economx.hu",
-"hir_url": "https://www.economx.hu/belfold/2026/09/18/magyar-peter-nyugdijas-szep-kartya-2027-koltsegvetes/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRDR-s12fIv84nJLFow1xj_Q28sVw1Z_Z2TfSXUx9_0kqFaQRmAiknNWBD9kcA",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Magyar Péter nagy ígéretet tett a nyugdíjasoknak",
-"hir_forras": "nlc",
-"hir_url": "https://nlc.hu/csalad/20260918/magyar-peter-nyugdijasok-szep-kartya-utalas-2027/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcToS_iIEie9LY2hGUHf8SxcaOn1-qWQw6AqqnDn9aKxl0CYiKp7lfVPY_r__nU",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "bayer show",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government",
-"Politics"
-],
-"hirek": []
-},
-{
-"kifejezes": "real sociedad–bournemouth",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
 "hirek": []
 }
 ],
 "reggel_este_diff": {
-"uj_estere": [],
-"eltunt_estere": [],
-"megmaradt": [
+"uj_estere": [
+"amerikai űrhaderő",
+"arsenal fc",
+"bayern münchen–union berlin",
+"daniel arzani",
+"elektromos áram",
+"havasi bertalan",
+"integritás hatóság",
+"interjú",
+"kormányzat",
+"nemzeti vagyonvisszaszerzési és vagyonvédelmi hivatal",
+"rogán antal",
+"vitézy dávid",
+"észak korea",
+"ónodi henrietta"
+],
+"eltunt_estere": [
 "bayer show",
 "celtic–ftc",
 "deák bill gyula",
 "dzsudzsák balázs",
 "európai parlament",
 "gáz",
-"index.hu",
 "korrupció",
 "költségvetési csalás",
 "központi nyomozó főügyészség",
-"magyar péter",
 "magyar rendőrség",
 "manchester city–norwich",
+"real sociedad–bournemouth"
+],
+"megmaradt": [
+"index.hu",
+"magyar péter",
 "mesterséges intelligencia",
 "pedagógus",
-"real sociedad–bournemouth",
 "transparency international"
 ]
 },
 "reggel": {
-"szoveg": "Ma reggel a legnagyobb keresési hullámot Deák Bill Gyula neve kavarta, amely a szórakozás témaköréhez kötődik, és messze kiemelkedik a többi kifejezés közül – konkrét hír azonban nem érkezett hozzá, így ma reggel csak annyit lehet biztosan mondani, hogy sokan keresnek rá. Mögötte több sportmérkőzés is felfutott, köztük a Celtic–FTC találkozó, a Manchester City–Norwich, valamint a Real Sociedad–Bournemouth párosítás – ezek jellemzően egy közelgő vagy zajló meccs körüli élénk érdeklődést jeleznek, de forrás híján ezt csak óvatosan feltételezzük.\n\nFeltűnő, hogy a reggeli mezőny egyik legerősebb szála a közélet és az igazságszolgáltatás köré szerveződik. A korrupció szó kimagasló kereséssel szerepel, és mellette ott van a Központi Nyomozó Főügyészség, a Transparency International, a magyar rendőrség, az Európai Parlament, valamint a költségvetési csalás kifejezés is. Ez a csokor együtt arra utalhat, hogy valamilyen közéleti-jogi ügy foglalkoztatja ma reggel az embereket, bár ezekhez a szavakhoz közvetlen hír nem kapcsolódott.\n\nA leginkább háttérrel alátámasztott téma Magyar Péter és az Index.hu körül rajzolódik ki. Az ehhez társított cikkek több lapnál is arról szólnak, hogy a Tisza-kormány kapcsán vizsgálat indulhat politikusok ellen, illetve hogy Magyar Péter bejelentései a nyugdíjasokat érintő plusz támogatásról és a nyugdíjas SZÉP-kártyáról szólnak – utóbbi kapcsán a Portfolio, az Economx és az nlc egyaránt arról ír, hogy a döntés a 2027-es költségvetésbe csúszhat. Emellett egy beszámoló szerint uniós forrásokról is szó esett egy élő adásban. Ezek a hírek segítenek megérteni, miért pörögnek ma reggel ezek a nevek.\n\nA gazdasági és hétköznapi témák közül a gáz szó futott fel erősebben, üzleti-pénzügyi kontextusban, konkrét hír nélkül. Megjelent még a pedagógus, a mesterséges intelligencia és Dzsudzsák Balázs neve, valamint a Bayer show is a felkapott kifejezések között – ezekhez ma reggel szintén nem társult forrás, így csak a megnövekedett érdeklődést lehet rögzíteni. Összességében a reggeli kép egyszerre mutat élénk sport- és szórakozási érdeklődést, illetve egy markáns közéleti-jogi vonulatot, amelynek hátterét főként a Magyar Péterhez kötődő bejelentések adják."
+"szoveg": "Reggel kilenc körül a szórakoztató és sport témák vitték a prímet: Deák Bill Gyula neve pörgött a legerősebben, mellette a Celtic–FTC és a Manchester City–Norwich mérkőzések. Emellett élénk volt a közélet is – a korrupció, a Központi Nyomozó Főügyészség, a Transparency International, a magyar rendőrség és a költségvetési csalás egyaránt sokakat foglalkoztatott.\n\nAz index.hu és Magyar Péter neve mellett érkezett háttér is: a hírek nyugdíjas SZÉP-kártyáról, a NAV visszamenőleges vizsgálódásáról és uniós pénzekről szóló bejelentésekről számoltak be. A pedagógus téma szintén jelen volt a reggeli képben."
 },
 "este": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "Estére a hangsúly a sport és a közélet felé tolódott. A legerősebben Havasi Bertalan neve pörgött, mellette az Arsenal FC, Daniel Arzani és a Bayern München–Union Berlin mérkőzés – utóbbihoz német sportlapok élő tudósításai és felállással kapcsolatos hírei kapcsolódtak.\n\nA közéleti oldalon a Nemzeti Vagyonvisszaszerzési és Vagyonvédelmi Hivatal, az integritás hatóság, a Transparency International, Vitézy Dávid és Rogán Antal neve került előtérbe. Emellett feltűnt az amerikai űrhaderő, Észak-Korea és az elektromos áram témája is."
 },
 "teljes_nap": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A nap íve jól mutatja, hogyan mozdult el a figyelem: reggel még a szórakoztató és a hazai sport dominált, estére viszont több külföldi labdarúgó-mérkőzés és a politikai-közéleti szálak vették át a vezetést. Estére új témaként jelent meg többek között Havasi Bertalan, az amerikai űrhaderő, Vitézy Dávid, Rogán Antal és Észak-Korea.\n\nEltűnt viszont estére a reggel még pörgő Deák Bill Gyula, a Celtic–FTC, a korrupció önálló keresésként és a Központi Nyomozó Főügyészség. Egész napon át kitartott néhány téma, köztük az index.hu, Magyar Péter, a mesterséges intelligencia, a pedagógus és a Transparency International – ezek adják a nap állandó vázát."
 },
 "het": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A hét egészét nézve néhány téma több napon is vissza-visszatért. A legkitartóbb Vitézy Dávid neve volt, amely három napon is felbukkant, míg a Nemzeti Vagyonvisszaszerzési és Vagyonvédelmi Hivatal és az öregségi nyugdíj két-két napon jelent meg.\n\nA többi téma jellemzően egy-egy napra villant fel: sport-mérkőzések tömege, hazai közéleti nevek, hírportálok és számos egyedi hír. Ez a szórtság arra utal, hogy a heti figyelmet inkább a napról napra változó események mozgatták, mint egy tartósan uralkodó téma."
 },
 "het_valos": {
 "napok": 7,
 "visszateroek": [
 {
-"kifejezes": "bayer show",
-"napok_szama": 2
-},
-{
-"kifejezes": "celtic–ftc",
-"napok_szama": 2
-},
-{
-"kifejezes": "deák bill gyula",
-"napok_szama": 2
-},
-{
-"kifejezes": "dzsudzsák balázs",
-"napok_szama": 2
-},
-{
-"kifejezes": "korrupció",
-"napok_szama": 2
-},
-{
-"kifejezes": "központi nyomozó főügyészség",
-"napok_szama": 2
-},
-{
-"kifejezes": "manchester city–norwich",
-"napok_szama": 2
-},
-{
 "kifejezes": "vitézy dávid",
+"napok_szama": 3
+},
+{
+"kifejezes": "nemzeti vagyonvisszaszerzési és vagyonvédelmi hivatal",
 "napok_szama": 2
 },
 {
@@ -1032,7 +1077,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "amerikai űrhaderő",
+"napok_szama": 1
+},
+{
 "kifejezes": "android",
+"napok_szama": 1
+},
+{
+"kifejezes": "arsenal fc",
 "napok_szama": 1
 },
 {
@@ -1060,6 +1113,14 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "bayer show",
+"napok_szama": 1
+},
+{
+"kifejezes": "bayern münchen–union berlin",
+"napok_szama": 1
+},
+{
 "kifejezes": "benzin",
 "napok_szama": 1
 },
@@ -1084,6 +1145,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "celtic–ftc",
+"napok_szama": 1
+},
+{
 "kifejezes": "chelsea–hull city",
 "napok_szama": 1
 },
@@ -1092,7 +1157,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "daniel arzani",
+"napok_szama": 1
+},
+{
 "kifejezes": "devergo",
+"napok_szama": 1
+},
+{
+"kifejezes": "deák bill gyula",
+"napok_szama": 1
+},
+{
+"kifejezes": "dzsudzsák balázs",
 "napok_szama": 1
 },
 {
@@ -1104,15 +1181,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "elektromos áram",
+"napok_szama": 1
+},
+{
 "kifejezes": "elversberg–bayern münchen",
 "napok_szama": 1
 },
 {
 "kifejezes": "emlékérme",
-"napok_szama": 1
-},
-{
-"kifejezes": "európai parlament",
 "napok_szama": 1
 },
 {
@@ -1172,10 +1249,6 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "gáz",
-"napok_szama": 1
-},
-{
 "kifejezes": "gázolaj",
 "napok_szama": 1
 },
@@ -1200,6 +1273,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "havasi bertalan",
+"napok_szama": 1
+},
+{
 "kifejezes": "házasság első látásra",
 "napok_szama": 1
 },
@@ -1212,7 +1289,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "integritás hatóság",
+"napok_szama": 1
+},
+{
 "kifejezes": "inter miami–cruz azul",
+"napok_szama": 1
+},
+{
+"kifejezes": "interjú",
 "napok_szama": 1
 },
 {
@@ -1228,11 +1313,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "kormányzat",
+"napok_szama": 1
+},
+{
+"kifejezes": "korrupció",
+"napok_szama": 1
+},
+{
 "kifejezes": "kármán andrás",
 "napok_szama": 1
 },
 {
-"kifejezes": "költségvetési csalás",
+"kifejezes": "központi nyomozó főügyészség",
 "napok_szama": 1
 },
 {
@@ -1272,15 +1365,15 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "magyar rendőrség",
-"napok_szama": 1
-},
-{
 "kifejezes": "man utd–brighton",
 "napok_szama": 1
 },
 {
 "kifejezes": "man utd–manchester city",
+"napok_szama": 1
+},
+{
+"kifejezes": "manchester city–norwich",
 "napok_szama": 1
 },
 {
@@ -1301,10 +1394,6 @@
 },
 {
 "kifejezes": "máv",
-"napok_szama": 1
-},
-{
-"kifejezes": "nemzeti vagyonvisszaszerzési és vagyonvédelmi hivatal",
 "napok_szama": 1
 },
 {
@@ -1388,10 +1477,6 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "real sociedad–bournemouth",
-"napok_szama": 1
-},
-{
 "kifejezes": "rendőrség",
 "napok_szama": 1
 },
@@ -1405,6 +1490,10 @@
 },
 {
 "kifejezes": "rio ngumoha",
+"napok_szama": 1
+},
+{
+"kifejezes": "rogán antal",
 "napok_szama": 1
 },
 {
@@ -1516,7 +1605,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "észak korea",
+"napok_szama": 1
+},
+{
 "kifejezes": "ókovács szilveszter",
+"napok_szama": 1
+},
+{
+"kifejezes": "ónodi henrietta",
 "napok_szama": 1
 },
 {
@@ -1529,5 +1626,138 @@
 }
 ]
 }
+},
+"youtube": {
+"szamok": [
+{
+"szo": "szorongás",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.064,
+"ervenyes": true,
+"mai_ertek": 53,
+"csucs": 100,
+"atlag": 26.3
+},
+{
+"szo": "edzés",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.022,
+"ervenyes": true,
+"mai_ertek": 53,
+"csucs": 100,
+"atlag": 67.6
+},
+{
+"szo": "meditáció",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.05,
+"ervenyes": true,
+"mai_ertek": 79,
+"csucs": 100,
+"atlag": 82.3
+},
+{
+"szo": "befektetés",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.047,
+"ervenyes": true,
+"mai_ertek": 46,
+"csucs": 100,
+"atlag": 17.9
+},
+{
+"szo": "bitcoin",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.102,
+"ervenyes": true,
+"mai_ertek": 46,
+"csucs": 100,
+"atlag": 45.1
+},
+{
+"szo": "hírek",
+"domen": "kozelet",
+"irany": "stagnal",
+"meredekseg": 0.002,
+"ervenyes": true,
+"mai_ertek": 47,
+"csucs": 100,
+"atlag": 57.1
+},
+{
+"szo": "magyar péter",
+"domen": "kozelet",
+"irany": "novekszik",
+"meredekseg": 0.027,
+"ervenyes": true,
+"mai_ertek": 8,
+"csucs": 100,
+"atlag": 15.5
+},
+{
+"szo": "recept",
+"domen": "haztartas",
+"irany": "csokken",
+"meredekseg": -0.048,
+"ervenyes": true,
+"mai_ertek": 38,
+"csucs": 100,
+"atlag": 46.4
+},
+{
+"szo": "mese",
+"domen": "csalad",
+"irany": "stagnal",
+"meredekseg": -0.018,
+"ervenyes": true,
+"mai_ertek": 88,
+"csucs": 100,
+"atlag": 90.4
+},
+{
+"szo": "nyaralás",
+"domen": "szabadido",
+"irany": "novekszik",
+"meredekseg": 0.099,
+"ervenyes": true,
+"mai_ertek": 30,
+"csucs": 100,
+"atlag": 49.7
+},
+{
+"szo": "tanulás",
+"domen": "tanulas",
+"irany": "csokken",
+"meredekseg": -0.057,
+"ervenyes": true,
+"mai_ertek": 73,
+"csucs": 100,
+"atlag": 72.9
+},
+{
+"szo": "klíma",
+"domen": "otthon",
+"irany": "novekszik",
+"meredekseg": 0.08,
+"ervenyes": true,
+"mai_ertek": 11,
+"csucs": 100,
+"atlag": 18.1
+}
+],
+"napi": {
+"szoveg": "A YouTube-on a videós figyelmet ma leginkább a gyerekeknek szóló mese uralja, amely a saját szokásos szintje közelében, magasan áll. Erős még a meditáció és a tanulás iránti igény is, mindkettő a megszokott sávjában mozog. Ezek a számok egymással nem összemérhetők, mert mindegyik a saját skáláján mozog.\n\nFeltűnő, hogy a szorongás mai értéke a saját szokásos átlagának jóval a duplája fölött van – ez a téma a megszokottnál sokkal élénkebb videós érdeklődést mutat. A befektetés is a saját átlagánál lényegesen magasabban jár. Az edzés és a hírek nagyjából a megszokott szintjükön mozognak, a bitcoin szintén az átlaga körül. A nyaralás és a recept a szokásosnál visszafogottabb, a klíma és a Magyar Péter iránti videós kereslet pedig alacsony szinten áll."
+},
+"teljes_kep": {
+"szoveg": "A hét egészében a szorongás emelkedett a legnagyobbat a videós keresésben, jelentős ugrással, és mellette a befektetés is határozottan feljebb kúszott. Ez a két téma adja a hét legmarkánsabb mozgását.\n\nA legtöbb más téma inkább lefelé csúszott vagy stagnált: a nyaralás, a bitcoin, a hírek és az edzés is enyhén visszább lépett, a mese, a meditáció, a recept és a klíma pedig alig változott. A tanulás és a Magyar Péter iránti videós figyelem lényegében egy helyben maradt. Összességében a heti kép csendes, néhány kiemelkedő emelkedővel."
+}
+},
+"predikcio": {
+"szoveg": "A rövid távú előrejelzés szinte teljesen nyugodt képet mutat: a követett szavak közül gyakorlatilag mindegyik stagnálásra hajlik a következő napra, egyedül az infláció mutat enyhe emelkedő irányt. Fontos azonban őszintén jelezni, hogy ehhez az emelkedéshez rendkívül alacsony a megbízhatóság és széles a bizonytalansági sáv – vagyis ez inkább a közelmúlt mozgásának matematikai folytatása, mint biztos előrejelzés.\n\nA többi szó – köztük a kormány, a háziorvos, a pedagógus, a nyugdíj és az egészségügyi témák – lényegében változatlan szinten maradhat. Mindez a közelmúlt trendjének kivetítése, nem eseményjóslat: a valóság ettől eltérhet, különösen ott, ahol a modell maga is bizonytalan."
 }
 }
