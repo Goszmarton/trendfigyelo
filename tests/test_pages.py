@@ -428,3 +428,9 @@ def test_adatokrol_predikcio_nem_csak_utolso_pont():
     sz = (DOCS / "adatokrol.html").read_text(encoding="utf-8")
     assert "utolsó feléből" in sz                      # a helyes, kóddal egyező megfogalmazás
     assert "utolsó néhány pontjára" not in sz          # a téves/félrevezető mondat MEGSZŰNT
+
+
+def test_adatokrol_havi_automatikus_szoveg():
+    html = (DOCS / "adatokrol.html").read_text(encoding="utf-8")
+    assert "A havi elemzés" in html
+    assert "automatikusan, a hó utolsó napján" in html
