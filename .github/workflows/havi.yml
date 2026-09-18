@@ -1,0 +1,84 @@
+name: Havi NLP-elemzés
+
+on:
+  workflow_run:
+    workflows: ["Napi trendgyűjtés"]   # csak az esti (teljes) gyűjtés után — a teljes havi adat
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      honap:
+        description: "Kézi teszt: adott hónap (YYYY-MM) újragenerálása; üres = az őr dönt"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: havi-futtatas
+  cancel-in-progress: false
+
+jobs:
+  havi:
+    # csak a napi.yml SIKERES lefutása után (kézi indításnál a feltétel átugorható)
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (a friss, épp commitolt adat)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Python beállítása
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Függőségek telepítése
+        run: pip install -r requirements.txt
+
+      - name: "Utolsó-nap + idempotencia-őr (a generálandó hónap, vagy üres = skip)"
+        id: guard
+        shell: bash
+        run: |
+          KEZI="${{ github.event.inputs.honap }}"
+          if [ -n "$KEZI" ]; then
+            echo "Kézi (workflow_dispatch) felülbírálás: $KEZI"
+            echo "honap=$KEZI" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          HONAP="$(python -m trendfigyelo.havi_orzo docs/data)"
+          echo "Őr szerint generálandó hónap: '$HONAP' (üres = ma nincs teendő)"
+          echo "honap=$HONAP" >> "$GITHUB_OUTPUT"
+
+      - name: Havi elemzés generálása
+        if: steps.guard.outputs.honap != ''
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          set -o pipefail
+          python havi.py "${{ steps.guard.outputs.honap }}" 2>&1 | tee havi.log
+
+      - name: Változások commitolása (CSAK a havi_nlp fájlok, KÜLÖN commit)
+        if: always() && github.ref == 'refs/heads/main' && steps.guard.outputs.honap != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase --autostash || true
+          git add docs/data/havi_nlp
+          if git diff --staged --quiet; then
+            echo "Nincs havi-elemzés-változás — nincs commit."
+          else
+            git commit -m "adat: havi NLP-elemzés (${{ steps.guard.outputs.honap }}, $(date -u +%Y-%m-%dT%H:%MZ))"
+            git push
+          fi
+
+      - name: Artefakt (a log + a havi_nlp fájlok — mindig)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: havi-${{ github.run_id }}
+          retention-days: 14
+          path: |
+            havi.log
+            docs/data/havi_nlp/**
