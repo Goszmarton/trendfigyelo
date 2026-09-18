@@ -33,3 +33,8 @@ def test_varos_koord_magyar_exonimak():
     v = json.loads((VENDOR / "geo" / "varos-koord.json").read_text(encoding="utf-8"))
     for varos in ("moszkva", "kijev", "brüsszel", "porto"):
         assert varos in v and len(v[varos]) == 2                          # a felmerülő városok
+
+
+def test_hu_megyek_geojson():
+    gj = json.loads((VENDOR / "geo" / "hu-megyek.geojson").read_text(encoding="utf-8"))
+    assert gj.get("type") == "FeatureCollection" and len(gj["features"]) >= 10   # 19 megye + Budapest ~20

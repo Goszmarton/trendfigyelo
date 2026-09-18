@@ -122,6 +122,12 @@ test("Havi Magyarország-térkép: magyar településjelölő + hover + kattint�
   await expect(page.locator("#havi-hu-terkep.leaflet-container")).toHaveCount(1);
   // az „Országok" listát felváltó világtérkép mellett a Települések-lista HELYETT a Magyarország-térkép jelenik meg
   await expect(page.locator("#havi-tartalom .havi-ner-csoport", { hasText: "Települések" })).toHaveCount(0);
+  // megyehatár-alapréteg jelen van: a vendorelt megye-GeoJSON 20 külön feature-t rajzol
+  // (stroke="#999"), ez megkülönbözteti az egyetlen HUN-körvonal fallback-től (stroke="#888")
+  const megyePaths = page.locator('#havi-hu-terkep path[stroke="#999"]');
+  await expect(megyePaths).not.toHaveCount(0);
+  const megyeSzam = await megyePaths.count();
+  expect(megyeSzam).toBeGreaterThan(1);
   // legalább egy magyar település kör-jelölő
   const varosMarker = page.locator('#havi-hu-terkep path.leaflet-interactive').first();
   await expect(varosMarker).toBeVisible();

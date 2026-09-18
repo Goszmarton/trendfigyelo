@@ -86,3 +86,19 @@ magyar címkék előre formázva); a date-adapter + date-fns nincs vendorolva.
 - 30 bejegyzés, köztük a próza által elvárt `moszkva`, `kijev`, `brüsszel`, `porto`.
 
 `geo/varos-koord.json` — sha256: `718b6e0959f4568ea71ae1d1aff932943cde8002b92767883324fb0f074b382e`
+
+## Magyar megyehatárok — Natural Earth admin-1 (public domain / CC0)
+
+- Forrás: https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_1_states_provinces.geojson
+  (Natural Earth admin-1 states/provinces, 10m felbontás)
+- Licenc: **közkincs / public domain** (Natural Earth minden adata CC0-ként terjeszthető)
+- Fájl: `geo/hu-megyek.geojson` = `FeatureCollection`, csak `geometry` + `properties.name`
+  (megyenév) — a letöltött ~40MB teljes admin-1 fájlból Magyarországra szűrve
+  (`properties.iso_a2 == "HU"` VAGY `admin == "Hungary"` VAGY `adm0_a3 == "HUN"`), majd
+  `properties.type` alapján csak a valódi megyehatárokra (`"Megye"` + a főváros `"Fovaros"`) —
+  a Natural Earth 10m adatban a megyei jogú városok (`"Megyei jogu város"`) külön
+  feature-ként is szerepelnek, azokat kihagytuk, hogy a réteg a 19 megye + Budapest
+  körvonalát adja, ne aprózódjon tovább.
+- 20 feature (19 megye + Budapest), ~70 KB.
+
+`geo/hu-megyek.geojson` — sha256: `90747320b8af6fe42f6c7c1427c3dbed6dd3f07602a473f806cd3be887b3996c`

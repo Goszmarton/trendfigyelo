@@ -132,13 +132,14 @@ let _geo = null;
 async function geo_assetek() {
   if (_geo) return _geo;
   try {
-    const [vilag, iso, huk, varos] = await Promise.all([
+    const [vilag, iso, huk, varos, megyek] = await Promise.all([
       fetch("vendor/geo/vilag-orszagok.geojson").then(r => r.json()),
       fetch("vendor/geo/orszag-nev-iso.json").then(r => r.json()),
       fetch("vendor/geo/hu-telepules-koord.json").then(r => r.json()),
       fetch("vendor/geo/varos-koord.json").then(r => r.json()),
+      fetch("vendor/geo/hu-megyek.geojson").then(r => r.json()),
     ]);
-    _geo = { vilag, iso, huk, varos };
+    _geo = { vilag, iso, huk, varos, megyek };
     return _geo;
   } catch (e) {
     return null;   // fail-soft: a hívó erre a Fázis A volumen-listára esik vissza
@@ -243,12 +244,18 @@ async function hu_terkep(telepulesek) {
       try { havi_terkepek.hu.remove(); } catch (e) { /* stale/elszabadult ref — nem dől el */ }
     }
     const map = L.map(doboz, { attributionControl: true }).setView([47.16, 19.5], 6.6);
-    // Magyarország körvonala alaprétegként (a már vendorelt világ-GeoJSON HUN feature-jéből) → a pontok
-    // ne üres háttéren lebegjenek; a nézetet az ország határaira illesztjük.
-    const hun = (g.vilag.features || []).find((f) => f.id === "HUN");
-    if (hun) {
-      const alap = L.geoJSON(hun, { interactive: false, style: { color: "#888", weight: 1, fillColor: "#f2f2f2", fillOpacity: 0.9 } }).addTo(map);
+    // Alapréteg: a vendorelt megyehatár-GeoJSON (Task 1 csiszolás) → a pontok ne üres/körvonal-nélküli
+    // háttéren lebegjenek, hanem a megyék tagolása is látszódjon; a nézetet a rétegre illesztjük.
+    // Fallback (megye-asset hiányzik): a már vendorelt világ-GeoJSON HUN feature-je (a korábbi viselkedés).
+    if (g.megyek && (g.megyek.features || []).length) {
+      const alap = L.geoJSON(g.megyek, { interactive: false, style: { color: "#999", weight: 1, fillColor: "#f2f2f2", fillOpacity: 0.9 } }).addTo(map);
       try { map.fitBounds(alap.getBounds(), { padding: [12, 12] }); } catch (e) { /* üres bounds — marad a setView */ }
+    } else {
+      const hun = (g.vilag.features || []).find((f) => f.id === "HUN");
+      if (hun) {
+        const alap = L.geoJSON(hun, { interactive: false, style: { color: "#888", weight: 1, fillColor: "#f2f2f2", fillOpacity: 0.9 } }).addTo(map);
+        try { map.fitBounds(alap.getBounds(), { padding: [12, 12] }); } catch (e) { /* üres bounds — marad a setView */ }
+      }
     }
     hazai.forEach(t => { const c = g.huk[kulcs(t.nev)];
       L.circleMarker(c, { radius: 5 + 9 * ((t.volumen || 0) / maxV), color: "#c0392b", fillColor: "#e74c3c", fillOpacity: 0.8, weight: 1 })
