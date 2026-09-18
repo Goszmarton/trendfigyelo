@@ -32,7 +32,10 @@ def test_generalo_lepes_anthropic_kulccsal():
 def test_commit_csak_havi_nlp_es_rebase():
     wf = _wf()
     szoveg = yaml.safe_dump(wf["jobs"]["havi"]["steps"], allow_unicode=True)
-    assert "docs/data/havi_nlp" in szoveg
+    # PONTOSAN a havi_nlp mappát stage-eli (nem véletlenül a napok/elemzesek/trend adatot)
+    assert "git add docs/data/havi_nlp" in szoveg
     assert "git pull --rebase" in szoveg
-    # NEM stage-eli a napi/trend adatot
+    # NEM stage-el semmilyen más adat-utat
     assert "docs/data/elemzes.json" not in szoveg
+    assert "docs/data/napok" not in szoveg
+    assert "docs/data/elemzesek" not in szoveg

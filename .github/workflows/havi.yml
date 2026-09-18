@@ -40,8 +40,10 @@ jobs:
       - name: "Utolsó-nap + idempotencia-őr (a generálandó hónap, vagy üres = skip)"
         id: guard
         shell: bash
+        env:
+          KEZI_INPUT: ${{ github.event.inputs.honap }}   # env-en át (nem szöveg-interpoláció a bash-be)
         run: |
-          KEZI="${{ github.event.inputs.honap }}"
+          KEZI="$KEZI_INPUT"
           if [ -n "$KEZI" ]; then
             echo "Kézi (workflow_dispatch) felülbírálás: $KEZI"
             echo "honap=$KEZI" >> "$GITHUB_OUTPUT"
@@ -55,12 +57,15 @@ jobs:
         if: steps.guard.outputs.honap != ''
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          HONAP: ${{ steps.guard.outputs.honap }}   # env-en át, idézve
         run: |
           set -o pipefail
-          python havi.py "${{ steps.guard.outputs.honap }}" 2>&1 | tee havi.log
+          python havi.py "$HONAP" 2>&1 | tee havi.log
 
       - name: Változások commitolása (CSAK a havi_nlp fájlok, KÜLÖN commit)
         if: always() && github.ref == 'refs/heads/main' && steps.guard.outputs.honap != ''
+        env:
+          HONAP: ${{ steps.guard.outputs.honap }}   # env-en át, idézve (nem interpoláció a git commit -m-be)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -69,7 +74,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "Nincs havi-elemzés-változás — nincs commit."
           else
-            git commit -m "adat: havi NLP-elemzés (${{ steps.guard.outputs.honap }}, $(date -u +%Y-%m-%dT%H:%MZ))"
+            git commit -m "adat: havi NLP-elemzés ($HONAP, $(date -u +%Y-%m-%dT%H:%MZ))"
             git push
           fi
 
