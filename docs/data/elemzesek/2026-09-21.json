@@ -1,91 +1,143 @@
 {
-"frissitve": "2026-09-21T07:07:41+00:00",
+"frissitve": "2026-09-21T19:06:51+00:00",
 "modell": "claude-opus-4-8",
 "nap": "2026-09-21",
-"mode": "reggel",
+"mode": "este",
 "valtozas": {
 "diff": {
-"irany_valtok": [],
-"mozgok": [
-{
-"szo": "akciós újság",
-"valtozas": 0.0
-},
+"irany_valtok": [
 {
 "szo": "albérlet",
-"valtozas": 0.0
+"elozo": "csokken",
+"mai": "stagnal"
 },
 {
-"szo": "benzin",
-"valtozas": 0.0
+"szo": "eladó lakás",
+"elozo": "csokken",
+"mai": "stagnal"
 },
 {
-"szo": "betegség",
-"valtozas": 0.0
+"szo": "infláció",
+"elozo": "stagnal",
+"mai": "csokken"
 },
 {
-"szo": "csőd",
-"valtozas": 0.0
+"szo": "korrupció",
+"elozo": "novekszik",
+"mai": "stagnal"
+},
+{
+"szo": "kölcsön",
+"elozo": "csokken",
+"mai": "stagnal"
+},
+{
+"szo": "nyaralás",
+"elozo": "csokken",
+"mai": "stagnal"
+},
+{
+"szo": "pedagógus",
+"elozo": "stagnal",
+"mai": "csokken"
+},
+{
+"szo": "segély",
+"elozo": "csokken",
+"mai": "stagnal"
+}
+],
+"mozgok": [
+{
+"szo": "műtét",
+"valtozas": -5.16
+},
+{
+"szo": "segély",
+"valtozas": 3.772
+},
+{
+"szo": "háziorvos",
+"valtozas": -3.721
+},
+{
+"szo": "iskola",
+"valtozas": -3.418
+},
+{
+"szo": "kormányablak",
+"valtozas": 2.464
 }
 ],
 "felkapott_uj": [
+"cindy crawford",
+"classroom",
 "concerts",
+"gemini",
 "hvg",
+"hírek",
 "időkép",
 "jennifer hudson",
-"presley gerber",
 "startlap",
-"tv műsor"
+"teams"
 ],
 "felkapott_eltunt": [
+"ai",
+"eredmenyek",
+"kiskunfélegyháza baleset",
+"nb1",
+"premier league",
+"real madrid",
+"sztárban sztár 2026",
+"x faktor",
 "ötöslottó nyerőszámok"
 ],
 "van_elozo": true
 },
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A tegnapihoz képest több követett szó is irányt váltott, de többségében a nyugalom felé. Az albérlet, az eladó lakás, a kölcsön, a nyaralás és a segély korábbi csökkenő tendenciája mostanra kisimult, ezek inkább egy helyben álló képet mutatnak. Ezzel szemben az infláció és a pedagógus a korábbi stagnálásból enyhén lefelé fordult, a korrupció pedig a korábbi emelkedésből visszaállt a szokásos, mozdulatlan szintjére.\n\nA napi lendületet tekintve a legnagyobb visszaesést a műtét mutatja, amely érdemben lejjebb került, a háziorvos és az iskola szintén lefelé mozdult. Ezzel szemben a segély és a kormányablak a másik irányba, felfelé billent a korábbi állapotához képest. Ezek napi szintű elmozdulások, önmagukban nem feltétlenül jeleznek tartós fordulatot.\n\nA napi felkapott keresések között több új név is megjelent, mint a cindy crawford, a classroom, a gemini, a hvg, a hírek, az időkép, a jennifer hudson, a startlap és a teams, miközben tegnapról több téma – köztük több sportmérkőzés, a real madrid és a sztárban sztár 2026 – kikopott a listáról."
 },
 "kulcsszavak": {
 "szamok": [
 {
 "szo": "akciós újság",
 "irany": "novekszik",
-"meredekseg": 2.398,
+"meredekseg": 2.378,
 "ervenyes": true,
-"mai_ertek": 29,
-"csucs": 100.0,
-"atlag": 48.0
+"mai_ertek": 42,
+"csucs": 74.0,
+"atlag": 48.82
 },
 {
 "szo": "albérlet",
-"irany": "csokken",
-"meredekseg": -3.203,
+"irany": "stagnal",
+"meredekseg": -0.785,
 "ervenyes": true,
 "mai_ertek": 0,
-"csucs": 49.0,
-"atlag": 49.0
+"csucs": 100.0,
+"atlag": 50.67
 },
 {
 "szo": "benzin",
 "irany": "csokken",
-"meredekseg": -3.972,
+"meredekseg": -6.003,
 "ervenyes": true,
-"mai_ertek": 11,
-"csucs": 39.0,
-"atlag": 19.62
+"mai_ertek": 9,
+"csucs": 13.0,
+"atlag": 10.36
 },
 {
 "szo": "betegség",
 "irany": "csokken",
-"meredekseg": -4.215,
+"meredekseg": -5.187,
 "ervenyes": true,
 "mai_ertek": 0,
-"csucs": 100.0,
-"atlag": 100.0
+"csucs": 94.0,
+"atlag": 94.0
 },
 {
 "szo": "csőd",
 "irany": "stagnal",
-"meredekseg": 0.247,
+"meredekseg": -0.192,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -93,17 +145,17 @@
 },
 {
 "szo": "eladó lakás",
-"irany": "csokken",
-"meredekseg": -1.901,
+"irany": "stagnal",
+"meredekseg": -0.061,
 "ervenyes": true,
-"mai_ertek": 54,
-"csucs": 94.0,
-"atlag": 73.25
+"mai_ertek": 0,
+"csucs": 100.0,
+"atlag": 70.5
 },
 {
 "szo": "fizetés",
 "irany": "csokken",
-"meredekseg": -6.334,
+"meredekseg": -7.046,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -112,16 +164,16 @@
 {
 "szo": "hitel",
 "irany": "csokken",
-"meredekseg": -6.585,
+"meredekseg": -5.733,
 "ervenyes": true,
 "mai_ertek": 0,
-"csucs": 66.0,
-"atlag": 63.0
+"csucs": 76.0,
+"atlag": 74.5
 },
 {
 "szo": "háziorvos",
 "irany": "csokken",
-"meredekseg": -3.662,
+"meredekseg": -7.383,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -129,8 +181,8 @@
 },
 {
 "szo": "infláció",
-"irany": "stagnal",
-"meredekseg": 0.271,
+"irany": "csokken",
+"meredekseg": -1.732,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -139,34 +191,34 @@
 {
 "szo": "iskola",
 "irany": "csokken",
-"meredekseg": -2.639,
+"meredekseg": -6.057,
 "ervenyes": true,
-"mai_ertek": 28,
+"mai_ertek": 57,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kormány",
 "irany": "csokken",
-"meredekseg": -4.027,
+"meredekseg": -5.03,
 "ervenyes": true,
-"mai_ertek": 0,
+"mai_ertek": 65,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kormányablak",
 "irany": "csokken",
-"meredekseg": -7.932,
+"meredekseg": -5.468,
 "ervenyes": true,
 "mai_ertek": 0,
-"csucs": 43.0,
-"atlag": 43.0
+"csucs": null,
+"atlag": null
 },
 {
 "szo": "korrupció",
-"irany": "novekszik",
-"meredekseg": 1.053,
+"irany": "stagnal",
+"meredekseg": 0.02,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -175,16 +227,16 @@
 {
 "szo": "kórház",
 "irany": "csokken",
-"meredekseg": -4.639,
+"meredekseg": -3.039,
 "ervenyes": true,
-"mai_ertek": 36,
-"csucs": 56.0,
-"atlag": 39.09
+"mai_ertek": 29,
+"csucs": 42.0,
+"atlag": 30.15
 },
 {
 "szo": "kölcsön",
-"irany": "csokken",
-"meredekseg": -1.847,
+"irany": "stagnal",
+"meredekseg": -0.559,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -193,7 +245,7 @@
 {
 "szo": "munkanélküliség",
 "irany": "stagnal",
-"meredekseg": -0.464,
+"meredekseg": 0.192,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -202,7 +254,7 @@
 {
 "szo": "műtét",
 "irany": "csokken",
-"meredekseg": -3.881,
+"meredekseg": -9.041,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -211,34 +263,34 @@
 {
 "szo": "napelem",
 "irany": "csokken",
-"meredekseg": -3.511,
-"ervenyes": true,
-"mai_ertek": 0,
-"csucs": null,
-"atlag": null
-},
-{
-"szo": "nyaralás",
-"irany": "csokken",
-"meredekseg": -1.098,
+"meredekseg": -3.852,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": 100.0,
-"atlag": 100.0
+"atlag": 99.0
+},
+{
+"szo": "nyaralás",
+"irany": "stagnal",
+"meredekseg": -0.985,
+"ervenyes": true,
+"mai_ertek": 0,
+"csucs": 100.0,
+"atlag": 99.5
 },
 {
 "szo": "nyugdíj",
 "irany": "csokken",
-"meredekseg": -3.849,
+"meredekseg": -3.544,
 "ervenyes": true,
-"mai_ertek": 0,
-"csucs": 57.0,
-"atlag": 35.25
+"mai_ertek": 7,
+"csucs": null,
+"atlag": null
 },
 {
 "szo": "pedagógus",
-"irany": "stagnal",
-"meredekseg": 0.309,
+"irany": "csokken",
+"meredekseg": -1.708,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -255,8 +307,8 @@
 },
 {
 "szo": "segély",
-"irany": "csokken",
-"meredekseg": -3.82,
+"irany": "stagnal",
+"meredekseg": -0.048,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -265,7 +317,7 @@
 {
 "szo": "sürgősségi",
 "irany": "csokken",
-"meredekseg": -1.199,
+"meredekseg": -2.296,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -277,13 +329,13 @@
 "meredekseg": null,
 "ervenyes": false,
 "mai_ertek": null,
-"csucs": 43.0,
-"atlag": 43.0
+"csucs": 100.0,
+"atlag": 65.67
 },
 {
 "szo": "várólista",
 "irany": "stagnal",
-"meredekseg": 0.321,
+"meredekseg": 0.148,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -292,83 +344,117 @@
 {
 "szo": "állás",
 "irany": "csokken",
-"meredekseg": -3.618,
+"meredekseg": -4.201,
 "ervenyes": true,
-"mai_ertek": 21,
-"csucs": 38.0,
-"atlag": 26.39
+"mai_ertek": 52,
+"csucs": 100.0,
+"atlag": 37.71
 }
 ],
 "napi": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A követett szavak túlnyomó része ma nagyon alacsony, gyakran nulla közeli szinten áll, ami önmagában is csendes napra utal. A megélhetéshez és az egészségügyhöz köthető szavak – így a fizetés, a hitel, a háziorvos, a műtét, a betegség, a sürgősségi, az albérlet, az eladó lakás – ma gyakorlatilag nem pörögnek, több közülük a szokásos átlaguk alatt van.\n\nKiemelkedik viszont néhány szó, amely ma is jelen van a kereséseknél. A kormány 65-ös mai értéke élénk, az iskola 57-tel szintén jól tartja magát, az állás pedig 52-vel a saját szokásos átlaga (nagyjából 38) fölött mozog, vagyis a szokásosnál élénkebb érdeklődést mutat. Az akciós újság 42-es értéke a saját átlaga alatt van, de az irány szerint enyhén emelkedő pályán van.\n\nA benzin 9-es mai értéke a szokásos szintjéhez közeli, bár enyhén alatta, a kórház 29-cel a megszokott sávjában mozog. A nyugdíj 7-es értéke visszafogott. A tüntetés esetében ma nem áll rendelkezésre értékelhető adat, korábbi csúcsértéke azonban magas volt. A csőd, a munkanélküliség, a rezsi, a segély, a várólista és a korrupció mind a mozdulatlan, alacsony tartományban maradt."
 }
 },
 "felkapott": {
 "top": [
 {
-"kifejezes": "presley gerber",
-"volumen": "1000",
-"novekedes_pct": "1000",
+"kifejezes": "cindy crawford",
+"volumen": "5000",
+"novekedes_pct": "600",
 "temak": [
 "Entertainment"
 ],
 "hirek": [
 {
-"hir_cim": "Cindy Crawford’s son, model Presley Gerber, dies at 27",
-"hir_forras": "CNN",
-"hir_url": "https://www.cnn.com/2026/09/21/style/presley-gerber-cindy-crawford-son-death-hnk",
+"hir_cim": "Cindy Crawford&apos;s Son Presley Gerber Dead at 27",
+"hir_forras": "TMZ",
+"hir_url": "https://www.tmz.com/2026/09/20/presley-gerber-dead/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD7m2NGPONVGbQzQ0gv-BO8zTLFIcSit2A5BqrTlorl-7KQzXq-MZ7k6YqpZM",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ6YC07go-XM72WMbmr_F2ZBfS9GqlopEyGc_UXzLvvh2JZy2HFQkNfVe_QPEQ",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Presley Gerber, son of Cindy Crawford and Rande Gerber, has died aged 27",
+"hir_cim": "Presley Gerber Appeared Alongside Parents Cindy Crawford and Rande Gerber in Final Appearance Before Death",
+"hir_forras": "People.com",
+"hir_url": "https://people.com/presley-gerber-appeared-alongside-parents-cindy-crawford-rande-gerber-last-public-appearance-months-before-death-12131263",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRAoWBF9WWZmlQlq5P53yaLFo1igXAwAKfbDtIHU3-RJp0uHZKFotlsrnyrOgc",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Presley Gerber, son of Cindy Crawford and Rande Gerber, dies aged 27",
 "hir_forras": "The Guardian",
 "hir_url": "https://www.theguardian.com/lifeandstyle/2026/sep/21/presley-gerber-son-of-cindy-crawford-dead-aged-27",
 "hir_ido_utc": "",
 "hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRBB6y3nyiEVaL2hkA4dncDY2GHmVzHkIpAlRZdavrfDj4AYt3UiB_fGGOVEsU",
 "hir_kivonat": ""
+}
+]
 },
 {
-"hir_cim": "Presley Gerber Shared Raw Look at His Addiction Treatment in One of His Final Instagram Posts: ‘Praying It’s the Last Time’",
-"hir_forras": "People.com",
-"hir_url": "https://people.com/presley-gerber-final-social-media-post-before-death-underwent-psychedelic-drug-treatment-12131268",
+"kifejezes": "classroom",
+"volumen": "2000",
+"novekedes_pct": "100",
+"temak": [
+"Other"
+],
+"hirek": [
+{
+"hir_cim": "Italy to ban veils in schools, limit foreign students per class, Meloni says",
+"hir_forras": "CNN",
+"hir_url": "https://www.cnn.com/2026/09/20/europe/italy-meloni-schools-ban-veils-limit-foreigners-intl",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTLlXSxTvhuKMBt_m-wrAjK3QXZsCmPy5RM3C1RSZUaLD7J89n0kdXQBbaWzl4",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQS_n_30lp4QYU7LiS9I6tBsjt36jm9ai00X1qlXdsv9wO10SFhrvFeJ3C-Afw",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Meloni promises to ban burqas, niqabs in Italy’s schools",
+"hir_forras": "Al Jazeera",
+"hir_url": "https://www.aljazeera.com/news/2026/9/20/meloni-promises-to-ban-burqas-niqabs-in-italys-schools",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQx6OoLy3IHXNl4nz4h4uomV1Yc8v5QsexYGrFNthgL43EjPC08f0vU9l0Wg4U",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Italy leader Giorgia Meloni announces plans to limit foreign student numbers, ban face coverings in schools",
+"hir_forras": "CBS News",
+"hir_url": "https://www.cbsnews.com/news/italy-giorgia-meloni-limit-foreign-student-numbers-ban-face-coverings-schools/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTJFMSc5eXEjp7TRcWVskGW3bqj3NW6EqtHz3Nu-aghLq9ihld13_XeONFtuuE",
 "hir_kivonat": ""
 }
 ]
 },
 {
-"kifejezes": "sztárban sztár 2026",
+"kifejezes": "gemini",
 "volumen": "500",
-"novekedes_pct": "200",
+"novekedes_pct": "75",
 "temak": [
-"Entertainment"
+"Technology"
 ],
 "hirek": [
 {
-"hir_cim": "Elindult az idei Sztárban Sztár: rögtön kiestek ketten az első adásban",
-"hir_forras": "24.hu",
-"hir_url": "https://24.hu/kultura/2026/09/21/sztarban-sztar-2026-kiesok-tv2/",
+"hir_cim": "Googlebook: The laptop your Android phone has been waiting for",
+"hir_forras": "blog.google",
+"hir_url": "https://blog.google/products-and-platforms/devices/googlebook/pre-order-googlebook/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTj8V2KRGMvFjknhzUjRyh-oW5XMv_AwKr15Hka76gogUclp6qq4p2P4CLfR_4",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjloqEFVTdL_bQjH_yew5n3mwvfkhrMqbZG5DADnDHVkThYeq8y04ZoDDvz04",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "A magyar színésznőnek egy adás után menni kellett a TV2 showjából: nem akarták a nézők",
-"hir_forras": "Femina",
-"hir_url": "https://femina.hu/hazai_sztar/sztarban-sztar-2026-kiesok/",
+"hir_cim": "I got to see Google’s wild ideas about the future of laptops",
+"hir_forras": "The Verge",
+"hir_url": "https://www.theverge.com/tech/997986/google-googlebooks-android-laptops-dell-hp-lenovo-acer-asus-price-specs",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSM7QDSaleYY3CzdC9ivH7izTsKIsvEOhGTxLzkhBhSrd7hQAmj8FJnN1NAiow",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKIQKlEDcD7GgvXCZAQ7p8tc5HElxc6ZSN0hzy3tY7lfhPDEM8-E_rzJUmZH4",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "FOMO - Szürreális pillanatokkal robbant be az ország házibulija",
-"hir_forras": "Index.hu",
-"hir_url": "https://index.hu/fomo/2026/09/21/sztarban-sztar-tv2-gallusz-nikolett-kohanszky-roy/",
+"hir_cim": "Google Rolls Out $899-Plus ‘Googlebook’ AI Laptops With Hardware Partners",
+"hir_forras": "Bloomberg.com",
+"hir_url": "https://www.bloomberg.com/news/articles/2026-09-21/google-rolls-out-899-plus-googlebooks-from-dell-hp-lenovo-acer-asus",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBwlIhTWkyIFME0H85xfDKYHnBwjxWzAGsyFkhUjGL7BRbcfn5VDd1TY5Ayr4",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRej7f631AELP3iARmM7c_A-GCi50ckQf4sVEFNMJfS09i_w-s6BOaW4e9A1e4",
 "hir_kivonat": ""
 }
 ]
@@ -382,27 +468,27 @@
 ],
 "hirek": [
 {
+"hir_cim": "Az előző magyar kormány EU elleni kémkedését is felemlegette a demokrácia védelméről szóló EP-jelentés",
+"hir_forras": "Telex",
+"hir_url": "https://telex.hu/kulfold/2026/09/15/eu-europai-parlament-demokracia",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQh5lK8ifGXPP4CUHEQDPFp1YuHl5kFyp9uo-Hqfm6kkclqY_kkyqoj85V_nT0",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Brutális fordulat az időjárásban: viharos széllel és talajmenti faggyal érkezhet a hidegfront",
+"hir_forras": "Mindmegette.hu",
+"hir_url": "https://www.mindmegette.hu/erdekessegek/hidegfront-talajmenti-fagy",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQYv3ax9qa7xDmo6q2PmIdt3er9p1IriqRDZVpNe-nInb4igHu2golcyT95JRs",
+"hir_kivonat": ""
+},
+{
 "hir_cim": "A 30 fok után talajmenti fagy is jöhet",
 "hir_forras": "Időkép",
 "hir_url": "https://www.idokep.hu/hirek/a-30-fok-utan-talajmenti-fagy-is-johet",
 "hir_ido_utc": "",
 "hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTDc_3aSj7EKys8ZBm50KXgVtvZE3JgIwCt3lr1bCwTXt1Z4mExd9DMLXJC8l8",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Kiadták a riasztást: zivatarral, erős széllel érkezik meg ma az ősz",
-"hir_forras": "Pénzcentrum",
-"hir_url": "https://www.penzcentrum.hu/otthon/20260921/kiadtak-a-riasztast-zivatarral-eros-szellel-erkezik-meg-ma-az-osz-1205804",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRUvYt6pNi5Lt5_P0pCw8ph13inPn5H2d3clDTSofKKrSpdvTbunyAheTA1ERw",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Durva lehűlés tart Magyarország felé - Van egy rossz hír, aminek nagyon nem fogunk örülni",
-"hir_forras": "Portfolio.hu",
-"hir_url": "https://www.portfolio.hu/gazdasag/20260920/durva-lehules-tart-magyarorszag-fele-van-egy-rossz-hir-aminek-nagyon-nem-fogunk-orulni-863984",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRpkr4RecJMFJeGfBsfHicJwb8n_bDiwqaiqFrOIY4wJeIukBT5FFSvGZd1U2s",
 "hir_kivonat": ""
 }
 ]
@@ -410,33 +496,103 @@
 {
 "kifejezes": "hvg",
 "volumen": "200",
-"novekedes_pct": "100",
+"novekedes_pct": "75",
 "temak": [
-"Other"
+"Politics",
+"Law and Government"
 ],
 "hirek": [
 {
-"hir_cim": "Összeverekedett egy 82 éves és egy 76 éves a görög standon egy napozóágy miatt, az előbbi meghalt",
-"hir_forras": "444",
-"hir_url": "https://444.hu/2026/09/21/osszeverekedett-egy-82-eves-es-egy-76-eves-a-gorog-standon-egy-napozoagy-miatt-az-elobbi-meghalt",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTlXc1wxhTyktjCL56xEVu2VI-51n1wkQ385HEmgwoF-WK8KAfRoX1U6GRdffI",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Napágy miatt tört ki verekedés egy görög strandon, egy idős férfi meghalt",
-"hir_forras": "24.hu",
-"hir_url": "https://24.hu/kulfold/2026/09/21/gorogorszag-strand-verekedes-ferfi-meghalt/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTheH8YiNzjfSw18FctmvytX0T7M7kVHR9rtTrqP7ezQXWrUkIOcjLDFBT9h18",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Világ: Napozóágy miatt verekedett össze két idős férfi egy görögországi strandon, egyikük meghalt",
+"hir_cim": "Itthon: Török Gábor a Tisza-kétharmad által megválasztott vezetőkről: Világos a mintázat",
 "hir_forras": "| hvg.hu",
-"hir_url": "https://hvg.hu/vilag/20260921_verekedes-gorogorszag-strand-napozoagy-halaleset",
+"hir_url": "https://hvg.hu/itthon/20260921_torok-gabor-tisza-orszaggyules-ketharmad-szemelyzeti-politika",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS8KzL1tSFBD5fOk0nR7yXa6yd5tCKQ5AwGhDNzQYpVg8avHaC_KCXUrbuN1LM",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEiIlzzNTbpRwvHwIAlVd-LwnsySGMRGLnXllwa8prYFssTX6nSrw9fKFbIRE",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Török Gábor a Tisza-kétharmad által megválasztott vezetőkről: Világos a mintázat",
+"hir_forras": "Hirnavigator",
+"hir_url": "https://hirnavigator.hu/hir/10796807-torok-gabor-a-tisza-ketharmad-altal-megvalasztott-vezetokrol-vilagos-a-mintazat",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTEDOWtEjgUTkrS2Nk4haYi1aZ-CKJC2YVxPK2jIfsaOPaDH6nPOd-MzXnuGVI",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Vállalkozás: A horvátok is aggódnak Jellinek letartóztatása miatt",
+"hir_forras": "| hvg.hu",
+"hir_url": "https://hvg.hu/kkv/20260921_jellinek-daniel-letartoztatas-horvatorszag-visszhang",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSD_9tvQ9DZD0H3VrS6Qe-dRYyQdR6-aDy0kmLLKC_z6tOPf_MaEKQDYoQ5cso",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "hírek",
+"volumen": "200",
+"novekedes_pct": "100",
+"temak": [
+"Law and Government",
+"Politics"
+],
+"hirek": [
+{
+"hir_cim": "Meghökkentő terv bukott ki: Ukrajna egyesülni akart Európa egyik legerősebb országával",
+"hir_forras": "Portfolio.hu",
+"hir_url": "https://www.portfolio.hu/global/20260921/meghokkento-terv-bukott-ki-ukrajna-egyesulni-akart-europa-egyik-legerosebb-orszagaval-864280",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsYtuDrpBQ5IvoDk9T1AR_RX1YKuX8bQV4Bb0M2Fg770kSpEaofad6Glzagnc",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "A közvilágítást akarta meghekkelni, hogy feltöltse az alagútban rekedt villanyautót",
+"hir_forras": "Totalcar",
+"hir_url": "https://totalcar.hu/hirek/2026/09/21/lemerult-villanyauto-alagut-toltes-norvegia/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQakl1OWsnO9Vr2XJ4TWiiesxX5s6HSOd9-1tK4_SW_NsIJvlUm-ByrkeLjym4",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Autó: Lemerült a villanyautója egy alagútban, a mennyezeti világítást akarta megcsapolni a sofőr",
+"hir_forras": "| hvg.hu",
+"hir_url": "https://hvg.hu/cegauto/20260921_elektromos-auto-alagut-vilagitas-toltes-norvegia",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSp-UN-Z07J8obbM2dI5qWTTvO90FFBleW-Luv-VNBSyb5XR7TM468W1OZbf_A",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "teams",
+"volumen": "200",
+"novekedes_pct": "100",
+"temak": [
+"Sports"
+],
+"hirek": [
+{
+"hir_cim": "NFL Panic Meter: Ranking Every 0–2 Team Based on Desperation",
+"hir_forras": "Sports Illustrated",
+"hir_url": "https://www.si.com/nfl/nfl-panic-meter-ranking-every-winless-team-based-on-desperation-2026",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTlmtWB8Cip5aFj8FlN3RRK-DNlsMXK_W_3J7Wx_jw--EApRUUTqhzZrfulV0",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Is It Over For Chargers, Texans? Assessing Which 0-2 Teams Need To Panic The Most",
+"hir_forras": "FOX Sports",
+"hir_url": "https://www.foxsports.com/stories/nfl/over-chargers-texans-assessing-which-0-2-teams-need-panic-most",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXdJvGMa5aBOjb40cu7MlF8OFx4OHt5_hvLo9yhzSkqo9Q0SkkysVBGHyxc2M",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Is it too early to panic in the NFL? These teams don’t want to find out",
+"hir_forras": "NBC News",
+"hir_url": "https://www.nbcnews.com/sports/nfl/nfl-results-chargers-cowboys-rams-winless-rcna598255",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRZp1dFYCcYcF44koogTVthrsVsebC-Wu3BPH1BdJAeQtij79p948_Cx1zMEbM",
 "hir_kivonat": ""
 }
 ]
@@ -446,99 +602,31 @@
 "volumen": "200",
 "novekedes_pct": "75",
 "temak": [
-"Autos and Vehicles"
+"Other"
 ],
 "hirek": [
 {
-"hir_cim": "Hullámpalát szállítottak egy régi Suzukival Ercsiben, le is kapcsolták őket",
-"hir_forras": "Startlap",
-"hir_url": "https://www.startlap.hu/tech/hullampalat-szallitottak-egy-regi-suzukival-ercsiben-le-is-kapcsoltak-oket/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQkONeAcKzimIZG4a5pMuGxwuaQ1KWyY59LhCL_9TQR7xZtw0m5515xIWY0Sx8",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Hullámpalával tömték meg a lerúgott Suzukit",
-"hir_forras": "Hírstart",
-"hir_url": "https://www.hirstart.hu/hk/20260920_hullampalat_szallitottak_egy_regi_suzukival_ercsiben_le_is_kapcsoltak_oket",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSVTpLMBXH4tcqVRXgIaVziDlcVCgA3X-w4JYewk39tr3UoFepdyM62kpF00c",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Összeomlik a külföldiek paradicsoma: „Nehéz munkát találni, kevesebbet fizetnek”",
-"hir_forras": "Startlap",
-"hir_url": "https://www.startlap.hu/utazas/svajc-kulfoldi-munkavallalas-fizetes/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQFHc71WiLQfRwEh2VmSN6hH5n50J6bLuw1CPjCVMjStt0YFMi1vBT3J8ewSRs",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "real madrid",
-"volumen": "200",
-"novekedes_pct": "600",
-"temak": [
-"Sports"
-],
-"hirek": [
-{
-"hir_cim": "Un pésimo arbitraje decide el derbi",
-"hir_forras": "Real Madrid CF | Web Oficial",
-"hir_url": "https://www.realmadrid.com/es-ES/noticias/futbol/primer-equipo/cronicas/cronica-atletico-real-madrid-20-09-2026",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTXEoLCqqAG1oB6M2hYn-9_DKP_1gLJSgUtfCY0DCzhx21vxeJ2tfK-nUx9FEk",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Rajada histórica de Mourinho: “No quiero pensar que esto ha sido algo preparado”",
-"hir_forras": "Diario AS",
-"hir_url": "https://as.com/futbol/primera/una-rueda-de-prensa-de-mourinho-para-la-historia-no-quiero-pensar-que-todo-estaba-preparado-f202609-n/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMvrYf4qXl3tG1T4M4mPBeDBVcW4dmhbov87O-O3h8nApX181x2IinPTcHno4",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Vuelve el Mourinho de siempre: rajada contra los árbitros, lista de agravios, papeles para la prensa...",
-"hir_forras": "MARCA",
-"hir_url": "https://www.marca.com/futbol/real-madrid/2026/09/20/vuelve-mourinho-siempre-rajada-arbitros-lista-agravios-papeles-prensa.html",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSaBCG0mfoyuBnxQNJmFhfqkxwZfvBEaQ7esSENVmE8fUEhioY6OM5IsK7vyDs",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "nb1",
-"volumen": "200",
-"novekedes_pct": "100",
-"temak": [
-"Sports"
-],
-"hirek": [
-{
-"hir_cim": "Annyira örült a gólnak a Fradi-játékos, hogy megütötte a bírót",
+"hir_cim": "Hétfőn két, Mészáros Lőrinchez köthető luxusgép is Bordeaux-ba repült",
 "hir_forras": "24.hu",
-"hir_url": "https://24.hu/sport/foci/2026/09/21/magyar-foci-nyiregyhaza-ftc-golorom-megutotte-a-jatekvezetot/",
+"hir_url": "https://24.hu/belfold/2026/09/21/meszaros-lorinc-ket-luxusgep-bordeaux/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQC4mJ_XqHKihyf5N0q_N9wklPOlF4876Ld-pd8cabo9Xmm0CFzykPPzuJQ1o4",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSKtDl5K9dvbTYP8MUp0--lUdYQUGbXisPBth6ulO1GaW2jupkGDJNxRol9O1I",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Borbély Balázs: Nem kell bosszankodnunk az eddig történtek miatt",
-"hir_forras": "Nemzeti Sport Online",
-"hir_url": "https://www.nemzetisport.hu/labdarugo-nb-i/2026/09/borbely-balazs-nem-kell-bosszankodnunk-az-eddig-tortentek-miatt",
+"hir_cim": "Mészáros Lőrinc két kedvenc magángépe félóra különbséggel ugyanott landolt ma délelőtt",
+"hir_forras": "Startlap",
+"hir_url": "https://www.startlap.hu/hir-szem/meszaros-lorinc-ket-kedvenc-magangepe-felora-kulonbseggel-ugyanott-landolt-ma-delelott/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRPHW0MY9ThpvHLw57LPOb0onQW59aijQeGd34F01KiYdZoc15ycLNshR9Hk_Y",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ64gwi-NsdybxLjvANUtzVHcrQQARZOCij6z_XjsoaJmjAN46C7LHNuTlkZqQ",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Egy pontot szereztünk Nyíregyházán",
-"hir_forras": "Fradi.hu",
-"hir_url": "https://www.fradi.hu/labdarugas/elso-csapat/hirek/nyiregyhaza--fradi-gomez-gol-dontetlen",
+"hir_cim": "Hétfőn két, Mészáros Lőrinchez köthető luxusgép is Bordeaux-ba repült",
+"hir_forras": "Hirnavigator",
+"hir_url": "https://hirnavigator.hu/hir/10796302-hetfon-ket-meszaros-lorinchez-kotheto-luxusgep-is-bordeaux-ba-repult",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNffGRGYVHt_YToOnvvaOOs_U3HGwU3zPJqN6TMuiA-eadLyJ6TKuK0r4AsSU",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcT_XZkEW3AGu5wQxBAprMGh4vPj-DZy-earbJ_1xjtUZorkfSbfYOmEh-mEDKc",
 "hir_kivonat": ""
 }
 ]
@@ -552,119 +640,64 @@
 ],
 "hirek": [
 {
-"hir_cim": "THE JENNIFER HUDSON SHOW to Welcome Julia Stiles &amp; Ernest Harden Jr.",
-"hir_forras": "BroadwayWorld",
-"hir_url": "https://www.broadwayworld.com/bwwtv/article/THE-JENNIFER-HUDSON-SHOW-to-Welcome-Julia-Stiles-Ernest-Harden-Jr-20260920",
+"hir_cim": "Jennifer Hudson is &apos;putting herself first&apos; as son prepares to leave home",
+"hir_forras": "Yahoo Lifestyle Canada",
+"hir_url": "https://ca.style.yahoo.com/jennifer-hudson-putting-herself-first-130000675.html",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ8QJJ-LfJE61WeDDd0hXkzoJ_gqa623IYiptTB5Psp6cmh2WrZsRKAnAxQ_CI",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcS6MyMX-4c66UxARIHyEc1kXZanQhHnyCvcpW0Z_wo8HeOH0UGuLct_miJA0-A",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Tyler Perry and Jennifer Hudson Break Into Impromptu Duet on JHUD SHOW",
-"hir_forras": "BroadwayWorld",
-"hir_url": "https://www.broadwayworld.com/bwwtv/article/Tyler-Perry-and-Jennifer-Hudson-Break-Into-Impromptu-Duet-on-JHUD-SHOW-20260914",
+"hir_cim": "‘It’s Time for My Voice’: Jennifer Hudson on Reviving ‘Dreamgirls,’ Booking Tom Cruise for Her Talk Show and Writing Original Music Again",
+"hir_forras": "Variety",
+"hir_url": "https://variety.com/2026/music/features/jennifer-hudson-dreamgirls-tom-cruise-interview-new-music-1236860402/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFlVWf2JdcQy2dHwaoILbXstM8_hYpAdP4sxmvgbQh4vFOJyvIyPWk2H_HnO8",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS80yNST4QNkhsZNN35fxZs066V2ve9wQwAjlbTR-ZAEeIYiumwDA8eBvZER5k",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Tyler Perry’s ‘Zesty’ Spirit Tunnel Dance Has Social Media Seeing Madea | WATCH",
-"hir_forras": "EURweb",
-"hir_url": "https://eurweb.com/tyler-perry-dance/",
+"hir_cim": "Jennifer Hudson&apos;s new music vow",
+"hir_forras": "Yardbarker",
+"hir_url": "https://www.yardbarker.com/entertainment/articles/jennifer_hudsons_new_music_vow/s1_17464_44322234",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSufwgjYEKcrwlde1M7OfhztLgllVLVAhfvGqf-kNvvw6plpKqt_xq_lc2A7E0",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR5-CQI4nlcHpuDCVslVHN4dh6iIJV21ZVKyEAH0d4pO-vvZ4u0OPgvFs4fqHA",
 "hir_kivonat": ""
 }
 ]
 },
 {
-"kifejezes": "premier league",
-"volumen": "200",
-"novekedes_pct": "100",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
 "kifejezes": "concerts",
 "volumen": "100",
-"novekedes_pct": "100",
+"novekedes_pct": "200",
 "temak": [
 "Entertainment"
 ],
 "hirek": [
 {
-"hir_cim": "A Teary Ed Sheeran Apologizes to His Fans as Tour Resumes With No Openers",
-"hir_forras": "WSJ",
-"hir_url": "https://www.wsj.com/arts-culture/music/defiant-ed-sheeran-fans-show-up-for-the-musicnot-controversyas-tour-resumes-with-no-billed-openers-77e869fd",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRKVH6wV57Rs0al6LwVT3cd0jJVL9kEabODPR4YH90zsq_qiQtk4xixMnDzYkY",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Piers Morgan criticises Ed Sheeran’s tearful concert apology: ‘He needs better advisors’",
-"hir_forras": "The Independent",
-"hir_url": "https://www.the-independent.com/arts-entertainment/music/news/piers-morgan-ed-sheeran-tour-palestine-b3053314.html",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRVp3u2ngNS7dc3kIaZ0vPbyhPOiYGyWcPjHe3Hr8fUjM8oAe51dwKZ39c9dnc",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Ed Sheeran Addresses War in Gaza After Macklemore Is Dropped From Tour",
+"hir_cim": "Opinion | When Political Reality Collides With Ed Sheeran",
 "hir_forras": "The New York Times",
-"hir_url": "https://www.nytimes.com/2026/09/19/arts/music/ed-sheeran-macklemore-gaza-tour.html",
+"hir_url": "https://www.nytimes.com/2026/09/21/opinion/ed-sheeran-macklemore-politics.html",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR6fr9w9jt6-69OfBCxaKK_ZbU82t6J-yqjH2d3G_y84eKJn3EFaum9vV6FQMM",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQc8aEkIxXlXegb_5Cgn_WqYKF-hctIBJfuUpCEJY-5nTAvRXQ8CQB_FC0NUF8",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "U.S. Sen. John Fetterman blasts Macklemore&apos;s pro-Palestinian remarks",
+"hir_forras": "USA Today",
+"hir_url": "https://www.usatoday.com/videos/news/state/pennsylvania/pittsburgh/2026/09/21/john-fetterman-macklemore-ed-sheeran-palestine-hamas/91827370007/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSg7E0aEXIFQA4VZxZxrmpAiloxIWQOiA7k61jRgy0oA5s3qzttiVwgZJk2O5s",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "AOC joins Macklemore frenzy in bizarre fundraising memo targeting pro-Trump billionaire",
+"hir_forras": "Fox News",
+"hir_url": "https://www.foxnews.com/politics/aoc-joins-macklemore-frenzy-bizarre-fundraising-memo-targeting-pro-trump-billionaire",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR2SR-93UerTNqroH8ZX3F0NNqNdx_hWaE3Esx2Zi4CJIUah96izZ8iyLdSYqU",
 "hir_kivonat": ""
 }
 ]
-},
-{
-"kifejezes": "kiskunfélegyháza baleset",
-"volumen": "100",
-"novekedes_pct": "400",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "x faktor",
-"volumen": "100",
-"novekedes_pct": "300",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "tv műsor",
-"volumen": "100",
-"novekedes_pct": "100",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "eredmenyek",
-"volumen": "100",
-"novekedes_pct": "100",
-"temak": [
-"Politics"
-],
-"hirek": []
-},
-{
-"kifejezes": "ai",
-"volumen": "100",
-"novekedes_pct": "75",
-"temak": [
-"Politics",
-"Law and Government"
-],
-"hirek": []
 }
 ],
 "reggel_top": [
@@ -1032,69 +1065,103 @@
 ],
 "este_top": [
 {
-"kifejezes": "presley gerber",
-"volumen": "1000",
-"novekedes_pct": "1000",
+"kifejezes": "cindy crawford",
+"volumen": "5000",
+"novekedes_pct": "600",
 "temak": [
 "Entertainment"
 ],
 "hirek": [
 {
-"hir_cim": "Cindy Crawford’s son, model Presley Gerber, dies at 27",
-"hir_forras": "CNN",
-"hir_url": "https://www.cnn.com/2026/09/21/style/presley-gerber-cindy-crawford-son-death-hnk",
+"hir_cim": "Cindy Crawford&apos;s Son Presley Gerber Dead at 27",
+"hir_forras": "TMZ",
+"hir_url": "https://www.tmz.com/2026/09/20/presley-gerber-dead/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD7m2NGPONVGbQzQ0gv-BO8zTLFIcSit2A5BqrTlorl-7KQzXq-MZ7k6YqpZM",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ6YC07go-XM72WMbmr_F2ZBfS9GqlopEyGc_UXzLvvh2JZy2HFQkNfVe_QPEQ",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Presley Gerber, son of Cindy Crawford and Rande Gerber, has died aged 27",
+"hir_cim": "Presley Gerber Appeared Alongside Parents Cindy Crawford and Rande Gerber in Final Appearance Before Death",
+"hir_forras": "People.com",
+"hir_url": "https://people.com/presley-gerber-appeared-alongside-parents-cindy-crawford-rande-gerber-last-public-appearance-months-before-death-12131263",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRAoWBF9WWZmlQlq5P53yaLFo1igXAwAKfbDtIHU3-RJp0uHZKFotlsrnyrOgc",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Presley Gerber, son of Cindy Crawford and Rande Gerber, dies aged 27",
 "hir_forras": "The Guardian",
 "hir_url": "https://www.theguardian.com/lifeandstyle/2026/sep/21/presley-gerber-son-of-cindy-crawford-dead-aged-27",
 "hir_ido_utc": "",
 "hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRBB6y3nyiEVaL2hkA4dncDY2GHmVzHkIpAlRZdavrfDj4AYt3UiB_fGGOVEsU",
 "hir_kivonat": ""
+}
+]
 },
 {
-"hir_cim": "Presley Gerber Shared Raw Look at His Addiction Treatment in One of His Final Instagram Posts: ‘Praying It’s the Last Time’",
-"hir_forras": "People.com",
-"hir_url": "https://people.com/presley-gerber-final-social-media-post-before-death-underwent-psychedelic-drug-treatment-12131268",
+"kifejezes": "classroom",
+"volumen": "2000",
+"novekedes_pct": "100",
+"temak": [
+"Other"
+],
+"hirek": [
+{
+"hir_cim": "Italy to ban veils in schools, limit foreign students per class, Meloni says",
+"hir_forras": "CNN",
+"hir_url": "https://www.cnn.com/2026/09/20/europe/italy-meloni-schools-ban-veils-limit-foreigners-intl",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTLlXSxTvhuKMBt_m-wrAjK3QXZsCmPy5RM3C1RSZUaLD7J89n0kdXQBbaWzl4",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQS_n_30lp4QYU7LiS9I6tBsjt36jm9ai00X1qlXdsv9wO10SFhrvFeJ3C-Afw",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Meloni promises to ban burqas, niqabs in Italy’s schools",
+"hir_forras": "Al Jazeera",
+"hir_url": "https://www.aljazeera.com/news/2026/9/20/meloni-promises-to-ban-burqas-niqabs-in-italys-schools",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQx6OoLy3IHXNl4nz4h4uomV1Yc8v5QsexYGrFNthgL43EjPC08f0vU9l0Wg4U",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Italy leader Giorgia Meloni announces plans to limit foreign student numbers, ban face coverings in schools",
+"hir_forras": "CBS News",
+"hir_url": "https://www.cbsnews.com/news/italy-giorgia-meloni-limit-foreign-student-numbers-ban-face-coverings-schools/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTJFMSc5eXEjp7TRcWVskGW3bqj3NW6EqtHz3Nu-aghLq9ihld13_XeONFtuuE",
 "hir_kivonat": ""
 }
 ]
 },
 {
-"kifejezes": "sztárban sztár 2026",
+"kifejezes": "gemini",
 "volumen": "500",
-"novekedes_pct": "200",
+"novekedes_pct": "75",
 "temak": [
-"Entertainment"
+"Technology"
 ],
 "hirek": [
 {
-"hir_cim": "Elindult az idei Sztárban Sztár: rögtön kiestek ketten az első adásban",
-"hir_forras": "24.hu",
-"hir_url": "https://24.hu/kultura/2026/09/21/sztarban-sztar-2026-kiesok-tv2/",
+"hir_cim": "Googlebook: The laptop your Android phone has been waiting for",
+"hir_forras": "blog.google",
+"hir_url": "https://blog.google/products-and-platforms/devices/googlebook/pre-order-googlebook/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTj8V2KRGMvFjknhzUjRyh-oW5XMv_AwKr15Hka76gogUclp6qq4p2P4CLfR_4",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjloqEFVTdL_bQjH_yew5n3mwvfkhrMqbZG5DADnDHVkThYeq8y04ZoDDvz04",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "A magyar színésznőnek egy adás után menni kellett a TV2 showjából: nem akarták a nézők",
-"hir_forras": "Femina",
-"hir_url": "https://femina.hu/hazai_sztar/sztarban-sztar-2026-kiesok/",
+"hir_cim": "I got to see Google’s wild ideas about the future of laptops",
+"hir_forras": "The Verge",
+"hir_url": "https://www.theverge.com/tech/997986/google-googlebooks-android-laptops-dell-hp-lenovo-acer-asus-price-specs",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSM7QDSaleYY3CzdC9ivH7izTsKIsvEOhGTxLzkhBhSrd7hQAmj8FJnN1NAiow",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKIQKlEDcD7GgvXCZAQ7p8tc5HElxc6ZSN0hzy3tY7lfhPDEM8-E_rzJUmZH4",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "FOMO - Szürreális pillanatokkal robbant be az ország házibulija",
-"hir_forras": "Index.hu",
-"hir_url": "https://index.hu/fomo/2026/09/21/sztarban-sztar-tv2-gallusz-nikolett-kohanszky-roy/",
+"hir_cim": "Google Rolls Out $899-Plus ‘Googlebook’ AI Laptops With Hardware Partners",
+"hir_forras": "Bloomberg.com",
+"hir_url": "https://www.bloomberg.com/news/articles/2026-09-21/google-rolls-out-899-plus-googlebooks-from-dell-hp-lenovo-acer-asus",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBwlIhTWkyIFME0H85xfDKYHnBwjxWzAGsyFkhUjGL7BRbcfn5VDd1TY5Ayr4",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRej7f631AELP3iARmM7c_A-GCi50ckQf4sVEFNMJfS09i_w-s6BOaW4e9A1e4",
 "hir_kivonat": ""
 }
 ]
@@ -1108,27 +1175,27 @@
 ],
 "hirek": [
 {
+"hir_cim": "Az előző magyar kormány EU elleni kémkedését is felemlegette a demokrácia védelméről szóló EP-jelentés",
+"hir_forras": "Telex",
+"hir_url": "https://telex.hu/kulfold/2026/09/15/eu-europai-parlament-demokracia",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQh5lK8ifGXPP4CUHEQDPFp1YuHl5kFyp9uo-Hqfm6kkclqY_kkyqoj85V_nT0",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Brutális fordulat az időjárásban: viharos széllel és talajmenti faggyal érkezhet a hidegfront",
+"hir_forras": "Mindmegette.hu",
+"hir_url": "https://www.mindmegette.hu/erdekessegek/hidegfront-talajmenti-fagy",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQYv3ax9qa7xDmo6q2PmIdt3er9p1IriqRDZVpNe-nInb4igHu2golcyT95JRs",
+"hir_kivonat": ""
+},
+{
 "hir_cim": "A 30 fok után talajmenti fagy is jöhet",
 "hir_forras": "Időkép",
 "hir_url": "https://www.idokep.hu/hirek/a-30-fok-utan-talajmenti-fagy-is-johet",
 "hir_ido_utc": "",
 "hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTDc_3aSj7EKys8ZBm50KXgVtvZE3JgIwCt3lr1bCwTXt1Z4mExd9DMLXJC8l8",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Kiadták a riasztást: zivatarral, erős széllel érkezik meg ma az ősz",
-"hir_forras": "Pénzcentrum",
-"hir_url": "https://www.penzcentrum.hu/otthon/20260921/kiadtak-a-riasztast-zivatarral-eros-szellel-erkezik-meg-ma-az-osz-1205804",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRUvYt6pNi5Lt5_P0pCw8ph13inPn5H2d3clDTSofKKrSpdvTbunyAheTA1ERw",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Durva lehűlés tart Magyarország felé - Van egy rossz hír, aminek nagyon nem fogunk örülni",
-"hir_forras": "Portfolio.hu",
-"hir_url": "https://www.portfolio.hu/gazdasag/20260920/durva-lehules-tart-magyarorszag-fele-van-egy-rossz-hir-aminek-nagyon-nem-fogunk-orulni-863984",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRpkr4RecJMFJeGfBsfHicJwb8n_bDiwqaiqFrOIY4wJeIukBT5FFSvGZd1U2s",
 "hir_kivonat": ""
 }
 ]
@@ -1136,33 +1203,103 @@
 {
 "kifejezes": "hvg",
 "volumen": "200",
-"novekedes_pct": "100",
+"novekedes_pct": "75",
 "temak": [
-"Other"
+"Politics",
+"Law and Government"
 ],
 "hirek": [
 {
-"hir_cim": "Összeverekedett egy 82 éves és egy 76 éves a görög standon egy napozóágy miatt, az előbbi meghalt",
-"hir_forras": "444",
-"hir_url": "https://444.hu/2026/09/21/osszeverekedett-egy-82-eves-es-egy-76-eves-a-gorog-standon-egy-napozoagy-miatt-az-elobbi-meghalt",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTlXc1wxhTyktjCL56xEVu2VI-51n1wkQ385HEmgwoF-WK8KAfRoX1U6GRdffI",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Napágy miatt tört ki verekedés egy görög strandon, egy idős férfi meghalt",
-"hir_forras": "24.hu",
-"hir_url": "https://24.hu/kulfold/2026/09/21/gorogorszag-strand-verekedes-ferfi-meghalt/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTheH8YiNzjfSw18FctmvytX0T7M7kVHR9rtTrqP7ezQXWrUkIOcjLDFBT9h18",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Világ: Napozóágy miatt verekedett össze két idős férfi egy görögországi strandon, egyikük meghalt",
+"hir_cim": "Itthon: Török Gábor a Tisza-kétharmad által megválasztott vezetőkről: Világos a mintázat",
 "hir_forras": "| hvg.hu",
-"hir_url": "https://hvg.hu/vilag/20260921_verekedes-gorogorszag-strand-napozoagy-halaleset",
+"hir_url": "https://hvg.hu/itthon/20260921_torok-gabor-tisza-orszaggyules-ketharmad-szemelyzeti-politika",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS8KzL1tSFBD5fOk0nR7yXa6yd5tCKQ5AwGhDNzQYpVg8avHaC_KCXUrbuN1LM",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEiIlzzNTbpRwvHwIAlVd-LwnsySGMRGLnXllwa8prYFssTX6nSrw9fKFbIRE",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Török Gábor a Tisza-kétharmad által megválasztott vezetőkről: Világos a mintázat",
+"hir_forras": "Hirnavigator",
+"hir_url": "https://hirnavigator.hu/hir/10796807-torok-gabor-a-tisza-ketharmad-altal-megvalasztott-vezetokrol-vilagos-a-mintazat",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTEDOWtEjgUTkrS2Nk4haYi1aZ-CKJC2YVxPK2jIfsaOPaDH6nPOd-MzXnuGVI",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Vállalkozás: A horvátok is aggódnak Jellinek letartóztatása miatt",
+"hir_forras": "| hvg.hu",
+"hir_url": "https://hvg.hu/kkv/20260921_jellinek-daniel-letartoztatas-horvatorszag-visszhang",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSD_9tvQ9DZD0H3VrS6Qe-dRYyQdR6-aDy0kmLLKC_z6tOPf_MaEKQDYoQ5cso",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "hírek",
+"volumen": "200",
+"novekedes_pct": "100",
+"temak": [
+"Law and Government",
+"Politics"
+],
+"hirek": [
+{
+"hir_cim": "Meghökkentő terv bukott ki: Ukrajna egyesülni akart Európa egyik legerősebb országával",
+"hir_forras": "Portfolio.hu",
+"hir_url": "https://www.portfolio.hu/global/20260921/meghokkento-terv-bukott-ki-ukrajna-egyesulni-akart-europa-egyik-legerosebb-orszagaval-864280",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsYtuDrpBQ5IvoDk9T1AR_RX1YKuX8bQV4Bb0M2Fg770kSpEaofad6Glzagnc",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "A közvilágítást akarta meghekkelni, hogy feltöltse az alagútban rekedt villanyautót",
+"hir_forras": "Totalcar",
+"hir_url": "https://totalcar.hu/hirek/2026/09/21/lemerult-villanyauto-alagut-toltes-norvegia/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQakl1OWsnO9Vr2XJ4TWiiesxX5s6HSOd9-1tK4_SW_NsIJvlUm-ByrkeLjym4",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Autó: Lemerült a villanyautója egy alagútban, a mennyezeti világítást akarta megcsapolni a sofőr",
+"hir_forras": "| hvg.hu",
+"hir_url": "https://hvg.hu/cegauto/20260921_elektromos-auto-alagut-vilagitas-toltes-norvegia",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSp-UN-Z07J8obbM2dI5qWTTvO90FFBleW-Luv-VNBSyb5XR7TM468W1OZbf_A",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "teams",
+"volumen": "200",
+"novekedes_pct": "100",
+"temak": [
+"Sports"
+],
+"hirek": [
+{
+"hir_cim": "NFL Panic Meter: Ranking Every 0–2 Team Based on Desperation",
+"hir_forras": "Sports Illustrated",
+"hir_url": "https://www.si.com/nfl/nfl-panic-meter-ranking-every-winless-team-based-on-desperation-2026",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTlmtWB8Cip5aFj8FlN3RRK-DNlsMXK_W_3J7Wx_jw--EApRUUTqhzZrfulV0",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Is It Over For Chargers, Texans? Assessing Which 0-2 Teams Need To Panic The Most",
+"hir_forras": "FOX Sports",
+"hir_url": "https://www.foxsports.com/stories/nfl/over-chargers-texans-assessing-which-0-2-teams-need-panic-most",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXdJvGMa5aBOjb40cu7MlF8OFx4OHt5_hvLo9yhzSkqo9Q0SkkysVBGHyxc2M",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Is it too early to panic in the NFL? These teams don’t want to find out",
+"hir_forras": "NBC News",
+"hir_url": "https://www.nbcnews.com/sports/nfl/nfl-results-chargers-cowboys-rams-winless-rcna598255",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRZp1dFYCcYcF44koogTVthrsVsebC-Wu3BPH1BdJAeQtij79p948_Cx1zMEbM",
 "hir_kivonat": ""
 }
 ]
@@ -1172,99 +1309,31 @@
 "volumen": "200",
 "novekedes_pct": "75",
 "temak": [
-"Autos and Vehicles"
+"Other"
 ],
 "hirek": [
 {
-"hir_cim": "Hullámpalát szállítottak egy régi Suzukival Ercsiben, le is kapcsolták őket",
-"hir_forras": "Startlap",
-"hir_url": "https://www.startlap.hu/tech/hullampalat-szallitottak-egy-regi-suzukival-ercsiben-le-is-kapcsoltak-oket/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQkONeAcKzimIZG4a5pMuGxwuaQ1KWyY59LhCL_9TQR7xZtw0m5515xIWY0Sx8",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Hullámpalával tömték meg a lerúgott Suzukit",
-"hir_forras": "Hírstart",
-"hir_url": "https://www.hirstart.hu/hk/20260920_hullampalat_szallitottak_egy_regi_suzukival_ercsiben_le_is_kapcsoltak_oket",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSVTpLMBXH4tcqVRXgIaVziDlcVCgA3X-w4JYewk39tr3UoFepdyM62kpF00c",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Összeomlik a külföldiek paradicsoma: „Nehéz munkát találni, kevesebbet fizetnek”",
-"hir_forras": "Startlap",
-"hir_url": "https://www.startlap.hu/utazas/svajc-kulfoldi-munkavallalas-fizetes/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQFHc71WiLQfRwEh2VmSN6hH5n50J6bLuw1CPjCVMjStt0YFMi1vBT3J8ewSRs",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "real madrid",
-"volumen": "200",
-"novekedes_pct": "600",
-"temak": [
-"Sports"
-],
-"hirek": [
-{
-"hir_cim": "Un pésimo arbitraje decide el derbi",
-"hir_forras": "Real Madrid CF | Web Oficial",
-"hir_url": "https://www.realmadrid.com/es-ES/noticias/futbol/primer-equipo/cronicas/cronica-atletico-real-madrid-20-09-2026",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTXEoLCqqAG1oB6M2hYn-9_DKP_1gLJSgUtfCY0DCzhx21vxeJ2tfK-nUx9FEk",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Rajada histórica de Mourinho: “No quiero pensar que esto ha sido algo preparado”",
-"hir_forras": "Diario AS",
-"hir_url": "https://as.com/futbol/primera/una-rueda-de-prensa-de-mourinho-para-la-historia-no-quiero-pensar-que-todo-estaba-preparado-f202609-n/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMvrYf4qXl3tG1T4M4mPBeDBVcW4dmhbov87O-O3h8nApX181x2IinPTcHno4",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Vuelve el Mourinho de siempre: rajada contra los árbitros, lista de agravios, papeles para la prensa...",
-"hir_forras": "MARCA",
-"hir_url": "https://www.marca.com/futbol/real-madrid/2026/09/20/vuelve-mourinho-siempre-rajada-arbitros-lista-agravios-papeles-prensa.html",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSaBCG0mfoyuBnxQNJmFhfqkxwZfvBEaQ7esSENVmE8fUEhioY6OM5IsK7vyDs",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "nb1",
-"volumen": "200",
-"novekedes_pct": "100",
-"temak": [
-"Sports"
-],
-"hirek": [
-{
-"hir_cim": "Annyira örült a gólnak a Fradi-játékos, hogy megütötte a bírót",
+"hir_cim": "Hétfőn két, Mészáros Lőrinchez köthető luxusgép is Bordeaux-ba repült",
 "hir_forras": "24.hu",
-"hir_url": "https://24.hu/sport/foci/2026/09/21/magyar-foci-nyiregyhaza-ftc-golorom-megutotte-a-jatekvezetot/",
+"hir_url": "https://24.hu/belfold/2026/09/21/meszaros-lorinc-ket-luxusgep-bordeaux/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQC4mJ_XqHKihyf5N0q_N9wklPOlF4876Ld-pd8cabo9Xmm0CFzykPPzuJQ1o4",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSKtDl5K9dvbTYP8MUp0--lUdYQUGbXisPBth6ulO1GaW2jupkGDJNxRol9O1I",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Borbély Balázs: Nem kell bosszankodnunk az eddig történtek miatt",
-"hir_forras": "Nemzeti Sport Online",
-"hir_url": "https://www.nemzetisport.hu/labdarugo-nb-i/2026/09/borbely-balazs-nem-kell-bosszankodnunk-az-eddig-tortentek-miatt",
+"hir_cim": "Mészáros Lőrinc két kedvenc magángépe félóra különbséggel ugyanott landolt ma délelőtt",
+"hir_forras": "Startlap",
+"hir_url": "https://www.startlap.hu/hir-szem/meszaros-lorinc-ket-kedvenc-magangepe-felora-kulonbseggel-ugyanott-landolt-ma-delelott/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRPHW0MY9ThpvHLw57LPOb0onQW59aijQeGd34F01KiYdZoc15ycLNshR9Hk_Y",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ64gwi-NsdybxLjvANUtzVHcrQQARZOCij6z_XjsoaJmjAN46C7LHNuTlkZqQ",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Egy pontot szereztünk Nyíregyházán",
-"hir_forras": "Fradi.hu",
-"hir_url": "https://www.fradi.hu/labdarugas/elso-csapat/hirek/nyiregyhaza--fradi-gomez-gol-dontetlen",
+"hir_cim": "Hétfőn két, Mészáros Lőrinchez köthető luxusgép is Bordeaux-ba repült",
+"hir_forras": "Hirnavigator",
+"hir_url": "https://hirnavigator.hu/hir/10796302-hetfon-ket-meszaros-lorinchez-kotheto-luxusgep-is-bordeaux-ba-repult",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNffGRGYVHt_YToOnvvaOOs_U3HGwU3zPJqN6TMuiA-eadLyJ6TKuK0r4AsSU",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcT_XZkEW3AGu5wQxBAprMGh4vPj-DZy-earbJ_1xjtUZorkfSbfYOmEh-mEDKc",
 "hir_kivonat": ""
 }
 ]
@@ -1278,191 +1347,111 @@
 ],
 "hirek": [
 {
-"hir_cim": "THE JENNIFER HUDSON SHOW to Welcome Julia Stiles &amp; Ernest Harden Jr.",
-"hir_forras": "BroadwayWorld",
-"hir_url": "https://www.broadwayworld.com/bwwtv/article/THE-JENNIFER-HUDSON-SHOW-to-Welcome-Julia-Stiles-Ernest-Harden-Jr-20260920",
+"hir_cim": "Jennifer Hudson is &apos;putting herself first&apos; as son prepares to leave home",
+"hir_forras": "Yahoo Lifestyle Canada",
+"hir_url": "https://ca.style.yahoo.com/jennifer-hudson-putting-herself-first-130000675.html",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ8QJJ-LfJE61WeDDd0hXkzoJ_gqa623IYiptTB5Psp6cmh2WrZsRKAnAxQ_CI",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcS6MyMX-4c66UxARIHyEc1kXZanQhHnyCvcpW0Z_wo8HeOH0UGuLct_miJA0-A",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Tyler Perry and Jennifer Hudson Break Into Impromptu Duet on JHUD SHOW",
-"hir_forras": "BroadwayWorld",
-"hir_url": "https://www.broadwayworld.com/bwwtv/article/Tyler-Perry-and-Jennifer-Hudson-Break-Into-Impromptu-Duet-on-JHUD-SHOW-20260914",
+"hir_cim": "‘It’s Time for My Voice’: Jennifer Hudson on Reviving ‘Dreamgirls,’ Booking Tom Cruise for Her Talk Show and Writing Original Music Again",
+"hir_forras": "Variety",
+"hir_url": "https://variety.com/2026/music/features/jennifer-hudson-dreamgirls-tom-cruise-interview-new-music-1236860402/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFlVWf2JdcQy2dHwaoILbXstM8_hYpAdP4sxmvgbQh4vFOJyvIyPWk2H_HnO8",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS80yNST4QNkhsZNN35fxZs066V2ve9wQwAjlbTR-ZAEeIYiumwDA8eBvZER5k",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Tyler Perry’s ‘Zesty’ Spirit Tunnel Dance Has Social Media Seeing Madea | WATCH",
-"hir_forras": "EURweb",
-"hir_url": "https://eurweb.com/tyler-perry-dance/",
+"hir_cim": "Jennifer Hudson&apos;s new music vow",
+"hir_forras": "Yardbarker",
+"hir_url": "https://www.yardbarker.com/entertainment/articles/jennifer_hudsons_new_music_vow/s1_17464_44322234",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSufwgjYEKcrwlde1M7OfhztLgllVLVAhfvGqf-kNvvw6plpKqt_xq_lc2A7E0",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR5-CQI4nlcHpuDCVslVHN4dh6iIJV21ZVKyEAH0d4pO-vvZ4u0OPgvFs4fqHA",
 "hir_kivonat": ""
 }
 ]
 },
 {
-"kifejezes": "premier league",
-"volumen": "200",
-"novekedes_pct": "100",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
 "kifejezes": "concerts",
 "volumen": "100",
-"novekedes_pct": "100",
+"novekedes_pct": "200",
 "temak": [
 "Entertainment"
 ],
 "hirek": [
 {
-"hir_cim": "A Teary Ed Sheeran Apologizes to His Fans as Tour Resumes With No Openers",
-"hir_forras": "WSJ",
-"hir_url": "https://www.wsj.com/arts-culture/music/defiant-ed-sheeran-fans-show-up-for-the-musicnot-controversyas-tour-resumes-with-no-billed-openers-77e869fd",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRKVH6wV57Rs0al6LwVT3cd0jJVL9kEabODPR4YH90zsq_qiQtk4xixMnDzYkY",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Piers Morgan criticises Ed Sheeran’s tearful concert apology: ‘He needs better advisors’",
-"hir_forras": "The Independent",
-"hir_url": "https://www.the-independent.com/arts-entertainment/music/news/piers-morgan-ed-sheeran-tour-palestine-b3053314.html",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRVp3u2ngNS7dc3kIaZ0vPbyhPOiYGyWcPjHe3Hr8fUjM8oAe51dwKZ39c9dnc",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Ed Sheeran Addresses War in Gaza After Macklemore Is Dropped From Tour",
+"hir_cim": "Opinion | When Political Reality Collides With Ed Sheeran",
 "hir_forras": "The New York Times",
-"hir_url": "https://www.nytimes.com/2026/09/19/arts/music/ed-sheeran-macklemore-gaza-tour.html",
+"hir_url": "https://www.nytimes.com/2026/09/21/opinion/ed-sheeran-macklemore-politics.html",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR6fr9w9jt6-69OfBCxaKK_ZbU82t6J-yqjH2d3G_y84eKJn3EFaum9vV6FQMM",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQc8aEkIxXlXegb_5Cgn_WqYKF-hctIBJfuUpCEJY-5nTAvRXQ8CQB_FC0NUF8",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "U.S. Sen. John Fetterman blasts Macklemore&apos;s pro-Palestinian remarks",
+"hir_forras": "USA Today",
+"hir_url": "https://www.usatoday.com/videos/news/state/pennsylvania/pittsburgh/2026/09/21/john-fetterman-macklemore-ed-sheeran-palestine-hamas/91827370007/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSg7E0aEXIFQA4VZxZxrmpAiloxIWQOiA7k61jRgy0oA5s3qzttiVwgZJk2O5s",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "AOC joins Macklemore frenzy in bizarre fundraising memo targeting pro-Trump billionaire",
+"hir_forras": "Fox News",
+"hir_url": "https://www.foxnews.com/politics/aoc-joins-macklemore-frenzy-bizarre-fundraising-memo-targeting-pro-trump-billionaire",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR2SR-93UerTNqroH8ZX3F0NNqNdx_hWaE3Esx2Zi4CJIUah96izZ8iyLdSYqU",
 "hir_kivonat": ""
 }
 ]
-},
-{
-"kifejezes": "kiskunfélegyháza baleset",
-"volumen": "100",
-"novekedes_pct": "400",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "x faktor",
-"volumen": "100",
-"novekedes_pct": "300",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "tv műsor",
-"volumen": "100",
-"novekedes_pct": "100",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "eredmenyek",
-"volumen": "100",
-"novekedes_pct": "100",
-"temak": [
-"Politics"
-],
-"hirek": []
-},
-{
-"kifejezes": "ai",
-"volumen": "100",
-"novekedes_pct": "75",
-"temak": [
-"Politics",
-"Law and Government"
-],
-"hirek": []
 }
 ],
 "reggel_este_diff": {
-"uj_estere": [],
-"eltunt_estere": [],
-"megmaradt": [
+"uj_estere": [
+"cindy crawford",
+"classroom",
+"gemini",
+"hírek",
+"teams"
+],
+"eltunt_estere": [
 "ai",
-"concerts",
 "eredmenyek",
-"hvg",
-"időkép",
-"jennifer hudson",
 "kiskunfélegyháza baleset",
 "nb1",
 "premier league",
 "presley gerber",
 "real madrid",
-"startlap",
 "sztárban sztár 2026",
 "tv műsor",
 "x faktor"
+],
+"megmaradt": [
+"concerts",
+"hvg",
+"időkép",
+"jennifer hudson",
+"startlap"
 ]
 },
 "reggel": {
-"szoveg": "Ma reggel a magyar Google-keresésben egyértelműen egy szomorú hír uralta a képet: a legnagyobb érdeklődés Presley Gerber neve köré rendeződött, akiről több nagy nemzetközi lap – köztük a CNN, a The Guardian és a People – is arról számolt be, hogy Cindy Crawford és Rande Gerber fia 27 évesen elhunyt. Ez a téma emelkedett ki a legmagasabb keresési volumennel és a legmeredekebb növekedéssel, vagyis a nap indulásakor sokan erre kerestek rá.\n\nErősen pörgött a hazai szórakoztatás is: a Sztárban Sztár 2026 körül élénk érdeklődés alakult ki, feltehetően az évadindító adás után, amelyről több lap – a 24.hu, a Femina és az Index – is beszámolt, kiemelve, hogy az első adásban rögtön kiestek versenyzők. Szintén sokakat foglalkoztatott az időjárás: az „időkép” keresés mögött a lehűlésről, zivatarról és riasztásról szóló előrejelzések állnak, amelyeket az Időkép, a Pénzcentrum és a Portfolio is megírt. Ehhez kapcsolódóan feltűnt a szórakoztató műsorok iránti általánosabb érdeklődés is, hiszen az X Faktor és a tévéműsor keresés egyaránt a felkapottak közé került.\n\nA sportban a Real Madrid neve pörgött, feltehetően a madridi rangadó és Mourinho sajtótájékoztatója nyomán, amelyről a spanyol lapok részletesen írtak, valamint a hazai NB I, ahol egy Nyíregyháza–Ferencváros mérkőzés kapcsán az kapott figyelmet, hogy egy gólöröm közben incidens történt a játékvezetővel. A Premier League is a felkapottak között maradt. Több hírportál neve – a hvg és a startlap – is kereséssé vált; előbbihez egy görögországi strandon, napozóágy miatt kirobbant, tragédiával végződő verekedés híre kötődik, utóbbihoz pedig egy Suzukis szállítási eset és egy külföldi munkavállalásról szóló írás. A nemzetközi szórakoztatás felől Jennifer Hudson neve is feljött, valamint egy „concerts” keresés, amely mögött Ed Sheeran turnéjáról szóló beszámolók állnak. Bekerült még a felkapottak közé egy kiskunfélegyházi baleset és egy „eredmények”, illetve „ai” kifejezés is, ezekhez azonban most nem társult közvetlen hír, így ezekről csak annyit lehet biztosan mondani, hogy sokan kerestek rájuk.\n\nÖsszességében a reggeli kép vegyes: a nemzetközi és hazai szórakoztató témák, egy megrázó celebhír, az időjárás és a sport dominál, míg a komolyabb gazdasági és közéleti kifejezések iránti keresés ezen a reggelen inkább visszafogott volt."
+"szoveg": "Reggel kilenc körül a képet a nemzetközi szórakoztató témák és a hazai közélet keveredése jellemezte. A legnagyobb figyelmet a presley gerber kapta, hozzá több külföldi lap is beszámolt Cindy Crawford fiának 27 évesen bekövetkezett haláláról. Élénk volt a sztárban sztár 2026 iránti érdeklődés is, amelyről hazai lapok írták meg, hogy elindult az idei évad, és rögtön kiesett két szereplő.\n\nReggel a hazai időjárás is foglalkoztatta az olvasókat: az időkép körül a közelgő hidegfrontról, viharos szélről és talajmenti fagyról szóló előrejelzések keringtek. A sporttémák közül a real madrid a városi rangadó vitatott játékvezetése kapcsán pörgött, az nb1 pedig egy hazai mérkőzés bírót ért incidense miatt. Megjelent még a startlap, a hvg, a jennifer hudson, a premier league és a concerts is."
 },
 "este": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "Estére a lista élére a cindy crawford került, kiemelkedő, ötezres nagyságrendű keresési volumennel, továbbra is a fiához köthető gyászhír nyomán. Mögötte a classroom állt jelentős érdeklődéssel, amelynek hátterében az olasz iskolai arcfátyoltilalomról és a külföldi diákok létszámkorlátozásáról szóló, Meloni nevéhez fűződő nemzetközi hírek álltak.\n\nEste erős maradt a gemini a Google új, mesterséges intelligenciát is kínáló laptopjait bemutató hírekkel, valamint az időkép a hidegfront kapcsán. A hazai közéletet a hvg és a hírek témái képviselték, előbbi a Tisza-kétharmadról és egy letartóztatásról, utóbbi vegyes bel- és külföldi hírekkel. A sport oldalán a teams az NFL nyeretlen csapatairól szóló írásokkal, a szórakoztatásnál pedig a jennifer hudson és a concerts szerepelt."
 },
 "teljes_nap": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A nap íve azt mutatja, hogy a Cindy Crawford családjához köthető gyászhír kitartott egész nap, csak az alakja változott: reggel még a fiú neve, presley gerber alatt pörgött, estére viszont az édesanyja, cindy crawford neve alá csúszott át, immár jóval nagyobb volumennel. Ez ugyanannak a történetnek a fokozódó figyelmét jelzi.\n\nEstére több új téma is felfutott: a classroom, a gemini, a hírek és a teams csak az esti pillanatképben jelent meg. Ezzel szemben a reggeli sportos és hazai témák jó része – az nb1, a real madrid, a premier league, a sztárban sztár 2026, az x faktor és a kiskunfélegyháza baleset – estére elhalványult. Egész nap kitartott ugyanakkor az időkép, a startlap, a hvg, a jennifer hudson és a concerts iránti érdeklődés."
 },
 "het": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A hét egészét nézve egyetlen kifejezés, a startlap tért vissza több napon keresztül, ez a leginkább állandó szereplő. A többi téma jellemzően csak egy-egy napot töltött a felkapottak között, ami erősen változó, hírfüggő heti képet rajzol ki.\n\nA visszatérők között sok a sport – különféle labdarúgó-mérkőzések, a Bundesliga, a Premier League, hazai és nemzetközi klubok –, emellett jócskán akadnak hazai közéleti és politikai nevek, valamint a szórakoztatás és a televíziós műsorok szereplői is. Mindez arra utal, hogy a heti figyelmet elsősorban a napi hírek és események mozgatták, nem pedig egy-egy tartósan visszatérő téma."
 },
 "het_valos": {
 "napok": 7,
 "visszateroek": [
 {
-"kifejezes": "ai",
-"napok_szama": 2
-},
-{
-"kifejezes": "eredmenyek",
-"napok_szama": 2
-},
-{
-"kifejezes": "kiskunfélegyháza baleset",
-"napok_szama": 2
-},
-{
-"kifejezes": "nb1",
-"napok_szama": 2
-},
-{
-"kifejezes": "premier league",
-"napok_szama": 2
-},
-{
-"kifejezes": "real madrid",
-"napok_szama": 2
-},
-{
 "kifejezes": "startlap",
-"napok_szama": 2
-},
-{
-"kifejezes": "sztárban sztár 2026",
-"napok_szama": 2
-},
-{
-"kifejezes": "x faktor",
 "napok_szama": 2
 },
 {
@@ -1475,6 +1464,10 @@
 },
 {
 "kifejezes": "24.hu",
+"napok_szama": 1
+},
+{
+"kifejezes": "ai",
 "napok_szama": 1
 },
 {
@@ -1534,6 +1527,14 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "cindy crawford",
+"napok_szama": 1
+},
+{
+"kifejezes": "classroom",
+"napok_szama": 1
+},
+{
 "kifejezes": "concerts",
 "napok_szama": 1
 },
@@ -1570,6 +1571,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "eredmenyek",
+"napok_szama": 1
+},
+{
 "kifejezes": "fekete-győr andrás",
 "napok_szama": 1
 },
@@ -1587,6 +1592,10 @@
 },
 {
 "kifejezes": "fásy ádám",
+"napok_szama": 1
+},
+{
+"kifejezes": "gemini",
 "napok_szama": 1
 },
 {
@@ -1623,6 +1632,10 @@
 },
 {
 "kifejezes": "házasság első látásra",
+"napok_szama": 1
+},
+{
+"kifejezes": "hírek",
 "napok_szama": 1
 },
 {
@@ -1663,6 +1676,10 @@
 },
 {
 "kifejezes": "járai máté",
+"napok_szama": 1
+},
+{
+"kifejezes": "kiskunfélegyháza baleset",
 "napok_szama": 1
 },
 {
@@ -1726,6 +1743,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "nb1",
+"napok_szama": 1
+},
+{
 "kifejezes": "nemzeti vagyonvisszaszerzési és vagyonvédelmi hivatal",
 "napok_szama": 1
 },
@@ -1782,7 +1803,7 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "presley gerber",
+"kifejezes": "premier league",
 "napok_szama": 1
 },
 {
@@ -1791,6 +1812,10 @@
 },
 {
 "kifejezes": "razzia",
+"napok_szama": 1
+},
+{
+"kifejezes": "real madrid",
 "napok_szama": 1
 },
 {
@@ -1818,11 +1843,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "sztárban sztár 2026",
+"napok_szama": 1
+},
+{
 "kifejezes": "szálloda",
 "napok_szama": 1
 },
 {
 "kifejezes": "takács péter",
+"napok_szama": 1
+},
+{
+"kifejezes": "teams",
 "napok_szama": 1
 },
 {
@@ -1854,10 +1887,6 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "tv műsor",
-"napok_szama": 1
-},
-{
 "kifejezes": "tűzifa",
 "napok_szama": 1
 },
@@ -1879,6 +1908,10 @@
 },
 {
 "kifejezes": "witzmann mihály",
+"napok_szama": 1
+},
+{
+"kifejezes": "x faktor",
 "napok_szama": 1
 },
 {
@@ -1907,5 +1940,138 @@
 }
 ]
 }
+},
+"youtube": {
+"szamok": [
+{
+"szo": "szorongás",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.088,
+"ervenyes": true,
+"mai_ertek": 54,
+"csucs": 100,
+"atlag": 30.4
+},
+{
+"szo": "edzés",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.023,
+"ervenyes": true,
+"mai_ertek": 54,
+"csucs": 100,
+"atlag": 66.4
+},
+{
+"szo": "meditáció",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.052,
+"ervenyes": true,
+"mai_ertek": 80,
+"csucs": 100,
+"atlag": 81.8
+},
+{
+"szo": "befektetés",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.056,
+"ervenyes": true,
+"mai_ertek": 38,
+"csucs": 100,
+"atlag": 33.5
+},
+{
+"szo": "bitcoin",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.086,
+"ervenyes": true,
+"mai_ertek": 46,
+"csucs": 100,
+"atlag": 54.1
+},
+{
+"szo": "hírek",
+"domen": "kozelet",
+"irany": "stagnal",
+"meredekseg": -0.012,
+"ervenyes": true,
+"mai_ertek": 47,
+"csucs": 100,
+"atlag": 56.6
+},
+{
+"szo": "magyar péter",
+"domen": "kozelet",
+"irany": "novekszik",
+"meredekseg": 0.022,
+"ervenyes": true,
+"mai_ertek": 10,
+"csucs": 100,
+"atlag": 15.0
+},
+{
+"szo": "recept",
+"domen": "haztartas",
+"irany": "csokken",
+"meredekseg": -0.052,
+"ervenyes": true,
+"mai_ertek": 40,
+"csucs": 100,
+"atlag": 46.8
+},
+{
+"szo": "mese",
+"domen": "csalad",
+"irany": "csokken",
+"meredekseg": -0.023,
+"ervenyes": true,
+"mai_ertek": 84,
+"csucs": 100,
+"atlag": 89.5
+},
+{
+"szo": "nyaralás",
+"domen": "szabadido",
+"irany": "novekszik",
+"meredekseg": 0.082,
+"ervenyes": true,
+"mai_ertek": 22,
+"csucs": 100,
+"atlag": 47.9
+},
+{
+"szo": "tanulás",
+"domen": "tanulas",
+"irany": "csokken",
+"meredekseg": -0.062,
+"ervenyes": true,
+"mai_ertek": 78,
+"csucs": 100,
+"atlag": 74.6
+},
+{
+"szo": "klíma",
+"domen": "otthon",
+"irany": "novekszik",
+"meredekseg": 0.066,
+"ervenyes": true,
+"mai_ertek": 8,
+"csucs": 100,
+"atlag": 16.8
+}
+],
+"napi": {
+"szoveg": "A magyarországi YouTube-on a videós figyelem ma több téma esetében a szokásosnál csendesebb, de akadnak kiemelkedő szavak. A mese 84-es és a meditáció 80-as mai értéke magas, mindkettő a saját szokásos, amúgy is élénk szintjén mozog. A tanulás 78-cal szintén erős, kissé a saját átlaga fölött. Az edzés és a szorongás egyaránt 54-en áll; a szorongás ezzel a saját szokásos átlaga (nagyjából 30) fölött van, vagyis a megszokottnál élénkebb videós érdeklődést mutat.\n\nA pénzügyi témák visszafogottabbak: a bitcoin 46-tal és a befektetés 38-cal a szokásos sávjukban mozog. A recept 40-es értéke a saját átlaga közelében van. A nyaralás 22-vel jóval a szokásos szintje alatt marad, a klíma 8-cal és a magyar péter 10-zel pedig szintén alacsonyan, bár mindkettő enyhén emelkedő irányt jelez. Fontos, hogy ezek a szavak külön-külön, saját skálán mozognak, ezért nem mérhetők össze egymással."
+},
+"teljes_kep": {
+"szoveg": "A hét egészét tekintve a videós érdeklődés lassan lefelé csordogált a legtöbb témában. A legnagyobb visszaesést a nyaralás mutatta, ezt követte a szorongás, a tanulás és a befektetés enyhébb csökkenése. Az edzés, a bitcoin, a klíma, a meditáció és a hírek is kissé lejjebb került, a recept viszont gyakorlatilag változatlan maradt.\n\nA kevés emelkedő közül a magyar péter és a mese tűnik ki, mindkettő enyhén feljebb került a hét során, bár szerény mértékben. Összességében a képet inkább finom hanyatlás jellemzi, látványos kiugrás nélkül, ami egy nyugodtabb videós hetet sejtet."
+}
+},
+"predikcio": {
+"szoveg": "A rövid távú, egynapos kitekintés szinte teljesen nyugodt képet fest: a huszonnyolc követett szóból huszonhét stagnálást mutat, és mindössze egyetlen, a korrupció áll enyhén emelkedő pályán. Fontos azonban, hogy ennek az emelkedésnek a megbízhatósága nagyon alacsony, széles bizonytalansági sávval, így ezt inkább óvatos jelzésként, mintsem biztos előrejelzésként érdemes olvasni.\n\nA többi szó – köztük a kormány, az iskola, a rezsi, a munkanélküliség, a nyugdíj, a benzin, a hitel és a megélhetéshez kapcsolódó kifejezések – várhatóan a jelenlegi szintjén marad, számottevő elmozdulás nélkül. Mindez a közelmúlt adatainak matematikai folytatása, nem eseményjóslat, ezért a valóság ettől eltérhet, különösen ha egy-egy témát friss hír lök meg."
 }
 }
