@@ -29,6 +29,18 @@ def test_generalo_lepes_anthropic_kulccsal():
     assert "havi.py" in szoveg
 
 
+def test_guard_a_pip_install_elott_es_pip_install_gate_elt():
+    steps = _wf()["jobs"]["havi"]["steps"]
+    def idx(pred):
+        return next(i for i, s in enumerate(steps) if pred(s))
+    guard_i = idx(lambda s: s.get("id") == "guard")
+    pip_i = idx(lambda s: "pip install -r requirements.txt" in (s.get("run") or ""))
+    # az őr a pip install ELŐTT fut (csak stdlib kell hozzá) → nem-utolsó-napon NINCS telepítés
+    assert guard_i < pip_i
+    # a pip install CSAK generáláskor fut (az őr honap-outputja nem üres)
+    assert steps[pip_i].get("if") == "steps.guard.outputs.honap != ''"
+
+
 def test_commit_csak_havi_nlp_es_rebase():
     wf = _wf()
     szoveg = yaml.safe_dump(wf["jobs"]["havi"]["steps"], allow_unicode=True)

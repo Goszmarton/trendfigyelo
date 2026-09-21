@@ -34,9 +34,9 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Függőségek telepítése
-        run: pip install -r requirements.txt
-
+      # Az őr a pip install ELŐTT fut: CSAK stdlib-et használ (havi_orzo/seged), nincs deps-igény.
+      # Így a napi gyűjtésenkénti (nem-utolsó-napi) futások nem telepítenek feleslegesen — a
+      # költséges pip install csak akkor fut, ha az őr tényleg generálást kér (honap != '').
       - name: "Utolsó-nap + idempotencia-őr (a generálandó hónap, vagy üres = skip)"
         id: guard
         shell: bash
@@ -52,6 +52,10 @@ jobs:
           HONAP="$(python -m trendfigyelo.havi_orzo docs/data)"
           echo "Őr szerint generálandó hónap: '$HONAP' (üres = ma nincs teendő)"
           echo "honap=$HONAP" >> "$GITHUB_OUTPUT"
+
+      - name: Függőségek telepítése (csak generáláskor)
+        if: steps.guard.outputs.honap != ''
+        run: pip install -r requirements.txt
 
       - name: Havi elemzés generálása
         if: steps.guard.outputs.honap != ''
