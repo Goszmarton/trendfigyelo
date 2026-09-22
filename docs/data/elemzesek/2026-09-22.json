@@ -1,42 +1,94 @@
 {
-"frissitve": "2026-09-22T07:06:11+00:00",
+"frissitve": "2026-09-22T19:07:27+00:00",
 "modell": "claude-opus-4-8",
 "nap": "2026-09-22",
-"mode": "reggel",
+"mode": "este",
 "valtozas": {
 "diff": {
-"irany_valtok": [],
-"mozgok": [
+"irany_valtok": [
 {
 "szo": "akciós újság",
-"valtozas": 0.0
+"elozo": "novekszik",
+"mai": "stagnal"
 },
 {
 "szo": "albérlet",
-"valtozas": 0.0
+"elozo": "stagnal",
+"mai": "csokken"
 },
 {
-"szo": "benzin",
-"valtozas": 0.0
+"szo": "eladó lakás",
+"elozo": "stagnal",
+"mai": "csokken"
 },
 {
-"szo": "betegség",
-"valtozas": 0.0
+"szo": "hitel",
+"elozo": "csokken",
+"mai": "stagnal"
 },
 {
-"szo": "csőd",
-"valtozas": 0.0
+"szo": "korrupció",
+"elozo": "stagnal",
+"mai": "csokken"
+},
+{
+"szo": "kölcsön",
+"elozo": "stagnal",
+"mai": "csokken"
+},
+{
+"szo": "nyaralás",
+"elozo": "stagnal",
+"mai": "csokken"
+},
+{
+"szo": "segély",
+"elozo": "stagnal",
+"mai": "csokken"
+},
+{
+"szo": "sürgősségi",
+"elozo": "csokken",
+"mai": "stagnal"
+}
+],
+"mozgok": [
+{
+"szo": "hitel",
+"valtozas": 5.161
+},
+{
+"szo": "háziorvos",
+"valtozas": 3.858
+},
+{
+"szo": "albérlet",
+"valtozas": -3.685
+},
+{
+"szo": "fizetés",
+"valtozas": 3.03
+},
+{
+"szo": "akciós újság",
+"valtozas": -2.91
 }
 ],
 "felkapott_uj": [
-"cindy crawford lánya",
-"fishing",
-"idokep",
-"online radio",
-"schools",
-"sportfogadás",
-"swimming",
-"weather"
+"alkotmánybíróság",
+"bayer zsolt",
+"euró",
+"főügyész",
+"gázolaj",
+"hayden panettiere",
+"hőkupola",
+"jelölt",
+"kapitány istván",
+"kocsis máté",
+"matolcsy györgy",
+"mentelmi jog",
+"panyi miklós",
+"zala"
 ],
 "felkapott_eltunt": [
 "cindy crawford",
@@ -50,50 +102,50 @@
 ],
 "van_elozo": true
 },
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A követett szavak közül ma több is irányt váltott. Az albérlet és az eladó lakás a korábbi kiegyensúlyozott állapotból csökkenő pályára fordult, és hasonlóan halványodik a korrupció, a kölcsön, a segély és a nyaralás iránti érdeklődés is. Ezzel szemben a hitel a korábbi lassú fogyás után inkább egy szintre állt be, az akciós újság pedig a növekedésből egyenletesbe váltott, és a sürgősségi is inkább stagnálóvá szelídült.\n\nA napon belüli mozgások közül a hitel emelkedett a legérzékelhetőbben, a háziorvos és a fizetés is felfelé mozdult, míg az albérlet és az akciós újság a lefelé húzó oldalon volt a legmarkánsabb. Ezek napi ingadozások, önmagukban nem árulnak el tartós fordulatot.\n\nA napi felkapott témák között több új név is megjelent az előző naphoz képest, köztük gazdasági és közéleti kulcsszavak, miközben a korábban pörgő szavak egy része – például néhány hírportál-név és szórakoztató téma – kiesett a figyelem középpontjából."
 },
 "kulcsszavak": {
 "szamok": [
 {
 "szo": "akciós újság",
-"irany": "novekszik",
-"meredekseg": 2.378,
+"irany": "stagnal",
+"meredekseg": -0.532,
 "ervenyes": true,
-"mai_ertek": 42,
-"csucs": 74.0,
-"atlag": 48.82
+"mai_ertek": 24,
+"csucs": 68.0,
+"atlag": 52.88
 },
 {
 "szo": "albérlet",
-"irany": "stagnal",
-"meredekseg": -0.785,
+"irany": "csokken",
+"meredekseg": -4.47,
 "ervenyes": true,
-"mai_ertek": 0,
-"csucs": 100.0,
-"atlag": 50.67
+"mai_ertek": 51,
+"csucs": 93.0,
+"atlag": 63.67
 },
 {
 "szo": "benzin",
 "irany": "csokken",
-"meredekseg": -6.003,
+"meredekseg": -6.876,
 "ervenyes": true,
-"mai_ertek": 9,
-"csucs": 13.0,
-"atlag": 10.36
+"mai_ertek": 41,
+"csucs": 24.0,
+"atlag": 15.0
 },
 {
 "szo": "betegség",
 "irany": "csokken",
-"meredekseg": -5.187,
+"meredekseg": -2.804,
 "ervenyes": true,
-"mai_ertek": 0,
-"csucs": 94.0,
-"atlag": 94.0
+"mai_ertek": 23,
+"csucs": 33.0,
+"atlag": 32.5
 },
 {
 "szo": "csőd",
 "irany": "stagnal",
-"meredekseg": -0.192,
+"meredekseg": 0.223,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -101,17 +153,17 @@
 },
 {
 "szo": "eladó lakás",
-"irany": "stagnal",
-"meredekseg": -0.061,
+"irany": "csokken",
+"meredekseg": -1.904,
 "ervenyes": true,
-"mai_ertek": 0,
-"csucs": 100.0,
-"atlag": 70.5
+"mai_ertek": 43,
+"csucs": 69.0,
+"atlag": 53.55
 },
 {
 "szo": "fizetés",
 "irany": "csokken",
-"meredekseg": -7.046,
+"meredekseg": -4.016,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -119,17 +171,17 @@
 },
 {
 "szo": "hitel",
-"irany": "csokken",
-"meredekseg": -5.733,
+"irany": "stagnal",
+"meredekseg": -0.572,
 "ervenyes": true,
-"mai_ertek": 0,
-"csucs": 76.0,
-"atlag": 74.5
+"mai_ertek": 7,
+"csucs": 100.0,
+"atlag": 21.6
 },
 {
 "szo": "háziorvos",
 "irany": "csokken",
-"meredekseg": -7.383,
+"meredekseg": -3.525,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -138,7 +190,7 @@
 {
 "szo": "infláció",
 "irany": "csokken",
-"meredekseg": -1.732,
+"meredekseg": -3.403,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -147,34 +199,34 @@
 {
 "szo": "iskola",
 "irany": "csokken",
-"meredekseg": -6.057,
+"meredekseg": -5.009,
 "ervenyes": true,
-"mai_ertek": 57,
+"mai_ertek": 61,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kormány",
 "irany": "csokken",
-"meredekseg": -5.03,
-"ervenyes": true,
-"mai_ertek": 65,
-"csucs": null,
-"atlag": null
-},
-{
-"szo": "kormányablak",
-"irany": "csokken",
-"meredekseg": -5.468,
+"meredekseg": -5.067,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
 "atlag": null
 },
 {
+"szo": "kormányablak",
+"irany": "csokken",
+"meredekseg": -3.475,
+"ervenyes": true,
+"mai_ertek": 20,
+"csucs": 100.0,
+"atlag": 68.82
+},
+{
 "szo": "korrupció",
-"irany": "stagnal",
-"meredekseg": 0.02,
+"irany": "csokken",
+"meredekseg": -1.027,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -183,16 +235,16 @@
 {
 "szo": "kórház",
 "irany": "csokken",
-"meredekseg": -3.039,
+"meredekseg": -1.405,
 "ervenyes": true,
 "mai_ertek": 29,
-"csucs": 42.0,
-"atlag": 30.15
+"csucs": 84.0,
+"atlag": 53.5
 },
 {
 "szo": "kölcsön",
-"irany": "stagnal",
-"meredekseg": -0.559,
+"irany": "csokken",
+"meredekseg": -1.705,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -201,7 +253,7 @@
 {
 "szo": "munkanélküliség",
 "irany": "stagnal",
-"meredekseg": 0.192,
+"meredekseg": 0.475,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -210,7 +262,7 @@
 {
 "szo": "műtét",
 "irany": "csokken",
-"meredekseg": -9.041,
+"meredekseg": -9.132,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -219,36 +271,36 @@
 {
 "szo": "napelem",
 "irany": "csokken",
-"meredekseg": -3.852,
+"meredekseg": -2.542,
 "ervenyes": true,
-"mai_ertek": 0,
+"mai_ertek": 49,
 "csucs": 100.0,
-"atlag": 99.0
+"atlag": 84.0
 },
 {
 "szo": "nyaralás",
-"irany": "stagnal",
-"meredekseg": -0.985,
+"irany": "csokken",
+"meredekseg": -3.287,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": 100.0,
-"atlag": 99.5
+"atlag": 100.0
 },
 {
 "szo": "nyugdíj",
 "irany": "csokken",
-"meredekseg": -3.544,
+"meredekseg": -5.157,
 "ervenyes": true,
-"mai_ertek": 7,
-"csucs": null,
-"atlag": null
+"mai_ertek": 35,
+"csucs": 21.0,
+"atlag": 11.31
 },
 {
 "szo": "pedagógus",
 "irany": "csokken",
-"meredekseg": -1.708,
+"meredekseg": -2.066,
 "ervenyes": true,
-"mai_ertek": 0,
+"mai_ertek": 26,
 "csucs": null,
 "atlag": null
 },
@@ -263,8 +315,8 @@
 },
 {
 "szo": "segély",
-"irany": "stagnal",
-"meredekseg": -0.048,
+"irany": "csokken",
+"meredekseg": -1.277,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -272,8 +324,8 @@
 },
 {
 "szo": "sürgősségi",
-"irany": "csokken",
-"meredekseg": -2.296,
+"irany": "stagnal",
+"meredekseg": -0.59,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -285,13 +337,13 @@
 "meredekseg": null,
 "ervenyes": false,
 "mai_ertek": null,
-"csucs": 100.0,
-"atlag": 65.67
+"csucs": null,
+"atlag": null
 },
 {
 "szo": "várólista",
 "irany": "stagnal",
-"meredekseg": 0.148,
+"meredekseg": 0.244,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -300,351 +352,288 @@
 {
 "szo": "állás",
 "irany": "csokken",
-"meredekseg": -4.201,
+"meredekseg": -4.296,
 "ervenyes": true,
-"mai_ertek": 52,
-"csucs": 100.0,
-"atlag": 37.71
+"mai_ertek": 41,
+"csucs": 70.0,
+"atlag": 53.47
 }
 ],
 "napi": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A ma követett szavak túlnyomó része a saját megszokott szintje körül vagy az alatt mozog, és a mért irányok szinte kivétel nélkül lefelé vagy oldalirányba mutatnak. A benzin mai értéke a szokásos átlaga fölött van, ami a többihez képest szembetűnő, miközben a napi mérés inkább lassulást jelez nála. Az iskola viszonylag magasan, a szokásosnál élénkebben áll, és az eladó lakás is a közepes tartományban marad.\n\nAz albérlet a saját átlaga alatt húzódik, az akciós újság pedig kifejezetten alacsonyan, jóval a szokásos szintje alatt. A nyugdíj mai értéke a saját megszokott sávjához mérve élénknek tűnik, míg a hitel nagyon visszafogott, a régebbi kiugró csúcsához képest ma alig keresik. A kórház, a betegség és a kormányablak mérsékelt, átlag körüli vagy az alatti szinten mozog.\n\nSzámos szó ma a nulla közelében áll, köztük a fizetés, a háziorvos, az infláció, a kormány, a korrupció, a kölcsön, a munkanélküliség, a műtét, a rezsi, a segély, a sürgősségi és a várólista – ezek most nem hoznak érdemi keresési aktivitást. A csőd ugyancsak lent van, a tüntetés pedig ezúttal nem adott értékelhető adatot. Az állás és a pedagógus a közepes tartományban maradt."
 }
 },
 "felkapott": {
 "top": [
 {
-"kifejezes": "gemini",
-"volumen": "500",
-"novekedes_pct": "75",
+"kifejezes": "hőkupola",
+"volumen": "5000",
+"novekedes_pct": "1000",
 "temak": [
-"Technology"
+"Other"
 ],
-"hirek": [
-{
-"hir_cim": "Googlebook: The laptop your Android phone has been waiting for",
-"hir_forras": "blog.google",
-"hir_url": "https://blog.google/products-and-platforms/devices/googlebook/pre-order-googlebook/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjloqEFVTdL_bQjH_yew5n3mwvfkhrMqbZG5DADnDHVkThYeq8y04ZoDDvz04",
-"hir_kivonat": ""
+"hirek": []
 },
 {
-"hir_cim": "Google opens pre-orders for $899 Googlebook laptops built around Gemini AI",
-"hir_forras": "Reuters",
-"hir_url": "https://www.reuters.com/business/retail-consumer/google-opens-pre-orders-899-googlebook-laptops-built-around-gemini-ai-2026-09-21/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzJPmo8h9HGqXPR-4Amcb3Ek0xX7QoYMoADRjR1GqOcK3XxikxhHAtYYpltDE",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Google Rolls Out $899-Plus ‘Googlebook’ AI Laptops With Hardware Partners",
-"hir_forras": "Bloomberg.com",
-"hir_url": "https://www.bloomberg.com/news/articles/2026-09-21/google-rolls-out-899-plus-googlebooks-from-dell-hp-lenovo-acer-asus",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRej7f631AELP3iARmM7c_A-GCi50ckQf4sVEFNMJfS09i_w-s6BOaW4e9A1e4",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "sportfogadás",
-"volumen": "200",
-"novekedes_pct": "200",
+"kifejezes": "mentelmi jog",
+"volumen": "2000",
+"novekedes_pct": "1000",
 "temak": [
-"Sports",
-"Games"
+"Law and Government"
 ],
-"hirek": [
-{
-"hir_cim": "A Tipplap Tippmix szelvénye – 2026.09.22",
-"hir_forras": "Tipplap.hu",
-"hir_url": "https://www.tipplap.hu/foci/a-tipplap-tippmix-szelvenye-20260922",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8hW1Km_fj1QN_ezLvx4HVvgY7F_akv4IehnulJTkAWPrYgZ5X3q3ViHCVgLU",
-"hir_kivonat": ""
+"hirek": []
 },
 {
-"hir_cim": "A Tipplap Tippmix szelvénye – 2026.09.21",
-"hir_forras": "Tipplap.hu",
-"hir_url": "https://www.tipplap.hu/foci/a-tipplap-tippmix-szelvenye-20260921",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8hW1Km_fj1QN_ezLvx4HVvgY7F_akv4IehnulJTkAWPrYgZ5X3q3ViHCVgLU",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "A Tipplap Tippmix szelvénye – 2026.09.20",
-"hir_forras": "Tipplap.hu",
-"hir_url": "https://www.tipplap.hu/foci/a-tipplap-tippmix-szelvenye-20260920",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8hW1Km_fj1QN_ezLvx4HVvgY7F_akv4IehnulJTkAWPrYgZ5X3q3ViHCVgLU",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "teams",
-"volumen": "200",
-"novekedes_pct": "100",
-"temak": [
-"Sports"
-],
-"hirek": [
-{
-"hir_cim": "2026 Power Rankings: What we learned about the Top 25 in Week 3",
-"hir_forras": "ESPN",
-"hir_url": "https://www.espn.com/college-football/story/_/id/49973917/2026-college-football-power-rankings-top-25-week-3",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQoJkdHcDYIUxXvFEiMmvhWj97TpTsngKA66FjdjDZJ8NMK5MCdb7gdeKWBb9E",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "AP Top 25: Ole Miss moves to No. 4 after beating LSU",
-"hir_forras": "Yahoo Sports",
-"hir_url": "https://sports.yahoo.com/college-football/breaking-news/article/ap-top-25-ole-miss-moves-to-no-4-after-beating-lsu-180410991.html",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTt0XLLzTLd_816v4AZEYLCnkDahMjUfX2NFSpsCaQ31LQz-kyQdic2MFz8KJA",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "College football rankings after Week 3: Updated US LBM Coaches Poll, AP Top 25",
-"hir_forras": "USA Today",
-"hir_url": "https://www.usatoday.com/story/sports/ncaaf/2026/09/20/college-rankings-football-top-25-ap-coaches-poll-week-3/91860306007/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR0rbPLmkQ2Wn7ROpsQ4OIRVIGb_AmnAkzGkawqYm5hJnDDXFF3LHzpG5L1HF4",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "online radio",
-"volumen": "100",
-"novekedes_pct": "50",
-"temak": [
-"Entertainment"
-],
-"hirek": [
-{
-"hir_cim": "Former KMEN radio DJ helps grow online tribute station",
-"hir_forras": "Los Angeles Daily News",
-"hir_url": "https://www.dailynews.com/2026/09/21/former-kmen-radio-dj-helps-grow-online-tribute-station/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR3zsN9dnOVm_OypV0aJaA-TBdI28NvBUE0CTsn8KHohyrpshqyxl5lGWIY4ec",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "The Base Movement launches online radio, website and operations manual",
-"hir_forras": "Modern Ghana",
-"hir_url": "https://www.modernghana.com/news/1529554/the-base-movement-launches-online-radio-website.html",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRob4OkdLh0RTLBCp-QL_VJUtIp3HtsUvKJn2hOsZjmK3OkruGFw7eBWbOtLw4",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "schools",
-"volumen": "100",
-"novekedes_pct": "300",
+"kifejezes": "kapitány istván",
+"volumen": "2000",
+"novekedes_pct": "1000",
 "temak": [
 "Other"
 ],
 "hirek": [
 {
-"hir_cim": "In Fighting for Every Black Child, Did I Betray My Own?",
-"hir_forras": "The New York Times",
-"hir_url": "https://www.nytimes.com/2026/09/20/magazine/ny-public-schools-black-students-segregation.html",
+"hir_cim": "Gazdaság - Bejelentést tett Kapitány István embere, kezdődik a pénzcsinálás Magyarországon",
+"hir_forras": "Index.hu",
+"hir_url": "https://index.hu/gazdasag/2026/09/22/porcher-aron-kormany-bejelentes-gki-makrogazdasag-inflacio/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQbI6ERowMZYJ9F6HftHcfk_CFx373Z4KO_lYa-_SWwQktvIqqwAQlFSXtPors",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLpmy4xGPDiyOFdCNSGJU6eva7BxcoMjtKGltKXKjp1nmtYUvmKMqLUO09vI0",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "The lessons of a miseducation",
-"hir_forras": "Matt Pearce | Substack",
-"hir_url": "https://mattdpearce.substack.com/p/the-value-of-a-proper-miseducation",
+"hir_cim": "GKI: Olyan a magyar gazdaság, mint egy autó, amelyből fogy az üzemanyag, friss jogsis a sofőr, és morognak az utasok",
+"hir_forras": "| hvg.hu",
+"hir_url": "https://hvg.hu/gazdasag/20260922_gki-novekedes-gazdasag-konferencia",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRE0T3ftFjx2l3L-bV0OivGfTYVfZVmXvF8ktfpxcwAlqZO0R1dHvOQfYuupyU",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSxGwQO8Rote8YnMFpQLulMaQY7IoRyRIkblQRu1FaN3lp1JFYbsKis_rV8o94",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Coleman Hughes: Lessons from Nikole Hannah-Jones’ School Experiment",
-"hir_forras": "The Free Press",
-"hir_url": "https://www.thefp.com/p/coleman-hughes-lessons-nikole-hannah-jones-school-experiment",
+"hir_cim": "Elárulták a kormány öt célját, így alakítaná át a gazdaságot a Tisza",
+"hir_forras": "Economx",
+"hir_url": "https://www.economx.hu/magyar-gazdasag/2026/09/22/gki-konferencia-kormany-porcher-aron-hanny-nimer/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcS4W0rZmQEjos7TD7_i405hzFY459KyphDRAiun8FiixtLOA21rtQaj6jLyvUc",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTNkRkuYDGNN_2aGDoeq78DlTofJ68yxyOK4H57-PxYmY4DqAQ7ZvRHqg2be54",
 "hir_kivonat": ""
 }
 ]
 },
 {
-"kifejezes": "fishing",
-"volumen": "100",
-"novekedes_pct": "200",
+"kifejezes": "euró",
+"volumen": "2000",
+"novekedes_pct": "1000",
 "temak": [
-"Hobbies and Leisure"
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "alkotmánybíróság",
+"volumen": "1000",
+"novekedes_pct": "300",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "gázolaj",
+"volumen": "1000",
+"novekedes_pct": "500",
+"temak": [
+"Business and Finance"
 ],
 "hirek": [
 {
-"hir_cim": "Eglin AFB recovers drone pulled from Gulf waters off Pensacola Beach during charter trip",
-"hir_forras": "WEAR-TV",
-"hir_url": "https://weartv.com/news/local/pensacola-fishing-charter-finds-large-drone-floating-in-gulf",
+"hir_cim": "Dízelár-sokk Magyarországon: küszöbön a töréspont, sokkal fájdalmasabb lesz a következő ütés",
+"hir_forras": "Portfolio.hu",
+"hir_url": "https://www.portfolio.hu/gazdasag/20260921/dizelar-sokk-magyarorszagon-kuszobon-a-torespont-sokkal-fajdalmasabb-lesz-a-kovetkezo-utes-863372",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRq658ZzJzHWxGB_dFfddkaQZ_tqIXQkCN3IPNsK7qUQb84Uk-R93vXDB8gM18",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTOrIVbPBH6DbCJLrOjQGKtFdpKrIxp_5B6DBGoMm10C274cM3Wb3tQ-7GKyjM",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Florida fishing charter finds large drone floating in Gulf of Mexico",
-"hir_forras": "WXLV",
-"hir_url": "https://abc45.com/news/nation-world/florida-fishing-charter-finds-large-drone-floating-in-gulf-of-mexico",
+"hir_cim": "Gazdaság - Baljós elemzés futott be, a következő dízelsokk a tankolóknál csattanhat",
+"hir_forras": "Index.hu",
+"hir_url": "https://index.hu/gazdasag/2026/09/21/tankolas-dizel-sokk-uzemanyag-portfolio/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRLNCz8YpW7siYds73Z2WHkLP4xb6wC722wuTFV0fAes5yzq35T5_GmCX9gdlI",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQtirBZbET7RM9U3-zKf9MJ3WFI7WIUaP2JnIrYzVivqKdrccYllJ0s3irtifk",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Florida fishing charter makes an unexpected catch: A US military drone",
-"hir_forras": "CNN",
-"hir_url": "https://www.cnn.com/2026/09/21/us/florida-fishing-charter-drone-found-hnk-ml",
+"hir_cim": "Pattanásig feszült a helyzet, elszabadulhat a gázolaj ára Magyarországon",
+"hir_forras": "Vezess",
+"hir_url": "https://www.vezess.hu/hirek/2026/09/22/pattanasig-feszult-a-helyzet-elszabadulhat-a-gazolaj-ara-magyarorszagon/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTTjkCrJv60tOrLlAOhsqDs2UjeVruwyriC7NEv5eERZHwn2_-aFAciJX7lAsM",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsicLQf0xIhvFgttUitbm6uv6bcuVBRjCYUiD779wz8ZoN7LTu8KyFDbajsJM",
 "hir_kivonat": ""
 }
 ]
 },
 {
-"kifejezes": "swimming",
-"volumen": "100",
-"novekedes_pct": "200",
+"kifejezes": "bayer zsolt",
+"volumen": "1000",
+"novekedes_pct": "400",
 "temak": [
-"Sports"
+"Other"
 ],
-"hirek": [
-{
-"hir_cim": "Yu Zidi: China&apos;s rising star, 13, wins second swimming gold at Asian Games",
-"hir_forras": "BBC",
-"hir_url": "https://www.bbc.com/sport/swimming/articles/c6dj4pn1rrppo",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJBg1PBpWpv8a8Oykp0HrT7mlWyWeMu1JDqDnb-KqTilBUyub__gfs8WUfMv0",
-"hir_kivonat": ""
+"hirek": []
 },
 {
-"hir_cim": "Young athletes are future: Olympian",
-"hir_forras": "Taipei Times",
-"hir_url": "https://www.taipeitimes.com/News/sport/archives/2026/09/22/2003864672",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQlveBVFI_oSY_Of09t6vco4Zm84jDf0mK_-2wLJXNQAyJrfVr7Ew4Sbl0QZME",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Asian Games Aichi-Nagoya 2026: 13-year-old Yu Zidi closes in on Summer McIntosh&apos;s world record",
-"hir_forras": "Olympics",
-"hir_url": "https://www.olympics.com/en/news/asian-games-aichi-nagoya-2026-13-year-old-yu-zidi-closes-in-on-summer-mcintosh-s-world-record",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSY7axNeGSk0bEjKEUn-mW1zsAJeJAMTycSsWhcBFtt6Hysk_96zVk0ODBodM",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "weather",
-"volumen": "100",
-"novekedes_pct": "200",
+"kifejezes": "főügyész",
+"volumen": "1000",
+"novekedes_pct": "500",
 "temak": [
-"Climate"
+"Law and Government"
 ],
-"hirek": [
-{
-"hir_cim": "Return of the Heat Dome: A Late-Season Heatwave Expands Across Europe into Early October",
-"hir_forras": "Severe Weather Europe",
-"hir_url": "https://www.severe-weather.eu/global-weather/return-of-heat-dome-heatwave-europe-late-september-october-2026-mk/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSQilCYR0p8rPzUPqzmY78-nS9i93w5YYhUc2fDStAoNWeAuVGgZJYKOjBa47Q",
-"hir_kivonat": ""
+"hirek": []
 },
 {
-"hir_cim": "Licensable picture: Lisbon Temperatures Soar Up To 12°C Above Average Ahead Of Autumn Equinox",
-"hir_forras": "Reuters Connect",
-"hir_url": "https://www.reutersconnect.com/item/lisbon-temperatures-soar-up-to-12c-above-average-ahead-of-autumn-equinox/dGFnOnJldXRlcnMuY29tLDIwMjY6bmV3c21sX01UMU5VUlBITzAwME5NTVNLSA",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTpMHT2KTgjiPMlJXJS8lMQx6fYD4q7-xBPvNVTBimvfV-kNVI1x6lwwYuVQgI",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Intense heat returns to Portugal",
-"hir_forras": "The Portugal News",
-"hir_url": "https://www.theportugalnews.com/news/2026-09-19/intense-heat-returns-to-portugal/1087988",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcT4Uc9uXrhmtLHIwJwEPk6QpGH3mLK-AKYIkHWwUoMmYQm-_SCw_nitmT1NRts",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "idokep",
-"volumen": "100",
-"novekedes_pct": "75",
+"kifejezes": "gemini",
+"volumen": "1000",
+"novekedes_pct": "50",
 "temak": [
-"Climate"
+"Technology"
 ],
-"hirek": [
-{
-"hir_cim": "Nem várt fordulat: a vasárnapi nyárból egyenesen a téli fagyba zuhantunk, itt már takarítani kell a havat",
-"hir_forras": "Pénzcentrum",
-"hir_url": "https://www.penzcentrum.hu/utazas/20260922/nem-vart-fordulat-a-vasarnapi-nyarbol-egyenesen-a-teli-fagyba-zuhantunk-itt-mar-takaritani-kell-a-havat-1205882",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcS-IsdpjSNJM3jaEaiybGsun1n_jiHkEc4cn5OU7j5iHF4yxe1zo7m3kW4sz9Q",
-"hir_kivonat": ""
+"hirek": []
 },
 {
-"hir_cim": "Megérkezett a hó a Magas-Tátrába",
-"hir_forras": "Időkép",
-"hir_url": "https://www.idokep.hu/hirek/megerkezett-a-ho-a-magas-tatraba",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSMONo6Kmqi22scUx5gB-dYkpzWQDDRg2em4bw4XcLTlxJO6wvNeSokbiDrBwE",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Már az ősz elején megérkezett az első hó",
-"hir_forras": "Új Szó",
-"hir_url": "https://ujszo.com/regio/mar-az-osz-elejen-megerkezett-az-elso-ho",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRhDOVwK-WWnebNSnCWl5aIdVf8e2xPx7N0WfeBYbbnY0AiBslm5i1BGwKTfIw",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "cindy crawford lánya",
-"volumen": "100",
-"novekedes_pct": "100",
+"kifejezes": "hayden panettiere",
+"volumen": "500",
+"novekedes_pct": "700",
 "temak": [
 "Entertainment"
 ],
 "hirek": [
 {
-"hir_cim": "FOMO - Kiderült, mi okozhatta Cindy Crawford fiának a halálát",
-"hir_forras": "Index.hu",
-"hir_url": "https://index.hu/fomo/2026/09/21/cindy-crawford-fia-presley-gerber-gyasz-halal-tuladagolas/",
+"hir_cim": "Hayden Panettiere’s Cause of Death Revealed as Toxic Effects of Fentanyl and More; Death Ruled an Accident",
+"hir_forras": "Variety",
+"hir_url": "https://variety.com/2026/film/news/hayden-panettiere-cause-of-death-revealed-fentanyl-1236836083/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjOnwyWzVLvQs_BsV_b47vzJ1QHspUa2vdQgPabubXnLGXFMAv2TzEHWf-PNE",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSP53bxdjRlrL-ePG09tdanCdrpwXEHklN-83k2MZmr94S30YJTDvARZrn7ynI",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Kult: Drogtúladagolásban halhatott meg Cindy Crawford fia",
-"hir_forras": "| hvg.hu",
-"hir_url": "https://hvg.hu/kultura/20260921_presley-gerber-cindy-crawford-fia-halalanak-oka-drogtuladagolas",
+"hir_cim": "Autopsy shows Hayden Panettiere died from overdose of fentanyl and other drugs",
+"hir_forras": "BBC",
+"hir_url": "https://www.bbc.com/news/articles/crn45d8dd2wdo",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQntdNSN4qSjIaNx1CqwEQvZqSOrDou-XAVbV4NNX7kGXHLcP9N5lga7I4xO4c",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRfCTMv_DOqnrXyW8xMz9eJ4AqBvBquQ0hoXZtzQVZpPJd4MaV6tBoXadJToHo",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Presley Gerber halála újabb tragikus veszteség: 7 híresség, aki az elmúlt két hónapban hunyt el",
-"hir_forras": "Velvet.hu",
-"hir_url": "https://velvet.hu/celeb/2026/09/21/presley-gerber-halala-tragikus-veszteseg-elhunyt-vilagsztarok/",
+"hir_cim": "Inside Hayden Panettiere’s moving memorial in Malibu attended by Connie Britton and more stars",
+"hir_forras": "Page Six",
+"hir_url": "https://pagesix.com/2026/09/20/celebrity-news/inside-hayden-panettieres-moving-malibu-memorial-attended-by-connie-britton-more-stars/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTivJmq1QXR-B1h2LYCCi2N0oqOpJN-O77dr2XtZPyLxb1IKNkrTz3vJs4W4So",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ11RKFpy9T3oXHVmVddiGbWqjWgGsyygGMllbWEpdQCebhexEQJxfKAqd0ErU",
 "hir_kivonat": ""
 }
 ]
+},
+{
+"kifejezes": "matolcsy györgy",
+"volumen": "500",
+"novekedes_pct": "800",
+"temak": [
+"Law and Government"
+],
+"hirek": [
+{
+"hir_cim": "Gazdaság - Gyanúsítottként hallgatták ki Matolcsy Györgyöt",
+"hir_forras": "Index.hu",
+"hir_url": "https://index.hu/gazdasag/2026/09/22/matolcsy-gyorgy-mnb-erste-bank-zsarolas-simor-andras/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSWNDUY2nUzFTh4Rg6iX-0yT2D-YnrXaH_q3PoN1yB_uxtYcppo62nws1293KU",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "„Felbujtó szerepet játszhatott” – Simor András Matolcsy György meggyanúsításáról",
+"hir_forras": "24.hu",
+"hir_url": "https://24.hu/fn/gazdasag/2026/09/22/simor-andras-jegybank-erste-matolcsy-gyorgy-breaking/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRAh8JJa7TH3I46zKhDLMPHwAKuuWa3A2yxPnvZNSE5hFLGkoaGlzRrKXtIyUo",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Gazdaság: Házkutatást tartottak a nyomozók az MNB-alapítványok ügyében Matolcsyék köreinél",
+"hir_forras": "| hvg.hu",
+"hir_url": "https://hvg.hu/gazdasag/20260922_hazkutatas-nyomozas-mnb-alapitvanyok-matolcsyek",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQjB5c30DWGyF-QDauzB5-dxt_YwI8O86MXxKtRyjHBWZgHsqlKfAokq2kS0s4",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "jelölt",
+"volumen": "500",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": [
+{
+"hir_cim": "A működésképtelenség szélére sodródhat az ügyészség",
+"hir_forras": "24.hu",
+"hir_url": "https://24.hu/belfold/2026/09/22/legfobb-ugyesz-jeloles-barandy-hack/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGNaTXf3y-j_KaBIecbnhy268KglrcCxcpRSUwVknyoQVq9sGY0nYrhIIdtwM",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Tisza-kormány: élesedik a konfliktus Baka András és a Tisza-frakció között Szathmáry Zoltán legfőbb ügyészi jelölése miatt",
+"hir_forras": "Portfolio.hu",
+"hir_url": "https://www.portfolio.hu/gazdasag/20260922/tisza-kormany-elesedik-a-konfliktus-baka-andras-es-a-tisza-frakcio-kozott-szathmary-zoltan-legfobb-ugyeszi-jelolese-miatt-864246",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXwfA6IdqY2GX-63U7p0YvQR5AO7CsNnXyH8Rt9N9uWg8LktpU8CtgYhWVL4o",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "A KNYF megerősítette: a legfőbbügyész-jelölt testvére is az aranykonvojügy egyik gyanúsítottja",
+"hir_forras": "| hvg.hu",
+"hir_url": "https://hvg.hu/itthon/20260922_legfobbugyesz-jelolt-testvere-aranykonvoj-ugy-gyanusitott",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcROEk7n9hPZPcpTXBH_uu5pFBwEKEQZ2VOEm_SC4UOgQ0L4W8yjSmyS5szY4Vc",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "zala",
+"volumen": "500",
+"novekedes_pct": "300",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "kocsis máté",
+"volumen": "500",
+"novekedes_pct": "300",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "panyi miklós",
+"volumen": "500",
+"novekedes_pct": "400",
+"temak": [
+"Law and Government",
+"Politics"
+],
+"hirek": []
+},
+{
+"kifejezes": "teams",
+"volumen": "500",
+"novekedes_pct": "75",
+"temak": [
+"Sports"
+],
+"hirek": []
 }
 ],
 "reggel_top": [
@@ -984,372 +973,329 @@
 ],
 "este_top": [
 {
-"kifejezes": "gemini",
-"volumen": "500",
-"novekedes_pct": "75",
+"kifejezes": "hőkupola",
+"volumen": "5000",
+"novekedes_pct": "1000",
 "temak": [
-"Technology"
+"Other"
 ],
-"hirek": [
-{
-"hir_cim": "Googlebook: The laptop your Android phone has been waiting for",
-"hir_forras": "blog.google",
-"hir_url": "https://blog.google/products-and-platforms/devices/googlebook/pre-order-googlebook/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjloqEFVTdL_bQjH_yew5n3mwvfkhrMqbZG5DADnDHVkThYeq8y04ZoDDvz04",
-"hir_kivonat": ""
+"hirek": []
 },
 {
-"hir_cim": "Google opens pre-orders for $899 Googlebook laptops built around Gemini AI",
-"hir_forras": "Reuters",
-"hir_url": "https://www.reuters.com/business/retail-consumer/google-opens-pre-orders-899-googlebook-laptops-built-around-gemini-ai-2026-09-21/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzJPmo8h9HGqXPR-4Amcb3Ek0xX7QoYMoADRjR1GqOcK3XxikxhHAtYYpltDE",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Google Rolls Out $899-Plus ‘Googlebook’ AI Laptops With Hardware Partners",
-"hir_forras": "Bloomberg.com",
-"hir_url": "https://www.bloomberg.com/news/articles/2026-09-21/google-rolls-out-899-plus-googlebooks-from-dell-hp-lenovo-acer-asus",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRej7f631AELP3iARmM7c_A-GCi50ckQf4sVEFNMJfS09i_w-s6BOaW4e9A1e4",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "sportfogadás",
-"volumen": "200",
-"novekedes_pct": "200",
+"kifejezes": "mentelmi jog",
+"volumen": "2000",
+"novekedes_pct": "1000",
 "temak": [
-"Sports",
-"Games"
+"Law and Government"
 ],
-"hirek": [
-{
-"hir_cim": "A Tipplap Tippmix szelvénye – 2026.09.22",
-"hir_forras": "Tipplap.hu",
-"hir_url": "https://www.tipplap.hu/foci/a-tipplap-tippmix-szelvenye-20260922",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8hW1Km_fj1QN_ezLvx4HVvgY7F_akv4IehnulJTkAWPrYgZ5X3q3ViHCVgLU",
-"hir_kivonat": ""
+"hirek": []
 },
 {
-"hir_cim": "A Tipplap Tippmix szelvénye – 2026.09.21",
-"hir_forras": "Tipplap.hu",
-"hir_url": "https://www.tipplap.hu/foci/a-tipplap-tippmix-szelvenye-20260921",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8hW1Km_fj1QN_ezLvx4HVvgY7F_akv4IehnulJTkAWPrYgZ5X3q3ViHCVgLU",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "A Tipplap Tippmix szelvénye – 2026.09.20",
-"hir_forras": "Tipplap.hu",
-"hir_url": "https://www.tipplap.hu/foci/a-tipplap-tippmix-szelvenye-20260920",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8hW1Km_fj1QN_ezLvx4HVvgY7F_akv4IehnulJTkAWPrYgZ5X3q3ViHCVgLU",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "teams",
-"volumen": "200",
-"novekedes_pct": "100",
-"temak": [
-"Sports"
-],
-"hirek": [
-{
-"hir_cim": "2026 Power Rankings: What we learned about the Top 25 in Week 3",
-"hir_forras": "ESPN",
-"hir_url": "https://www.espn.com/college-football/story/_/id/49973917/2026-college-football-power-rankings-top-25-week-3",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQoJkdHcDYIUxXvFEiMmvhWj97TpTsngKA66FjdjDZJ8NMK5MCdb7gdeKWBb9E",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "AP Top 25: Ole Miss moves to No. 4 after beating LSU",
-"hir_forras": "Yahoo Sports",
-"hir_url": "https://sports.yahoo.com/college-football/breaking-news/article/ap-top-25-ole-miss-moves-to-no-4-after-beating-lsu-180410991.html",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTt0XLLzTLd_816v4AZEYLCnkDahMjUfX2NFSpsCaQ31LQz-kyQdic2MFz8KJA",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "College football rankings after Week 3: Updated US LBM Coaches Poll, AP Top 25",
-"hir_forras": "USA Today",
-"hir_url": "https://www.usatoday.com/story/sports/ncaaf/2026/09/20/college-rankings-football-top-25-ap-coaches-poll-week-3/91860306007/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR0rbPLmkQ2Wn7ROpsQ4OIRVIGb_AmnAkzGkawqYm5hJnDDXFF3LHzpG5L1HF4",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "online radio",
-"volumen": "100",
-"novekedes_pct": "50",
-"temak": [
-"Entertainment"
-],
-"hirek": [
-{
-"hir_cim": "Former KMEN radio DJ helps grow online tribute station",
-"hir_forras": "Los Angeles Daily News",
-"hir_url": "https://www.dailynews.com/2026/09/21/former-kmen-radio-dj-helps-grow-online-tribute-station/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR3zsN9dnOVm_OypV0aJaA-TBdI28NvBUE0CTsn8KHohyrpshqyxl5lGWIY4ec",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "The Base Movement launches online radio, website and operations manual",
-"hir_forras": "Modern Ghana",
-"hir_url": "https://www.modernghana.com/news/1529554/the-base-movement-launches-online-radio-website.html",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRob4OkdLh0RTLBCp-QL_VJUtIp3HtsUvKJn2hOsZjmK3OkruGFw7eBWbOtLw4",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "schools",
-"volumen": "100",
-"novekedes_pct": "300",
+"kifejezes": "kapitány istván",
+"volumen": "2000",
+"novekedes_pct": "1000",
 "temak": [
 "Other"
 ],
 "hirek": [
 {
-"hir_cim": "In Fighting for Every Black Child, Did I Betray My Own?",
-"hir_forras": "The New York Times",
-"hir_url": "https://www.nytimes.com/2026/09/20/magazine/ny-public-schools-black-students-segregation.html",
+"hir_cim": "Gazdaság - Bejelentést tett Kapitány István embere, kezdődik a pénzcsinálás Magyarországon",
+"hir_forras": "Index.hu",
+"hir_url": "https://index.hu/gazdasag/2026/09/22/porcher-aron-kormany-bejelentes-gki-makrogazdasag-inflacio/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQbI6ERowMZYJ9F6HftHcfk_CFx373Z4KO_lYa-_SWwQktvIqqwAQlFSXtPors",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLpmy4xGPDiyOFdCNSGJU6eva7BxcoMjtKGltKXKjp1nmtYUvmKMqLUO09vI0",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "The lessons of a miseducation",
-"hir_forras": "Matt Pearce | Substack",
-"hir_url": "https://mattdpearce.substack.com/p/the-value-of-a-proper-miseducation",
+"hir_cim": "GKI: Olyan a magyar gazdaság, mint egy autó, amelyből fogy az üzemanyag, friss jogsis a sofőr, és morognak az utasok",
+"hir_forras": "| hvg.hu",
+"hir_url": "https://hvg.hu/gazdasag/20260922_gki-novekedes-gazdasag-konferencia",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRE0T3ftFjx2l3L-bV0OivGfTYVfZVmXvF8ktfpxcwAlqZO0R1dHvOQfYuupyU",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSxGwQO8Rote8YnMFpQLulMaQY7IoRyRIkblQRu1FaN3lp1JFYbsKis_rV8o94",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Coleman Hughes: Lessons from Nikole Hannah-Jones’ School Experiment",
-"hir_forras": "The Free Press",
-"hir_url": "https://www.thefp.com/p/coleman-hughes-lessons-nikole-hannah-jones-school-experiment",
+"hir_cim": "Elárulták a kormány öt célját, így alakítaná át a gazdaságot a Tisza",
+"hir_forras": "Economx",
+"hir_url": "https://www.economx.hu/magyar-gazdasag/2026/09/22/gki-konferencia-kormany-porcher-aron-hanny-nimer/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcS4W0rZmQEjos7TD7_i405hzFY459KyphDRAiun8FiixtLOA21rtQaj6jLyvUc",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTNkRkuYDGNN_2aGDoeq78DlTofJ68yxyOK4H57-PxYmY4DqAQ7ZvRHqg2be54",
 "hir_kivonat": ""
 }
 ]
 },
 {
-"kifejezes": "fishing",
-"volumen": "100",
-"novekedes_pct": "200",
+"kifejezes": "euró",
+"volumen": "2000",
+"novekedes_pct": "1000",
 "temak": [
-"Hobbies and Leisure"
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "alkotmánybíróság",
+"volumen": "1000",
+"novekedes_pct": "300",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "gázolaj",
+"volumen": "1000",
+"novekedes_pct": "500",
+"temak": [
+"Business and Finance"
 ],
 "hirek": [
 {
-"hir_cim": "Eglin AFB recovers drone pulled from Gulf waters off Pensacola Beach during charter trip",
-"hir_forras": "WEAR-TV",
-"hir_url": "https://weartv.com/news/local/pensacola-fishing-charter-finds-large-drone-floating-in-gulf",
+"hir_cim": "Dízelár-sokk Magyarországon: küszöbön a töréspont, sokkal fájdalmasabb lesz a következő ütés",
+"hir_forras": "Portfolio.hu",
+"hir_url": "https://www.portfolio.hu/gazdasag/20260921/dizelar-sokk-magyarorszagon-kuszobon-a-torespont-sokkal-fajdalmasabb-lesz-a-kovetkezo-utes-863372",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRq658ZzJzHWxGB_dFfddkaQZ_tqIXQkCN3IPNsK7qUQb84Uk-R93vXDB8gM18",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTOrIVbPBH6DbCJLrOjQGKtFdpKrIxp_5B6DBGoMm10C274cM3Wb3tQ-7GKyjM",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Florida fishing charter finds large drone floating in Gulf of Mexico",
-"hir_forras": "WXLV",
-"hir_url": "https://abc45.com/news/nation-world/florida-fishing-charter-finds-large-drone-floating-in-gulf-of-mexico",
+"hir_cim": "Gazdaság - Baljós elemzés futott be, a következő dízelsokk a tankolóknál csattanhat",
+"hir_forras": "Index.hu",
+"hir_url": "https://index.hu/gazdasag/2026/09/21/tankolas-dizel-sokk-uzemanyag-portfolio/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRLNCz8YpW7siYds73Z2WHkLP4xb6wC722wuTFV0fAes5yzq35T5_GmCX9gdlI",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQtirBZbET7RM9U3-zKf9MJ3WFI7WIUaP2JnIrYzVivqKdrccYllJ0s3irtifk",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Florida fishing charter makes an unexpected catch: A US military drone",
-"hir_forras": "CNN",
-"hir_url": "https://www.cnn.com/2026/09/21/us/florida-fishing-charter-drone-found-hnk-ml",
+"hir_cim": "Pattanásig feszült a helyzet, elszabadulhat a gázolaj ára Magyarországon",
+"hir_forras": "Vezess",
+"hir_url": "https://www.vezess.hu/hirek/2026/09/22/pattanasig-feszult-a-helyzet-elszabadulhat-a-gazolaj-ara-magyarorszagon/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTTjkCrJv60tOrLlAOhsqDs2UjeVruwyriC7NEv5eERZHwn2_-aFAciJX7lAsM",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsicLQf0xIhvFgttUitbm6uv6bcuVBRjCYUiD779wz8ZoN7LTu8KyFDbajsJM",
 "hir_kivonat": ""
 }
 ]
 },
 {
-"kifejezes": "swimming",
-"volumen": "100",
-"novekedes_pct": "200",
+"kifejezes": "bayer zsolt",
+"volumen": "1000",
+"novekedes_pct": "400",
 "temak": [
-"Sports"
+"Other"
 ],
-"hirek": [
-{
-"hir_cim": "Yu Zidi: China&apos;s rising star, 13, wins second swimming gold at Asian Games",
-"hir_forras": "BBC",
-"hir_url": "https://www.bbc.com/sport/swimming/articles/c6dj4pn1rrppo",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJBg1PBpWpv8a8Oykp0HrT7mlWyWeMu1JDqDnb-KqTilBUyub__gfs8WUfMv0",
-"hir_kivonat": ""
+"hirek": []
 },
 {
-"hir_cim": "Young athletes are future: Olympian",
-"hir_forras": "Taipei Times",
-"hir_url": "https://www.taipeitimes.com/News/sport/archives/2026/09/22/2003864672",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQlveBVFI_oSY_Of09t6vco4Zm84jDf0mK_-2wLJXNQAyJrfVr7Ew4Sbl0QZME",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Asian Games Aichi-Nagoya 2026: 13-year-old Yu Zidi closes in on Summer McIntosh&apos;s world record",
-"hir_forras": "Olympics",
-"hir_url": "https://www.olympics.com/en/news/asian-games-aichi-nagoya-2026-13-year-old-yu-zidi-closes-in-on-summer-mcintosh-s-world-record",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSY7axNeGSk0bEjKEUn-mW1zsAJeJAMTycSsWhcBFtt6Hysk_96zVk0ODBodM",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "weather",
-"volumen": "100",
-"novekedes_pct": "200",
+"kifejezes": "főügyész",
+"volumen": "1000",
+"novekedes_pct": "500",
 "temak": [
-"Climate"
+"Law and Government"
 ],
-"hirek": [
-{
-"hir_cim": "Return of the Heat Dome: A Late-Season Heatwave Expands Across Europe into Early October",
-"hir_forras": "Severe Weather Europe",
-"hir_url": "https://www.severe-weather.eu/global-weather/return-of-heat-dome-heatwave-europe-late-september-october-2026-mk/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSQilCYR0p8rPzUPqzmY78-nS9i93w5YYhUc2fDStAoNWeAuVGgZJYKOjBa47Q",
-"hir_kivonat": ""
+"hirek": []
 },
 {
-"hir_cim": "Licensable picture: Lisbon Temperatures Soar Up To 12°C Above Average Ahead Of Autumn Equinox",
-"hir_forras": "Reuters Connect",
-"hir_url": "https://www.reutersconnect.com/item/lisbon-temperatures-soar-up-to-12c-above-average-ahead-of-autumn-equinox/dGFnOnJldXRlcnMuY29tLDIwMjY6bmV3c21sX01UMU5VUlBITzAwME5NTVNLSA",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTpMHT2KTgjiPMlJXJS8lMQx6fYD4q7-xBPvNVTBimvfV-kNVI1x6lwwYuVQgI",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Intense heat returns to Portugal",
-"hir_forras": "The Portugal News",
-"hir_url": "https://www.theportugalnews.com/news/2026-09-19/intense-heat-returns-to-portugal/1087988",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcT4Uc9uXrhmtLHIwJwEPk6QpGH3mLK-AKYIkHWwUoMmYQm-_SCw_nitmT1NRts",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "idokep",
-"volumen": "100",
-"novekedes_pct": "75",
+"kifejezes": "gemini",
+"volumen": "1000",
+"novekedes_pct": "50",
 "temak": [
-"Climate"
+"Technology"
 ],
-"hirek": [
-{
-"hir_cim": "Nem várt fordulat: a vasárnapi nyárból egyenesen a téli fagyba zuhantunk, itt már takarítani kell a havat",
-"hir_forras": "Pénzcentrum",
-"hir_url": "https://www.penzcentrum.hu/utazas/20260922/nem-vart-fordulat-a-vasarnapi-nyarbol-egyenesen-a-teli-fagyba-zuhantunk-itt-mar-takaritani-kell-a-havat-1205882",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcS-IsdpjSNJM3jaEaiybGsun1n_jiHkEc4cn5OU7j5iHF4yxe1zo7m3kW4sz9Q",
-"hir_kivonat": ""
+"hirek": []
 },
 {
-"hir_cim": "Megérkezett a hó a Magas-Tátrába",
-"hir_forras": "Időkép",
-"hir_url": "https://www.idokep.hu/hirek/megerkezett-a-ho-a-magas-tatraba",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSMONo6Kmqi22scUx5gB-dYkpzWQDDRg2em4bw4XcLTlxJO6wvNeSokbiDrBwE",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Már az ősz elején megérkezett az első hó",
-"hir_forras": "Új Szó",
-"hir_url": "https://ujszo.com/regio/mar-az-osz-elejen-megerkezett-az-elso-ho",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRhDOVwK-WWnebNSnCWl5aIdVf8e2xPx7N0WfeBYbbnY0AiBslm5i1BGwKTfIw",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "cindy crawford lánya",
-"volumen": "100",
-"novekedes_pct": "100",
+"kifejezes": "hayden panettiere",
+"volumen": "500",
+"novekedes_pct": "700",
 "temak": [
 "Entertainment"
 ],
 "hirek": [
 {
-"hir_cim": "FOMO - Kiderült, mi okozhatta Cindy Crawford fiának a halálát",
-"hir_forras": "Index.hu",
-"hir_url": "https://index.hu/fomo/2026/09/21/cindy-crawford-fia-presley-gerber-gyasz-halal-tuladagolas/",
+"hir_cim": "Hayden Panettiere’s Cause of Death Revealed as Toxic Effects of Fentanyl and More; Death Ruled an Accident",
+"hir_forras": "Variety",
+"hir_url": "https://variety.com/2026/film/news/hayden-panettiere-cause-of-death-revealed-fentanyl-1236836083/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjOnwyWzVLvQs_BsV_b47vzJ1QHspUa2vdQgPabubXnLGXFMAv2TzEHWf-PNE",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSP53bxdjRlrL-ePG09tdanCdrpwXEHklN-83k2MZmr94S30YJTDvARZrn7ynI",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Kult: Drogtúladagolásban halhatott meg Cindy Crawford fia",
-"hir_forras": "| hvg.hu",
-"hir_url": "https://hvg.hu/kultura/20260921_presley-gerber-cindy-crawford-fia-halalanak-oka-drogtuladagolas",
+"hir_cim": "Autopsy shows Hayden Panettiere died from overdose of fentanyl and other drugs",
+"hir_forras": "BBC",
+"hir_url": "https://www.bbc.com/news/articles/crn45d8dd2wdo",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQntdNSN4qSjIaNx1CqwEQvZqSOrDou-XAVbV4NNX7kGXHLcP9N5lga7I4xO4c",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRfCTMv_DOqnrXyW8xMz9eJ4AqBvBquQ0hoXZtzQVZpPJd4MaV6tBoXadJToHo",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Presley Gerber halála újabb tragikus veszteség: 7 híresség, aki az elmúlt két hónapban hunyt el",
-"hir_forras": "Velvet.hu",
-"hir_url": "https://velvet.hu/celeb/2026/09/21/presley-gerber-halala-tragikus-veszteseg-elhunyt-vilagsztarok/",
+"hir_cim": "Inside Hayden Panettiere’s moving memorial in Malibu attended by Connie Britton and more stars",
+"hir_forras": "Page Six",
+"hir_url": "https://pagesix.com/2026/09/20/celebrity-news/inside-hayden-panettieres-moving-malibu-memorial-attended-by-connie-britton-more-stars/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTivJmq1QXR-B1h2LYCCi2N0oqOpJN-O77dr2XtZPyLxb1IKNkrTz3vJs4W4So",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ11RKFpy9T3oXHVmVddiGbWqjWgGsyygGMllbWEpdQCebhexEQJxfKAqd0ErU",
 "hir_kivonat": ""
 }
 ]
+},
+{
+"kifejezes": "matolcsy györgy",
+"volumen": "500",
+"novekedes_pct": "800",
+"temak": [
+"Law and Government"
+],
+"hirek": [
+{
+"hir_cim": "Gazdaság - Gyanúsítottként hallgatták ki Matolcsy Györgyöt",
+"hir_forras": "Index.hu",
+"hir_url": "https://index.hu/gazdasag/2026/09/22/matolcsy-gyorgy-mnb-erste-bank-zsarolas-simor-andras/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSWNDUY2nUzFTh4Rg6iX-0yT2D-YnrXaH_q3PoN1yB_uxtYcppo62nws1293KU",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "„Felbujtó szerepet játszhatott” – Simor András Matolcsy György meggyanúsításáról",
+"hir_forras": "24.hu",
+"hir_url": "https://24.hu/fn/gazdasag/2026/09/22/simor-andras-jegybank-erste-matolcsy-gyorgy-breaking/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRAh8JJa7TH3I46zKhDLMPHwAKuuWa3A2yxPnvZNSE5hFLGkoaGlzRrKXtIyUo",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Gazdaság: Házkutatást tartottak a nyomozók az MNB-alapítványok ügyében Matolcsyék köreinél",
+"hir_forras": "| hvg.hu",
+"hir_url": "https://hvg.hu/gazdasag/20260922_hazkutatas-nyomozas-mnb-alapitvanyok-matolcsyek",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQjB5c30DWGyF-QDauzB5-dxt_YwI8O86MXxKtRyjHBWZgHsqlKfAokq2kS0s4",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "jelölt",
+"volumen": "500",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": [
+{
+"hir_cim": "A működésképtelenség szélére sodródhat az ügyészség",
+"hir_forras": "24.hu",
+"hir_url": "https://24.hu/belfold/2026/09/22/legfobb-ugyesz-jeloles-barandy-hack/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGNaTXf3y-j_KaBIecbnhy268KglrcCxcpRSUwVknyoQVq9sGY0nYrhIIdtwM",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Tisza-kormány: élesedik a konfliktus Baka András és a Tisza-frakció között Szathmáry Zoltán legfőbb ügyészi jelölése miatt",
+"hir_forras": "Portfolio.hu",
+"hir_url": "https://www.portfolio.hu/gazdasag/20260922/tisza-kormany-elesedik-a-konfliktus-baka-andras-es-a-tisza-frakcio-kozott-szathmary-zoltan-legfobb-ugyeszi-jelolese-miatt-864246",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXwfA6IdqY2GX-63U7p0YvQR5AO7CsNnXyH8Rt9N9uWg8LktpU8CtgYhWVL4o",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "A KNYF megerősítette: a legfőbbügyész-jelölt testvére is az aranykonvojügy egyik gyanúsítottja",
+"hir_forras": "| hvg.hu",
+"hir_url": "https://hvg.hu/itthon/20260922_legfobbugyesz-jelolt-testvere-aranykonvoj-ugy-gyanusitott",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcROEk7n9hPZPcpTXBH_uu5pFBwEKEQZ2VOEm_SC4UOgQ0L4W8yjSmyS5szY4Vc",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "zala",
+"volumen": "500",
+"novekedes_pct": "300",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "kocsis máté",
+"volumen": "500",
+"novekedes_pct": "300",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "panyi miklós",
+"volumen": "500",
+"novekedes_pct": "400",
+"temak": [
+"Law and Government",
+"Politics"
+],
+"hirek": []
+},
+{
+"kifejezes": "teams",
+"volumen": "500",
+"novekedes_pct": "75",
+"temak": [
+"Sports"
+],
+"hirek": []
 }
 ],
 "reggel_este_diff": {
-"uj_estere": [],
-"eltunt_estere": [],
-"megmaradt": [
+"uj_estere": [
+"alkotmánybíróság",
+"bayer zsolt",
+"euró",
+"főügyész",
+"gázolaj",
+"hayden panettiere",
+"hőkupola",
+"jelölt",
+"kapitány istván",
+"kocsis máté",
+"matolcsy györgy",
+"mentelmi jog",
+"panyi miklós",
+"zala"
+],
+"eltunt_estere": [
 "cindy crawford lánya",
 "fishing",
-"gemini",
 "idokep",
 "online radio",
 "schools",
 "sportfogadás",
 "swimming",
-"teams",
 "weather"
+],
+"megmaradt": [
+"gemini",
+"teams"
 ]
 },
 "reggel": {
-"szoveg": "Ma reggel a magyar Google-keresésben egyértelműen a technológia áll az élen: a „gemini"
+"szoveg": "Reggel a technológiai téma vitte a főszerepet: a Gemini körüli érdeklődés emelkedett ki, a háttérben a Google új, mesterséges intelligenciára épülő laptopjairól szóló bejelentések álltak több nemzetközi lap tudósítása szerint. Emellett a sportfogadás és a nemzetközi sportranglisták iránti figyelem is jelen volt, több tippszelvényes és sportos találattal.\n\nA reggeli képet erősen színezte az időjárás: a weather és az idokep kulcsszavak mögött a szokatlan hőség, majd a hirtelen lehűlés és az első hó hírei húzódtak, a magyar és nemzetközi tudósítások szerint egyaránt. Megjelent a schools, a fishing és a swimming is, utóbbiaknál külföldi hírekre visszavezethető aktivitással, valamint Cindy Crawford családját érintő gyászhír is a felkapottak közé került."
 },
 "este": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "Estére a mezőny érezhetően a közélet és a gazdaság felé tolódott. A legnagyobb pörgést a hőkupola mutatta, emellett a mentelmi jog, a Kapitány István név és az euró is kiugróan sokat szerepelt. Kapitány Istvánhoz gazdasági bejelentésekről és a GKI konferenciájáról szóló tudósítások kapcsolódtak több lap szerint.\n\nA gázolaj körüli figyelmet a küszöbön álló dízeláremelkedésről szóló elemzések kísérték, több gazdasági és autós portál hírei alapján. Matolcsy György neve a gyanúsítotti kihallgatásáról és az MNB-alapítványok körüli nyomozásról szóló beszámolókkal együtt futott fel, a jelölt kulcsszó pedig a legfőbb ügyészi jelölés körüli feszültségről szóló cikkekhez kötődött. Emellett az alkotmánybíróság, a főügyész, Bayer Zsolt, Kocsis Máté, Panyi Miklós és Zala is a felkapottak között volt, Hayden Panettiere esetében pedig a halálának okát feltáró külföldi hírek adták a hátteret."
 },
 "teljes_nap": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A nap íve jól láthatóan a könnyedebb, reggeli témáktól a súlyosabb közéleti-gazdasági kérdések felé mozdult. Reggel még a technológia, a sport, az időjárás és a külföldi szórakoztató hírek uralták a képet, estére viszont ezek jó része – köztük az időjárási, sportfogadási és több külföldi szál – kikopott a listáról.\n\nEstére sorra jöttek elő az új témák: a hőkupola, a mentelmi jog, az euró, a gázolaj, valamint a hazai közélet több szereplője és a jogi-igazságszolgáltatási szálak. A Gemini és a teams volt az a két kulcsszó, amely reggel és este is kitartott, jelezve, hogy ezek egész napos figyelmet kaptak."
 },
 "het": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A hét egészét nézve kevés szó tért vissza több napon át: a Gemini, a gázolaj, a startlap és a teams azok, amelyek két külön napon is felbukkantak. A többi felkapott kifejezés jellemzően egy-egy naphoz kötődött, ami erősen esemény- és híralapú, gyorsan cserélődő figyelemre utal.\n\nA heti visszatérők között vegyesen szerepelnek sportcsapatok és mérkőzések, közéleti és politikai nevek, valamint szórakoztató és technológiai témák – ez a széttartó mezőny arra utal, hogy a hét folyamán nem egyetlen nagy téma dominált, hanem több párhuzamos szál váltogatta egymást."
 },
 "het_valos": {
 "napok": 7,
 "visszateroek": [
 {
 "kifejezes": "gemini",
+"napok_szama": 2
+},
+{
+"kifejezes": "gázolaj",
 "napok_szama": 2
 },
 {
@@ -1377,6 +1323,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "alkotmánybíróság",
+"napok_szama": 1
+},
+{
 "kifejezes": "amerikai űrhaderő",
 "napok_szama": 1
 },
@@ -1398,6 +1348,10 @@
 },
 {
 "kifejezes": "bayer show",
+"napok_szama": 1
+},
+{
+"kifejezes": "bayer zsolt",
 "napok_szama": 1
 },
 {
@@ -1426,10 +1380,6 @@
 },
 {
 "kifejezes": "cindy crawford",
-"napok_szama": 1
-},
-{
-"kifejezes": "cindy crawford lánya",
 "napok_szama": 1
 },
 {
@@ -1469,7 +1419,7 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "fishing",
+"kifejezes": "euró",
 "napok_szama": 1
 },
 {
@@ -1485,15 +1435,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "főügyész",
+"napok_szama": 1
+},
+{
 "kifejezes": "gimnázium",
 "napok_szama": 1
 },
 {
 "kifejezes": "google",
-"napok_szama": 1
-},
-{
-"kifejezes": "gázolaj",
 "napok_szama": 1
 },
 {
@@ -1509,6 +1459,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "hayden panettiere",
+"napok_szama": 1
+},
+{
 "kifejezes": "hvg",
 "napok_szama": 1
 },
@@ -1521,7 +1475,7 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "idokep",
+"kifejezes": "hőkupola",
 "napok_szama": 1
 },
 {
@@ -1553,6 +1507,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "jelölt",
+"napok_szama": 1
+},
+{
 "kifejezes": "jennifer hudson",
 "napok_szama": 1
 },
@@ -1561,7 +1519,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "kapitány istván",
+"napok_szama": 1
+},
+{
 "kifejezes": "kiskunfélegyháza baleset",
+"napok_szama": 1
+},
+{
+"kifejezes": "kocsis máté",
 "napok_szama": 1
 },
 {
@@ -1605,6 +1571,14 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "matolcsy györgy",
+"napok_szama": 1
+},
+{
+"kifejezes": "mentelmi jog",
+"napok_szama": 1
+},
+{
 "kifejezes": "mesterséges intelligencia",
 "napok_szama": 1
 },
@@ -1629,10 +1603,6 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "online radio",
-"napok_szama": 1
-},
-{
 "kifejezes": "orbán viktor",
 "napok_szama": 1
 },
@@ -1642,6 +1612,10 @@
 },
 {
 "kifejezes": "palanyi nora",
+"napok_szama": 1
+},
+{
+"kifejezes": "panyi miklós",
 "napok_szama": 1
 },
 {
@@ -1674,18 +1648,6 @@
 },
 {
 "kifejezes": "rusvai miklós",
-"napok_szama": 1
-},
-{
-"kifejezes": "schools",
-"napok_szama": 1
-},
-{
-"kifejezes": "sportfogadás",
-"napok_szama": 1
-},
-{
-"kifejezes": "swimming",
 "napok_szama": 1
 },
 {
@@ -1745,15 +1707,15 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "weather",
-"napok_szama": 1
-},
-{
 "kifejezes": "witzmann mihály",
 "napok_szama": 1
 },
 {
 "kifejezes": "x faktor",
+"napok_szama": 1
+},
+{
+"kifejezes": "zala",
 "napok_szama": 1
 },
 {
@@ -1774,5 +1736,138 @@
 }
 ]
 }
+},
+"youtube": {
+"szamok": [
+{
+"szo": "szorongás",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.05,
+"ervenyes": true,
+"mai_ertek": 55,
+"csucs": 100,
+"atlag": 30.4
+},
+{
+"szo": "edzés",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.024,
+"ervenyes": true,
+"mai_ertek": 53,
+"csucs": 100,
+"atlag": 66.4
+},
+{
+"szo": "meditáció",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.052,
+"ervenyes": true,
+"mai_ertek": 73,
+"csucs": 100,
+"atlag": 81.8
+},
+{
+"szo": "befektetés",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.047,
+"ervenyes": true,
+"mai_ertek": 39,
+"csucs": 100,
+"atlag": 33.5
+},
+{
+"szo": "bitcoin",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.083,
+"ervenyes": true,
+"mai_ertek": 46,
+"csucs": 100,
+"atlag": 54.1
+},
+{
+"szo": "hírek",
+"domen": "kozelet",
+"irany": "stagnal",
+"meredekseg": -0.004,
+"ervenyes": true,
+"mai_ertek": 47,
+"csucs": 100,
+"atlag": 56.6
+},
+{
+"szo": "magyar péter",
+"domen": "kozelet",
+"irany": "novekszik",
+"meredekseg": 0.021,
+"ervenyes": true,
+"mai_ertek": 10,
+"csucs": 100,
+"atlag": 15.0
+},
+{
+"szo": "recept",
+"domen": "haztartas",
+"irany": "csokken",
+"meredekseg": -0.051,
+"ervenyes": true,
+"mai_ertek": 39,
+"csucs": 100,
+"atlag": 46.8
+},
+{
+"szo": "mese",
+"domen": "csalad",
+"irany": "stagnal",
+"meredekseg": -0.016,
+"ervenyes": true,
+"mai_ertek": 86,
+"csucs": 100,
+"atlag": 89.5
+},
+{
+"szo": "nyaralás",
+"domen": "szabadido",
+"irany": "novekszik",
+"meredekseg": 0.088,
+"ervenyes": true,
+"mai_ertek": 22,
+"csucs": 100,
+"atlag": 47.9
+},
+{
+"szo": "tanulás",
+"domen": "tanulas",
+"irany": "csokken",
+"meredekseg": -0.045,
+"ervenyes": true,
+"mai_ertek": 73,
+"csucs": 100,
+"atlag": 74.6
+},
+{
+"szo": "klíma",
+"domen": "otthon",
+"irany": "novekszik",
+"meredekseg": 0.069,
+"ervenyes": true,
+"mai_ertek": 8,
+"csucs": 100,
+"atlag": 16.8
+}
+],
+"napi": {
+"szoveg": "A magyarországi YouTube-keresésekben ma a mese és a meditáció áll a legmagasabban, mindkettő a saját megszokott szintje közelében, a videós figyelem tartósan erős tárgyai. A tanulás szintén élénk marad, míg a szorongás mai értéke a saját átlagához mérve kifejezetten magas, azaz a szokásosnál nagyobb érdeklődést mutat.\n\nAz edzés és a hírek közepes szinten állnak, a bitcoin és a befektetés a saját átlaguk körül vagy kicsit alatta mozog, a recept pedig szintén a megszokott alatt marad. A nyaralás mai értéke a saját átlagához képest jóval alacsonyabb, ami az idénnyel is összefügghet, bár ezt az adat önmagában nem igazolja. A magyar péter és a klíma egyaránt alacsonyan áll, előbbi a videós keresésekben most csendesebb. Emlékeztetőül: ezek a szavak külön-külön skálán mozognak, ezért egymáshoz nem érdemes mérni őket."
+},
+"teljes_kep": {
+"szoveg": "A hét egészében a videós keresések többsége enyhén lefelé csúszott. A legnagyobb visszaesést a nyaralás mutatta, de a szorongás, a tanulás és a befektetés is fogyott valamelyest a hét eleji szintjéhez képest.\n\nA másik oldalon a magyar péter kismértékű emelkedést hozott, a mese pedig egy hajszálnyit feljebb került. A recept gyakorlatilag változatlan maradt, az edzés, a bitcoin, a klíma, a meditáció és a hírek pedig csak apró elmozdulásokkal, lényegében stabilan zárta a hetet."
+}
+},
+"predikcio": {
+"szoveg": "A rövid távra szóló előrejelzés minden követett szónál lényegében stagnálást vetít előre – a modell szerint a következő napra nincs egyértelmű emelkedő vagy csökkenő irány, összesen huszonnyolc szó marad egy helyben. Fontos, hogy ez a közelmúlt lefutásának matematikai folytatása, nem eseményjóslat, így a valóság ettől bőven eltérhet.\n\nA legtöbb becslés ráadásul alacsony megbízhatóságú és széles bizonytalansági sávval mozog, tehát ezeket inkább óvatosan érdemes olvasni. Néhány szónál valamivel több támpont van, például a napelemnél és a munkanélküliségnél, ahol a becslés kissé stabilabb lábakon áll, de érdemi elmozdulást ezeknél sem jelez az adat."
 }
 }
