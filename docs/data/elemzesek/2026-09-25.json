@@ -1,96 +1,169 @@
 {
-"frissitve": "2026-09-25T07:08:23+00:00",
+"frissitve": "2026-09-25T19:07:14+00:00",
 "modell": "claude-opus-4-8",
 "nap": "2026-09-25",
-"mode": "reggel",
+"mode": "este",
 "valtozas": {
 "diff": {
-"irany_valtok": [],
-"mozgok": [
-{
-"szo": "akciós újság",
-"valtozas": 0.0
-},
+"irany_valtok": [
 {
 "szo": "albérlet",
-"valtozas": 0.0
+"elozo": "stagnal",
+"mai": "novekszik"
 },
 {
 "szo": "benzin",
-"valtozas": 0.0
+"elozo": "csokken",
+"mai": "novekszik"
 },
 {
-"szo": "betegség",
-"valtozas": 0.0
+"szo": "fizetés",
+"elozo": "stagnal",
+"mai": "novekszik"
 },
 {
-"szo": "csőd",
-"valtozas": 0.0
+"szo": "infláció",
+"elozo": "csokken",
+"mai": "stagnal"
+},
+{
+"szo": "iskola",
+"elozo": "stagnal",
+"mai": "novekszik"
+},
+{
+"szo": "kormány",
+"elozo": "stagnal",
+"mai": "novekszik"
+},
+{
+"szo": "kölcsön",
+"elozo": "stagnal",
+"mai": "novekszik"
+},
+{
+"szo": "műtét",
+"elozo": "csokken",
+"mai": "novekszik"
+},
+{
+"szo": "nyaralás",
+"elozo": "stagnal",
+"mai": "novekszik"
+},
+{
+"szo": "nyugdíj",
+"elozo": "csokken",
+"mai": "novekszik"
+}
+],
+"mozgok": [
+{
+"szo": "nyugdíj",
+"valtozas": 8.163
+},
+{
+"szo": "benzin",
+"valtozas": 7.469
+},
+{
+"szo": "műtét",
+"valtozas": 5.737
+},
+{
+"szo": "kormány",
+"valtozas": 4.479
+},
+{
+"szo": "fizetés",
+"valtozas": 4.332
 }
 ],
 "felkapott_uj": [
-"csányi sándor",
-"hollandia–németország",
+"ausztria",
+"ausztrália–brazília",
+"bayer construct zrt",
+"bochkor gábor",
+"fidesz",
 "kaia gerber",
+"m4 élő",
+"magyarország–ukrajna",
 "mankind ákos",
-"nemzetek ligája"
+"megtakarítás",
+"mesterséges intelligencia",
+"nagy feró",
+"nagyócsa",
+"schadl györgy",
+"villanyszámla"
 ],
 "felkapott_eltunt": [
 "baka andrás",
 "botaniq budai klub",
 "december 24 munkaszüneti nap",
+"el niño",
 "forint",
+"george nield gillett",
+"hadházy ákos",
+"heti hetes",
 "időjárás",
+"k&h",
+"kormány",
+"lopás",
 "magyar labdarúgó-válogatott",
+"marsi anikó",
 "mbh bank",
-"tarjányi péter"
+"nézőpont intézet",
+"országos rendőr főkapitányság",
+"részvény",
+"tarjányi péter",
+"várkonyi andrea"
 ],
 "van_elozo": true
 },
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A tegnapi képhez mérve több keresés is irányt váltott, jellemzően a felfelé mozdulás felé. A benzin a korábbi csökkenésből ma egyértelmű emelkedésbe fordult, és hasonlóan élénkült a fizetés, az albérlet, az iskola, a kormány, a kölcsön, a nyaralás, valamint a műtét és a nyugdíj is, ez utóbbi kettő a korábbi lefelé tartó szakaszból váltott növekvőre. Az infláció a csökkenésből a nyugodtabb, stagnáló sávba került.\n\nA legnagyobb napi elmozdulást a nyugdíj és a benzin mutatja, mögöttük a műtét, a kormány és a fizetés sorakozik – ezek adják ma a mozgás gerincét.\n\nA napi felkapott témák között sok új név bukkant fel, köztük a magyarország–ukrajna mérkőzés, a mankind ákos, a fidesz, a villanyszámla, a megtakarítás és több szórakoztató, illetve közéleti kifejezés. Közben kikoptak a figyelem éléről a tegnap még pörgő szavak, mint a hadházy ákos, a marsi anikó, az időjárás, a forint vagy a k&h."
 },
 "kulcsszavak": {
 "szamok": [
 {
 "szo": "akciós újság",
 "irany": "stagnal",
-"meredekseg": 0.337,
+"meredekseg": -0.843,
 "ervenyes": true,
-"mai_ertek": 27,
-"csucs": 46.0,
-"atlag": 38.1
+"mai_ertek": 26,
+"csucs": 63.0,
+"atlag": 37.83
 },
 {
 "szo": "albérlet",
-"irany": "stagnal",
-"meredekseg": 0.389,
+"irany": "novekszik",
+"meredekseg": 2.31,
 "ervenyes": true,
-"mai_ertek": 6,
-"csucs": 6.0,
-"atlag": 4.5
+"mai_ertek": 23,
+"csucs": 35.0,
+"atlag": 24.22
 },
 {
 "szo": "benzin",
-"irany": "csokken",
-"meredekseg": -1.372,
+"irany": "novekszik",
+"meredekseg": 6.097,
 "ervenyes": true,
-"mai_ertek": 76,
-"csucs": 61.0,
-"atlag": 37.67
+"mai_ertek": 84,
+"csucs": 46.0,
+"atlag": 25.0
 },
 {
 "szo": "betegség",
 "irany": "novekszik",
-"meredekseg": 3.059,
+"meredekseg": 6.121,
 "ervenyes": true,
-"mai_ertek": 53,
-"csucs": 71.0,
-"atlag": 43.83
+"mai_ertek": 0,
+"csucs": 54.0,
+"atlag": 44.72
 },
 {
 "szo": "csőd",
 "irany": "stagnal",
-"meredekseg": -0.544,
+"meredekseg": -0.33,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -99,79 +172,79 @@
 {
 "szo": "eladó lakás",
 "irany": "stagnal",
-"meredekseg": 0.772,
+"meredekseg": 0.046,
 "ervenyes": true,
 "mai_ertek": 17,
-"csucs": 49.0,
-"atlag": 23.75
+"csucs": 18.0,
+"atlag": 14.61
 },
 {
 "szo": "fizetés",
-"irany": "stagnal",
-"meredekseg": -0.047,
+"irany": "novekszik",
+"meredekseg": 4.285,
 "ervenyes": true,
-"mai_ertek": 20,
+"mai_ertek": 80,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "hitel",
 "irany": "novekszik",
-"meredekseg": 1.78,
+"meredekseg": 5.16,
 "ervenyes": true,
-"mai_ertek": 48,
-"csucs": 56.0,
-"atlag": 44.37
+"mai_ertek": 51,
+"csucs": 68.0,
+"atlag": 53.11
 },
 {
 "szo": "háziorvos",
 "irany": "novekszik",
-"meredekseg": 1.078,
+"meredekseg": 3.923,
+"ervenyes": true,
+"mai_ertek": 71,
+"csucs": null,
+"atlag": null
+},
+{
+"szo": "infláció",
+"irany": "stagnal",
+"meredekseg": 0.399,
+"ervenyes": true,
+"mai_ertek": 0,
+"csucs": null,
+"atlag": null
+},
+{
+"szo": "iskola",
+"irany": "novekszik",
+"meredekseg": 2.995,
 "ervenyes": true,
 "mai_ertek": 55,
 "csucs": null,
 "atlag": null
 },
 {
-"szo": "infláció",
-"irany": "csokken",
-"meredekseg": -3.108,
-"ervenyes": true,
-"mai_ertek": 10,
-"csucs": null,
-"atlag": null
-},
-{
-"szo": "iskola",
-"irany": "stagnal",
-"meredekseg": 0.672,
-"ervenyes": true,
-"mai_ertek": 60,
-"csucs": null,
-"atlag": null
-},
-{
 "szo": "kormány",
-"irany": "stagnal",
-"meredekseg": -0.26,
+"irany": "novekszik",
+"meredekseg": 4.219,
 "ervenyes": true,
-"mai_ertek": 37,
+"mai_ertek": 23,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kormányablak",
 "irany": "novekszik",
-"meredekseg": 4.623,
+"meredekseg": 6.627,
 "ervenyes": true,
-"mai_ertek": 22,
-"csucs": 92.0,
-"atlag": 58.68
+"mai_ertek": 13,
+"csucs": 78.0,
+"atlag": 48.65
 },
 {
 "szo": "korrupció",
 "irany": "csokken",
-"meredekseg": -2.967,
+"meredekseg": -1.959,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -180,18 +253,18 @@
 {
 "szo": "kórház",
 "irany": "novekszik",
-"meredekseg": 2.83,
+"meredekseg": 3.389,
 "ervenyes": true,
-"mai_ertek": 10,
-"csucs": 63.0,
-"atlag": 34.71
+"mai_ertek": 15,
+"csucs": 48.0,
+"atlag": 30.52
 },
 {
 "szo": "kölcsön",
-"irany": "stagnal",
-"meredekseg": 0.074,
+"irany": "novekszik",
+"meredekseg": 2.604,
 "ervenyes": true,
-"mai_ertek": 22,
+"mai_ertek": 55,
 "csucs": null,
 "atlag": null
 },
@@ -206,44 +279,44 @@
 },
 {
 "szo": "műtét",
-"irany": "csokken",
-"meredekseg": -1.117,
+"irany": "novekszik",
+"meredekseg": 4.62,
 "ervenyes": true,
-"mai_ertek": 34,
+"mai_ertek": 55,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "napelem",
 "irany": "novekszik",
-"meredekseg": 3.315,
+"meredekseg": 3.473,
 "ervenyes": true,
-"mai_ertek": 21,
-"csucs": 100.0,
-"atlag": 38.22
+"mai_ertek": 16,
+"csucs": 34.0,
+"atlag": 25.82
 },
 {
 "szo": "nyaralás",
-"irany": "stagnal",
-"meredekseg": -0.081,
+"irany": "novekszik",
+"meredekseg": 2.058,
 "ervenyes": true,
 "mai_ertek": 0,
-"csucs": 23.0,
-"atlag": 18.62
+"csucs": 39.0,
+"atlag": 30.0
 },
 {
 "szo": "nyugdíj",
-"irany": "csokken",
-"meredekseg": -3.708,
+"irany": "novekszik",
+"meredekseg": 4.455,
 "ervenyes": true,
-"mai_ertek": 24,
-"csucs": 48.0,
-"atlag": 26.92
+"mai_ertek": 17,
+"csucs": 69.0,
+"atlag": 28.62
 },
 {
 "szo": "pedagógus",
 "irany": "csokken",
-"meredekseg": -2.359,
+"meredekseg": -1.405,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -252,7 +325,7 @@
 {
 "szo": "rezsi",
 "irany": "stagnal",
-"meredekseg": 0.462,
+"meredekseg": -0.188,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -261,7 +334,7 @@
 {
 "szo": "segély",
 "irany": "stagnal",
-"meredekseg": 0.357,
+"meredekseg": 0.54,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -270,7 +343,7 @@
 {
 "szo": "sürgősségi",
 "irany": "stagnal",
-"meredekseg": 0.587,
+"meredekseg": 0.413,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -297,65 +370,56 @@
 {
 "szo": "állás",
 "irany": "novekszik",
-"meredekseg": 1.804,
+"meredekseg": 2.797,
 "ervenyes": true,
-"mai_ertek": 30,
-"csucs": 53.0,
-"atlag": 40.12
+"mai_ertek": 28,
+"csucs": 49.0,
+"atlag": 38.38
 }
 ],
 "napi": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A mai napot néhány kiugró érték határozza meg. A benzin 84-es szintje messze a saját szokásos átlaga fölött jár, és a korábbi csúcsát is meghaladja, vagyis a szokásosnál jóval élénkebb az érdeklődés iránta. Hasonlóan magasan áll a fizetés és a háziorvos, de erős a nap az iskola, a kölcsön és a műtét körül is. A hitel a szokott szintje közelében, kissé alatta mozog.\n\nA megélhetéshez és lakhatáshoz kötődő szavak közepesen aktívak: az állás, az albérlet, a kormány, az eladó lakás, a nyugdíj, a napelem, a kórház, az akciós újság és a kormányablak mind mérsékelt szinten állnak, közülük az akciós újság a saját átlaga alatt marad.\n\nSzámos követett kifejezés ma gyakorlatilag nem mutatott mérhető keresést: ilyen a betegség, a csőd, az infláció, a korrupció, a munkanélküliség, a nyaralás, a pedagógus, a rezsi, a segély, a sürgősségi és a várólista. A tüntetés esetében ma nem állt rendelkezésre értékelhető adat."
 }
 },
 "felkapott": {
 "top": [
 {
-"kifejezes": "mankind ákos",
-"volumen": "5000",
+"kifejezes": "magyarország–ukrajna",
+"volumen": "20000",
 "novekedes_pct": "1000",
 "temak": [
-"Entertainment"
+"Sports"
 ],
 "hirek": [
 {
-"hir_cim": "Meghalt az Anima Sound Systemmel és a Jazzékiellel is dolgozó DJ, a Mankind néven ismert Varga Ákos",
+"hir_cim": "Sport: Nemzetek Ligája: Magyarország – Ukrajna 0–0 – élő közvetítés",
 "hir_forras": "| hvg.hu",
-"hir_url": "https://hvg.hu/elet/20260925_meghalt-az-anima-sound-systemmel-es-a-jazzekiellel-is-dolgozo-dj-a-mankind-neven-ismert-varga-akos",
+"hir_url": "https://hvg.hu/sport/20260925_magyarorszag-ukrajna-nemzetek-ligaja-elo-kozvetites",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTotuQktp7cfgP6pycTF90W2wbGrSeHXougiwxR-NeiUsfKgTBJGU-oRyA5RxA",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfZ90bHAqoaLTlBcV2VjCBqmeoh12iO-56dyooY-_mhKHLiPv4wFfUyqnmeO0",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Kultúr - Meghalt Varga Ákos, a Mankind néven ismert DJ",
+"hir_cim": "Újonc nélkül, a középpályán Csongvaival, elöl a Redzic, Lukács kettőssel kezdünk az ukránok ellen",
+"hir_forras": "M4 Sport",
+"hir_url": "https://m4sport.hu/magyar-foci/cikk/2026/09/25/ujonc-nelkul-a-kozeppalyan-csongvaival-elol-a-redzic-lukacs-kettossel-kezdunk-az-ukranok-ellen",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzPHX3o3MpXIK__X6gxLN38fKxQhHKufOu1WFZdVMuVc7Yt1jNvK0wFIEqTyg",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Szoboszlai: Ez nem fenyegetés, de ha még egyszer ilyen történik, azzal az illetővel többet nem állok szóba",
 "hir_forras": "Index.hu",
-"hir_url": "https://index.hu/kultur/2026/09/25/varga-akos-meghalt-gyasz-dj-szervezo-producer-mankind/",
+"hir_url": "https://index.hu/sport/futball/2026/09/24/nemzetek-ligaja-b-divizio-magyarorszag-ukrajna-marco-rossi-szoboszlai-dominik-sajtotajekoztato/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSR9se2YTeL0iDygkOtB9SToh_XYJsE1jtv2piobQ8Cnxok0dXcHPMvAFzRIGQ",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Elhunyt Varga Ákos, a Mankind néven ismert DJ és producer",
-"hir_forras": "REFRESHER.hu",
-"hir_url": "https://refresher.hu/13729-Elhunyt-Varga-Akos-a-Mankind-neven-ismert-DJ-es-producer",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcS56-OcrqW0SjXtHt0wt7lDUZCDSYe7pl2FFgacEwUSRXgJcueu4BC0m5-J3C4",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcT08tJ5zhlcvMaf4d43XG4F007Pjfer4iiyNESIMZCVJDOG1rkWXMayi5cRb68",
 "hir_kivonat": ""
 }
 ]
 },
 {
-"kifejezes": "hadházy ákos",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Politics"
-],
-"hirek": []
-},
-{
-"kifejezes": "marsi anikó",
-"volumen": "5000",
+"kifejezes": "mankind ákos",
+"volumen": "20000",
 "novekedes_pct": "1000",
 "temak": [
 "Entertainment"
@@ -363,8 +427,8 @@
 "hirek": []
 },
 {
-"kifejezes": "csányi sándor",
-"volumen": "5000",
+"kifejezes": "ausztria",
+"volumen": "10000",
 "novekedes_pct": "1000",
 "temak": [
 "Other"
@@ -372,8 +436,17 @@
 "hirek": []
 },
 {
-"kifejezes": "k&h",
-"volumen": "5000",
+"kifejezes": "bayer construct zrt",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "villanyszámla",
+"volumen": "10000",
 "novekedes_pct": "1000",
 "temak": [
 "Business and Finance"
@@ -381,11 +454,160 @@
 "hirek": []
 },
 {
-"kifejezes": "kormány",
+"kifejezes": "fidesz",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government",
+"Politics"
+],
+"hirek": []
+},
+{
+"kifejezes": "megtakarítás",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
+"Business and Finance",
+"Law and Government"
+],
+"hirek": [
+{
+"hir_cim": "Még az idei évre járhat 100-130-150 ezer forint az államtól, ha most indul a nyugdíj-megtakarítás",
+"hir_forras": "| hvg.hu",
+"hir_url": "https://hvg.hu/gazdasag/20260925_meg-az-idei-evre-jarhat-100-130-150-ezer-forint-az-allamtol-ha-most-indul-a-nyugdijmegtakaritas",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTpQ_TRFGQjMfVKcc_AAZ7NeCNLMIyRlASb0T3gLOVkFyRp7zrpUCkTIAPzqSo",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Még az idei évre járhat 100–130–150 ezer forint az államtól, ha most indul a nyugdíjmegtakarítás",
+"hir_forras": "Hirnavigator",
+"hir_url": "https://hirnavigator.hu/hir/10813818-meg-az-idei-evre-jarhat-100130150-ezer-forint-az-allamtol-ha-most-indul-a-nyugdijmegtakaritas",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSuZYtcSsM1_SSgTqVOVg8qcmOTfb-ucr3xLBc0WGtaMrkpxEhedSHnBQSM0mg",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Nyugdíjbiztosítás havi 30 ezer forinttal: mekkora adójóváírás járhat évente?",
+"hir_forras": "Hirnavigator",
+"hir_url": "https://hirnavigator.hu/hir/10813989-nyugdijbiztositas-havi-30-ezer-forinttal-mekkora-adojovairas-jarhat-evente",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStiX2IUXCGoIJHYO3gVyJETK1vSQOxgspqTymf8w1qyXscvZF4ORYJ9T-O4v4",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "mesterséges intelligencia",
+"volumen": "5000",
+"novekedes_pct": "500",
+"temak": [
+"Technology"
+],
+"hirek": []
+},
+{
+"kifejezes": "nagy feró",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
 "Other"
+],
+"hirek": [
+{
+"hir_cim": "Nagy Feró: „Tóth Gabikát szeretem, a többieket nem igazán értem, hogy kerültek oda”",
+"hir_forras": "Story",
+"hir_url": "https://story.hu/cimlapsztori/2026/09/25/nagy-fero-interju-politika-toth-gabi/b1pg07g",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQeOQnkZPBxLWJwdnsrllEU4ipo0ghnlZrQrta37U0LB165JzGJAZmxvIHbOvs",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Élet+Stílus: Nagy Feró fél, hogy érte is eljönnek a rendőrök",
+"hir_forras": "| hvg.hu",
+"hir_url": "https://hvg.hu/elet/20260925_nagy-fero-fel-toth-gabika-terror-haza-schmidt-maria",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAxlyumK2vel4IRBJTp9FqVo7Kl002I6IYVijhBI3uOfyAClAEy8CbWBcCyvU",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Nagy Feró fél: „Én most sem a jelenlegi rendszer ellen vagyok, de ha úgy érzik, akkor majd biztosan megbüntetnek”",
+"hir_forras": "444",
+"hir_url": "https://444.hu/2026/09/25/nagy-fero-fel-en-most-sem-a-jelenlegi-rendszer-ellen-vagyok-de-ha-ugy-erzik-akkor-majd-biztosan-megbuntetnek",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSnHKRcpCvgYe-MspCgv89VBYfRxl4vWjcbINhG3CLQmQOxx1ueFivpx69yHzE",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "bochkor gábor",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": [
+{
+"hir_cim": "Bochkor Gábor Risztov Évának: „Ezért nincs neked hét éve senkid”",
+"hir_forras": "Story",
+"hir_url": "https://story.hu/napi-friss/2026/09/25/bochkor-gabor-risztov-eva-szingli-retro-radio/b5qmv8g",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRj7VzQtx-sP7SoR01CXbCtoXjPFZJJBVS9pPKdzxO-G8lAaAtulJ3EaWXpqnM",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "„Ezért nincs neked hét éve senkid!” – Bochkor Gábor élő adásban szembesítette Risztov Évát",
+"hir_forras": "Blikk",
+"hir_url": "https://www.blikk.hu/sztarvilag/hazai-sztarok/bochkor-gabor-risztov-eva-parkapcsolat/dnzd9s5",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTsBgiJXFyQnz7-1CFMIxkjt1M2SAGMQElZ1-jaZhlaKM5XbxHg5yWJqv2n--I",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Bochkor Gábor Risztov Évának: Ezért nincs neked hét éve senkid",
+"hir_forras": "Szeretlek Magyarország",
+"hir_url": "https://www.szeretlekmagyarorszag.hu/sztarvilag/bochkor-gabor-risztov-eva-szingli-vallomas/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3vYL8qhnFO0pz2GigtcAbnOoeLDFiwPnZjtLqaFw9ptVxb4ZUulXAqJP3kiA",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "schadl györgy",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "m4 élő",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "nagyócsa",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "ausztrália–brazília",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
 ],
 "hirek": []
 },
@@ -395,98 +617,6 @@
 "novekedes_pct": "1000",
 "temak": [
 "Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "nemzetek ligája",
-"volumen": "2000",
-"novekedes_pct": "700",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "hollandia–németország",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "el niño",
-"volumen": "2000",
-"novekedes_pct": "900",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "lopás",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "nézőpont intézet",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Politics",
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "heti hetes",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "részvény",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "george nield gillett",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "várkonyi andrea",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "országos rendőr főkapitányság",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government",
-"Politics"
 ],
 "hirek": []
 }
@@ -675,51 +805,42 @@
 ],
 "este_top": [
 {
-"kifejezes": "mankind ákos",
-"volumen": "5000",
+"kifejezes": "magyarország–ukrajna",
+"volumen": "20000",
 "novekedes_pct": "1000",
 "temak": [
-"Entertainment"
+"Sports"
 ],
 "hirek": [
 {
-"hir_cim": "Meghalt az Anima Sound Systemmel és a Jazzékiellel is dolgozó DJ, a Mankind néven ismert Varga Ákos",
+"hir_cim": "Sport: Nemzetek Ligája: Magyarország – Ukrajna 0–0 – élő közvetítés",
 "hir_forras": "| hvg.hu",
-"hir_url": "https://hvg.hu/elet/20260925_meghalt-az-anima-sound-systemmel-es-a-jazzekiellel-is-dolgozo-dj-a-mankind-neven-ismert-varga-akos",
+"hir_url": "https://hvg.hu/sport/20260925_magyarorszag-ukrajna-nemzetek-ligaja-elo-kozvetites",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTotuQktp7cfgP6pycTF90W2wbGrSeHXougiwxR-NeiUsfKgTBJGU-oRyA5RxA",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfZ90bHAqoaLTlBcV2VjCBqmeoh12iO-56dyooY-_mhKHLiPv4wFfUyqnmeO0",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Kultúr - Meghalt Varga Ákos, a Mankind néven ismert DJ",
+"hir_cim": "Újonc nélkül, a középpályán Csongvaival, elöl a Redzic, Lukács kettőssel kezdünk az ukránok ellen",
+"hir_forras": "M4 Sport",
+"hir_url": "https://m4sport.hu/magyar-foci/cikk/2026/09/25/ujonc-nelkul-a-kozeppalyan-csongvaival-elol-a-redzic-lukacs-kettossel-kezdunk-az-ukranok-ellen",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzPHX3o3MpXIK__X6gxLN38fKxQhHKufOu1WFZdVMuVc7Yt1jNvK0wFIEqTyg",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Szoboszlai: Ez nem fenyegetés, de ha még egyszer ilyen történik, azzal az illetővel többet nem állok szóba",
 "hir_forras": "Index.hu",
-"hir_url": "https://index.hu/kultur/2026/09/25/varga-akos-meghalt-gyasz-dj-szervezo-producer-mankind/",
+"hir_url": "https://index.hu/sport/futball/2026/09/24/nemzetek-ligaja-b-divizio-magyarorszag-ukrajna-marco-rossi-szoboszlai-dominik-sajtotajekoztato/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSR9se2YTeL0iDygkOtB9SToh_XYJsE1jtv2piobQ8Cnxok0dXcHPMvAFzRIGQ",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Elhunyt Varga Ákos, a Mankind néven ismert DJ és producer",
-"hir_forras": "REFRESHER.hu",
-"hir_url": "https://refresher.hu/13729-Elhunyt-Varga-Akos-a-Mankind-neven-ismert-DJ-es-producer",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcS56-OcrqW0SjXtHt0wt7lDUZCDSYe7pl2FFgacEwUSRXgJcueu4BC0m5-J3C4",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcT08tJ5zhlcvMaf4d43XG4F007Pjfer4iiyNESIMZCVJDOG1rkWXMayi5cRb68",
 "hir_kivonat": ""
 }
 ]
 },
 {
-"kifejezes": "hadházy ákos",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Politics"
-],
-"hirek": []
-},
-{
-"kifejezes": "marsi anikó",
-"volumen": "5000",
+"kifejezes": "mankind ákos",
+"volumen": "20000",
 "novekedes_pct": "1000",
 "temak": [
 "Entertainment"
@@ -727,8 +848,8 @@
 "hirek": []
 },
 {
-"kifejezes": "csányi sándor",
-"volumen": "5000",
+"kifejezes": "ausztria",
+"volumen": "10000",
 "novekedes_pct": "1000",
 "temak": [
 "Other"
@@ -736,8 +857,17 @@
 "hirek": []
 },
 {
-"kifejezes": "k&h",
-"volumen": "5000",
+"kifejezes": "bayer construct zrt",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "villanyszámla",
+"volumen": "10000",
 "novekedes_pct": "1000",
 "temak": [
 "Business and Finance"
@@ -745,11 +875,160 @@
 "hirek": []
 },
 {
-"kifejezes": "kormány",
+"kifejezes": "fidesz",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government",
+"Politics"
+],
+"hirek": []
+},
+{
+"kifejezes": "megtakarítás",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
+"Business and Finance",
+"Law and Government"
+],
+"hirek": [
+{
+"hir_cim": "Még az idei évre járhat 100-130-150 ezer forint az államtól, ha most indul a nyugdíj-megtakarítás",
+"hir_forras": "| hvg.hu",
+"hir_url": "https://hvg.hu/gazdasag/20260925_meg-az-idei-evre-jarhat-100-130-150-ezer-forint-az-allamtol-ha-most-indul-a-nyugdijmegtakaritas",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTpQ_TRFGQjMfVKcc_AAZ7NeCNLMIyRlASb0T3gLOVkFyRp7zrpUCkTIAPzqSo",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Még az idei évre járhat 100–130–150 ezer forint az államtól, ha most indul a nyugdíjmegtakarítás",
+"hir_forras": "Hirnavigator",
+"hir_url": "https://hirnavigator.hu/hir/10813818-meg-az-idei-evre-jarhat-100130150-ezer-forint-az-allamtol-ha-most-indul-a-nyugdijmegtakaritas",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSuZYtcSsM1_SSgTqVOVg8qcmOTfb-ucr3xLBc0WGtaMrkpxEhedSHnBQSM0mg",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Nyugdíjbiztosítás havi 30 ezer forinttal: mekkora adójóváírás járhat évente?",
+"hir_forras": "Hirnavigator",
+"hir_url": "https://hirnavigator.hu/hir/10813989-nyugdijbiztositas-havi-30-ezer-forinttal-mekkora-adojovairas-jarhat-evente",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStiX2IUXCGoIJHYO3gVyJETK1vSQOxgspqTymf8w1qyXscvZF4ORYJ9T-O4v4",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "mesterséges intelligencia",
+"volumen": "5000",
+"novekedes_pct": "500",
+"temak": [
+"Technology"
+],
+"hirek": []
+},
+{
+"kifejezes": "nagy feró",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
 "Other"
+],
+"hirek": [
+{
+"hir_cim": "Nagy Feró: „Tóth Gabikát szeretem, a többieket nem igazán értem, hogy kerültek oda”",
+"hir_forras": "Story",
+"hir_url": "https://story.hu/cimlapsztori/2026/09/25/nagy-fero-interju-politika-toth-gabi/b1pg07g",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQeOQnkZPBxLWJwdnsrllEU4ipo0ghnlZrQrta37U0LB165JzGJAZmxvIHbOvs",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Élet+Stílus: Nagy Feró fél, hogy érte is eljönnek a rendőrök",
+"hir_forras": "| hvg.hu",
+"hir_url": "https://hvg.hu/elet/20260925_nagy-fero-fel-toth-gabika-terror-haza-schmidt-maria",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAxlyumK2vel4IRBJTp9FqVo7Kl002I6IYVijhBI3uOfyAClAEy8CbWBcCyvU",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Nagy Feró fél: „Én most sem a jelenlegi rendszer ellen vagyok, de ha úgy érzik, akkor majd biztosan megbüntetnek”",
+"hir_forras": "444",
+"hir_url": "https://444.hu/2026/09/25/nagy-fero-fel-en-most-sem-a-jelenlegi-rendszer-ellen-vagyok-de-ha-ugy-erzik-akkor-majd-biztosan-megbuntetnek",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSnHKRcpCvgYe-MspCgv89VBYfRxl4vWjcbINhG3CLQmQOxx1ueFivpx69yHzE",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "bochkor gábor",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": [
+{
+"hir_cim": "Bochkor Gábor Risztov Évának: „Ezért nincs neked hét éve senkid”",
+"hir_forras": "Story",
+"hir_url": "https://story.hu/napi-friss/2026/09/25/bochkor-gabor-risztov-eva-szingli-retro-radio/b5qmv8g",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRj7VzQtx-sP7SoR01CXbCtoXjPFZJJBVS9pPKdzxO-G8lAaAtulJ3EaWXpqnM",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "„Ezért nincs neked hét éve senkid!” – Bochkor Gábor élő adásban szembesítette Risztov Évát",
+"hir_forras": "Blikk",
+"hir_url": "https://www.blikk.hu/sztarvilag/hazai-sztarok/bochkor-gabor-risztov-eva-parkapcsolat/dnzd9s5",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTsBgiJXFyQnz7-1CFMIxkjt1M2SAGMQElZ1-jaZhlaKM5XbxHg5yWJqv2n--I",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Bochkor Gábor Risztov Évának: Ezért nincs neked hét éve senkid",
+"hir_forras": "Szeretlek Magyarország",
+"hir_url": "https://www.szeretlekmagyarorszag.hu/sztarvilag/bochkor-gabor-risztov-eva-szingli-vallomas/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3vYL8qhnFO0pz2GigtcAbnOoeLDFiwPnZjtLqaFw9ptVxb4ZUulXAqJP3kiA",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "schadl györgy",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "m4 élő",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "nagyócsa",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "ausztrália–brazília",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
 ],
 "hirek": []
 },
@@ -761,104 +1040,25 @@
 "Entertainment"
 ],
 "hirek": []
-},
-{
-"kifejezes": "nemzetek ligája",
-"volumen": "2000",
-"novekedes_pct": "700",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "hollandia–németország",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "el niño",
-"volumen": "2000",
-"novekedes_pct": "900",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "lopás",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "nézőpont intézet",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Politics",
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "heti hetes",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "részvény",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "george nield gillett",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "várkonyi andrea",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "országos rendőr főkapitányság",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government",
-"Politics"
-],
-"hirek": []
 }
 ],
 "reggel_este_diff": {
-"uj_estere": [],
-"eltunt_estere": [],
-"megmaradt": [
+"uj_estere": [
+"ausztria",
+"ausztrália–brazília",
+"bayer construct zrt",
+"bochkor gábor",
+"fidesz",
+"m4 élő",
+"magyarország–ukrajna",
+"megtakarítás",
+"mesterséges intelligencia",
+"nagy feró",
+"nagyócsa",
+"schadl györgy",
+"villanyszámla"
+],
+"eltunt_estere": [
 "csányi sándor",
 "el niño",
 "george nield gillett",
@@ -866,79 +1066,41 @@
 "heti hetes",
 "hollandia–németország",
 "k&h",
-"kaia gerber",
 "kormány",
 "lopás",
-"mankind ákos",
 "marsi anikó",
 "nemzetek ligája",
 "nézőpont intézet",
 "országos rendőr főkapitányság",
 "részvény",
 "várkonyi andrea"
+],
+"megmaradt": [
+"kaia gerber",
+"mankind ákos"
 ]
 },
 "reggel": {
-"szoveg": "Ma reggel a magyar Google-keresésben egyszerre több téma is felfutott, a lista élén pedig egy szomorú hír áll: a legtöbben a Mankind néven ismert Varga Ákos DJ és producer nevére kerestek rá, akinek haláláról több szerkesztőség, köztük a hvg.hu, az Index és a Refresher is beszámolt. Ez a kifejezés érte el a legnagyobb keresési volument, és feltehetően a gyászhír adott neki lendületet.\n\nMellette hasonlóan sokan keresték Hadházy Ákos nevét a közélet oldaláról, valamint több ismert szereplőt a szórakoztatás és a média világából, például Marsi Anikót, Csányi Sándort és Várkonyi Andreát. Ezekhez a nevekhez reggel nem társult konkrét hír a beérkezett adatok között, így csak annyi mondható biztosan, hogy sokan rájuk kerestek, az okot azonban nem tudjuk megnevezni.\n\nA gazdasági érdeklődést jelzi, hogy a K&H, a részvény kifejezés és a Nézőpont Intézet is felkerült a felkapott témák közé, ez utóbbi a közélethez is kapcsolódik. A sport oldaláról a Nemzetek Ligája, a Hollandia–Németország mérkőzés és George Nield Gillett neve pörgött, ami feltehetően aktuális mérkőzésekhez köthető. Emellett feltűnt az el niño időjárási jelenség, a lopás témaköre, valamint az Országos Rendőr-főkapitányság és a külföldi hírességként ismert Kaia Gerber is.\n\nÖsszességében a reggeli kép vegyes: egy gyászhír uralja a kereséseket, de mellette erősen jelen van a közélet, a sport, a gazdaság és a szórakoztatás is. A napnak ebben a szakaszában újként bukkant fel többek között Csányi Sándor, a Hollandia–Németország meccs, Kaia Gerber, a Mankind Ákos keresés és a Nemzetek Ligája, míg néhány korábban pörgő téma, például az időjárás vagy a forint mostanra kikopott az élmezőnyből."
+"szoveg": "Reggel kilenc körül vegyes kép fogadott: a lista élén a mankind ákos, a hadházy ákos, a marsi anikó, a csányi sándor, a k&h és a kormány álltak. A mankind ákos mögött az a hír húzódik, hogy elhunyt Varga Ákos, a Mankind néven ismert DJ és producer – erről több szerkesztőség is beszámolt. A többi reggeli kifejezéshez ezúttal nem érkezett háttérhír, így ott csak annyit tudunk biztosan, hogy sokan keresték őket.\n\nMellettük felbukkant a kaia gerber, a nemzetek ligája, a hollandia–németország, az el niño, a lopás, a nézőpont intézet, a heti hetes, a részvény és több közéleti-sport téma is."
 },
 "este": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "Estére a sport került a középpontba: a magyarország–ukrajna mérkőzés vezette a mezőnyt, a hírek szerint a Nemzetek Ligája találkozója 0–0-val zajlott, élő közvetítéssel. Mellette továbbra is erős maradt a mankind ákos, és felfutott az ausztria, a bayer construct zrt, a villanyszámla, a fidesz és a megtakarítás.\n\nA megtakarítás mögött a nyugdíjcélú megtakarításokról szóló írások álltak, amelyek arról szóltak, hogy még idén állami támogatás igényelhető az induló nyugdíj-megtakarításhoz. A szórakoztató témák közül a nagy feró és a bochkor gábor is felkerült: előbbihez interjúk, utóbbihoz egy élő adásban elhangzott jelenet kapcsolódott. A schadl györgy, az m4 élő és a nagyócsa esetében nem érkezett kísérő hír."
 },
 "teljes_nap": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A nap íve jól mutatja, hogyan tolódott a figyelem a reggeli közéleti és szórakoztató témákról az esti sport felé. Reggel a hazai közélet és a bulvár nevei domináltak, estére viszont a magyarország–ukrajna mérkőzés vált a nap fő eseményévé, és mellé zárkózott fel több pénzügyi és politikai kifejezés is, mint a villanyszámla, a fidesz vagy a megtakarítás.\n\nEgész napra kitartó érdeklődés csak a mankind ákos és a kaia gerber körül maradt – ezek reggel és este is a figyelem élén álltak. Estére eltűnt viszont a lista tetejéről a csányi sándor, a hadházy ákos, a marsi anikó, a k&h, a kormány, a nézőpont intézet és több reggeli téma. Új belépőként a foci, az ausztria, a bayer construct zrt és a szórakoztató nevek erősödtek fel."
 },
 "het": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A hét egészét nézve kevés szó tért vissza több napon át: a gemini, a megtakarítás, a startlap és a teams két-két napon bukkant fel, a többi kifejezés jellemzően csak egyetlen napon került a figyelem élére. Ez azt mutatja, hogy a napi felkapott témák nagy része gyorsan cserélődött, és inkább az aznapi hírek határozták meg őket.\n\nA hét visszatérő nevei között ott találjuk a közélet és a média sok szereplőjét, a sport több eseményét, valamint a megélhetéshez kötődő kifejezéseket – de ezek is inkább szétszórtan, egy-egy napra korlátozódva jelentek meg."
 },
 "het_valos": {
 "napok": 7,
 "visszateroek": [
 {
-"kifejezes": "el niño",
-"napok_szama": 2
-},
-{
 "kifejezes": "gemini",
 "napok_szama": 2
 },
 {
-"kifejezes": "george nield gillett",
-"napok_szama": 2
-},
-{
-"kifejezes": "hadházy ákos",
-"napok_szama": 2
-},
-{
-"kifejezes": "heti hetes",
-"napok_szama": 2
-},
-{
-"kifejezes": "k&h",
-"napok_szama": 2
-},
-{
-"kifejezes": "kormány",
-"napok_szama": 2
-},
-{
-"kifejezes": "lopás",
-"napok_szama": 2
-},
-{
-"kifejezes": "marsi anikó",
-"napok_szama": 2
-},
-{
-"kifejezes": "nézőpont intézet",
-"napok_szama": 2
-},
-{
-"kifejezes": "országos rendőr főkapitányság",
-"napok_szama": 2
-},
-{
-"kifejezes": "részvény",
+"kifejezes": "megtakarítás",
 "napok_szama": 2
 },
 {
@@ -947,10 +1109,6 @@
 },
 {
 "kifejezes": "teams",
-"napok_szama": 2
-},
-{
-"kifejezes": "várkonyi andrea",
 "napok_szama": 2
 },
 {
@@ -970,7 +1128,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "ausztria",
+"napok_szama": 1
+},
+{
+"kifejezes": "ausztrália–brazília",
+"napok_szama": 1
+},
+{
 "kifejezes": "baka andrás",
+"napok_szama": 1
+},
+{
+"kifejezes": "bayer construct zrt",
 "napok_szama": 1
 },
 {
@@ -979,6 +1149,10 @@
 },
 {
 "kifejezes": "bayern münchen",
+"napok_szama": 1
+},
+{
+"kifejezes": "bochkor gábor",
 "napok_szama": 1
 },
 {
@@ -1010,10 +1184,6 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "csányi sándor",
-"napok_szama": 1
-},
-{
 "kifejezes": "david hasselhoff",
 "napok_szama": 1
 },
@@ -1022,11 +1192,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "el niño",
+"napok_szama": 1
+},
+{
 "kifejezes": "eredmenyek",
 "napok_szama": 1
 },
 {
 "kifejezes": "euró",
+"napok_szama": 1
+},
+{
+"kifejezes": "fidesz",
 "napok_szama": 1
 },
 {
@@ -1042,6 +1220,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "george nield gillett",
+"napok_szama": 1
+},
+{
 "kifejezes": "google",
 "napok_szama": 1
 },
@@ -1054,6 +1236,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "hadházy ákos",
+"napok_szama": 1
+},
+{
 "kifejezes": "használtautó",
 "napok_szama": 1
 },
@@ -1062,7 +1248,7 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "hollandia–németország",
+"kifejezes": "heti hetes",
 "napok_szama": 1
 },
 {
@@ -1110,6 +1296,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "k&h",
+"napok_szama": 1
+},
+{
 "kifejezes": "kaia gerber",
 "napok_szama": 1
 },
@@ -1130,6 +1320,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "kormány",
+"napok_szama": 1
+},
+{
 "kifejezes": "kormányrendelet",
 "napok_szama": 1
 },
@@ -1146,6 +1340,14 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "lopás",
+"napok_szama": 1
+},
+{
+"kifejezes": "m4 élő",
+"napok_szama": 1
+},
+{
 "kifejezes": "magyar labdarúgó-válogatott",
 "napok_szama": 1
 },
@@ -1154,7 +1356,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "magyarország–ukrajna",
+"napok_szama": 1
+},
+{
 "kifejezes": "mankind ákos",
+"napok_szama": 1
+},
+{
+"kifejezes": "marsi anikó",
 "napok_szama": 1
 },
 {
@@ -1166,11 +1376,11 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "megtakarítás",
+"kifejezes": "mentelmi jog",
 "napok_szama": 1
 },
 {
-"kifejezes": "mentelmi jog",
+"kifejezes": "mesterséges intelligencia",
 "napok_szama": 1
 },
 {
@@ -1178,15 +1388,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "nagy feró",
+"napok_szama": 1
+},
+{
 "kifejezes": "nagykövet",
 "napok_szama": 1
 },
 {
-"kifejezes": "nb1",
+"kifejezes": "nagyócsa",
 "napok_szama": 1
 },
 {
-"kifejezes": "nemzetek ligája",
+"kifejezes": "nb1",
 "napok_szama": 1
 },
 {
@@ -1202,11 +1416,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "nézőpont intézet",
+"napok_szama": 1
+},
+{
 "kifejezes": "origo",
 "napok_szama": 1
 },
 {
 "kifejezes": "országos mentőszolgálat",
+"napok_szama": 1
+},
+{
+"kifejezes": "országos rendőr főkapitányság",
 "napok_szama": 1
 },
 {
@@ -1234,7 +1456,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "részvény",
+"napok_szama": 1
+},
+{
 "kifejezes": "róna péter",
+"napok_szama": 1
+},
+{
+"kifejezes": "schadl györgy",
 "napok_szama": 1
 },
 {
@@ -1258,7 +1488,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "villanyszámla",
+"napok_szama": 1
+},
+{
 "kifejezes": "vini",
+"napok_szama": 1
+},
+{
+"kifejezes": "várkonyi andrea",
 "napok_szama": 1
 },
 {
@@ -1275,5 +1513,138 @@
 }
 ]
 }
+},
+"youtube": {
+"szamok": [
+{
+"szo": "szorongás",
+"domen": "egeszseg",
+"irany": "stagnal",
+"meredekseg": -0.012,
+"ervenyes": true,
+"mai_ertek": 57,
+"csucs": 100,
+"atlag": 32.3
+},
+{
+"szo": "edzés",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.022,
+"ervenyes": true,
+"mai_ertek": 52,
+"csucs": 100,
+"atlag": 67.1
+},
+{
+"szo": "meditáció",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.05,
+"ervenyes": true,
+"mai_ertek": 79,
+"csucs": 100,
+"atlag": 82.8
+},
+{
+"szo": "befektetés",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.081,
+"ervenyes": true,
+"mai_ertek": 47,
+"csucs": 100,
+"atlag": 28.9
+},
+{
+"szo": "bitcoin",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.065,
+"ervenyes": true,
+"mai_ertek": 54,
+"csucs": 100,
+"atlag": 56.8
+},
+{
+"szo": "hírek",
+"domen": "kozelet",
+"irany": "stagnal",
+"meredekseg": -0.007,
+"ervenyes": true,
+"mai_ertek": 47,
+"csucs": 100,
+"atlag": 58.3
+},
+{
+"szo": "magyar péter",
+"domen": "kozelet",
+"irany": "novekszik",
+"meredekseg": 0.022,
+"ervenyes": true,
+"mai_ertek": 10,
+"csucs": 100,
+"atlag": 15.4
+},
+{
+"szo": "recept",
+"domen": "haztartas",
+"irany": "csokken",
+"meredekseg": -0.053,
+"ervenyes": true,
+"mai_ertek": 36,
+"csucs": 100,
+"atlag": 46.8
+},
+{
+"szo": "mese",
+"domen": "csalad",
+"irany": "csokken",
+"meredekseg": -0.021,
+"ervenyes": true,
+"mai_ertek": 88,
+"csucs": 100,
+"atlag": 89.0
+},
+{
+"szo": "nyaralás",
+"domen": "szabadido",
+"irany": "novekszik",
+"meredekseg": 0.083,
+"ervenyes": true,
+"mai_ertek": 23,
+"csucs": 100,
+"atlag": 50.2
+},
+{
+"szo": "tanulás",
+"domen": "tanulas",
+"irany": "csokken",
+"meredekseg": -0.056,
+"ervenyes": true,
+"mai_ertek": 75,
+"csucs": 100,
+"atlag": 78.4
+},
+{
+"szo": "klíma",
+"domen": "otthon",
+"irany": "novekszik",
+"meredekseg": 0.068,
+"ervenyes": true,
+"mai_ertek": 9,
+"csucs": 100,
+"atlag": 17.4
+}
+],
+"napi": {
+"szoveg": "A magyarországi videós keresések a webes trendektől eltérő képet mutatnak, és ezek a szavak egymással nem vethetők össze, hiszen mindegyik a saját megszokott szintjéhez képest értelmezhető. Ma a szorongás a szokásosnál élénkebb figyelmet kapott, a saját átlaga fölött állva. A befektetés szintén az átlagát meghaladva keresett, míg a nyaralás a megszokott szintje alatt maradt, ami az őszi időszakban nem meglepő.\n\nA többi téma nagyjából a saját megszokott sávjában mozgott: a mese, a meditáció és a tanulás magas, de rájuk jellemző szinten állt, az edzés, a bitcoin, a hírek és a recept a közepes tartományban maradt. A magyar péter és a klíma alacsony értéken állt, előbbi a saját átlagához közel, a klíma az átlaga alatt."
+},
+"teljes_kep": {
+"szoveg": "A hét egészét nézve a videós érdeklődés inkább lefelé csúszott. A legnagyobb visszaesést a befektetés mutatta, amely a hét eleji magas szintről érdemben lejjebb került, és mellette a szorongás is jelentősen csökkent, noha a mai napon még mindig az átlaga fölött áll. Mérsékeltebben, de szintén halványult a tanulás, a nyaralás, a meditáció, az edzés, a bitcoin, a hírek és a recept.\n\nStabilnak a mese bizonyult, amely a hét során alig mozdult és tartósan magas maradt. A magyar péter apró emelkedést mutatott, a klíma pedig gyakorlatilag változatlan, alacsony szinten maradt. Összességében a videós figyelem a hét folyamán inkább lecsengő, mint erősödő volt."
+}
+},
+"predikcio": {
+"szoveg": "A rövid távú, egynapos kitekintés minden követett keresésnél nyugodt, stagnáló irányt jelez – összesítve huszonnyolc szó áll így, emelkedőt vagy csökkenőt egyik sem mutat. Fontos hangsúlyozni, hogy ez a közelmúlt mozgásának matematikai folytatása, nem eseményjóslat: a valóság ettől eltérhet, és a mostani számok többségénél a megbízhatóság is alacsony.\n\nA legtöbb előrejelzés gyakorlatilag nulla megbízhatósággal készült, ami őszintén szólva azt jelenti, hogy ezeknél óvatosan érdemes bánni a becsléssel. Viszonylag stabilabb kép csak néhány szónál rajzolódik ki, a leginkább a napelem esetében, de még ott is inkább csak enyhén magabiztosabb a stagnálás jelzése. A munkanélküliség, a rezsi és a pedagógus körül is valamivel szűkebb a bizonytalansági sáv, ám a lényeg egységes: a következő napra nagy elmozdulás egyik irányba sem valószínűsíthető."
 }
 }
