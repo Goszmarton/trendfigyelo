@@ -626,7 +626,7 @@
     },
     {
       "szo": "manchester city vs coventry city fc tabella",
-      "lemma": "Manchester City–Coventry City FC tabella"
+      "lemma": "Manchester City–Coventry City tabella"
     },
     {
       "szo": "manchester city–norwich",
@@ -734,7 +734,7 @@
     },
     {
       "szo": "ötöslottó nyerőszámok",
-      "lemma": "ötöslottó nyerőszám"
+      "lemma": "ötöslottó nyerőszámok"
     },
     {
       "szo": "üldözés",
@@ -922,7 +922,7 @@
     },
     {
       "szo": "időjárás figyelmeztetés",
-      "lemma": "időjárási figyelmeztetés"
+      "lemma": "időjárás-figyelmeztetés"
     },
     {
       "szo": "jáva-tenger",
@@ -1190,7 +1190,7 @@
     },
     {
       "szo": "sztárban sztár 2026",
-      "lemma": "Sztárban Sztár 2026"
+      "lemma": "Sztárban sztár 2026"
     },
     {
       "szo": "teams",
@@ -1230,7 +1230,7 @@
     },
     {
       "szo": "uefa bajnokok ligája, 2026",
-      "lemma": "UEFA-bajnokok ligája 2026"
+      "lemma": "UEFA Bajnokok Ligája 2026"
     },
     {
       "szo": "időközi választás",
@@ -1322,7 +1322,7 @@
     },
     {
       "szo": "ipswich town fc vs liverpool fc tabella",
-      "lemma": "Ipswich Town FC–Liverpool FC tabella"
+      "lemma": "Ipswich Town–Liverpool tabella"
     },
     {
       "szo": "kátai németh vilmos",
@@ -1438,7 +1438,7 @@
     },
     {
       "szo": "konfront",
-      "lemma": "Konfront"
+      "lemma": "konfront"
     },
     {
       "szo": "krizsó szilvia",
@@ -1618,7 +1618,7 @@
     },
     {
       "szo": "beol.hu",
-      "lemma": "beol.hu"
+      "lemma": "Beol.hu"
     },
     {
       "szo": "berend t iván",
@@ -1690,7 +1690,7 @@
     },
     {
       "szo": "cserhalmi nagy ervin",
-      "lemma": "Nagy Ervin"
+      "lemma": "Cserhalmi–Nagy Ervin"
     },
     {
       "szo": "demonstráció",
@@ -1978,7 +1978,7 @@
     },
     {
       "szo": "mária schmidt",
-      "lemma": "Mária Schmidt"
+      "lemma": "Schmidt Mária"
     },
     {
       "szo": "nagykövet",
@@ -2066,7 +2066,7 @@
     },
     {
       "szo": "psg vs as monaco fc tabella",
-      "lemma": "PSG–AS Monaco FC tabella"
+      "lemma": "PSG–AS Monaco tabella"
     },
     {
       "szo": "psg–monaco",
@@ -2091,6 +2091,10 @@
     {
       "szo": "reacher",
       "lemma": "Reacher"
+    },
+    {
+      "szo": "real madrid vs rayo vallecano",
+      "lemma": "Real Madrid–Rayo Vallecano"
     },
     {
       "szo": "real sociedad–bournemouth",
@@ -2150,7 +2154,7 @@
     },
     {
       "szo": "skandináv lottó nyerőszámai",
-      "lemma": "skandináv lottó nyerőszám"
+      "lemma": "skandináv lottó nyerőszámai"
     },
     {
       "szo": "sunderland–arsenal",
@@ -2178,7 +2182,7 @@
     },
     {
       "szo": "telex.hu",
-      "lemma": "telex.hu"
+      "lemma": "Telex.hu"
     },
     {
       "szo": "termékvisszahívás",
@@ -2346,7 +2350,7 @@
     },
     {
       "szo": "használtautó",
-      "lemma": "használtautó"
+      "lemma": "használt autó"
     },
     {
       "szo": "hegedűs zsolt",
@@ -2374,7 +2378,7 @@
     },
     {
       "szo": "istanbul bb–galatasaray",
-      "lemma": "Istanbul BB–Galatasaray"
+      "lemma": "İstanbul BB–Galatasaray"
     },
     {
       "szo": "klímaváltozás",
@@ -2644,25 +2648,20 @@
   "ner": {
     "orszagok": [
       {
-        "nev": "Magyarország",
-        "szavak": [
-          "magyarország",
-          "magyarország–ukrajna",
-          "észak-írország–magyarország",
-          "magyar ukrán meccs",
-          "földrengések magyarországon",
-          "magyarországi település",
-          "magyar labdarúgó-válogatott",
-          "északír labdarúgó-válogatott vs magyar labdarúgó-válogatott tabella"
-        ],
-        "volumen": 154000
-      },
-      {
         "nev": "Ausztria",
         "szavak": [
           "ausztria"
         ],
         "volumen": 20000
+      },
+      {
+        "nev": "Magyarország",
+        "szavak": [
+          "magyarország",
+          "magyarországi település",
+          "földrengések magyarországon"
+        ],
+        "volumen": 9000
       },
       {
         "nev": "Németország",
@@ -2698,11 +2697,26 @@
         "volumen": 14000
       },
       {
+        "nev": "Horvátország",
+        "szavak": [
+          "horvátország",
+          "spanyolország–horvátország"
+        ],
+        "volumen": 7000
+      },
+      {
         "nev": "Kanada",
         "szavak": [
           "kanada"
         ],
         "volumen": 5000
+      },
+      {
+        "nev": "Egyesült Királyság",
+        "szavak": [
+          "egyesült királyság"
+        ],
+        "volumen": 2000
       },
       {
         "nev": "Franciaország",
@@ -2714,19 +2728,11 @@
         "volumen": 6000
       },
       {
-        "nev": "Horvátország",
+        "nev": "Lengyelország",
         "szavak": [
-          "horvátország",
-          "spanyolország–horvátország"
+          "lengyelország"
         ],
-        "volumen": 7000
-      },
-      {
-        "nev": "Egyesült Királyság",
-        "szavak": [
-          "egyesült királyság"
-        ],
-        "volumen": 2000
+        "volumen": 200
       },
       {
         "nev": "Észak-Korea",
@@ -2734,13 +2740,6 @@
           "észak korea"
         ],
         "volumen": 2000
-      },
-      {
-        "nev": "Lengyelország",
-        "szavak": [
-          "lengyelország"
-        ],
-        "volumen": 200
       },
       {
         "nev": "Ukrajna",
@@ -2752,78 +2751,21 @@
         "volumen": 75000
       },
       {
-        "nev": "Spanyolország",
+        "nev": "Európa",
         "szavak": [
-          "anglia–spanyolország",
-          "spanyolország–horvátország"
-        ],
-        "volumen": 15000
-      },
-      {
-        "nev": "Norvégia",
-        "szavak": [
-          "norvégia–portugália"
-        ],
-        "volumen": 5000
-      },
-      {
-        "nev": "Portugália",
-        "szavak": [
-          "norvégia–portugália"
-        ],
-        "volumen": 5000
-      },
-      {
-        "nev": "Belgium",
-        "szavak": [
-          "belgium–franciaország"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Ausztrália",
-        "szavak": [
-          "ausztrália–brazília"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Brazília",
-        "szavak": [
-          "ausztrália–brazília"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Csehország",
-        "szavak": [
-          "csehország–anglia"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Hollandia",
-        "szavak": [
-          "hollandia–németország"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Görögország",
-        "szavak": [
-          "németország–görögország"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Törökország",
-        "szavak": [
-          "törökország–franciaország"
+          "európa"
         ],
         "volumen": 2000
       }
     ],
     "telepulesek": [
+      {
+        "nev": "Brüsszel",
+        "szavak": [
+          "brüsszel"
+        ],
+        "volumen": 5000
+      },
       {
         "nev": "Debrecen",
         "szavak": [
@@ -2846,6 +2788,34 @@
         "volumen": 2000
       },
       {
+        "nev": "Kötcse",
+        "szavak": [
+          "kötcse"
+        ],
+        "volumen": 1000
+      },
+      {
+        "nev": "Moszkva",
+        "szavak": [
+          "moszkva"
+        ],
+        "volumen": 1000
+      },
+      {
+        "nev": "Kijev",
+        "szavak": [
+          "kijev"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Tihany",
+        "szavak": [
+          "tihany"
+        ],
+        "volumen": 10000
+      },
+      {
         "nev": "Pécs",
         "szavak": [
           "pécs",
@@ -2861,23 +2831,9 @@
         "volumen": 2000
       },
       {
-        "nev": "Tihany",
-        "szavak": [
-          "tihany"
-        ],
-        "volumen": 10000
-      },
-      {
         "nev": "Enying",
         "szavak": [
           "enying"
-        ],
-        "volumen": 1000
-      },
-      {
-        "nev": "Kötcse",
-        "szavak": [
-          "kötcse"
         ],
         "volumen": 1000
       },
@@ -2891,59 +2847,16 @@
       {
         "nev": "Győr",
         "szavak": [
-          "wkw győr",
-          "győri audi eto kc"
-        ],
-        "volumen": 7000
-      },
-      {
-        "nev": "Kiskunfélegyháza",
-        "szavak": [
-          "kiskunfélegyháza baleset"
-        ],
-        "volumen": 100
-      },
-      {
-        "nev": "Brüsszel",
-        "szavak": [
-          "brüsszel"
+          "wkw győr"
         ],
         "volumen": 5000
       },
       {
-        "nev": "Kijev",
+        "nev": "Brač",
         "szavak": [
-          "kijev"
+          "brač"
         ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Moszkva",
-        "szavak": [
-          "moszkva"
-        ],
-        "volumen": 1000
-      },
-      {
-        "nev": "Barcelona",
-        "szavak": [
-          "barcelona"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Liverpool",
-        "szavak": [
-          "liverpool"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Porto",
-        "szavak": [
-          "porto"
-        ],
-        "volumen": 2000
+        "volumen": 5000
       }
     ],
     "szemelyek": [
@@ -3098,13 +3011,6 @@
         "volumen": 2000
       },
       {
-        "nev": "Matolcsy Ádám",
-        "szavak": [
-          "matolcsy ádám"
-        ],
-        "volumen": 2000
-      },
-      {
         "nev": "Nagy Feró",
         "szavak": [
           "nagy feró"
@@ -3254,13 +3160,6 @@
         "volumen": 5000
       },
       {
-        "nev": "Orbán Gáspár",
-        "szavak": [
-          "orbán gáspár"
-        ],
-        "volumen": 2000
-      },
-      {
         "nev": "Presser Gábor",
         "szavak": [
           "presser gábor"
@@ -3380,6 +3279,20 @@
         "volumen": 2000
       },
       {
+        "nev": "Harry és Meghan",
+        "szavak": [
+          "harry & meghan"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Hámori Ildikó",
+        "szavak": [
+          "hámori ildikó"
+        ],
+        "volumen": 2000
+      },
+      {
         "nev": "Karácsony Gergely",
         "szavak": [
           "karácsony gergely"
@@ -3493,6 +3406,13 @@
         "volumen": 2000
       },
       {
+        "nev": "Tóth Alex",
+        "szavak": [
+          "tóth alex"
+        ],
+        "volumen": 2000
+      },
+      {
         "nev": "Witzmann Mihály",
         "szavak": [
           "witzmann mihály"
@@ -3514,61 +3434,40 @@
         "volumen": 1000
       },
       {
-        "nev": "Nagy Attila Tibor",
+        "nev": "Fekete-Győr András",
         "szavak": [
-          "nagy attila tibor"
+          "fekete győr andrás",
+          "fekete-győr andrás"
         ],
-        "volumen": 5000
+        "volumen": 15000
       },
       {
-        "nev": "Nagy Márton",
+        "nev": "Hernádi Zsolt",
         "szavak": [
-          "nagy márton"
+          "hernádi zsolt"
         ],
-        "volumen": 5000
+        "volumen": 10000
       },
       {
-        "nev": "Palvin Barbara",
+        "nev": "Kátai Németh Vilmos",
         "szavak": [
-          "palvin barbara"
+          "kátai németh vilmos"
         ],
-        "volumen": 5000
+        "volumen": 10000
       },
       {
-        "nev": "Palányi Nóra",
+        "nev": "Tarr Zoltán",
         "szavak": [
-          "palányi nóra",
-          "palanyi nora"
+          "tarr zoltán"
         ],
-        "volumen": 6000
+        "volumen": 10000
       },
       {
-        "nev": "Szijjártó Péter",
+        "nev": "Takács Péter",
         "szavak": [
-          "szijjártó péter"
+          "takács péter"
         ],
-        "volumen": 5000
-      },
-      {
-        "nev": "Tóth Gabi",
-        "szavak": [
-          "tóth gabi"
-        ],
-        "volumen": 5000
-      },
-      {
-        "nev": "Vályi Nagy Vilmos",
-        "szavak": [
-          "vályi nagy vilmos"
-        ],
-        "volumen": 5000
-      },
-      {
-        "nev": "Stefka István",
-        "szavak": [
-          "stefka istván"
-        ],
-        "volumen": 5000
+        "volumen": 10000
       },
       {
         "nev": "Bruce Willis",
@@ -3591,13 +3490,6 @@
           "cserhalmi györgy"
         ],
         "volumen": 5000
-      },
-      {
-        "nev": "Nagy Ervin",
-        "szavak": [
-          "cserhalmi nagy ervin"
-        ],
-        "volumen": 2000
       },
       {
         "nev": "Daniel Arzani",
@@ -3635,390 +3527,61 @@
         "volumen": 5000
       },
       {
-        "nev": "Hernádi Zsolt",
+        "nev": "Nagy Attila Tibor",
         "szavak": [
-          "hernádi zsolt"
+          "nagy attila tibor"
         ],
-        "volumen": 10000
+        "volumen": 5000
       },
       {
-        "nev": "Kátai Németh Vilmos",
+        "nev": "Nagy Márton",
         "szavak": [
-          "kátai németh vilmos"
+          "nagy márton"
         ],
-        "volumen": 10000
+        "volumen": 5000
       },
       {
-        "nev": "Takács Péter",
+        "nev": "Palvin Barbara",
         "szavak": [
-          "takács péter"
+          "palvin barbara"
         ],
-        "volumen": 10000
+        "volumen": 5000
       },
       {
-        "nev": "Tarr Zoltán",
+        "nev": "Palányi Nóra",
         "szavak": [
-          "tarr zoltán"
+          "palányi nóra",
+          "palanyi nora"
         ],
-        "volumen": 10000
+        "volumen": 6000
       },
       {
-        "nev": "Mankind Ákos",
+        "nev": "Stefka István",
         "szavak": [
-          "mankind ákos"
+          "stefka istván"
         ],
-        "volumen": 20000
+        "volumen": 5000
       },
       {
-        "nev": "Fekete-Győr András",
+        "nev": "Szijjártó Péter",
         "szavak": [
-          "fekete győr andrás",
-          "fekete-győr andrás"
+          "szijjártó péter"
         ],
-        "volumen": 15000
+        "volumen": 5000
       },
       {
-        "nev": "Bálint Antónia",
+        "nev": "Tóth Gabi",
         "szavak": [
-          "bálint antónia"
+          "tóth gabi"
         ],
-        "volumen": 10000
+        "volumen": 5000
       },
       {
-        "nev": "Tóth Alex",
+        "nev": "Vályi Nagy Vilmos",
         "szavak": [
-          "tóth alex"
+          "vályi nagy vilmos"
         ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Till Attila",
-        "szavak": [
-          "till attila"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Molnár Áron",
-        "szavak": [
-          "molnár áron"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Mária Schmidt",
-        "szavak": [
-          "mária schmidt"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Ola Källenius",
-        "szavak": [
-          "ola källenius"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Panyi Szabolcs",
-        "szavak": [
-          "panyi szabolcs"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Panyi Miklós",
-        "szavak": [
-          "panyi miklós"
-        ],
-        "volumen": 500
-      },
-      {
-        "nev": "Papacsek Réka",
-        "szavak": [
-          "papacsek réka"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Papp Gergely",
-        "szavak": [
-          "papp gergely"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Pintér Sándor",
-        "szavak": [
-          "pintér sándor"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Polt Péter",
-        "szavak": [
-          "polt péter"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Péter Szabó Szilvia",
-        "szavak": [
-          "péter szabó szilvia"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Radó Péter",
-        "szavak": [
-          "radó péter"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Ruff Bálint",
-        "szavak": [
-          "ruff bálint"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Rusvai Miklós",
-        "szavak": [
-          "rusvai miklós"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Ruszin-Szendi Romulusz",
-        "szavak": [
-          "ruszin-szendi romulusz"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Rákay Philip",
-        "szavak": [
-          "rákay philip"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Rózsáné Sádt Mónika",
-        "szavak": [
-          "rózsáné sádt mónika"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Ursula von der Leyen",
-        "szavak": [
-          "ursula von der leyen"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Varga Bajusz Veronika",
-        "szavak": [
-          "varga bajusz veronika"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Áder János",
-        "szavak": [
-          "áder jános"
-        ],
-        "volumen": 1000
-      },
-      {
-        "nev": "Áder Orsolya",
-        "szavak": [
-          "áder orsolya"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Ádám Martin",
-        "szavak": [
-          "ádám martin"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Ádám Szofi",
-        "szavak": [
-          "ádám szofi"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Balásy Gyula",
-        "szavak": [
-          "balásy gyula"
-        ],
-        "volumen": 1000
-      },
-      {
-        "nev": "Bill Gates",
-        "szavak": [
-          "bill gates"
-        ],
-        "volumen": 1000
-      },
-      {
-        "nev": "Duplantis",
-        "szavak": [
-          "duplantis"
-        ],
-        "volumen": 1000
-      },
-      {
-        "nev": "Fermín López",
-        "szavak": [
-          "fermín lópez"
-        ],
-        "volumen": 1000
-      },
-      {
-        "nev": "Hegedűs Zsolt",
-        "szavak": [
-          "hegedűs zsolt"
-        ],
-        "volumen": 1000
-      },
-      {
-        "nev": "Hevér Gábor",
-        "szavak": [
-          "hevér gábor"
-        ],
-        "volumen": 1000
-      },
-      {
-        "nev": "Ligeti Miklós",
-        "szavak": [
-          "ligeti miklós"
-        ],
-        "volumen": 1000
-      },
-      {
-        "nev": "Mark Rutte",
-        "szavak": [
-          "mark rutte"
-        ],
-        "volumen": 1000
-      },
-      {
-        "nev": "Miller Dávid",
-        "szavak": [
-          "miller dávid"
-        ],
-        "volumen": 1000
-      },
-      {
-        "nev": "Márkus Luca",
-        "szavak": [
-          "márkus luca"
-        ],
-        "volumen": 1000
-      },
-      {
-        "nev": "Pedri",
-        "szavak": [
-          "pedri"
-        ],
-        "volumen": 1000
-      },
-      {
-        "nev": "Presley Gerber",
-        "szavak": [
-          "presley gerber"
-        ],
-        "volumen": 1000
-      },
-      {
-        "nev": "Prőhle Gergely",
-        "szavak": [
-          "prőhle gergely"
-        ],
-        "volumen": 1000
-      },
-      {
-        "nev": "Ráczpali István",
-        "szavak": [
-          "ráczpali istván"
-        ],
-        "volumen": 1000
-      },
-      {
-        "nev": "Stohl András",
-        "szavak": [
-          "stohl andrás"
-        ],
-        "volumen": 1000
-      },
-      {
-        "nev": "Vidnyánszky Attila",
-        "szavak": [
-          "vidnyánszky attila"
-        ],
-        "volumen": 1000
-      },
-      {
-        "nev": "Kocsis Máté",
-        "szavak": [
-          "kocsis máté"
-        ],
-        "volumen": 500
-      },
-      {
-        "nev": "Krasznahorkai László",
-        "szavak": [
-          "krasznahorkai lászló"
-        ],
-        "volumen": 500
-      },
-      {
-        "nev": "Aileen Wuornos",
-        "szavak": [
-          "aileen wuornos"
-        ],
-        "volumen": 200
-      },
-      {
-        "nev": "David Hasselhoff",
-        "szavak": [
-          "david hasselhoff"
-        ],
-        "volumen": 200
-      },
-      {
-        "nev": "Jennifer Hudson",
-        "szavak": [
-          "jennifer hudson"
-        ],
-        "volumen": 200
-      },
-      {
-        "nev": "Járai Máté",
-        "szavak": [
-          "járai máté"
-        ],
-        "volumen": 200
-      },
-      {
-        "nev": "Charles Spencer",
-        "szavak": [
-          "charles spencer"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Christa Pike",
-        "szavak": [
-          "christa pike"
-        ],
-        "volumen": 2000
+        "volumen": 5000
       },
       {
         "nev": "Adam Sandler",
@@ -4066,6 +3629,27 @@
         "nev": "Callum Styles",
         "szavak": [
           "callum styles"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Charles Spencer",
+        "szavak": [
+          "charles spencer"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Christa Pike",
+        "szavak": [
+          "christa pike"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Nagy Ervin",
+        "szavak": [
+          "cserhalmi nagy ervin"
         ],
         "volumen": 2000
       },
@@ -4175,6 +3759,27 @@
         "volumen": 2000
       },
       {
+        "nev": "Matolcsy Ádám",
+        "szavak": [
+          "matolcsy ádám"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Molnár Áron",
+        "szavak": [
+          "molnár áron"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Schmidt Mária",
+        "szavak": [
+          "mária schmidt"
+        ],
+        "volumen": 2000
+      },
+      {
         "nev": "Növényi Norbert",
         "szavak": [
           "novenyi norbert jr"
@@ -4182,11 +3787,88 @@
         "volumen": 2000
       },
       {
-        "nev": "Rio Ngumoha",
+        "nev": "Ola Källenius",
         "szavak": [
-          "rio ngumoha"
+          "ola källenius"
         ],
-        "volumen": 1000
+        "volumen": 2000
+      },
+      {
+        "nev": "Orbán Gáspár",
+        "szavak": [
+          "orbán gáspár"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Panyi Szabolcs",
+        "szavak": [
+          "panyi szabolcs"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Papacsek Réka",
+        "szavak": [
+          "papacsek réka"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Papp Gergely",
+        "szavak": [
+          "papp gergely"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Pintér Sándor",
+        "szavak": [
+          "pintér sándor"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Polt Péter",
+        "szavak": [
+          "polt péter"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Péter Szabó Szilvia",
+        "szavak": [
+          "péter szabó szilvia"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Radó Péter",
+        "szavak": [
+          "radó péter"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Ruff Bálint",
+        "szavak": [
+          "ruff bálint"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Rusvai Miklós",
+        "szavak": [
+          "rusvai miklós"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Ruszin-Szendi Romulusz",
+        "szavak": [
+          "ruszin-szendi romulusz"
+        ],
+        "volumen": 2000
       },
       {
         "nev": "Rybakina",
@@ -4196,11 +3878,242 @@
         "volumen": 2000
       },
       {
-        "nev": "Tatjana Smith",
+        "nev": "Rákay Philip",
         "szavak": [
-          "tatjana smith"
+          "rákay philip"
         ],
         "volumen": 2000
+      },
+      {
+        "nev": "Rózsáné Sádt Mónika",
+        "szavak": [
+          "rózsáné sádt mónika"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Till Attila",
+        "szavak": [
+          "till attila"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Ursula von der Leyen",
+        "szavak": [
+          "ursula von der leyen"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Varga Bajusz Veronika",
+        "szavak": [
+          "varga bajusz veronika"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Áder Orsolya",
+        "szavak": [
+          "áder orsolya"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Áder János",
+        "szavak": [
+          "áder jános"
+        ],
+        "volumen": 1000
+      },
+      {
+        "nev": "Ádám Martin",
+        "szavak": [
+          "ádám martin"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Ádám Szofi",
+        "szavak": [
+          "ádám szofi"
+        ],
+        "volumen": 2000
+      },
+      {
+        "nev": "Balásy Gyula",
+        "szavak": [
+          "balásy gyula"
+        ],
+        "volumen": 1000
+      },
+      {
+        "nev": "Bill Gates",
+        "szavak": [
+          "bill gates"
+        ],
+        "volumen": 1000
+      },
+      {
+        "nev": "Duplantis",
+        "szavak": [
+          "duplantis"
+        ],
+        "volumen": 1000
+      },
+      {
+        "nev": "Fermín López",
+        "szavak": [
+          "fermín lópez"
+        ],
+        "volumen": 1000
+      },
+      {
+        "nev": "Hegedűs Zsolt",
+        "szavak": [
+          "hegedűs zsolt"
+        ],
+        "volumen": 1000
+      },
+      {
+        "nev": "Hevér Gábor",
+        "szavak": [
+          "hevér gábor"
+        ],
+        "volumen": 1000
+      },
+      {
+        "nev": "Ligeti Miklós",
+        "szavak": [
+          "ligeti miklós"
+        ],
+        "volumen": 1000
+      },
+      {
+        "nev": "Mark Rutte",
+        "szavak": [
+          "mark rutte"
+        ],
+        "volumen": 1000
+      },
+      {
+        "nev": "Miller Dávid",
+        "szavak": [
+          "miller dávid"
+        ],
+        "volumen": 1000
+      },
+      {
+        "nev": "Márkus Luca",
+        "szavak": [
+          "márkus luca"
+        ],
+        "volumen": 1000
+      },
+      {
+        "nev": "Pedri",
+        "szavak": [
+          "pedri"
+        ],
+        "volumen": 1000
+      },
+      {
+        "nev": "Presley Gerber",
+        "szavak": [
+          "presley gerber"
+        ],
+        "volumen": 1000
+      },
+      {
+        "nev": "Prőhle Gergely",
+        "szavak": [
+          "prőhle gergely"
+        ],
+        "volumen": 1000
+      },
+      {
+        "nev": "Rio Ngumoha",
+        "szavak": [
+          "rio ngumoha"
+        ],
+        "volumen": 1000
+      },
+      {
+        "nev": "Ráczpali István",
+        "szavak": [
+          "ráczpali istván"
+        ],
+        "volumen": 1000
+      },
+      {
+        "nev": "Stohl András",
+        "szavak": [
+          "stohl andrás"
+        ],
+        "volumen": 1000
+      },
+      {
+        "nev": "Vidnyánszky Attila",
+        "szavak": [
+          "vidnyánszky attila"
+        ],
+        "volumen": 1000
+      },
+      {
+        "nev": "Kocsis Máté",
+        "szavak": [
+          "kocsis máté"
+        ],
+        "volumen": 500
+      },
+      {
+        "nev": "Krasznahorkai László",
+        "szavak": [
+          "krasznahorkai lászló"
+        ],
+        "volumen": 500
+      },
+      {
+        "nev": "Panyi Miklós",
+        "szavak": [
+          "panyi miklós"
+        ],
+        "volumen": 500
+      },
+      {
+        "nev": "Aileen Wuornos",
+        "szavak": [
+          "aileen wuornos"
+        ],
+        "volumen": 200
+      },
+      {
+        "nev": "David Hasselhoff",
+        "szavak": [
+          "david hasselhoff"
+        ],
+        "volumen": 200
+      },
+      {
+        "nev": "Jennifer Hudson",
+        "szavak": [
+          "jennifer hudson"
+        ],
+        "volumen": 200
+      },
+      {
+        "nev": "Járai Máté",
+        "szavak": [
+          "járai máté"
+        ],
+        "volumen": 200
+      },
+      {
+        "nev": "Mankind Ákos",
+        "szavak": [
+          "mankind ákos"
+        ],
+        "volumen": 20000
       },
       {
         "nev": "Zverev",
@@ -4210,21 +4123,7 @@
         "volumen": 2000
       },
       {
-        "nev": "Dr. Mátyás",
-        "szavak": [
-          "dr mátyás"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Gulyás István",
-        "szavak": [
-          "gulyás istván m5"
-        ],
-        "volumen": 2000
-      },
-      {
-        "nev": "Vini",
+        "nev": "Vinícius",
         "szavak": [
           "vini"
         ],
@@ -4234,7 +4133,7 @@
   },
   "klaszterek": [
     {
-      "cimke": "Energia, üzemanyag és rezsi",
+      "cimke": "Üzemanyag és energia",
       "szavak": [
         "benzin",
         "benzinkút",
@@ -4245,26 +4144,28 @@
         "villanyszámla",
         "tűzifa",
         "fűtés",
-        "elektromos áram",
         "üzemanyagárak",
-        "atomerőmű",
-        "szélenergia",
+        "elektromos áram",
         "mvm zrt.",
         "omv",
+        "szélenergia",
+        "atomerőmű",
+        "audi hungaria zrt.",
         "mohu mol hulladékgazdálkodási zrt.",
         "mohu mol hulladékgazdálkodási zrt",
-        "palackvisszaváltási rendszer",
-        "paks duna fenékküszöb"
+        "hernádi zsolt",
+        "paks duna fenékküszöb",
+        "nemzetközi atomenergia-ügynökség"
       ],
-      "ertelmezes": "A rezsi, az üzemanyagárak és az energiaellátás tartósan erős keresési érdeklődést mutat; a benzin kiugró volumene és a villanyszámla, fűtés, tűzifa visszatérő keresése a háztartási költségekre való fokozott figyelmet jelzi.",
+      "ertelmezes": "Az energiaárakkal, üzemanyaggal, rezsivel és energiaszolgáltatókkal kapcsolatos keresések, amelyek a háztartási költségek iránti erős érdeklődést jelzik.",
       "uralkodo_temak": [
         "Business and Finance",
         "Other"
       ],
-      "volumen": 128000
+      "volumen": 123500
     },
     {
-      "cimke": "Gazdaság, pénzügy és megtakarítás",
+      "cimke": "Pénzügy, megtakarítás, bankok",
       "szavak": [
         "megtakarítás",
         "állampapír",
@@ -4275,349 +4176,347 @@
         "nyugdíjkorhatár",
         "nyugdíjrendszer",
         "öregségi nyugdíj",
-        "adó",
-        "pénz",
-        "készpénz",
         "bank",
-        "bankkártya",
-        "hitel",
-        "kötvény",
-        "részvény",
         "k&h",
         "otp bank nyrt.",
         "mbh bank",
         "magyar államkincstár",
         "magyar nemzeti bank (mnb)",
+        "hitel",
+        "kötvény",
+        "részvény",
+        "adó",
+        "pénz",
+        "gazdaság",
+        "államadósság",
+        "aranytartalék",
+        "készpénz",
+        "bankkártya",
+        "biztosítás",
+        "folyósítás",
         "pénzügyminisztérium",
         "nemzeti adó- és vámhivatal",
-        "gazdaság",
+        "erste market",
         "világgazdaság",
-        "gyár",
-        "milliárdos",
-        "aranytartalék",
-        "államadósság",
-        "fogyasztóvédelem",
-        "nemzeti fogyasztóvédelmi hatóság",
-        "termékvisszahívás",
+        "penny",
         "családi pótlék",
         "támogatás",
-        "folyósítás",
-        "biztosítás",
-        "emlékérme",
-        "kármán andrás",
-        "kapitány istván",
-        "oszkó péter",
-        "róna péter",
-        "hernádi zsolt",
+        "milliárdos",
+        "szoros",
         "nagy márton",
         "matolcsy györgy",
-        "matolcsy ádám",
-        "ola källenius",
-        "erste market",
-        "audi hungaria zrt.",
+        "oszkó péter",
+        "áder jános",
+        "emlékérme",
+        "pfizer",
+        "mandiner",
+        "economx",
+        "forbes",
         "volkswagen",
-        "bayer construct zrt",
-        "magyar turisztikai ügynökség",
+        "gyár",
         "mezőgazdaság",
         "baromfi",
         "élelmiszer",
-        "penny",
-        "csányi sándor",
-        "szakszervezet",
-        "szoros",
+        "termékvisszahívás",
+        "magyar turisztikai ügynökség",
         "szálloda",
-        "economx",
-        "mandiner",
-        "forbes",
-        "nemzetközi atomenergia-ügynökség",
-        "amerikai űrhaderő"
+        "borravaló"
       ],
-      "ertelmezes": "A hónap meghatározó pénzügyi klasztere a megtakarítás, az állampapír, a nyugdíjrendszer és az infláció köré szerveződik, kiegészülve bankokkal, hatóságokkal és gazdasági szereplőkkel; a keresések a lakossági pénzügyi tervezés és az árstabilitás iránti aggodalmat tükrözik.",
+      "ertelmezes": "Makrogazdasági és személyes pénzügyi témák: megtakarítási formák, nyugdíj, infláció, valuták és bankok, erős gazdasági bizonytalanságot és tervezési igényt tükrözve.",
       "uralkodo_temak": [
         "Business and Finance",
         "Law and Government"
       ],
-      "volumen": 331500
+      "volumen": 274000
     },
     {
-      "cimke": "Belpolitika, kormány és közélet",
+      "cimke": "Belpolitika és kormányzat",
       "szavak": [
         "hadházy ákos",
-        "hankó balázs",
-        "hanko balazs",
         "orbán viktor",
         "rogán antal",
         "vitézy dávid",
-        "magyar péter",
-        "magyar péter kossuth rádió",
-        "havasi bertalan",
-        "toroczkai lászló",
-        "varga mihály",
-        "forsthoffer ágnes",
-        "vásárhelyi jános",
         "kormány",
         "kormányzat",
-        "kormányrendelet",
         "magyarország",
+        "hankó balázs",
+        "hanko balazs",
+        "magyar péter",
+        "magyar péter kossuth rádió",
+        "toroczkai lászló",
+        "lázár jános",
+        "tisza",
+        "fidesz",
+        "párt",
+        "frakció",
         "államtitkár",
         "miniszter",
         "külügyminiszter",
         "szijjártó péter",
-        "pintér sándor",
-        "belügyminisztérium",
-        "lázár jános",
-        "deutsch tamás",
         "navracsics tibor",
-        "novák katalin",
-        "balog zoltán",
-        "seszták miklós",
-        "bóka jános",
-        "orban anita",
-        "orbán gáspár",
+        "deutsch tamás",
+        "kocsis máté",
+        "karácsony gergely",
         "mészáros lőrinc",
         "tiborcz istván",
-        "kubatov gábor",
-        "karácsony gergely",
-        "fidesz",
-        "tisza",
-        "tarr zoltán",
-        "párt",
-        "frakció",
+        "orbán gáspár",
+        "áder orsolya",
+        "kötcse",
+        "békemenet",
+        "demonstráció",
+        "digitális polgári kör",
         "időközi választás",
         "jelölt",
-        "demonstráció",
-        "békemenet",
-        "kötcse",
-        "digitális polgári kör",
+        "kormányrendelet",
+        "magyar közlöny",
+        "országgyűlés",
+        "polgármester",
         "nézőpont intézet",
         "szuverenitásvédelmi hivatal",
         "tömeges bevándorlás okozta válsághelyzet",
         "migráció",
-        "országgyűlés",
-        "pottyondy edina",
-        "tarjányi péter",
-        "witzmann mihály",
-        "gyopáros alpár",
-        "balla györgy",
-        "fodor gábor",
-        "fekete győr andrás",
-        "fekete-győr andrás",
-        "nagy attila tibor",
-        "mária schmidt",
-        "rákay philip",
-        "bencsik andrás",
         "bayer zsolt",
-        "hont andrás",
-        "prőhle gergely",
-        "ruff bálint",
-        "vályi nagy vilmos",
+        "bayer show",
+        "balla györgy",
+        "gyopáros alpár",
+        "fülöp botond",
         "varga bajusz veronika",
         "panyi miklós",
-        "kocsis máté",
-        "áder jános",
-        "áder orsolya",
-        "takács péter",
-        "ruszin-szendi romulusz",
-        "polgármester"
+        "fekete győr andrás",
+        "fekete-győr andrás",
+        "fodor gábor",
+        "nagy attila tibor",
+        "rákay philip",
+        "prőhle gergely",
+        "mária schmidt",
+        "terror háza",
+        "hont andrás",
+        "riporter",
+        "cikk",
+        "nagykövet",
+        "nagykövetség",
+        "2026",
+        "2027",
+        "afd",
+        "friedrich merz",
+        "manfred weber",
+        "ursula von der leyen",
+        "európai bizottság",
+        "európai parlament",
+        "mark rutte",
+        "kaja kallas",
+        "integritás hatóság",
+        "transparency international",
+        "amerikai űrhaderő",
+        "hadsereg",
+        "görög légierő",
+        "katonai repülőgép",
+        "háború",
+        "ruszin-szendi romulusz"
       ],
-      "ertelmezes": "Sűrű belpolitikai mező: kormánytagok, ellenzéki szereplők (Magyar Péter, Tisza, Hadházy), pártpolitika, hatóságok és közéleti viták dominálnak, jelezve a 2026-os választási készülődés fokozott politikai figyelmét.",
+      "ertelmezes": "A hónap domináns közéleti blokkja: kormánytagok, ellenzéki szereplők, pártpolitika, uniós vezetők és intézmények, erős átpolitizáltságot mutatva a keresésekben.",
       "uralkodo_temak": [
         "Politics",
         "Law and Government"
       ],
-      "volumen": 373500
+      "volumen": 320500
     },
     {
-      "cimke": "Bűnügy, igazságszolgáltatás és korrupció",
+      "cimke": "Bűnügy, rendőrség, igazságszolgáltatás",
       "szavak": [
         "rendőrség",
         "magyar rendőrség",
-        "országos rendőr főkapitányság",
-        "rendőri intézkedés",
         "lopás",
         "csalás",
         "korrupció",
         "költségvetési csalás",
         "bűncselekmény",
-        "razzia",
         "üldözés",
-        "lövöldözés",
-        "vagyonelkobzás",
-        "kézigránát",
+        "razzia",
+        "rendőri intézkedés",
         "alkotmánybíróság",
         "kúria",
         "főügyész",
         "legfőbb ügyész",
         "ügyész",
-        "központi nyomozó főügyészség",
-        "nemzeti vagyonvisszaszerzési és vagyonvédelmi hivatal",
-        "schadl györgy",
-        "baka andrás",
-        "halmai gábor",
-        "hajdu jános",
         "polt péter",
-        "ligeti miklós",
-        "gyurkó szilvia",
-        "hallerné nagy anikó",
-        "kátai németh vilmos",
-        "rózsáné sádt mónika",
-        "fülöp botond",
-        "bodolay géza",
-        "wkw győr",
-        "jellinek dániel",
+        "központi nyomozó főügyészség",
+        "országos rendőr főkapitányság",
+        "belügyminisztérium",
         "mentelmi jog",
-        "integritás hatóság",
-        "transparency international",
-        "magyar közlöny",
+        "vagyonelkobzás",
+        "nemzeti vagyonvisszaszerzési és vagyonvédelmi hivatal",
+        "bayer construct zrt",
+        "wkw győr",
+        "schadl györgy",
+        "lövöldözés",
+        "tűz",
+        "robbanás",
+        "kézigránát",
+        "lázadás",
+        "botrány",
+        "world trade center",
+        "911",
+        "24",
+        "hajdu jános",
+        "ligeti miklós",
+        "halmai gábor",
+        "baka andrás",
+        "bodolay géza",
+        "rózsáné sádt mónika",
+        "hallerné nagy anikó",
         "christa pike",
         "aileen wuornos",
-        "botrány",
-        "lagzi lajcsi"
+        "kátai németh vilmos",
+        "oktatási hivatal",
+        "nemzeti fogyasztóvédelmi hatóság",
+        "fogyasztóvédelem",
+        "nagyócsa",
+        "gyurkó szilvia",
+        "ruff bálint",
+        "panyi szabolcs",
+        "charles spencer",
+        "nő",
+        "halál",
+        "konfront"
       ],
-      "ertelmezes": "A közbiztonsági és igazságszolgáltatási érdeklődés a rendőrségi hírek, korrupciós és vagyonvisszaszerzési ügyek, valamint ismert jogi szereplők körül csoportosul; a bűnügyi krónikák és a nagy értékű csalások tartósan trendeltek.",
+      "ertelmezes": "Bűnügyi hírek, rendőrségi akciók, korrupciós és igazságszolgáltatási ügyek, valamint az azokhoz kötődő hivatalok és szereplők iránti érdeklődés.",
       "uralkodo_temak": [
         "Law and Government",
         "Politics"
       ],
-      "volumen": 191200
+      "volumen": 214400
     },
     {
-      "cimke": "Labdarúgás és csapatsportok",
+      "cimke": "Labdarúgás és nemzetközi meccsek",
       "szavak": [
         "szoboszlai dominik",
         "szoboszlai gól",
-        "marco rossi",
-        "real madrid",
-        "m4 élő",
-        "m4 sport",
-        "m4 sport élő",
-        "m4 sport online",
-        "celtic–ftc",
-        "ftc–újpest",
-        "ipswich–liverpool",
-        "észak-írország–magyarország",
-        "anglia–spanyolország",
-        "barcelona–feyenoord",
-        "betis–real madrid",
-        "eto–ftc",
-        "levante–barcelona",
-        "liverpool–fulham",
-        "liverpool–tottenham",
-        "man utd–manchester city",
-        "real madrid–inter",
-        "real madrid–rayo",
-        "valencia–barcelona",
-        "arsenal–chelsea",
-        "atlético madrid–osasuna",
-        "elche–real madrid",
-        "manchester city vs coventry city fc tabella",
-        "manchester city–norwich",
-        "man utd–brighton",
-        "newcastle–bournemouth",
-        "norvégia–portugália",
-        "spanyolország–horvátország",
-        "vasas–nyíregyháza",
-        "ausztrália–brazília",
-        "bayern münchen–union berlin",
-        "belgium–franciaország",
-        "bilbao–atlético madrid",
-        "bvsc-zugló",
-        "chelsea–hull city",
-        "csehország–anglia",
-        "elversberg–bayern münchen",
-        "győri audi eto kc",
-        "grúz labdarúgó-válogatott",
-        "nd gorica",
-        "porto",
-        "liverpool",
-        "liverpool fc",
+        "magyar labdarúgó-válogatott",
         "magyar ukrán meccs",
         "magyarország–ukrajna",
-        "uefa bajnokok ligája, 2026",
-        "liverpool atletico madrid",
+        "ukrán labdarúgó-válogatott",
         "északír labdarúgó-válogatott vs magyar labdarúgó-válogatott tabella",
+        "észak-írország–magyarország",
+        "grúz labdarúgó-válogatott",
+        "marco rossi",
+        "real madrid",
+        "real madrid–inter",
+        "real madrid–rayo",
+        "real madrid vs rayo vallecano",
+        "betis–real madrid",
+        "elche–real madrid",
+        "celtic–ftc",
+        "ftc–újpest",
+        "eto–ftc",
+        "eto–honvéd",
+        "ipswich–liverpool",
+        "ipswich town fc vs liverpool fc tabella",
+        "liverpool",
+        "liverpool fc",
+        "liverpool–fulham",
+        "liverpool–tottenham",
+        "liverpool atletico madrid",
+        "liverpool–atlético madrid",
+        "anglia–spanyolország",
+        "barcelona",
+        "barcelona–feyenoord",
         "barcelona–racing",
         "barcelona–rayo",
-        "ipswich town fc vs liverpool fc tabella",
+        "levante–barcelona",
+        "valencia–barcelona",
+        "fc barcelona vs rayo vallecano tabella",
+        "man utd–manchester city",
+        "man utd–brighton",
+        "manchester city vs coventry city fc tabella",
+        "manchester city–norwich",
+        "manchester united fc",
+        "arsenal–chelsea",
         "arsenal fc",
         "aston villa vs arsenal tabella",
         "aston villa–arsenal",
+        "sunderland–arsenal",
+        "atlético madrid–osasuna",
+        "bilbao–atlético madrid",
         "real sociedad–atlético madrid",
-        "uefa champions league 2026",
-        "ukrán labdarúgó-válogatott",
-        "magyar labdarúgó-válogatott",
-        "manchester united fc",
-        "bajnokok ligája",
-        "barcelona",
+        "newcastle–bournemouth",
+        "real sociedad–bournemouth",
+        "bournemouth–lincoln city",
         "chelsea",
+        "chelsea–hull city",
         "chelsea–leeds",
-        "eto–honvéd",
+        "leeds–newcastle",
         "everton–man utd",
+        "bayern münchen",
+        "bayern münchen–union berlin",
+        "elversberg–bayern münchen",
+        "schalke–bayern münchen",
+        "belgium–franciaország",
+        "norvégia–portugália",
+        "spanyolország–horvátország",
+        "csehország–anglia",
+        "ausztrália–brazília",
+        "hollandia–németország",
+        "németország–görögország",
+        "törökország–franciaország",
+        "juventus–milan",
+        "sevilla–valencia",
+        "villarreal–betis",
+        "rayo–espanyol",
+        "porto",
+        "porto–manchester city",
+        "brest–psg",
+        "brugge–aston villa",
+        "psg–monaco",
+        "psg vs as monaco fc tabella",
+        "psg–slovan bratislava",
+        "aek–lask",
+        "aek–árisz",
+        "amedspor–trabzonspor",
+        "istanbul bb–galatasaray",
+        "inter miami–cruz azul",
+        "vasas–nyíregyháza",
+        "bvsc-zugló",
+        "pafc–honvéd",
+        "paks–dvsc",
+        "zalaegerszeg–pafc",
+        "nyíregyháza spartacus fc",
+        "nd gorica",
+        "uefa bajnokok ligája, 2026",
+        "uefa champions league 2026",
+        "bajnokok ligája",
+        "nemzetek ligája",
+        "premier league",
+        "bundesliga",
+        "magyar első osztályú labdarúgó-bajnokság",
+        "nb1",
+        "m4 sport",
+        "m4 sport élő",
+        "m4 élő",
+        "m4 sport online",
         "florian wirtz",
         "andoni iraola",
         "fabio grosso",
         "daniel arzani",
-        "kerkez milos",
         "callum styles",
-        "george nield gillett",
-        "romain lagarde",
-        "hollandia–németország",
-        "juventus–milan",
-        "liverpool–atlético madrid",
-        "magyar első osztályú labdarúgó-bajnokság",
-        "nemzetek ligája",
-        "németország–görögország",
-        "pafc–honvéd",
-        "paks–dvsc",
-        "porto–manchester city",
-        "psg vs as monaco fc tabella",
-        "psg–monaco",
-        "psg–slovan bratislava",
-        "real sociedad–bournemouth",
-        "sevilla–valencia",
-        "sunderland–arsenal",
-        "törökország–franciaország",
-        "villarreal–betis",
-        "zalaegerszeg–pafc",
-        "rayo–espanyol",
-        "rio ngumoha",
-        "nyíregyháza spartacus fc",
-        "inter miami–cruz azul",
-        "istanbul bb–galatasaray",
-        "fc barcelona vs rayo vallecano tabella",
-        "fermín lópez",
-        "pedri",
-        "bournemouth–lincoln city",
-        "brest–psg",
-        "brugge–aston villa",
-        "aek–lask",
-        "aek–árisz",
-        "amedspor–trabzonspor",
-        "bayern münchen",
-        "bundesliga",
-        "premier league",
-        "nb1",
-        "dzsudzsák balázs",
-        "tóth alex",
+        "kerkez milos",
         "ádám martin",
-        "átigazolás",
-        "eredmenyek",
-        "eredmények",
-        "nso",
-        "sports",
+        "tóth alex",
+        "pedri",
+        "fermín lópez",
+        "rio ngumoha",
         "vini",
-        "andy williams",
-        "papacsek réka",
-        "joanna wietrzyk"
+        "átigazolás",
+        "magyar olimpiai bizottság"
       ],
-      "ertelmezes": "A hónap legnagyobb volumenű klasztere a labdarúgás: a magyar válogatott mérkőzései (Észak-Írország, Ukrajna), a Bajnokok Ligája, a Premier League és a La Liga találkozói, valamint Szoboszlai és a magyar klubok köré összpontosuló keresések uralják a sportérdeklődést.",
+      "ertelmezes": "A hónap kiemelkedő sporttartalma: a magyar válogatott mérkőzései, Szoboszlai, a Bajnokok Ligája és a nagy európai bajnokságok élő közvetítései és tabellái.",
       "uralkodo_temak": [
         "Sports"
       ],
-      "volumen": 687500
+      "volumen": 688000
     },
     {
-      "cimke": "Egyéni sportok és autósport",
+      "cimke": "Egyéb sport (F1, atlétika, tenisz, kézi)",
       "szavak": [
         "f1",
         "forma 1",
@@ -4625,177 +4524,196 @@
         "formula 1 spanyol nagydíj",
         "formula–1 olasz nagydíj",
         "formula–1 spanyol nagydíj",
-        "motogp-világbajnokság",
         "scuderia ferrari",
-        "kimi antonelli",
+        "motogp-világbajnokság",
         "atlétikai világdöntő",
         "duplantis",
         "rybakina",
         "zverev",
-        "swimming",
-        "magyar olimpiai bizottság",
         "grózer györgy",
+        "romain lagarde",
+        "novenyi norbert jr",
+        "tatjana smith",
+        "joanna wietrzyk",
+        "papacsek réka",
         "ónodi henrietta",
         "ekler luca",
-        "novenyi norbert jr",
-        "tatjana smith"
+        "győri audi eto kc",
+        "sportfogadás",
+        "fogadás",
+        "tippmix",
+        "nso",
+        "sports",
+        "swimming",
+        "eredmenyek",
+        "eredmények",
+        "teams"
       ],
-      "ertelmezes": "Az egyéni és motorsportok érdeklődése a Forma–1 nagydíjak, a MotoGP, az atlétikai világdöntő és egyes élsportolók köré épül, a csapatsportoktól elkülönülő, de erős szezonális figyelemmel.",
+      "ertelmezes": "A labdarúgáson túli sportágak: Forma–1 futamok, atlétikai világdöntő, tenisz, kézilabda és sportfogadás iránti érdeklődés.",
       "uralkodo_temak": [
         "Sports"
       ],
-      "volumen": 59100
+      "volumen": 57700
     },
     {
-      "cimke": "Időjárás, klíma és természeti jelenségek",
+      "cimke": "Időjárás és természeti jelenségek",
       "szavak": [
         "időjárás",
         "holnapi időjárás",
-        "idojaras",
         "időkép",
         "idokep",
+        "idojaras",
         "weather",
-        "radar",
         "időjárás figyelmeztetés",
-        "el niño",
         "aszály",
+        "el niño",
         "lehűlés",
-        "hidegfront",
-        "felhőszakadás",
         "hőkupola",
         "hőségriasztás",
-        "hőmérséklet",
-        "csapadék",
         "eső",
-        "jégeső",
         "jég",
+        "jégeső",
+        "felhőszakadás",
+        "csapadék",
+        "hőmérséklet",
+        "hidegfront",
         "szél",
         "telihold",
-        "klímaváltozás",
         "vízhiány",
+        "klímaváltozás",
         "árvíz",
-        "földrengések magyarországon"
+        "földrengések magyarországon",
+        "radar",
+        "augusztus",
+        "éjszaka",
+        "óraátállítás",
+        "óraátállítás 2026",
+        "december 24 munkaszüneti nap",
+        "kárpátok",
+        "jáva-tenger",
+        "mofetta"
       ],
-      "ertelmezes": "Markáns időjárási érdeklődés: a hőségriasztás, hőkupola és aszály a nyár végi forróságot, a lehűlés, hidegfront és felhőszakadás az ősz eleji váltást tükrözi; az időjárás önmagában kiugró (100 000) volument ért el.",
+      "ertelmezes": "Az időjárás, a nyári hőség és aszály, valamint a szezonális és természeti jelenségek iránti folyamatos, magas volumenű érdeklődés.",
       "uralkodo_temak": [
         "Climate",
         "Other"
       ],
-      "volumen": 282100
+      "volumen": 309100
     },
     {
-      "cimke": "Szórakoztatás, celebek és kultúra",
+      "cimke": "Szórakoztatás, celebek és tévéműsorok",
       "szavak": [
         "várkonyi andrea",
         "blikk",
-        "hayden panettiere",
-        "nagy feró",
-        "deák bill gyula",
         "házasság első látásra",
-        "házasság első látásra kármen",
         "hazassag elso latasra 2026",
+        "házasság első látásra kármen",
         "házasság",
         "x faktor",
         "x faktor 2026",
-        "celeb vagyok ments ki innen",
-        "celeb vagyok... ments ki innen!",
-        "vv renátó",
-        "renátó",
-        "mankind ákos",
         "megasztár 2026",
         "sztárban sztár 2026",
         "the voice",
+        "celeb vagyok ments ki innen",
+        "celeb vagyok... ments ki innen!",
         "farm vip",
         "heti hetes",
         "furcsa pár",
-        "most wanted",
-        "reacher",
+        "vv renátó",
+        "renátó",
+        "rtl",
         "rtl+",
         "rtl műsor",
         "tv műsor",
+        "m1",
+        "duna médiaszolgáltató",
+        "borbás marcsi szakácskönyve",
+        "dr mátyás",
+        "a tilosban parkoló",
+        "most wanted",
+        "reacher",
         "film",
         "movies",
         "concerts",
         "online radio",
-        "a tilosban parkoló",
-        "borbás marcsi szakácskönyve",
-        "bayer show",
-        "glamour",
         "emmy 2026",
         "miss universe",
         "miss world 2026",
-        "ozora",
-        "fasy adam",
-        "fásy ádám",
-        "gulyás virág",
-        "varga edit",
-        "koós boglárka",
-        "krausz gábor",
-        "marsi anikó",
-        "miller zoltán",
-        "miller dávid",
-        "németh kristóf",
-        "presser gábor",
-        "szirtes tamás",
-        "ókovács szilveszter",
-        "alföldi róbert",
-        "faludy györgy",
-        "krasznahorkai lászló",
-        "hámori ildikó",
-        "kecsmár alexandra",
-        "bálint antónia",
-        "bruce willis",
-        "cindy crawford",
-        "cindy crawford lánya",
-        "cserhalmi györgy",
-        "cserhalmi nagy ervin",
-        "kiss ramóna",
-        "krizsó szilvia",
+        "glamour",
+        "harry & meghan",
         "lady gaga",
         "lady gaga gyereke",
-        "harry & meghan",
-        "charles spencer",
-        "sarka kata",
         "sydney sweeney",
-        "sztankay istván",
-        "tóth gabi",
-        "radics gigi",
-        "pogány induló",
-        "bochkor gábor",
-        "eperjes károly",
-        "molnár áron",
-        "papp gergely",
-        "péter szabó szilvia",
-        "till attila",
-        "vidnyánszky attila",
-        "stohl andrás",
-        "hevér gábor",
-        "márkus luca",
+        "bruce willis",
         "adam sandler",
         "alan ritchson",
+        "cindy crawford",
+        "cindy crawford lánya",
         "kaia gerber",
         "presley gerber",
         "david hasselhoff",
         "jennifer hudson",
-        "járai máté",
+        "palvin barbara",
+        "tóth gabi",
+        "radics gigi",
+        "sarka kata",
         "berki krisztián",
-        "dr mátyás",
-        "ádám szofi",
-        "farkasházi réka",
+        "till attila",
+        "stohl andrás",
+        "alföldi róbert",
+        "eperjes károly",
+        "cserhalmi györgy",
+        "cserhalmi nagy ervin",
+        "hámori ildikó",
+        "sztankay istván",
+        "faludy györgy",
+        "krasznahorkai lászló",
+        "vidnyánszky attila",
         "játékszín",
         "déryné közhasznú nonprofit kft",
-        "terror háza",
-        "éjszaka"
+        "botaniq budai klub",
+        "nagy feró",
+        "deák bill gyula",
+        "presser gábor",
+        "bochkor gábor",
+        "krizsó szilvia",
+        "marsi anikó",
+        "miller zoltán",
+        "miller dávid",
+        "németh kristóf",
+        "kiss ramóna",
+        "kecsmár alexandra",
+        "koós boglárka",
+        "krausz gábor",
+        "gulyás virág",
+        "gulyás istván m5",
+        "székely gábor",
+        "varga edit",
+        "márkus luca",
+        "péter szabó szilvia",
+        "papp gergely",
+        "hevér gábor",
+        "molnár áron",
+        "ádám szofi",
+        "bálint antónia",
+        "járai máté",
+        "mankind ákos",
+        "pogány induló",
+        "balásy gyula",
+        "devergo",
+        "zagyva",
+        "új szó",
+        "dzsudzsák balázs",
+        "grózer györgy"
       ],
-      "ertelmezes": "A szórakoztató mező a hazai valóságshow-k és tévéműsorok (Házasság első látásra, X-Faktor, Megasztár, Celeb vagyok), hazai és nemzetközi sztárok, valamint kulturális és díjátadó események köré rendeződik, széles hazai közönségfigyelemmel.",
+      "ertelmezes": "Valóságshow-k, zenei tehetségkutatók, hazai és nemzetközi hírességek, színházi és filmes témák – a könnyed, bulvár jellegű keresési érdeklődés nagy és sokszínű blokkja.",
       "uralkodo_temak": [
-        "Entertainment",
-        "Other"
+        "Entertainment"
       ],
-      "volumen": 444200
+      "volumen": 423200
     },
     {
-      "cimke": "Technológia és digitális eszközök",
+      "cimke": "Technológia és internet",
       "szavak": [
         "mesterséges intelligencia",
         "gemini",
@@ -4804,250 +4722,140 @@
         "ai",
         "android",
         "google",
-        "classroom",
-        "teams",
         "maps",
+        "classroom",
         "apple event",
         "iphone duo",
         "iphone 17 pro",
         "ios 27",
         "samsung",
+        "hacker",
         "robot",
         "számítógép",
-        "hacker",
-        "bill gates"
+        "gta vi",
+        "wow forever",
+        "startlap",
+        "boeing 737",
+        "repülőgép",
+        "repülőtér",
+        "légi közlekedés",
+        "légitársaság",
+        "pilóta",
+        "sötét anyag"
       ],
-      "ertelmezes": "A technológiai érdeklődés a mesterséges intelligencia (ChatGPT, Gemini), az Apple-bejelentések (iPhone, iOS) és a nagy platformok köré épül, jelezve az új eszközök és AI-szolgáltatások iránti folyamatos figyelmet.",
+      "ertelmezes": "Mesterséges intelligencia, okostelefon-bemutatók, szoftverek és online eszközök, valamint légi közlekedéssel kapcsolatos technológiai érdeklődés.",
       "uralkodo_temak": [
         "Technology",
         "Other"
       ],
-      "volumen": 47600
+      "volumen": 67400
     },
     {
-      "cimke": "Média és hírportálok",
-      "szavak": [
-        "index.hu",
-        "index",
-        "24.hu",
-        "24",
-        "444.hu",
-        "telex.hu",
-        "telex",
-        "hvg",
-        "origo",
-        "beol.hu",
-        "magyar nemzet",
-        "startlap",
-        "duna médiaszolgáltató",
-        "m1",
-        "hír",
-        "hírek",
-        "interjú",
-        "cikk",
-        "újságíró",
-        "riporter",
-        "panyi szabolcs",
-        "stefka istván",
-        "gulyás istván m5",
-        "konfront",
-        "új szó"
-      ],
-      "ertelmezes": "A hírfogyasztás a nagy magyar online hírportálok és közmédia köré összpontosul; a felhasználók konkrét lapokat, cikkeket, interjúkat és újságírókat kerestek, ami az aktuális politikai és közéleti hírek iránti erős igényt mutatja.",
-      "uralkodo_temak": [
-        "Law and Government",
-        "Other"
-      ],
-      "volumen": 51100
-    },
-    {
-      "cimke": "Egészségügy",
-      "szavak": [
-        "országos mentőszolgálat",
-        "kórház",
-        "országos onkológiai intézet",
-        "szülés",
-        "ótvar",
-        "étrend kiegészítő",
-        "nutriversum",
-        "gyógyszer",
-        "egészség",
-        "járvány",
-        "fertőzés",
-        "endometriózis",
-        "pfizer",
-        "rusvai miklós",
-        "hegedűs zsolt"
-      ],
-      "ertelmezes": "Az egészségügyi keresések a betegellátás, mentés, konkrét kórképek és gyógyszerek, valamint táplálékkiegészítők köré rendeződnek; a járvány és fertőzés megjelenése egészségügyi riadalomra utalhat.",
-      "uralkodo_temak": [
-        "Health",
-        "Other"
-      ],
-      "volumen": 60000
-    },
-    {
-      "cimke": "Oktatás",
-      "szavak": [
-        "tanév",
-        "iskola",
-        "óvoda",
-        "gimnázium",
-        "pedagógus",
-        "oktatási hivatal",
-        "farkas bertalan általános iskola",
-        "pécsi tudományegyetem",
-        "radó péter",
-        "schools"
-      ],
-      "ertelmezes": "A tanévkezdéshez kötődő klaszter: iskola, óvoda, pedagógus és oktatási intézmények keresése a szeptemberi iskolakezdés szezonális érdeklődését tükrözi.",
-      "uralkodo_temak": [
-        "Jobs and Education",
-        "Other"
-      ],
-      "volumen": 30100
-    },
-    {
-      "cimke": "Közlekedés és járművek",
+      "cimke": "Közlekedés és infrastruktúra",
       "szavak": [
         "autópálya",
-        "autóbusz",
         "vonat",
+        "autóbusz",
         "máv",
         "villamos",
         "autó",
         "használtautó",
         "matrica",
         "menetrendek",
-        "m80-as autóút",
         "144 es busz",
+        "m80-as autóút",
         "soroksári út",
         "sződliget utca",
         "ütközés",
         "kiskunfélegyháza baleset",
-        "repülőtér",
-        "repülőgép",
-        "légi közlekedés",
-        "légitársaság",
-        "pilóta",
-        "boeing 737",
-        "katonai repülőgép",
-        "görög légierő"
+        "lakás",
+        "ház",
+        "otthon"
       ],
-      "ertelmezes": "A közlekedési klaszter a tömegközlekedést (MÁV, busz, villamos), az autópálya-matricát és baleseteket, valamint a légi közlekedés eseményeit fogja össze; a konkrét járatok és balesetek a napi utazási érdeklődést jelzik.",
+      "ertelmezes": "A közúti és vasúti közlekedés, menetrendek, balesetek és lakhatás gyakorlati témái.",
       "uralkodo_temak": [
         "Travel and Transportation",
         "Other"
       ],
-      "volumen": 78100
+      "volumen": 64100
     },
     {
-      "cimke": "Külpolitika és nemzetközi kapcsolatok",
+      "cimke": "Egészség és oktatás",
       "szavak": [
-        "ausztria",
-        "németország",
-        "oroszország",
-        "oroszok",
-        "svájc",
-        "anglia",
-        "kanada",
-        "franciaország",
-        "horvátország",
-        "egyesült királyság",
-        "észak korea",
-        "lengyelország",
-        "európa",
-        "brüsszel",
-        "moszkva",
-        "kijev",
-        "európai bizottság",
-        "európai parlament",
-        "afd",
-        "friedrich merz",
-        "manfred weber",
-        "ursula von der leyen",
-        "kaja kallas",
-        "mark rutte",
-        "háború",
-        "hadsereg",
-        "nagykövet",
-        "nagykövetség"
+        "kórház",
+        "szülés",
+        "ótvar",
+        "endometriózis",
+        "gyógyszer",
+        "étrend kiegészítő",
+        "egészség",
+        "fertőzés",
+        "járvány",
+        "nutriversum",
+        "országos onkológiai intézet",
+        "rusvai miklós",
+        "országos mentőszolgálat",
+        "farkasházi réka",
+        "hegedűs zsolt",
+        "iskola",
+        "óvoda",
+        "gimnázium",
+        "tanév",
+        "pedagógus",
+        "szakma",
+        "pécsi tudományegyetem",
+        "schools"
       ],
-      "ertelmezes": "A nemzetközi mező az EU-s intézmények és vezetők, a szomszédos és nagyhatalmi országok, valamint a háborús és migrációs témák köré épül; az orosz–ukrán kontextus és az EU-magyar viszony dominál.",
+      "ertelmezes": "Egészségügyi témák, intézmények és betegségek, valamint az új tanévhez kapcsolódó oktatási keresések.",
       "uralkodo_temak": [
-        "Law and Government",
-        "Politics"
+        "Health",
+        "Jobs and Education"
       ],
-      "volumen": 107200
+      "volumen": 80100
     },
     {
-      "cimke": "Egyéb: helyszínek, hétköznapok és természet",
+      "cimke": "Média, hírportálok és egyéb szavak",
       "szavak": [
-        "2026",
-        "2027",
-        "augusztus",
-        "óraátállítás",
-        "óraátállítás 2026",
-        "december 24 munkaszüneti nap",
+        "index.hu",
+        "index",
+        "24.hu",
+        "444.hu",
+        "telex",
+        "telex.hu",
+        "beol.hu",
+        "hvg",
+        "magyar nemzet",
+        "origo",
+        "hír",
+        "hírek",
+        "interjú",
+        "újságíró",
+        "szakszervezet",
+        "kamara",
         "ötöslottó nyerőszámok",
         "skandináv lottó nyerőszámai",
-        "ház",
-        "lakás",
-        "otthon",
-        "kamara",
-        "szakma",
-        "nő",
-        "halál",
-        "tűz",
-        "robbanás",
-        "911",
-        "world trade center",
-        "gta vi",
-        "wow forever",
-        "fishing",
-        "horgászat",
-        "borravaló",
-        "devergo",
-        "sötét anyag",
-        "mofetta",
-        "kárpátok",
-        "jáva-tenger",
-        "zagyva",
-        "zala",
-        "brač",
-        "debrecen",
-        "bicske",
-        "pécs",
-        "szeged",
-        "tihany",
-        "enying",
-        "nagyócsa",
-        "magyarországi település",
-        "botaniq budai klub",
         "keresztes vipera",
         "anakonda",
         "zöld anakonda",
         "ormányos medve",
-        "farkas bertalan",
-        "berend t iván",
-        "gregor anikó",
-        "ráczpali istván",
-        "lázadás",
-        "vőlegény",
-        "fogadás",
-        "sportfogadás",
-        "tippmix"
+        "horgászat",
+        "fishing",
+        "bill gates",
+        "tihany",
+        "zala",
+        "magyarországi település"
       ],
-      "ertelmezes": "Vegyes gyűjtőklaszter: naptári és ünnepnapi témák, lottószámok, települések, természeti jelenségek és állatok, valamint hétköznapi fogalmak, amelyek nem illeszkednek a nagy tematikus csoportokba, de a mindennapi kíváncsiságot tükrözik.",
+      "ertelmezes": "Hírportálok és médiamárkák, valamint néhány vegyes, egyedi keresés (szerencsejáték, állatok, hobbi), amelyek nem illeszkednek szorosan a nagyobb tematikus blokkokba.",
       "uralkodo_temak": [
-        "Other"
+        "Other",
+        "Politics"
       ],
-      "volumen": 142300
+      "volumen": 54300
     }
   ],
-  "osszegzes": "2026 szeptemberében a magyar keresési érdeklődést néhány jól elkülönülő, de egymást átfedő téma uralta. A legnagyobb és legstabilabb figyelem a lakossági pénzügyekre irányult: a benzin, villanyszámla, tűzifa és fűtés a rezsiköltségek, míg a megtakarítás, állampapír, infláció, nyugdíj és nyugdíjkorhatár a pénzügyi tervezés iránti aggodalmat jelzi. Ezzel párhuzamosan intenzív belpolitikai aktivitás látszik: kormánytagok (Orbán Viktor, Rogán Antal, Hankó Balázs), az ellenzéki Magyar Péter és a Tisza, valamint pártpolitikai és választási témák (időközi választás, Kötcse, békemenet) a 2026-os kampányidőszak közeledtét sejtetik. A közélethez szorosan kapcsolódik egy erős bűnügyi-igazságszolgáltatási szál (rendőrség, korrupció, vagyonvisszaszerzés, csalás, ismert jogi szereplők). A hónap legnagyobb volumenű tematikája a sport, ezen belül is a labdarúgás: a magyar válogatott mérkőzései (Észak-Írország, Ukrajna), a Bajnokok Ligája és az angol-spanyol bajnokik tömege, Szoboszlai Dominik és a hazai klubok körül; emellett a Forma–1 és az atlétikai világdöntő hozott egyéni sportérdeklődést. Az időjárás kiugró volumennel szerepelt: a hőségriasztás, hőkupola és aszály a nyárvégi forróságot, a lehűlés és hidegfront az őszi váltást jelzi. A szórakoztatás a hazai valóságshow-k és tévéműsorok (Házasság első látásra, X-Faktor, Megasztár) és hazai-nemzetközi sztárok köré szerveződött, míg a technológiai figyelmet az AI (ChatGPT, Gemini) és az Apple-bejelentések hajtották. Visszatérő mintaként jelent meg a hírportálok és közmédia intenzív keresése, a tanévkezdéshez kötődő oktatási téma, valamint az EU-s és nemzetközi politika. Összességében a hónap a megélhetési-pénzügyi gondok, az éleződő belpolitika, a futball és az időjárás négyes tengelye mentén rajzolódik ki.",
+  "osszegzes": "A 2026. szeptemberi magyar keresési érdeklődést néhány erős tematikus tengely határozta meg. A legmagasabb volumenű és leggyakoribb kereséseket a megélhetési és gazdasági témák uralták: az üzemanyagárak (benzin, gázolaj), a rezsi (villanyszámla, fűtés, tűzifa), valamint a megtakarítás, állampapír, nyugdíj és infláció körüli kérdések visszatérően felbukkantak, erős anyagi bizonytalanságot és tervezési igényt jelezve. Ezzel párhuzamosan kiemelkedően átpolitizált volt a hónap: kormánytagok és közszereplők (Orbán Viktor, Rogán Antal, Hankó Balázs, Hadházy Ákos, Magyar Péter), intézmények és uniós vezetők sűrűn trendeltek, a politikai érdeklődés a bűnügyi-igazságszolgáltatási témákkal (rendőrség, korrupció, ügyészség, vagyonvisszaszerzés) is összefonódott. A sport kiugró csúcsokat hozott: a magyar válogatott mérkőzései (Magyarország–Ukrajna, Észak-Írország–Magyarország), Szoboszlai, a Bajnokok Ligája és a nagy európai bajnokságok élő közvetítései és tabellái tömegesen jelentek meg, mellettük a Forma–1 és az atlétikai világdöntő. Az időjárás – a nyári hőség, aszály, hőségriasztás és az őszi lehűlés – a legmagasabb pillanatnyi volument produkálta. A szórakoztatás blokk a legszínesebb: induló tévés szezonok (X-Faktor, Megasztár, Házasság első látásra, Celeb vagyok), hazai és nemzetközi hírességek sokasága. Technológiai oldalon az új iPhone-bemutató, a mesterséges intelligencia (Gemini, ChatGPT) és a légi közlekedés körüli hírek emelkedtek ki. Összességében a hónap a magyar közönség számára a drágulás és a mindennapi pénzügyek, az éles belpolitika, a futball és az időjárás négyesében zajlott, a bulvár és a tévéműsorok állandó háttérérdeklődésével.",
   "honap": "2026-09",
-  "keszult": "2026-10-01T00:01:22.493407+00:00",
+  "keszult": "2026-10-01T01:48:36.962294+00:00",
   "modell": "claude-opus-4-8",
   "korpusz": {
     "honap": "2026-09",
