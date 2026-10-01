@@ -1,117 +1,198 @@
 {
-"frissitve": "2026-10-01T07:09:21+00:00",
+"frissitve": "2026-10-01T19:08:20+00:00",
 "modell": "claude-opus-4-8",
 "nap": "2026-10-01",
-"mode": "reggel",
+"mode": "este",
 "valtozas": {
 "diff": {
-"irany_valtok": [],
-"mozgok": [
+"irany_valtok": [
 {
 "szo": "akciós újság",
-"valtozas": 0.0
+"elozo": "stagnal",
+"mai": "novekszik"
 },
 {
 "szo": "albérlet",
-"valtozas": 0.0
+"elozo": "novekszik",
+"mai": "stagnal"
 },
 {
 "szo": "benzin",
-"valtozas": 0.0
+"elozo": "stagnal",
+"mai": "csokken"
 },
 {
-"szo": "betegség",
-"valtozas": 0.0
+"szo": "háziorvos",
+"elozo": "stagnal",
+"mai": "novekszik"
 },
 {
-"szo": "csőd",
-"valtozas": 0.0
+"szo": "infláció",
+"elozo": "csokken",
+"mai": "novekszik"
+},
+{
+"szo": "iskola",
+"elozo": "stagnal",
+"mai": "novekszik"
+},
+{
+"szo": "kormány",
+"elozo": "novekszik",
+"mai": "stagnal"
+},
+{
+"szo": "kórház",
+"elozo": "stagnal",
+"mai": "novekszik"
+},
+{
+"szo": "napelem",
+"elozo": "stagnal",
+"mai": "novekszik"
+},
+{
+"szo": "nyugdíj",
+"elozo": "stagnal",
+"mai": "csokken"
+},
+{
+"szo": "pedagógus",
+"elozo": "csokken",
+"mai": "stagnal"
+},
+{
+"szo": "segély",
+"elozo": "stagnal",
+"mai": "novekszik"
+},
+{
+"szo": "sürgősségi",
+"elozo": "csokken",
+"mai": "stagnal"
+}
+],
+"mozgok": [
+{
+"szo": "infláció",
+"valtozas": 4.669
+},
+{
+"szo": "kórház",
+"valtozas": 3.018
+},
+{
+"szo": "akciós újság",
+"valtozas": 2.678
+},
+{
+"szo": "nyugdíj",
+"valtozas": -2.631
+},
+{
+"szo": "segély",
+"valtozas": 2.56
 }
 ],
 "felkapott_uj": [
-"adóhatóság",
 "argentína–bolívia",
+"családi pótlék",
+"dánia–portugália",
 "energiatárolás",
+"esther rantzen",
 "eső",
-"flydubai",
-"magyar államkincstár",
-"víz",
-"állami számvevőszék"
+"európai uniós jog",
+"facebook",
+"fakitermelés",
+"havasi bertalan",
+"koncesszió",
+"medikémia",
+"orbán áron",
+"ridikül",
+"sanofi",
+"víz"
 ],
 "felkapott_eltunt": [
 "444.hu",
+"baka andrás",
+"beol.hu",
+"bruce willis",
 "christa pike",
+"európa",
+"fekete győr andrás",
+"folyósítás",
 "gazdaság",
 "kormány",
 "kézigránát",
 "kúria",
 "mária schmidt",
-"ola källenius"
+"ola källenius",
+"till attila"
 ],
 "van_elozo": true
 },
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A mai kép több ponton is elmozdult a tegnapihoz képest. A legnagyobb lendületet az infláció iránti érdeklődés vette: korábban inkább lefelé tartott, ma viszont határozottan emelkedő pályára állt, ez a nap egyik legszembetűnőbb fordulata. Hasonlóan élénkül a kórház és az akciós újság keresése is, előbbi a stagnálásból lépett növekedésbe, utóbbi szintén felfelé mozdult.\n\nA másik irányban a nyugdíj keresése gyengült a legmarkánsabban, a stabil szintről csökkenésbe fordult. A benzin is lefelé vette az irányt, az albérlet és a kormány pedig a korábbi emelkedésből inkább kiegyenlítődött. Új lendületet kapott emellett a segély, a háziorvos, az iskola és a napelem iránti figyelem is, míg a pedagógus és a sürgősségi a korábbi csökkenésből nyugalmasabb szintre állt.\n\nA felkapott keresések napi névsora jelentősen kicserélődött: olyan témák kerültek előtérbe, mint az energiatárolás, a havasi bertalan, az eső, a sanofi vagy a víz, miközben a tegnap még pörgő nevek – köztük a gazdaság, a kúria vagy több közéleti szereplő – mára kikoptak a lista éléről."
 },
 "kulcsszavak": {
 "szamok": [
 {
 "szo": "akciós újság",
-"irany": "stagnal",
-"meredekseg": -0.098,
+"irany": "novekszik",
+"meredekseg": 2.58,
 "ervenyes": true,
-"mai_ertek": 64,
-"csucs": 52.0,
-"atlag": 38.55
+"mai_ertek": 44,
+"csucs": 67.0,
+"atlag": 53.68
 },
 {
 "szo": "albérlet",
-"irany": "novekszik",
-"meredekseg": 1.234,
+"irany": "stagnal",
+"meredekseg": -0.356,
 "ervenyes": true,
-"mai_ertek": 62,
-"csucs": 100.0,
-"atlag": 60.61
+"mai_ertek": 31,
+"csucs": 90.0,
+"atlag": 33.16
 },
 {
 "szo": "benzin",
-"irany": "stagnal",
-"meredekseg": -0.241,
+"irany": "csokken",
+"meredekseg": -1.933,
 "ervenyes": true,
-"mai_ertek": 32,
-"csucs": 17.0,
-"atlag": 10.17
+"mai_ertek": 12,
+"csucs": 40.0,
+"atlag": 20.59
 },
 {
 "szo": "betegség",
 "irany": "stagnal",
-"meredekseg": 0.904,
+"meredekseg": 0.656,
 "ervenyes": true,
-"mai_ertek": 26,
-"csucs": 39.0,
-"atlag": 31.22
+"mai_ertek": 30,
+"csucs": 45.0,
+"atlag": 35.56
 },
 {
 "szo": "csőd",
 "irany": "stagnal",
-"meredekseg": 0.449,
+"meredekseg": 0.143,
 "ervenyes": true,
-"mai_ertek": 88,
+"mai_ertek": 0,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "eladó lakás",
 "irany": "stagnal",
-"meredekseg": 0.711,
+"meredekseg": 0.522,
 "ervenyes": true,
-"mai_ertek": 42,
-"csucs": 54.0,
-"atlag": 42.32
+"mai_ertek": 59,
+"csucs": 90.0,
+"atlag": 54.95
 },
 {
 "szo": "fizetés",
 "irany": "csokken",
-"meredekseg": -1.488,
+"meredekseg": -1.445,
 "ervenyes": true,
 "mai_ertek": 42,
 "csucs": null,
@@ -120,61 +201,61 @@
 {
 "szo": "hitel",
 "irany": "stagnal",
-"meredekseg": 0.534,
+"meredekseg": 0.176,
 "ervenyes": true,
-"mai_ertek": 32,
-"csucs": 46.0,
-"atlag": 33.0
+"mai_ertek": 28,
+"csucs": 100.0,
+"atlag": 32.37
 },
 {
 "szo": "háziorvos",
-"irany": "stagnal",
-"meredekseg": 0.214,
+"irany": "novekszik",
+"meredekseg": 1.236,
 "ervenyes": true,
-"mai_ertek": 68,
+"mai_ertek": 54,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "infláció",
-"irany": "csokken",
-"meredekseg": -2.475,
+"irany": "novekszik",
+"meredekseg": 2.194,
 "ervenyes": true,
-"mai_ertek": 0,
+"mai_ertek": 44,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "iskola",
-"irany": "stagnal",
-"meredekseg": -0.152,
+"irany": "novekszik",
+"meredekseg": 1.659,
 "ervenyes": true,
-"mai_ertek": 60,
+"mai_ertek": 73,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kormány",
-"irany": "novekszik",
-"meredekseg": 1.931,
+"irany": "stagnal",
+"meredekseg": 0.695,
 "ervenyes": true,
-"mai_ertek": 17,
+"mai_ertek": 4,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kormányablak",
 "irany": "novekszik",
-"meredekseg": 3.353,
+"meredekseg": 4.865,
 "ervenyes": true,
-"mai_ertek": 38,
-"csucs": 94.0,
-"atlag": 51.11
+"mai_ertek": 30,
+"csucs": 87.0,
+"atlag": 58.89
 },
 {
 "szo": "korrupció",
 "irany": "stagnal",
-"meredekseg": 0.231,
+"meredekseg": 0.223,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -182,26 +263,26 @@
 },
 {
 "szo": "kórház",
-"irany": "stagnal",
-"meredekseg": -0.245,
+"irany": "novekszik",
+"meredekseg": 2.773,
 "ervenyes": true,
-"mai_ertek": 27,
-"csucs": 86.0,
-"atlag": 47.25
+"mai_ertek": 31,
+"csucs": 83.0,
+"atlag": 47.67
 },
 {
 "szo": "kölcsön",
 "irany": "stagnal",
-"meredekseg": -0.93,
+"meredekseg": 0.006,
 "ervenyes": true,
-"mai_ertek": 28,
+"mai_ertek": 0,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "munkanélküliség",
 "irany": "stagnal",
-"meredekseg": 0.266,
+"meredekseg": -0.583,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -210,52 +291,52 @@
 {
 "szo": "műtét",
 "irany": "stagnal",
-"meredekseg": 0.335,
+"meredekseg": 0.844,
 "ervenyes": true,
-"mai_ertek": 39,
+"mai_ertek": 32,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "napelem",
-"irany": "stagnal",
-"meredekseg": 0.645,
+"irany": "novekszik",
+"meredekseg": 1.409,
 "ervenyes": true,
-"mai_ertek": 39,
-"csucs": 94.0,
-"atlag": 61.11
+"mai_ertek": 24,
+"csucs": 100.0,
+"atlag": 27.5
 },
 {
 "szo": "nyaralás",
 "irany": "stagnal",
-"meredekseg": 0.593,
+"meredekseg": 0.273,
 "ervenyes": true,
-"mai_ertek": 6,
-"csucs": 79.0,
-"atlag": 15.19
+"mai_ertek": 13,
+"csucs": 15.0,
+"atlag": 10.86
 },
 {
 "szo": "nyugdíj",
-"irany": "stagnal",
-"meredekseg": 0.888,
+"irany": "csokken",
+"meredekseg": -1.743,
 "ervenyes": true,
-"mai_ertek": 33,
-"csucs": 70.0,
-"atlag": 39.24
+"mai_ertek": 20,
+"csucs": 37.0,
+"atlag": 18.42
 },
 {
 "szo": "pedagógus",
-"irany": "csokken",
-"meredekseg": -1.078,
+"irany": "stagnal",
+"meredekseg": -0.988,
 "ervenyes": true,
-"mai_ertek": 24,
+"mai_ertek": 36,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "rezsi",
 "irany": "stagnal",
-"meredekseg": 0.464,
+"meredekseg": -0.274,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -263,19 +344,19 @@
 },
 {
 "szo": "segély",
-"irany": "stagnal",
-"meredekseg": 0.504,
+"irany": "novekszik",
+"meredekseg": 3.064,
 "ervenyes": true,
-"mai_ertek": 8,
+"mai_ertek": 0,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "sürgősségi",
-"irany": "csokken",
-"meredekseg": -2.213,
+"irany": "stagnal",
+"meredekseg": -0.083,
 "ervenyes": true,
-"mai_ertek": 56,
+"mai_ertek": 0,
 "csucs": null,
 "atlag": null
 },
@@ -285,13 +366,13 @@
 "meredekseg": null,
 "ervenyes": false,
 "mai_ertek": null,
-"csucs": 100.0,
-"atlag": 62.0
+"csucs": null,
+"atlag": null
 },
 {
 "szo": "várólista",
 "irany": "stagnal",
-"meredekseg": -0.507,
+"meredekseg": -0.376,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -300,30 +381,30 @@
 {
 "szo": "állás",
 "irany": "novekszik",
-"meredekseg": 2.084,
+"meredekseg": 3.327,
 "ervenyes": true,
-"mai_ertek": 59,
-"csucs": 93.0,
-"atlag": 72.04
+"mai_ertek": 60,
+"csucs": 95.0,
+"atlag": 76.25
 }
 ],
 "napi": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "Az egészségügyhöz kötődő keresések közül a háziorvos ma a szokásosnál élénkebb, az értéke a közelmúltbeli alacsonyabb szintekhez képest felfelé kúszott, és a kórház is emelkedő irányba fordult, bár az utóbbi még a saját átlaga alatt marad. A műtét és a betegség a megszokott tartományában mozog, míg a sürgősségi, a várólista és a csőd ma gyakorlatilag nem mutat keresési aktivitást.\n\nA megélhetéshez kapcsolódó szavaknál az állás kiemelkedően magas, bár még a saját, igen magas átlaga alatt van, és az eladó lakás is az átlagos szintje felett jár. Az akciós újság emelkedik, de a szokásos szintje alatt marad. A benzin feltűnően alacsony, jóval a megszokott átlaga alatt, a nyugdíj pedig csökkenő irányba fordult. Az albérlet, a hitel, a fizetés, a nyaralás és a napelem a saját megszokott sávjában mozog, a kölcsön, a rezsi és a munkanélküliség pedig ma lényegében nulla közeli.\n\nAz oktatásnál az iskola a mezőny egyik legmagasabb értéke, emelkedő irányban, a pedagógus pedig a szokott szintjén maradt. A közélethez kötődő kormány, korrupció és a politikai jellegű szavak ma rendkívül halványak, a tüntetésre pedig most nincs értékelhető adatunk. Az infláció erőteljesen felfelé tart, a kormányablak és a napelem szintén növekvő, utóbbiak azonban a saját átlaguk alatt járnak."
 }
 },
 "felkapott": {
 "top": [
 {
-"kifejezes": "baka andrás",
+"kifejezes": "energiatárolás",
 "volumen": "20000",
 "novekedes_pct": "1000",
 "temak": [
-"Law and Government"
+"Business and Finance"
 ],
 "hirek": []
 },
 {
-"kifejezes": "magyar államkincstár",
+"kifejezes": "havasi bertalan",
 "volumen": "10000",
 "novekedes_pct": "1000",
 "temak": [
@@ -332,8 +413,53 @@
 "hirek": []
 },
 {
-"kifejezes": "fekete győr andrás",
+"kifejezes": "eső",
 "volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "sanofi",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "európai uniós jog",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "koncesszió",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "fakitermelés",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "orbán áron",
+"volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
 "Law and Government",
@@ -342,8 +468,17 @@
 "hirek": []
 },
 {
-"kifejezes": "folyósítás",
-"volumen": "10000",
+"kifejezes": "esther rantzen",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "víz",
+"volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
 "Other"
@@ -357,36 +492,45 @@
 "temak": [
 "Sports"
 ],
+"hirek": []
+},
+{
+"kifejezes": "dánia–portugália",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
 "hirek": [
 {
-"hir_cim": "Argentina 4-0 Bolivia (Sep 30, 2026) Game Analysis",
-"hir_forras": "ESPN",
-"hir_url": "https://www.espn.com/soccer/report/_/gameId/401921545",
+"hir_cim": "Ezt várjuk a Dánia-Portugália rangadótól",
+"hir_forras": "Hatharom",
+"hir_url": "https://www.hatharom.com/2026/10/01/dania-portugalia-nemzetek-ligaja",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGLBm3Z-KfLvn__ZBdTmjyCxs3q7ibAAOPgyy9hVokZ8gbiRG4M8VwMLBOrDM",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSFUzGoNU5NT3Q1xv3RGY17gHNiAS6p_xCHsAdgeLN9l6gQkhHoTua2bwpmf0Y",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Argentina vs. Bolivia: Preview, Predictions and Lineups",
-"hir_forras": "Sports Illustrated",
-"hir_url": "https://www.si.com/soccer/argentina-vs-bolivia-preview-predictions-lineups-9-30-26",
+"hir_cim": "Napi Favorit A-tipp: Hibátlanul menetel a címvédő (Dánia - Portugália)",
+"hir_forras": "Tipplap.hu",
+"hir_url": "https://www.tipplap.hu/foci/nemzetkozi-foci/napi-favorit-a-tipp-hibatlanul-menetel-a-cimvedo-dania-portugalia",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQTf57J6N3zYKLzJB-5WOci2KGEmYPry7bn_MQuG619LLwRK607pIuzUpFJIQo",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRapo175HuxN6nXImrhPEh-kwlXyntdaexS3-sQgLBsrpl1Zsmu6yfE7wv1LyA",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "How to watch Argentina vs. Bolivia online for free",
-"hir_forras": "Mashable",
-"hir_url": "https://mashable.com/entertainment/argentina-bolivia-international-friendly-2026-live-stream-for-free",
+"hir_cim": "Dánia és Portugália 18 mérkőzésének története: Parken ismét kihívja Seleçaót a 2025-ös üldözés után.",
+"hir_forras": "Vietnam.vn",
+"hir_url": "https://www.vietnam.vn/hu/lich-su-18-tran-doi-dau-dan-mach-vs-bo-dao-nha-parken-lai-thu-thach-selecao-sau-man-ruot-duoi-2025",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQGibk7Edn7FfHhIpzTHWyj_uK0pAw5e86Ts7S3JBvvGXdM0_dA9RULBbRcd-k",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZEkQHQsgL9INHkpFE9IckpsLJuHXufY65CUzhMM47mEb0ahE7YK0qdyi_Tyw",
 "hir_kivonat": ""
 }
 ]
 },
 {
-"kifejezes": "bruce willis",
-"volumen": "5000",
+"kifejezes": "ridikül",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Entertainment"
@@ -394,109 +538,7 @@
 "hirek": []
 },
 {
-"kifejezes": "energiatárolás",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": [
-{
-"hir_cim": "Szerdán bejelentették, hogy Magyarországon fogják megépíteni a legnagyobb energiatárolóját a régiónak",
-"hir_forras": "Rakéta.hu",
-"hir_url": "https://raketa.hu/szerdan-bejelentettek-hogy-magyarorszagon-fogjak-megepiteni-a-legnagyobb-energiatarolojat-a-regionak",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbjEBMNa5S9MYz94pP-VWJ9CtyAm92Pv9Rg9qCSSYumOBqZwkRIyhhBcq7L74",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Újabb nagy léptékű energiatároló-projektet jelentettek be, amely már jövőre üzembe állhat Magyarországon",
-"hir_forras": "Portfolio.hu",
-"hir_url": "https://www.portfolio.hu/gazdasag/20260930/ujabb-nagy-lepteku-energiatarolo-projektet-jelentettek-be-amely-mar-jovore-uzembe-allhat-magyarorszagon-866304",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTfH1AB8J9k93vZtouhGR6mb4Vs4w0ml5rUyQj2DUUmwGaH0yWbDEJppmdyMDQ",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "A régió egyik legnagyobb energiatárolója épül Magyarországon",
-"hir_forras": "Autopro.hu",
-"hir_url": "https://autopro.hu/trend/a-regio-egyik-legnagyobb-energiataroloja-epul-magyarorszagon/1689271",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2c7GHRIe7Sr3qCAr0E0KPOpwKwb7K9prFpW16qvk75-ujk50nIeH85gVgxwk",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "eső",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": [
-{
-"hir_cim": "Már látszik, mikor érkezhetnek nagyobb esők",
-"hir_forras": "24.hu",
-"hir_url": "https://24.hu/tudomany/2026/10/01/idojaras-eso-aszaly-lehules-osz/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSlsOxRHSl7PtJ623z6AUM2T1uLYaL4nHS1gB00yJtKuHAyW8QMSrkGr_rC5_0",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Véget érhet a nyár októberben: ekkor jöhet a lehűlés és az eső",
-"hir_forras": "Economx.hu",
-"hir_url": "https://www.economx.hu/belfold/2026/10/01/idojara-aszaly-valtozas-lehules-eso-balaton/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcHcDOCB4q44CPlEqkT9PoJFjI8mXCaShyeWs64uTKSie9A4iIIq-WRZrO6mM",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Szárazságba torkollik az idei ősz",
-"hir_forras": "Időkép",
-"hir_url": "https://www.idokep.hu/hirek/szarazsagba-torkollik-az-idei-osz",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQHxwZ-zTGgjtSZmk891eq3z-ZEzvggAJxzwfyHYJYYly4BYR0cqDKFQKuX_5o",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "víz",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": [
-{
-"hir_cim": "Tovább apad a Duna, -8 cm lehet hétvégére a vízállás Budapestnél",
-"hir_forras": "Időkép",
-"hir_url": "https://www.idokep.hu/hirek/meg-tovabb-apad-a-duna--8-cm-lehet-hetvegere-a-vizallas-budapestnel",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR2fXO4wofaqxQSH6IpvjapmEDga-1oFhI6zxCqX3bWaycQjmyItOyD86vJCcQ",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Újabb rekord: -8 centire süllyedhet a Duna vízszintje Budapesten",
-"hir_forras": "Portfolio.hu",
-"hir_url": "https://www.portfolio.hu/gazdasag/20260930/ujabb-rekord-8-centire-sullyedhet-a-duna-vizszintje-budapesten-866396",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBHnk90XN-WgCD0XpwB6E16BnPeAeLjb52RChRHWzjeQ8J5j9_vzfYUo9VIDs",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Kész horror, amit a Duna művel, a hét végén –8 centi lehet a vízállás Budapestnél, tovább dőlnek a rekordok",
-"hir_forras": "444",
-"hir_url": "https://444.hu/2026/09/30/kesz-horror-amit-a-duna-muvel-a-het-vegen-8-centi-lehet-a-vizallas-budapestnel-tovabb-dolnek-a-rekordok",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcT2mFGNl8b0sllD-qJM-iRf4azxSZloZxaxk_c1VUoROGzRQNiNXbONmUTVDpc",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "flydubai",
+"kifejezes": "családi pótlék",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
@@ -505,50 +547,20 @@
 "hirek": []
 },
 {
-"kifejezes": "adóhatóság",
+"kifejezes": "medikémia",
 "volumen": "2000",
 "novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "facebook",
+"volumen": "2000",
+"novekedes_pct": "50",
 "temak": [
 "Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "beol.hu",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Politics",
-"Law and Government",
-"Business and Finance"
-],
-"hirek": []
-},
-{
-"kifejezes": "állami számvevőszék",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Politics",
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "európa",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
-},
-{
-"kifejezes": "till attila",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
 ],
 "hirek": []
 }
@@ -796,16 +808,16 @@
 ],
 "este_top": [
 {
-"kifejezes": "baka andrás",
+"kifejezes": "energiatárolás",
 "volumen": "20000",
 "novekedes_pct": "1000",
 "temak": [
-"Law and Government"
+"Business and Finance"
 ],
 "hirek": []
 },
 {
-"kifejezes": "magyar államkincstár",
+"kifejezes": "havasi bertalan",
 "volumen": "10000",
 "novekedes_pct": "1000",
 "temak": [
@@ -814,8 +826,53 @@
 "hirek": []
 },
 {
-"kifejezes": "fekete győr andrás",
+"kifejezes": "eső",
 "volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "sanofi",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "európai uniós jog",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "koncesszió",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "fakitermelés",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "orbán áron",
+"volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
 "Law and Government",
@@ -824,8 +881,17 @@
 "hirek": []
 },
 {
-"kifejezes": "folyósítás",
-"volumen": "10000",
+"kifejezes": "esther rantzen",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "víz",
+"volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
 "Other"
@@ -839,36 +905,45 @@
 "temak": [
 "Sports"
 ],
+"hirek": []
+},
+{
+"kifejezes": "dánia–portugália",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
 "hirek": [
 {
-"hir_cim": "Argentina 4-0 Bolivia (Sep 30, 2026) Game Analysis",
-"hir_forras": "ESPN",
-"hir_url": "https://www.espn.com/soccer/report/_/gameId/401921545",
+"hir_cim": "Ezt várjuk a Dánia-Portugália rangadótól",
+"hir_forras": "Hatharom",
+"hir_url": "https://www.hatharom.com/2026/10/01/dania-portugalia-nemzetek-ligaja",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGLBm3Z-KfLvn__ZBdTmjyCxs3q7ibAAOPgyy9hVokZ8gbiRG4M8VwMLBOrDM",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSFUzGoNU5NT3Q1xv3RGY17gHNiAS6p_xCHsAdgeLN9l6gQkhHoTua2bwpmf0Y",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Argentina vs. Bolivia: Preview, Predictions and Lineups",
-"hir_forras": "Sports Illustrated",
-"hir_url": "https://www.si.com/soccer/argentina-vs-bolivia-preview-predictions-lineups-9-30-26",
+"hir_cim": "Napi Favorit A-tipp: Hibátlanul menetel a címvédő (Dánia - Portugália)",
+"hir_forras": "Tipplap.hu",
+"hir_url": "https://www.tipplap.hu/foci/nemzetkozi-foci/napi-favorit-a-tipp-hibatlanul-menetel-a-cimvedo-dania-portugalia",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQTf57J6N3zYKLzJB-5WOci2KGEmYPry7bn_MQuG619LLwRK607pIuzUpFJIQo",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRapo175HuxN6nXImrhPEh-kwlXyntdaexS3-sQgLBsrpl1Zsmu6yfE7wv1LyA",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "How to watch Argentina vs. Bolivia online for free",
-"hir_forras": "Mashable",
-"hir_url": "https://mashable.com/entertainment/argentina-bolivia-international-friendly-2026-live-stream-for-free",
+"hir_cim": "Dánia és Portugália 18 mérkőzésének története: Parken ismét kihívja Seleçaót a 2025-ös üldözés után.",
+"hir_forras": "Vietnam.vn",
+"hir_url": "https://www.vietnam.vn/hu/lich-su-18-tran-doi-dau-dan-mach-vs-bo-dao-nha-parken-lai-thu-thach-selecao-sau-man-ruot-duoi-2025",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQGibk7Edn7FfHhIpzTHWyj_uK0pAw5e86Ts7S3JBvvGXdM0_dA9RULBbRcd-k",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZEkQHQsgL9INHkpFE9IckpsLJuHXufY65CUzhMM47mEb0ahE7YK0qdyi_Tyw",
 "hir_kivonat": ""
 }
 ]
 },
 {
-"kifejezes": "bruce willis",
-"volumen": "5000",
+"kifejezes": "ridikül",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Entertainment"
@@ -876,109 +951,7 @@
 "hirek": []
 },
 {
-"kifejezes": "energiatárolás",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": [
-{
-"hir_cim": "Szerdán bejelentették, hogy Magyarországon fogják megépíteni a legnagyobb energiatárolóját a régiónak",
-"hir_forras": "Rakéta.hu",
-"hir_url": "https://raketa.hu/szerdan-bejelentettek-hogy-magyarorszagon-fogjak-megepiteni-a-legnagyobb-energiatarolojat-a-regionak",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbjEBMNa5S9MYz94pP-VWJ9CtyAm92Pv9Rg9qCSSYumOBqZwkRIyhhBcq7L74",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Újabb nagy léptékű energiatároló-projektet jelentettek be, amely már jövőre üzembe állhat Magyarországon",
-"hir_forras": "Portfolio.hu",
-"hir_url": "https://www.portfolio.hu/gazdasag/20260930/ujabb-nagy-lepteku-energiatarolo-projektet-jelentettek-be-amely-mar-jovore-uzembe-allhat-magyarorszagon-866304",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTfH1AB8J9k93vZtouhGR6mb4Vs4w0ml5rUyQj2DUUmwGaH0yWbDEJppmdyMDQ",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "A régió egyik legnagyobb energiatárolója épül Magyarországon",
-"hir_forras": "Autopro.hu",
-"hir_url": "https://autopro.hu/trend/a-regio-egyik-legnagyobb-energiataroloja-epul-magyarorszagon/1689271",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2c7GHRIe7Sr3qCAr0E0KPOpwKwb7K9prFpW16qvk75-ujk50nIeH85gVgxwk",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "eső",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": [
-{
-"hir_cim": "Már látszik, mikor érkezhetnek nagyobb esők",
-"hir_forras": "24.hu",
-"hir_url": "https://24.hu/tudomany/2026/10/01/idojaras-eso-aszaly-lehules-osz/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSlsOxRHSl7PtJ623z6AUM2T1uLYaL4nHS1gB00yJtKuHAyW8QMSrkGr_rC5_0",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Véget érhet a nyár októberben: ekkor jöhet a lehűlés és az eső",
-"hir_forras": "Economx.hu",
-"hir_url": "https://www.economx.hu/belfold/2026/10/01/idojara-aszaly-valtozas-lehules-eso-balaton/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcHcDOCB4q44CPlEqkT9PoJFjI8mXCaShyeWs64uTKSie9A4iIIq-WRZrO6mM",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Szárazságba torkollik az idei ősz",
-"hir_forras": "Időkép",
-"hir_url": "https://www.idokep.hu/hirek/szarazsagba-torkollik-az-idei-osz",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQHxwZ-zTGgjtSZmk891eq3z-ZEzvggAJxzwfyHYJYYly4BYR0cqDKFQKuX_5o",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "víz",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": [
-{
-"hir_cim": "Tovább apad a Duna, -8 cm lehet hétvégére a vízállás Budapestnél",
-"hir_forras": "Időkép",
-"hir_url": "https://www.idokep.hu/hirek/meg-tovabb-apad-a-duna--8-cm-lehet-hetvegere-a-vizallas-budapestnel",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR2fXO4wofaqxQSH6IpvjapmEDga-1oFhI6zxCqX3bWaycQjmyItOyD86vJCcQ",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Újabb rekord: -8 centire süllyedhet a Duna vízszintje Budapesten",
-"hir_forras": "Portfolio.hu",
-"hir_url": "https://www.portfolio.hu/gazdasag/20260930/ujabb-rekord-8-centire-sullyedhet-a-duna-vizszintje-budapesten-866396",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBHnk90XN-WgCD0XpwB6E16BnPeAeLjb52RChRHWzjeQ8J5j9_vzfYUo9VIDs",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Kész horror, amit a Duna művel, a hét végén –8 centi lehet a vízállás Budapestnél, tovább dőlnek a rekordok",
-"hir_forras": "444",
-"hir_url": "https://444.hu/2026/09/30/kesz-horror-amit-a-duna-muvel-a-het-vegen-8-centi-lehet-a-vizallas-budapestnel-tovabb-dolnek-a-rekordok",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcT2mFGNl8b0sllD-qJM-iRf4azxSZloZxaxk_c1VUoROGzRQNiNXbONmUTVDpc",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "flydubai",
+"kifejezes": "családi pótlék",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
@@ -987,128 +960,84 @@
 "hirek": []
 },
 {
-"kifejezes": "adóhatóság",
+"kifejezes": "medikémia",
 "volumen": "2000",
 "novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "facebook",
+"volumen": "2000",
+"novekedes_pct": "50",
 "temak": [
 "Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "beol.hu",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Politics",
-"Law and Government",
-"Business and Finance"
-],
-"hirek": []
-},
-{
-"kifejezes": "állami számvevőszék",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Politics",
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "európa",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
-},
-{
-"kifejezes": "till attila",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
 ],
 "hirek": []
 }
 ],
 "reggel_este_diff": {
-"uj_estere": [],
-"eltunt_estere": [],
-"megmaradt": [
+"uj_estere": [
+"családi pótlék",
+"dánia–portugália",
+"esther rantzen",
+"európai uniós jog",
+"facebook",
+"fakitermelés",
+"havasi bertalan",
+"koncesszió",
+"medikémia",
+"orbán áron",
+"ridikül",
+"sanofi"
+],
+"eltunt_estere": [
 "adóhatóság",
-"argentína–bolívia",
 "baka andrás",
 "beol.hu",
 "bruce willis",
-"energiatárolás",
-"eső",
 "európa",
 "fekete győr andrás",
 "flydubai",
 "folyósítás",
 "magyar államkincstár",
 "till attila",
-"víz",
 "állami számvevőszék"
+],
+"megmaradt": [
+"argentína–bolívia",
+"energiatárolás",
+"eső",
+"víz"
 ]
 },
 "reggel": {
-"szoveg": "Ma reggel a magyar Google-keresésben a legnagyobb lendületet egy névhez, Baka Andráshoz kötődő keresés adta, amely messze a legmagasabb forgalmat hozta. Mögötte több, a hivatali és pénzügyi világhoz kapcsolódó kifejezés is felfutott: a magyar államkincstár, a folyósítás és a Fekete Győr András név egyaránt sokakat mozgatott meg. Ezekhez a szavakhoz konkrét hír nem érkezett, így az érdeklődés hátterét csak óvatosan lehet sejteni – elképzelhető, hogy valamilyen hivatalos ügyintézéssel vagy kifizetéssel összefüggő téma állhat mögöttük, de ezt a rendelkezésre álló adatok nem erősítik meg.\n\nA sport felől az Argentína–Bolívia mérkőzés iránti kereslet is érezhető volt, amelyről több nemzetközi sportlap is beszámolt; a találkozó az összegzések szerint 4–0-s argentin győzelemmel zárult. A szórakozás világából Bruce Willis és Till Attila neve futott fel, konkrét hír nélkül.\n\nAz időjárás két szálon is foglalkoztatta az olvasókat. Az eső keresésnél több lap – köztük a 24.hu, az Economx és az Időkép – is arról írt, hogy mikor érkezhetnek nagyobb esők, és hogy a száraz ősz után mikor jöhet lehűlés. A víz iránti érdeklődést feltehetően a Duna rendkívül alacsony vízállásáról szóló beszámolók fűtötték: a Portfolio, az Időkép és a 444 is arról írt, hogy a hét végére újabb rekordalacsony szint várható Budapestnél.\n\nGazdasági téren az energiatárolás keltett figyelmet, miután több forrás – a Portfolio, a Rakéta és az Autopro – is beszámolt egy Magyarországon épülő, a régió egyik legnagyobb energiatárolójáról szóló bejelentésről. Emellett felkapott volt még az adóhatóság, az állami számvevőszék, a beol.hu, a flydubai és Európa keresése is, ezekhez azonban külön hír nem társult, így a mögöttes okokat nem lehet biztosan megállapítani. Összességében a reggeli kép vegyes: hivatali és pénzügyi témák, időjárási aggodalmak és néhány sport- és szórakoztató szál keveredett benne."
+"szoveg": "Reggel kilenc körül a keresések élén a baka andrás állt kiemelkedő kereséssel, mellette a magyar államkincstár, a fekete győr andrás és a folyósítás pörgött. A sport felől az argentína–bolívia mérkőzés hozott érdeklődést, amelyhez nemzetközi beszámolók is kapcsolódtak egy négygólos argentin győzelemről. Reggel bukkant fel az energiatárolás is, amelyhez több hír kötődött: a sajtó szerint a régió egyik legnagyobb energiatárolóját építenék meg Magyarországon, és egy újabb nagy léptékű projektet is bejelentettek.\n\nAz időjárási témák is jelen voltak már reggel: az eső keresését az őszi lehűlést és esőt, illetve a tartós szárazságot taglaló előrejelzések kísérték, a víz pedig a Duna tovább apadó, rekordalacsony budapesti vízállásáról szóló beszámolókhoz kötődött. Felbukkant emellett a bruce willis, a flydubai, az adóhatóság és a till attila is."
 },
 "este": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "Estére a sorrend átrendeződött: az energiatárolás ugrott az élre a legnagyobb kereséssel, mögötte a havasi bertalan, az eső és a sanofi következett. Megjelent az európai uniós jog, a koncesszió, a fakitermelés, az orbán áron, az esther rantzen és a víz is. A sportból estére a dánia–portugália rangadó került előtérbe, amelyhez több mérkőzés-előzetes és tippadó írás is társult, miközben az argentína–bolívia még kitartott a listán.\n\nEmellett estére jött fel a családi pótlék, a ridikül, a medikémia és a facebook is, utóbbi a többiekhez képest jóval visszafogottabb növekedéssel."
 },
 "teljes_nap": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A nap íve jól mutatja, mennyire kicserélődött a figyelem. Reggelről estére új témaként jött fel többek közt a családi pótlék, a dánia–portugália, az esther rantzen, az európai uniós jog, a facebook, a fakitermelés, a havasi bertalan, a koncesszió, a medikémia, az orbán áron, a ridikül és a sanofi.\n\nEközben elhalványult a reggel még erős baka andrás, a magyar államkincstár, a fekete győr andrás, a folyósítás, a bruce willis, az adóhatóság, az európa, a flydubai, a till attila és az állami számvevőszék. Négy téma viszont egész nap kitartott: az energiatárolás, az eső, a víz és az argentína–bolívia – ezek adták a nap állandó vázát, az energiatárolás pedig estére a lista csúcsára is feljutott."
 },
 "het": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A hetet áttekintve kevés olyan téma akad, amely több napon is vissza-visszatért. Két napon át szerepelt a gazdaság és a havasi bertalan, előbbi inkább a gazdasági-pénzügyi érdeklődés állandó hátterét jelzi, utóbbi pedig a hét során ismétlődően felbukkant. A többi kifejezés jellemzően egy-egy naphoz kötődött, ami arra utal, hogy a figyelmet inkább a napi események mozgatják.\n\nAz egy napon megjelenő szavak között sok a sportmérkőzés, több közéleti és politikai szereplő, valamint időjárási és megélhetési téma is – ez a sokszínűség azt mutatja, hogy a heti kép nem egy-két domináns ügy köré szerveződik, hanem naponta váltakozó hírfolyamot tükröz."
 },
 "het_valos": {
 "napok": 7,
 "visszateroek": [
 {
-"kifejezes": "baka andrás",
-"napok_szama": 2
-},
-{
-"kifejezes": "beol.hu",
-"napok_szama": 2
-},
-{
-"kifejezes": "bruce willis",
-"napok_szama": 2
-},
-{
-"kifejezes": "európa",
-"napok_szama": 2
-},
-{
-"kifejezes": "fekete győr andrás",
-"napok_szama": 2
-},
-{
-"kifejezes": "folyósítás",
-"napok_szama": 2
-},
-{
 "kifejezes": "gazdaság",
 "napok_szama": 2
 },
 {
-"kifejezes": "till attila",
+"kifejezes": "havasi bertalan",
 "napok_szama": 2
 },
 {
 "kifejezes": "444.hu",
-"napok_szama": 1
-},
-{
-"kifejezes": "adóhatóság",
 "napok_szama": 1
 },
 {
@@ -1136,6 +1065,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "baka andrás",
+"napok_szama": 1
+},
+{
 "kifejezes": "bayer construct zrt",
 "napok_szama": 1
 },
@@ -1160,11 +1093,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "beol.hu",
+"napok_szama": 1
+},
+{
 "kifejezes": "bill gates",
 "napok_szama": 1
 },
 {
 "kifejezes": "bochkor gábor",
+"napok_szama": 1
+},
+{
+"kifejezes": "bruce willis",
 "napok_szama": 1
 },
 {
@@ -1184,6 +1125,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "családi pótlék",
+"napok_szama": 1
+},
+{
 "kifejezes": "csapadék",
 "napok_szama": 1
 },
@@ -1197,6 +1142,10 @@
 },
 {
 "kifejezes": "dr mátyás",
+"napok_szama": 1
+},
+{
+"kifejezes": "dánia–portugália",
 "napok_szama": 1
 },
 {
@@ -1216,7 +1165,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "esther rantzen",
+"napok_szama": 1
+},
+{
 "kifejezes": "eső",
+"napok_szama": 1
+},
+{
+"kifejezes": "európa",
+"napok_szama": 1
+},
+{
+"kifejezes": "európai uniós jog",
 "napok_szama": 1
 },
 {
@@ -1224,11 +1185,23 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "facebook",
+"napok_szama": 1
+},
+{
+"kifejezes": "fakitermelés",
+"napok_szama": 1
+},
+{
+"kifejezes": "fekete győr andrás",
+"napok_szama": 1
+},
+{
 "kifejezes": "fidesz",
 "napok_szama": 1
 },
 {
-"kifejezes": "flydubai",
+"kifejezes": "folyósítás",
 "napok_szama": 1
 },
 {
@@ -1264,10 +1237,6 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "havasi bertalan",
-"napok_szama": 1
-},
-{
 "kifejezes": "hernádi zsolt",
 "napok_szama": 1
 },
@@ -1293,6 +1262,10 @@
 },
 {
 "kifejezes": "keresztes vipera",
+"napok_szama": 1
+},
+{
+"kifejezes": "koncesszió",
 "napok_szama": 1
 },
 {
@@ -1336,10 +1309,6 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "magyar államkincstár",
-"napok_szama": 1
-},
-{
 "kifejezes": "magyarország–ukrajna",
 "napok_szama": 1
 },
@@ -1349,6 +1318,10 @@
 },
 {
 "kifejezes": "matolcsy ádám",
+"napok_szama": 1
+},
+{
+"kifejezes": "medikémia",
 "napok_szama": 1
 },
 {
@@ -1396,6 +1369,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "orbán áron",
+"napok_szama": 1
+},
+{
 "kifejezes": "oroszok",
 "napok_szama": 1
 },
@@ -1432,7 +1409,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "ridikül",
+"napok_szama": 1
+},
+{
 "kifejezes": "rákay philip",
+"napok_szama": 1
+},
+{
+"kifejezes": "sanofi",
 "napok_szama": 1
 },
 {
@@ -1472,6 +1457,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "till attila",
+"napok_szama": 1
+},
+{
 "kifejezes": "toroczkai lászló",
 "napok_szama": 1
 },
@@ -1489,10 +1478,6 @@
 },
 {
 "kifejezes": "víz",
-"napok_szama": 1
-},
-{
-"kifejezes": "állami számvevőszék",
 "napok_szama": 1
 },
 {
@@ -1521,5 +1506,138 @@
 }
 ]
 }
+},
+"youtube": {
+"szamok": [
+{
+"szo": "szorongás",
+"domen": "egeszseg",
+"irany": "stagnal",
+"meredekseg": 0.006,
+"ervenyes": true,
+"mai_ertek": 46,
+"csucs": 100,
+"atlag": 26.0
+},
+{
+"szo": "edzés",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.029,
+"ervenyes": true,
+"mai_ertek": 51,
+"csucs": 100,
+"atlag": 66.5
+},
+{
+"szo": "meditáció",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.048,
+"ervenyes": true,
+"mai_ertek": 86,
+"csucs": 100,
+"atlag": 82.2
+},
+{
+"szo": "befektetés",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.024,
+"ervenyes": true,
+"mai_ertek": 43,
+"csucs": 100,
+"atlag": 26.1
+},
+{
+"szo": "bitcoin",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.06,
+"ervenyes": true,
+"mai_ertek": 52,
+"csucs": 100,
+"atlag": 47.0
+},
+{
+"szo": "hírek",
+"domen": "kozelet",
+"irany": "stagnal",
+"meredekseg": -0.014,
+"ervenyes": true,
+"mai_ertek": 43,
+"csucs": 100,
+"atlag": 57.5
+},
+{
+"szo": "magyar péter",
+"domen": "kozelet",
+"irany": "stagnal",
+"meredekseg": 0.018,
+"ervenyes": true,
+"mai_ertek": 10,
+"csucs": 100,
+"atlag": 15.9
+},
+{
+"szo": "recept",
+"domen": "haztartas",
+"irany": "csokken",
+"meredekseg": -0.051,
+"ervenyes": true,
+"mai_ertek": 44,
+"csucs": 100,
+"atlag": 47.0
+},
+{
+"szo": "mese",
+"domen": "csalad",
+"irany": "stagnal",
+"meredekseg": -0.016,
+"ervenyes": true,
+"mai_ertek": 82,
+"csucs": 100,
+"atlag": 76.1
+},
+{
+"szo": "nyaralás",
+"domen": "szabadido",
+"irany": "novekszik",
+"meredekseg": 0.069,
+"ervenyes": true,
+"mai_ertek": 24,
+"csucs": 100,
+"atlag": 48.3
+},
+{
+"szo": "tanulás",
+"domen": "tanulas",
+"irany": "csokken",
+"meredekseg": -0.06,
+"ervenyes": true,
+"mai_ertek": 73,
+"csucs": 100,
+"atlag": 74.4
+},
+{
+"szo": "klíma",
+"domen": "otthon",
+"irany": "novekszik",
+"meredekseg": 0.067,
+"ervenyes": true,
+"mai_ertek": 12,
+"csucs": 100,
+"atlag": 17.4
+}
+],
+"napi": {
+"szoveg": "A magyarországi YouTube-on a videós figyelem napi képe vegyes. Az egészség témakörében a meditáció ma kifejezetten magas, a saját átlaga felett jár, bár enyhén lefelé tartó irányban; a szorongás a megszokott szintjénél jóval élénkebb, míg az edzés csökkenő és inkább az átlaga alatti. A pénzügyi témák közül a befektetés a saját szokásos szintje felett mozog, a bitcoin az átlaga körül, mindkettő mérsékelten csökkenő irányban.\n\nA családi és tanulós tartalmak stabilan erősek: a mese és a tanulás egyaránt a saját magasabb tartományában van, a recept pedig az átlaga közelében. A hírek és a magyar péter iránti videós kereslet a megszokott szintjén vagy kissé alatta marad. Feltűnő a nyaralás alacsony mai értéke, amely jóval a saját átlaga alatt van, miközben az irány lassan emelkedő; a klíma pedig alacsony szintről, de növekvő irányban mozog. Emlékeztetőül: ezek a szavak külön-külön, saját skálán mozognak, így egymáshoz nem mérhetők."
+},
+"teljes_kep": {
+"szoveg": "A hét egészét nézve a videós érdeklődésben a befektetés erősödött a leglátványosabban, a hét eleji alacsonyabb szintről érdemben feljebb lépett, és hasonló lendületet mutat a szorongás is. A nyaralás szintén emelkedett, bár abszolút értékben továbbra is visszafogott maradt.\n\nA másik irányban a bitcoin gyengült a legjobban a hét során, miközben a mese és a meditáció tovább erősödött a már eleve magas szintjéről. Több téma – köztük a hírek, a magyar péter és a klíma – gyakorlatilag változatlan maradt, az edzés, a recept és a tanulás pedig csak apró elmozdulást mutatott. Összességében a hét a lelki-egészség és a pénzügyi öngondoskodás felé mutató figyelemnövekedést rajzol ki, óvatosan értelmezve."
+}
+},
+"predikcio": {
+"szoveg": "A közeljövőre vonatkozó becslések egységesen óvatos képet mutatnak: a követett keresések mindegyike inkább kiegyensúlyozott, stagnáló irányba mutat, érdemi emelkedő vagy csökkenő pálya egyiknél sem rajzolódik ki a következő napra. Ez a közelmúlt trendjének matematikai folytatása, nem eseményjóslat, így a valóság ettől eltérhet.\n\nA kis elmozdulások között a várólista és a munkanélküliség irányszáma épphogy felfelé billen, az infláció pedig egy hajszálnyit lefelé, de ezek a különbségek olyan aprók, hogy érdemi mozgásnak nem tekinthetők. A legtöbb becslés megbízhatósága alacsony vagy nulla, a legnagyobb bizonytalanság a széles sávval jellemzett szavaknál – például a kormány, az infláció vagy az eladó lakás körül – mutatkozik. Viszonylag szűkebb, így kicsit kiszámíthatóbb a napelem és a pedagógus kilátása, de ezeknél is stagnálás a várható irány. Összességében a legmagabiztosabb üzenet most az, hogy a közeljövőben nagy kilengések nélkül folytatódhatnak a jelenlegi szintek."
 }
 }
