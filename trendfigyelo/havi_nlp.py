@@ -150,11 +150,12 @@ RENDSZER_PROMPT_NLP = (
 
 
 MODELL_NLP = "claude-opus-4-8"
-MAX_TOKENS_NLP = 64000   # a gondolkodás (adaptive thinking) ÉS a strukturált kimenet KÖZÖS kerete
+MAX_TOKENS_NLP = 128000   # a gondolkodás (adaptive thinking) ÉS a strukturált kimenet KÖZÖS kerete
 #  A havi kimenet nagyságrenddel nagyobb a napinál: MINDEN korpusz-szóra lemma + klaszter-tagság + NER
-#  + prózai összegzés (több száz szónál sok ezer token). 32000-nél a mély gondolkodás elhasználta a
-#  keretet és a JSON levágódott (json.loads „Expecting ',' delimiter") → 64000, hogy a gondolkodásnak
-#  ÉS a teljes strukturált kimenetnek is legyen helye. STREAMING kötelező (nincs HTTP-időtúllépés).
+#  + prózai összegzés (több száz szónál sok ezer token). 32000→64000→128000: a 2026-09 (661 szó) kimenete
+#  a gondolkodással együtt TÚLLÉPTE a 64000-et → levágott JSON (json.loads „Unterminated string"/„Expecting
+#  ',' delimiter") → a hó-végi auto-futás 3× retry után elhasalt. 128000 az Opus 4.8 max output-kerete
+#  (streaming kötelező, nincs beta-header). ~1300+ szónál ez is kevés lehet → akkor darabolás/korpusz-cap.
 
 
 class _NlpKliens:

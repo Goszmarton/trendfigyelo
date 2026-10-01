@@ -10,7 +10,7 @@ hónap („YYYY-MM") vagy None/üres sor (skip).
 import calendar
 import json
 import sys
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 
 from . import seged
@@ -27,24 +27,28 @@ def utolso_nap_e(most):
     return d.day == calendar.monthrange(d.year, d.month)[1]
 
 
-def _keszult_datum(docs_data, honap):
-    """A meglévő havi_nlp/<honap>.json 'keszult' dátum-része (YYYY-MM-DD), vagy None."""
+def _keszult_logikai_nap(docs_data, honap):
+    """A meglévő havi_nlp/<honap>.json 'keszult' időbélyegének LOGIKAI (esti_nap) napja
+    (YYYY-MM-DD), vagy None. A LOGIKAI nap kell (nem a nyers UTC-dátum): a hajnali (<6:00 BP)
+    generálás keszultje a KÖVETKEZŐ UTC-napra esik, de logikailag az ELŐZŐ estéhez tartozik —
+    a nyers dátum összevetése ezért a hajnali backupon tévesen újragenerált (dupla Opus-költség)."""
     fajl = Path(docs_data) / "havi_nlp" / f"{honap}.json"
     try:
         art = json.loads(fajl.read_text(encoding="utf-8"))
-    except (OSError, ValueError):
+        k = art.get("keszult") if isinstance(art, dict) else None
+        return seged.esti_nap(datetime.fromisoformat(k)) if isinstance(k, str) else None
+    except (OSError, ValueError, TypeError):
         return None
-    k = art.get("keszult") if isinstance(art, dict) else None
-    return k[:10] if isinstance(k, str) and len(k) >= 10 else None
 
 
 def mar_kesz(docs_data, honap, logikai_nap_iso):
-    """True, ha erre a hónapra MA (a logikai napon) már generálódott (keszult dátuma == ma).
+    """True, ha erre a hónapra MA (a logikai napon) már generálódott (a keszult LOGIKAI napja == ma).
 
     Hiányzó/olvashatatlan/korábbi/keszult-nélküli → False: a hó-közben kézzel generált fájl
     az utolsó napon ÚJRAGENERÁLÓDIK a teljes havi adattal; egy bukott (fail-soft, fájl-írás
-    nélküli) futás után a backup újrapróbál."""
-    return _keszult_datum(docs_data, honap) == logikai_nap_iso
+    nélküli) futás után a backup újrapróbál. A logikai-nap összevetés miatt a hajnali backup
+    NEM generál újra (ugyanarra a logikai estére esik)."""
+    return _keszult_logikai_nap(docs_data, honap) == logikai_nap_iso
 
 
 def kell_generalni(docs_data, most):

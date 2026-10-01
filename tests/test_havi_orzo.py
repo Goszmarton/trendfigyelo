@@ -66,6 +66,14 @@ def test_mar_kesz_ho_kozbeni_keszult_false(tmp_path):
     assert havi_orzo.mar_kesz(tmp_path, "2026-09", "2026-09-30") is False
 
 
+def test_mar_kesz_hajnali_keszult_logikai_napra_dedupal(tmp_path):
+    # BUG-repró (dupla generálás): a hajnali (<6:00 BP) generálás keszultje a KÖVETKEZŐ UTC-napra
+    # esik (02:13 CEST okt 1), de logikailag (esti_nap) az előző este → ugyanarra a logikai napra
+    # (2026-09-30) kell dedupálnia, különben a következő hajnali backup újragenerál.
+    _ir_havi(tmp_path, "2026-09", keszult="2026-10-01T00:13:00+00:00")
+    assert havi_orzo.mar_kesz(tmp_path, "2026-09", "2026-09-30") is True
+
+
 def test_mar_kesz_keszult_nelkul_false(tmp_path):
     _ir_havi(tmp_path, "2026-09", keszult=None)
     assert havi_orzo.mar_kesz(tmp_path, "2026-09", "2026-09-30") is False
