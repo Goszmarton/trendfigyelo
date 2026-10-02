@@ -1,98 +1,150 @@
 {
-"frissitve": "2026-10-02T07:08:41+00:00",
+"frissitve": "2026-10-02T19:11:01+00:00",
 "modell": "claude-opus-4-8",
 "nap": "2026-10-02",
-"mode": "reggel",
+"mode": "este",
 "valtozas": {
 "diff": {
-"irany_valtok": [],
-"mozgok": [
+"irany_valtok": [
 {
 "szo": "akciós újság",
-"valtozas": 0.0
-},
-{
-"szo": "albérlet",
-"valtozas": 0.0
-},
-{
-"szo": "benzin",
-"valtozas": 0.0
+"elozo": "novekszik",
+"mai": "stagnal"
 },
 {
 "szo": "betegség",
-"valtozas": 0.0
+"elozo": "stagnal",
+"mai": "novekszik"
 },
 {
-"szo": "csőd",
-"valtozas": 0.0
+"szo": "fizetés",
+"elozo": "csokken",
+"mai": "stagnal"
+},
+{
+"szo": "kormány",
+"elozo": "stagnal",
+"mai": "novekszik"
+},
+{
+"szo": "műtét",
+"elozo": "stagnal",
+"mai": "novekszik"
+},
+{
+"szo": "pedagógus",
+"elozo": "stagnal",
+"mai": "csokken"
+}
+],
+"mozgok": [
+{
+"szo": "nyugdíj",
+"valtozas": -2.309
+},
+{
+"szo": "iskola",
+"valtozas": 2.118
+},
+{
+"szo": "akciós újság",
+"valtozas": -1.645
+},
+{
+"szo": "háziorvos",
+"valtozas": 1.539
+},
+{
+"szo": "segély",
+"valtozas": 1.506
 }
 ],
 "felkapott_uj": [
+"alapjogokért központ",
+"bankautomata",
+"berki krisztián",
 "bárándy péter",
-"kijev",
+"gázolaj",
+"házasság első látásra",
+"jármű",
+"kubatov gábor",
+"központi nyomozó főügyészség",
 "m5",
-"október",
-"országház",
+"magyar labdarúgó-válogatott",
+"nagy márton",
+"nyári időszámítás",
+"orbán viktor",
 "osztie zoltán",
-"részvénypiac",
-"varga bajusz veronika",
-"vénasszonyok nyara"
+"politika",
+"századvég alapítvány",
+"ukrajna",
+"áramszünet",
+"élelmiszer"
 ],
 "felkapott_eltunt": [
 "argentína–bolívia",
+"családi pótlék",
+"dánia–portugália",
 "energiatárolás",
+"esther rantzen",
 "eső",
+"európai uniós jog",
 "facebook",
 "fakitermelés",
+"havasi bertalan",
+"koncesszió",
+"medikémia",
+"orbán áron",
+"ridikül",
+"sanofi",
 "víz"
 ],
 "van_elozo": true
 },
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A tegnapi képhez képest több követett szó is irányt váltott. Az akciós újság a korábbi élénkülésből mára inkább kiegyenlített, nyugodtabb mozgásba fordult, a pedagógus iránti érdeklődés pedig a stagnálásból enyhe csökkenésbe hajlott. Ezzel szemben a betegség, a kormány és a műtét szavaknál a korábbi egy helyben toporgást most lassú emelkedés váltotta fel.\n\nA legnagyobb kilengést a nyugdíj mutatja, amely érezhetően lefelé mozdult, miközben az iskola, a háziorvos és a segély a másik irányba, felfelé húzott. Az akciós újság a visszahúzó oldalon volt a legmozgékonyabb.\n\nA napi felkapott keresések között sok új név és téma tűnt fel – köztük a jármű, az áramszünet, Orbán Viktor, a bankautomata, a gázolaj, a magyar labdarúgó-válogatott és Osztie Zoltán –, miközben a tegnap még pörgő témák egy része, például az argentína–bolívia meccs, a családi pótlék, a Sanofi vagy Havasi Bertalan, mára kikopott a figyelemből."
 },
 "kulcsszavak": {
 "szamok": [
 {
 "szo": "akciós újság",
-"irany": "novekszik",
-"meredekseg": 2.58,
+"irany": "stagnal",
+"meredekseg": 0.935,
 "ervenyes": true,
-"mai_ertek": 44,
-"csucs": 67.0,
-"atlag": 53.68
+"mai_ertek": 43,
+"csucs": 100.0,
+"atlag": 60.5
 },
 {
 "szo": "albérlet",
 "irany": "stagnal",
-"meredekseg": -0.356,
+"meredekseg": -0.335,
 "ervenyes": true,
-"mai_ertek": 31,
-"csucs": 90.0,
-"atlag": 33.16
+"mai_ertek": 35,
+"csucs": 71.0,
+"atlag": 43.67
 },
 {
 "szo": "benzin",
 "irany": "csokken",
-"meredekseg": -1.933,
+"meredekseg": -1.468,
 "ervenyes": true,
-"mai_ertek": 12,
-"csucs": 40.0,
-"atlag": 20.59
+"mai_ertek": 11,
+"csucs": 56.0,
+"atlag": 18.71
 },
 {
 "szo": "betegség",
-"irany": "stagnal",
-"meredekseg": 0.656,
+"irany": "novekszik",
+"meredekseg": 1.468,
 "ervenyes": true,
-"mai_ertek": 30,
-"csucs": 45.0,
-"atlag": 35.56
+"mai_ertek": 56,
+"csucs": 71.0,
+"atlag": 50.68
 },
 {
 "szo": "csőd",
 "irany": "stagnal",
-"meredekseg": 0.143,
+"meredekseg": 0.074,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -101,61 +153,61 @@
 {
 "szo": "eladó lakás",
 "irany": "stagnal",
-"meredekseg": 0.522,
+"meredekseg": -0.958,
 "ervenyes": true,
-"mai_ertek": 59,
-"csucs": 90.0,
-"atlag": 54.95
+"mai_ertek": 44,
+"csucs": 54.0,
+"atlag": 42.67
 },
 {
 "szo": "fizetés",
-"irany": "csokken",
-"meredekseg": -1.445,
+"irany": "stagnal",
+"meredekseg": 0.048,
 "ervenyes": true,
-"mai_ertek": 42,
+"mai_ertek": 34,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "hitel",
 "irany": "stagnal",
-"meredekseg": 0.176,
+"meredekseg": 0.389,
 "ervenyes": true,
-"mai_ertek": 28,
-"csucs": 100.0,
-"atlag": 32.37
+"mai_ertek": 22,
+"csucs": 40.0,
+"atlag": 30.89
 },
 {
 "szo": "háziorvos",
 "irany": "novekszik",
-"meredekseg": 1.236,
+"meredekseg": 2.775,
 "ervenyes": true,
-"mai_ertek": 54,
+"mai_ertek": 55,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "infláció",
 "irany": "novekszik",
-"meredekseg": 2.194,
+"meredekseg": 1.305,
 "ervenyes": true,
-"mai_ertek": 44,
+"mai_ertek": 0,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "iskola",
 "irany": "novekszik",
-"meredekseg": 1.659,
+"meredekseg": 3.777,
 "ervenyes": true,
-"mai_ertek": 73,
+"mai_ertek": 72,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kormány",
-"irany": "stagnal",
-"meredekseg": 0.695,
+"irany": "novekszik",
+"meredekseg": 1.605,
 "ervenyes": true,
 "mai_ertek": 4,
 "csucs": null,
@@ -164,16 +216,16 @@
 {
 "szo": "kormányablak",
 "irany": "novekszik",
-"meredekseg": 4.865,
+"meredekseg": 5.755,
 "ervenyes": true,
-"mai_ertek": 30,
-"csucs": 87.0,
-"atlag": 58.89
+"mai_ertek": 14,
+"csucs": 86.0,
+"atlag": 53.21
 },
 {
 "szo": "korrupció",
 "irany": "stagnal",
-"meredekseg": 0.223,
+"meredekseg": -0.271,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -182,25 +234,25 @@
 {
 "szo": "kórház",
 "irany": "novekszik",
-"meredekseg": 2.773,
+"meredekseg": 2.96,
 "ervenyes": true,
-"mai_ertek": 31,
-"csucs": 83.0,
-"atlag": 47.67
+"mai_ertek": 100,
+"csucs": 47.0,
+"atlag": 27.67
 },
 {
 "szo": "kölcsön",
 "irany": "stagnal",
-"meredekseg": 0.006,
+"meredekseg": 0.667,
 "ervenyes": true,
-"mai_ertek": 0,
+"mai_ertek": 42,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "munkanélküliség",
 "irany": "stagnal",
-"meredekseg": -0.583,
+"meredekseg": -0.552,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -208,46 +260,46 @@
 },
 {
 "szo": "műtét",
-"irany": "stagnal",
-"meredekseg": 0.844,
+"irany": "novekszik",
+"meredekseg": 1.437,
 "ervenyes": true,
-"mai_ertek": 32,
+"mai_ertek": 46,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "napelem",
 "irany": "novekszik",
-"meredekseg": 1.409,
+"meredekseg": 2.583,
 "ervenyes": true,
 "mai_ertek": 24,
-"csucs": 100.0,
-"atlag": 27.5
+"csucs": 60.0,
+"atlag": 39.56
 },
 {
 "szo": "nyaralás",
 "irany": "stagnal",
-"meredekseg": 0.273,
+"meredekseg": -0.147,
 "ervenyes": true,
-"mai_ertek": 13,
-"csucs": 15.0,
-"atlag": 10.86
+"mai_ertek": 8,
+"csucs": 19.0,
+"atlag": 11.46
 },
 {
 "szo": "nyugdíj",
 "irany": "csokken",
-"meredekseg": -1.743,
+"meredekseg": -4.052,
 "ervenyes": true,
-"mai_ertek": 20,
-"csucs": 37.0,
-"atlag": 18.42
+"mai_ertek": 9,
+"csucs": 40.0,
+"atlag": 22.0
 },
 {
 "szo": "pedagógus",
-"irany": "stagnal",
-"meredekseg": -0.988,
+"irany": "csokken",
+"meredekseg": -1.187,
 "ervenyes": true,
-"mai_ertek": 36,
+"mai_ertek": 25,
 "csucs": null,
 "atlag": null
 },
@@ -263,16 +315,16 @@
 {
 "szo": "segély",
 "irany": "novekszik",
-"meredekseg": 3.064,
+"meredekseg": 4.57,
 "ervenyes": true,
-"mai_ertek": 0,
+"mai_ertek": 66,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "sürgősségi",
 "irany": "stagnal",
-"meredekseg": -0.083,
+"meredekseg": 0.658,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -284,13 +336,13 @@
 "meredekseg": null,
 "ervenyes": false,
 "mai_ertek": null,
-"csucs": null,
-"atlag": null
+"csucs": 90.0,
+"atlag": 78.5
 },
 {
 "szo": "várólista",
 "irany": "stagnal",
-"meredekseg": -0.376,
+"meredekseg": 0.23,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -299,41 +351,31 @@
 {
 "szo": "állás",
 "irany": "novekszik",
-"meredekseg": 3.327,
+"meredekseg": 3.089,
 "ervenyes": true,
-"mai_ertek": 60,
-"csucs": 95.0,
-"atlag": 76.25
+"mai_ertek": 45,
+"csucs": 89.0,
+"atlag": 69.54
 }
 ],
 "napi": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A ma követett szavak közül több is kiemelkedik a saját szokásos szintjéhez mérve. A kórház mai értéke a maximumon áll, jóval a megszokott átlaga fölött, ami szembetűnő élénkülés. A háziorvos és a műtét szintén a szokásosnál aktívabb, és az egészség körüli érdeklődés a betegség szónál is a saját átlaga fölött jár. Az iskola és a segély a magasabb tartományban mozog, előbbi kiugróan, utóbbi szintén az átlagosnál élénkebben.\n\nA megélhetéshez kötődő szavaknál vegyes a kép. A benzin feltűnően alacsonyan, a szokásos szintje alatt van, a nyugdíj szintén visszafogottabb a megszokottnál, a nyaralás pedig – évszaknak megfelelően – gyenge. Az akciós újság a saját átlaga alatt maradt, miközben az eladó lakás, az albérlet, a hitel és a kölcsön nagyjából a megszokott sávjukban mozognak.\n\nNéhány szó ma gyakorlatilag nem adott jelet: az infláció, a csőd, a korrupció, a munkanélküliség, a rezsi, a sürgősségi és a várólista mérhető érdeklődés nélkül maradt. A kormányablak a saját átlagához képest visszafogott, a napelem pedig mérsékelt szinten mozog. Az állás a megszokott sávjában van, enyhe élénküléssel. A tüntetés szónál ma nem állt rendelkezésre érvényes mérés."
 }
 },
 "felkapott": {
 "top": [
 {
-"kifejezes": "havasi bertalan",
+"kifejezes": "jármű",
 "volumen": "10000",
 "novekedes_pct": "1000",
 "temak": [
-"Politics",
-"Law and Government"
+"Other"
 ],
 "hirek": []
 },
 {
-"kifejezes": "európai uniós jog",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "sanofi",
-"volumen": "10000",
+"kifejezes": "áramszünet",
+"volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
 "Business and Finance"
@@ -341,7 +383,25 @@
 "hirek": []
 },
 {
-"kifejezes": "vénasszonyok nyara",
+"kifejezes": "orbán viktor",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "bankautomata",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "nyári időszámítás",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
@@ -350,16 +410,7 @@
 "hirek": []
 },
 {
-"kifejezes": "ridikül",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "koncesszió",
+"kifejezes": "nagy márton",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
@@ -368,7 +419,7 @@
 "hirek": []
 },
 {
-"kifejezes": "dánia–portugália",
+"kifejezes": "ukrajna",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
@@ -377,18 +428,69 @@
 "hirek": []
 },
 {
-"kifejezes": "orbán áron",
+"kifejezes": "századvég alapítvány",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
-"Law and Government",
-"Politics"
+"Law and Government"
 ],
 "hirek": []
 },
 {
-"kifejezes": "esther rantzen",
+"kifejezes": "osztie zoltán",
 "volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "központi nyomozó főügyészség",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "kubatov gábor",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": [
+{
+"hir_cim": "„Egy dologban teljesen egyetértettünk” – Kubatov Gábor fontos szervezet vezetőjével találkozott",
+"hir_forras": "Blikk",
+"hir_url": "https://www.blikk.hu/sport/magyar-foci/nb-i-ferencvaros-kubatov-gabor-fontos-talalkozo/kgg0zvq",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRgFZSFxtC4oJw9hPf8N8ejd8OcXDthz4V6BzlH0TpVOHmjr1CdVWvsGHKK-SQ",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Nem a tagság választ elnököt a FTC-ben, Kubatov Gábor elmozdítása szinte lehetetlen lenne",
+"hir_forras": "Népszava",
+"hir_url": "https://nepszava.hu/3333659_ferencvaros-elnokvalasztas-kubatov-gabor",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQrNr093Ojg2HL0RChDuaYUFakKgJRVbi_DFu1mXb8YiOub8r7JtwMNQ-sp_ok",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Ifjabb Simon Tibornak üzentek a Fradi ultrái",
+"hir_forras": "ORIGO",
+"hir_url": "https://www.origo.hu/sport/sport-futball/2026/09/fradi-ifjabb-simon-tibor-uzenet",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcT0Iaqb3fiQaCyXKXz82i8mdxIgcPuY4ikqw4rjwtxSrh8Rd_aMXAUQJia2BVE",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "berki krisztián",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Entertainment"
@@ -396,81 +498,75 @@
 "hirek": []
 },
 {
-"kifejezes": "varga bajusz veronika",
-"volumen": "5000",
+"kifejezes": "élelmiszer",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
-"Other"
+"Food and Drink"
 ],
 "hirek": []
 },
 {
-"kifejezes": "osztie zoltán",
+"kifejezes": "politika",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
-"Other"
+"Politics",
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "alapjogokért központ",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "magyar labdarúgó-válogatott",
+"volumen": "2000",
+"novekedes_pct": "900",
+"temak": [
+"Sports"
 ],
 "hirek": [
 {
-"hir_cim": "Belföld - A Magyar Katolikus Egyház kommentben üzent Magyar Péternek Osztie Zoltán ügyében",
-"hir_forras": "Index.hu",
-"hir_url": "https://index.hu/belfold/2026/10/02/magyar-katolikus-egyhaz-komment-magyar-peter-osztie-zoltan-predikacio-elhatarolodas/",
+"hir_cim": "Három Tóth a kezdőben, Nagy Zsolt is bekerült – kezdőcsapatok",
+"hir_forras": "Nemzeti Sport Online",
+"hir_url": "https://www.nemzetisport.hu/magyar-valogatott/2026/10/harom-toth-a-kezdoben-nagy-zsolt-is-bekerult-kezdocsapatok",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQmxvwqHEurDPU2AEpDwfin6l3JRX2R-s7XikX4b--r7IO3ya9ewpy8dY4ERS8",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4WfKkXXJi64EU2fLRHcYKUnw3KSdq42xhhZ-ZBPlV6a1TIMSlQAOCxhlLaBw",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Radics Béla: Katolikus vagyok",
+"hir_cim": "Újabb játékos debütálhat a magyar válogatottban",
 "hir_forras": "24.hu",
-"hir_url": "https://24.hu/belfold/2026/10/02/radics-bela-katolikus-vagyok/",
+"hir_url": "https://24.hu/sport/foci/2026/10/02/nemzetek-ligaja-magyar-valogatott-georgia-meccskeret-szalai-jozsef/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnbQHnCpE3DSeNfBM7m9FlmeIiFvSS9Qtw6bLMMT_6WUEkVl6tHYNHnCjqMUY",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTzN2uvt98zTsN4FVedXNbCJHrg4IEEYhtHMVAbw01bzmmdyzQCGKbj9zu_bWA",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Az egyház és a KDNP igencsak mást gondol arról, hogy az Orbán-rajongó plébános erkölcsileg romlott országpusztítónak nevezte a tiszásokat, ami miatt Magyar Péter elhatárolódást kért",
-"hir_forras": "444",
-"hir_url": "https://444.hu/2026/10/02/az-egyhaz-es-a-kdnp-igencsak-mast-gondol-arrol-hogy-az-orban-rajongo-plebanos-erkolcsileg-romlott-orszagpusztitonak-nevezte-a-tiszasokat-ami-miatt-magyar-peter-elhatarolodast-kert",
+"hir_cim": "Ma a TV-ben: Magyarország-Georgia élőben, lesz francia-olasz és belga-török rangadó is",
+"hir_forras": "Csakfoci",
+"hir_url": "https://www.csakfoci.hu/sport-tv-musor_m4sport/ma-a-tv-ben-magyarorszag-georgia-eloben-lesz-francia-olasz-es-belga-torok-rangado-is",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRcmsPcry4Ba48ysZCVkkkWf1ZKkluKamj7W8eBEzyeGYXo6wSHcKGUHt1NIqo",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRcdIeUXFl1xer5l0D5U5eRuFm-BEA5ewyVpil6j0y7V4h4EYJzGr9bZddruWM",
 "hir_kivonat": ""
 }
 ]
 },
 {
-"kifejezes": "részvénypiac",
+"kifejezes": "házasság első látásra",
 "volumen": "2000",
-"novekedes_pct": "1000",
+"novekedes_pct": "400",
 "temak": [
 "Other"
 ],
-"hirek": [
-{
-"hir_cim": "Tökéletes vihar közeleg? Egyszerre kerülhet nyomás alá a kötvény- és a részvénypiac",
-"hir_forras": "Economx.hu",
-"hir_url": "https://www.economx.hu/befektetes/2026/10/01/elemzes-kotvenypiac-hozamok-spb/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSTBqK3DFCk0_glyk2Tv777zhW7pKPa8qs8mwNm7uxPTDsgpbRQCdsV0S8sS4o",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Ide menekítik most a pénzüket az élelmes magyarok: ezek az állampapírok most aranyat érhetnek",
-"hir_forras": "Pénzcentrum",
-"hir_url": "https://www.penzcentrum.hu/megtakaritas/20260923/ide-menekitik-most-a-penzuket-az-elelmes-magyarok-ezek-az-allampapirok-most-aranyat-erhetnek-1206003",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcS-CKkPdsQn3corZ-CneBso7AYG9MbmpsRg4J0TL8pBGT1uw2mKvPgLqJydjl4",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Gazdaság - Miközben a világ piacai feszülnek, Kína külön utat jár – ebből a befektetők is profitálhatnak",
-"hir_forras": "Index.hu",
-"hir_url": "https://index.hu/gazdasag/2026/09/24/befektetes-megtakaritas-hozam-kotveny-reszveny-ertekpapir-etf-kotvenypiac-reszvenypiac/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlWMVdvfhULTxcMQNaPIsVdXbMkHUjAiFDbTV-MgUyx0ZpOOsau1DmhCpX8Rg",
-"hir_kivonat": ""
-}
-]
+"hirek": []
 },
 {
 "kifejezes": "bárándy péter",
@@ -480,105 +576,44 @@
 "Politics",
 "Law and Government"
 ],
-"hirek": [
-{
-"hir_cim": "Bárándy Péter: Egy minisztert nem ment fel, ha azt mondja, csak egy kormánydöntést hajtott végre",
-"hir_forras": "Index.hu",
-"hir_url": "https://index.hu/belfold/2026/10/01/konkretan-nvvh-elszamoltatas-barandy-peter-tisztitotuz-jogsertes-birosag-hanko/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQSkSc8LKXf3RKZypJmmOnObFX_9uFVNMNN4Mc3w3S0mTn_y5KQvK8lhBEWtzU",
-"hir_kivonat": ""
+"hirek": []
 },
 {
-"hir_cim": "Bárándy Péter szerint a kormánydöntés nem ad felmentést",
-"hir_forras": "Hirnavigator",
-"hir_url": "https://hirnavigator.hu/hir/10840088-barandy-peter-szerint-a-kormanydontes-nem-ad-felmentest",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTtV8jR-sNMSUo4x-hB6FFKG7HnU2NQMnAws-1MMCEMVJzZXkf-X2Lzxa4Nx2E",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Bárándy Péter: Egy minisztert nem ment fel, ha azt mondja, csak egy kormánydöntést hajtott végre",
-"hir_forras": "Hírstart",
-"hir_url": "https://www.hirstart.hu/hk/20261001_barandy_peter_szerint_a_kormanydontes_nem_ad_felmentest",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRWMPg2E0WVe9KCCtysfXYDfF3_JR5uWa-X2-xm1I1TO4bBdD61h8zIxcrmuQQ",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "október",
+"kifejezes": "gázolaj",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Other"
 ],
-"hirek": []
+"hirek": [
+{
+"hir_cim": "Kiszivárgott a titkos forgatókönyv - azonnal zuhanni kezdett a dízel ára",
+"hir_forras": "Portfolio.hu",
+"hir_url": "https://www.portfolio.hu/global/20261002/kiszivargott-a-titkos-forgatokonyv-azonnal-zuhanni-kezdett-a-dizel-ara-866942",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ3dCOss5Y9xxjlmv6LaqqYQMG8cs-J_iPrNHEihx1yzfHwb2dmkkUOSRNmUIM",
+"hir_kivonat": ""
 },
 {
-"kifejezes": "családi pótlék",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
+"hir_cim": "Külföld - Óriási beavatkozás jön az olajpiacon, Emmanuel Macron bejelentette a rendkívüli lépést",
+"hir_forras": "Index.hu",
+"hir_url": "https://index.hu/kulfold/2026/10/02/g7-dizel-nyersolaj-felszabaditas-uzemanyagarak/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQnBM9Ih8mDgjDSMs1tC1jvLmQPWXKbAMFekII_W14VcowOe48s8hASQkngJSY",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "100 millió hordó olajat szabadít fel a G7, hogy letörje az üzemanyagárakat",
+"hir_forras": "24.hu",
+"hir_url": "https://24.hu/fn/gazdasag/2026/10/02/g7-strategiai-olajkeszlet-uzemanyagar-dizel/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNbFiQSXb1PadxT4R_rf-3xtwaUB_dkMLSHsHA7KN3LXI4djgsrZI7HGIvaGY",
+"hir_kivonat": ""
+}
+]
 },
 {
 "kifejezes": "m5",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": [
-{
-"hir_cim": "Szörnyű halálos baleset az M5-ösön",
-"hir_forras": "hiros.hu",
-"hir_url": "https://hiros.hu/halalos-karambol-az-m5-oson-lajosmizsenel/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSo8u7tUSeSGlEXglBWhAr1RGKeUx0s9VfKdGNjXURnZRhF6SYKXKYfV4nJjGs",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Hármas karambol történt az M5-ösön – Budapest felé torlódás alakult ki – Szegedi hírek",
-"hir_forras": "Szeged365",
-"hir_url": "https://szeged365.hu/2026/10/01/harmas-karambol-tortent-az-m5-oson-budapest-fele-torlodas-alakult-ki/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQmXEYEdqjWOHanVXxOuXAIfoFmLqOb7Gh3Dv7eWoXElqMW3uMO5b7K5Xd7Czw",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Tragédia az M5-ösön: egy ember meghalt, hárman megsérültek Lajosmizsénél",
-"hir_forras": "Blikk",
-"hir_url": "https://www.blikk.hu/aktualis/belfold/m5-autopalya-halalos-tomegbaleset-lajosmizse/btex497",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTMwAqsxrlGIY9dW0PaCRVQQPl3nw0nTgRDZiFnCKwJrxm895P_5qZzMLfojZk",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "kijev",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "országház",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "medikémia",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
@@ -865,27 +900,17 @@
 ],
 "este_top": [
 {
-"kifejezes": "havasi bertalan",
+"kifejezes": "jármű",
 "volumen": "10000",
 "novekedes_pct": "1000",
 "temak": [
-"Politics",
-"Law and Government"
+"Other"
 ],
 "hirek": []
 },
 {
-"kifejezes": "európai uniós jog",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "sanofi",
-"volumen": "10000",
+"kifejezes": "áramszünet",
+"volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
 "Business and Finance"
@@ -893,7 +918,25 @@
 "hirek": []
 },
 {
-"kifejezes": "vénasszonyok nyara",
+"kifejezes": "orbán viktor",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "bankautomata",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "nyári időszámítás",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
@@ -902,16 +945,7 @@
 "hirek": []
 },
 {
-"kifejezes": "ridikül",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "koncesszió",
+"kifejezes": "nagy márton",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
@@ -920,7 +954,7 @@
 "hirek": []
 },
 {
-"kifejezes": "dánia–portugália",
+"kifejezes": "ukrajna",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
@@ -929,18 +963,69 @@
 "hirek": []
 },
 {
-"kifejezes": "orbán áron",
+"kifejezes": "századvég alapítvány",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
-"Law and Government",
-"Politics"
+"Law and Government"
 ],
 "hirek": []
 },
 {
-"kifejezes": "esther rantzen",
+"kifejezes": "osztie zoltán",
 "volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "központi nyomozó főügyészség",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "kubatov gábor",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": [
+{
+"hir_cim": "„Egy dologban teljesen egyetértettünk” – Kubatov Gábor fontos szervezet vezetőjével találkozott",
+"hir_forras": "Blikk",
+"hir_url": "https://www.blikk.hu/sport/magyar-foci/nb-i-ferencvaros-kubatov-gabor-fontos-talalkozo/kgg0zvq",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRgFZSFxtC4oJw9hPf8N8ejd8OcXDthz4V6BzlH0TpVOHmjr1CdVWvsGHKK-SQ",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Nem a tagság választ elnököt a FTC-ben, Kubatov Gábor elmozdítása szinte lehetetlen lenne",
+"hir_forras": "Népszava",
+"hir_url": "https://nepszava.hu/3333659_ferencvaros-elnokvalasztas-kubatov-gabor",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQrNr093Ojg2HL0RChDuaYUFakKgJRVbi_DFu1mXb8YiOub8r7JtwMNQ-sp_ok",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Ifjabb Simon Tibornak üzentek a Fradi ultrái",
+"hir_forras": "ORIGO",
+"hir_url": "https://www.origo.hu/sport/sport-futball/2026/09/fradi-ifjabb-simon-tibor-uzenet",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcT0Iaqb3fiQaCyXKXz82i8mdxIgcPuY4ikqw4rjwtxSrh8Rd_aMXAUQJia2BVE",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "berki krisztián",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Entertainment"
@@ -948,81 +1033,75 @@
 "hirek": []
 },
 {
-"kifejezes": "varga bajusz veronika",
-"volumen": "5000",
+"kifejezes": "élelmiszer",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
-"Other"
+"Food and Drink"
 ],
 "hirek": []
 },
 {
-"kifejezes": "osztie zoltán",
+"kifejezes": "politika",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
-"Other"
+"Politics",
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "alapjogokért központ",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "magyar labdarúgó-válogatott",
+"volumen": "2000",
+"novekedes_pct": "900",
+"temak": [
+"Sports"
 ],
 "hirek": [
 {
-"hir_cim": "Belföld - A Magyar Katolikus Egyház kommentben üzent Magyar Péternek Osztie Zoltán ügyében",
-"hir_forras": "Index.hu",
-"hir_url": "https://index.hu/belfold/2026/10/02/magyar-katolikus-egyhaz-komment-magyar-peter-osztie-zoltan-predikacio-elhatarolodas/",
+"hir_cim": "Három Tóth a kezdőben, Nagy Zsolt is bekerült – kezdőcsapatok",
+"hir_forras": "Nemzeti Sport Online",
+"hir_url": "https://www.nemzetisport.hu/magyar-valogatott/2026/10/harom-toth-a-kezdoben-nagy-zsolt-is-bekerult-kezdocsapatok",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQmxvwqHEurDPU2AEpDwfin6l3JRX2R-s7XikX4b--r7IO3ya9ewpy8dY4ERS8",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4WfKkXXJi64EU2fLRHcYKUnw3KSdq42xhhZ-ZBPlV6a1TIMSlQAOCxhlLaBw",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Radics Béla: Katolikus vagyok",
+"hir_cim": "Újabb játékos debütálhat a magyar válogatottban",
 "hir_forras": "24.hu",
-"hir_url": "https://24.hu/belfold/2026/10/02/radics-bela-katolikus-vagyok/",
+"hir_url": "https://24.hu/sport/foci/2026/10/02/nemzetek-ligaja-magyar-valogatott-georgia-meccskeret-szalai-jozsef/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnbQHnCpE3DSeNfBM7m9FlmeIiFvSS9Qtw6bLMMT_6WUEkVl6tHYNHnCjqMUY",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTzN2uvt98zTsN4FVedXNbCJHrg4IEEYhtHMVAbw01bzmmdyzQCGKbj9zu_bWA",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Az egyház és a KDNP igencsak mást gondol arról, hogy az Orbán-rajongó plébános erkölcsileg romlott országpusztítónak nevezte a tiszásokat, ami miatt Magyar Péter elhatárolódást kért",
-"hir_forras": "444",
-"hir_url": "https://444.hu/2026/10/02/az-egyhaz-es-a-kdnp-igencsak-mast-gondol-arrol-hogy-az-orban-rajongo-plebanos-erkolcsileg-romlott-orszagpusztitonak-nevezte-a-tiszasokat-ami-miatt-magyar-peter-elhatarolodast-kert",
+"hir_cim": "Ma a TV-ben: Magyarország-Georgia élőben, lesz francia-olasz és belga-török rangadó is",
+"hir_forras": "Csakfoci",
+"hir_url": "https://www.csakfoci.hu/sport-tv-musor_m4sport/ma-a-tv-ben-magyarorszag-georgia-eloben-lesz-francia-olasz-es-belga-torok-rangado-is",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRcmsPcry4Ba48ysZCVkkkWf1ZKkluKamj7W8eBEzyeGYXo6wSHcKGUHt1NIqo",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRcdIeUXFl1xer5l0D5U5eRuFm-BEA5ewyVpil6j0y7V4h4EYJzGr9bZddruWM",
 "hir_kivonat": ""
 }
 ]
 },
 {
-"kifejezes": "részvénypiac",
+"kifejezes": "házasság első látásra",
 "volumen": "2000",
-"novekedes_pct": "1000",
+"novekedes_pct": "400",
 "temak": [
 "Other"
 ],
-"hirek": [
-{
-"hir_cim": "Tökéletes vihar közeleg? Egyszerre kerülhet nyomás alá a kötvény- és a részvénypiac",
-"hir_forras": "Economx.hu",
-"hir_url": "https://www.economx.hu/befektetes/2026/10/01/elemzes-kotvenypiac-hozamok-spb/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSTBqK3DFCk0_glyk2Tv777zhW7pKPa8qs8mwNm7uxPTDsgpbRQCdsV0S8sS4o",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Ide menekítik most a pénzüket az élelmes magyarok: ezek az állampapírok most aranyat érhetnek",
-"hir_forras": "Pénzcentrum",
-"hir_url": "https://www.penzcentrum.hu/megtakaritas/20260923/ide-menekitik-most-a-penzuket-az-elelmes-magyarok-ezek-az-allampapirok-most-aranyat-erhetnek-1206003",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcS-CKkPdsQn3corZ-CneBso7AYG9MbmpsRg4J0TL8pBGT1uw2mKvPgLqJydjl4",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Gazdaság - Miközben a világ piacai feszülnek, Kína külön utat jár – ebből a befektetők is profitálhatnak",
-"hir_forras": "Index.hu",
-"hir_url": "https://index.hu/gazdasag/2026/09/24/befektetes-megtakaritas-hozam-kotveny-reszveny-ertekpapir-etf-kotvenypiac-reszvenypiac/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlWMVdvfhULTxcMQNaPIsVdXbMkHUjAiFDbTV-MgUyx0ZpOOsau1DmhCpX8Rg",
-"hir_kivonat": ""
-}
-]
+"hirek": []
 },
 {
 "kifejezes": "bárándy péter",
@@ -1032,105 +1111,44 @@
 "Politics",
 "Law and Government"
 ],
-"hirek": [
-{
-"hir_cim": "Bárándy Péter: Egy minisztert nem ment fel, ha azt mondja, csak egy kormánydöntést hajtott végre",
-"hir_forras": "Index.hu",
-"hir_url": "https://index.hu/belfold/2026/10/01/konkretan-nvvh-elszamoltatas-barandy-peter-tisztitotuz-jogsertes-birosag-hanko/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQSkSc8LKXf3RKZypJmmOnObFX_9uFVNMNN4Mc3w3S0mTn_y5KQvK8lhBEWtzU",
-"hir_kivonat": ""
+"hirek": []
 },
 {
-"hir_cim": "Bárándy Péter szerint a kormánydöntés nem ad felmentést",
-"hir_forras": "Hirnavigator",
-"hir_url": "https://hirnavigator.hu/hir/10840088-barandy-peter-szerint-a-kormanydontes-nem-ad-felmentest",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTtV8jR-sNMSUo4x-hB6FFKG7HnU2NQMnAws-1MMCEMVJzZXkf-X2Lzxa4Nx2E",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Bárándy Péter: Egy minisztert nem ment fel, ha azt mondja, csak egy kormánydöntést hajtott végre",
-"hir_forras": "Hírstart",
-"hir_url": "https://www.hirstart.hu/hk/20261001_barandy_peter_szerint_a_kormanydontes_nem_ad_felmentest",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRWMPg2E0WVe9KCCtysfXYDfF3_JR5uWa-X2-xm1I1TO4bBdD61h8zIxcrmuQQ",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "október",
+"kifejezes": "gázolaj",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Other"
 ],
-"hirek": []
+"hirek": [
+{
+"hir_cim": "Kiszivárgott a titkos forgatókönyv - azonnal zuhanni kezdett a dízel ára",
+"hir_forras": "Portfolio.hu",
+"hir_url": "https://www.portfolio.hu/global/20261002/kiszivargott-a-titkos-forgatokonyv-azonnal-zuhanni-kezdett-a-dizel-ara-866942",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ3dCOss5Y9xxjlmv6LaqqYQMG8cs-J_iPrNHEihx1yzfHwb2dmkkUOSRNmUIM",
+"hir_kivonat": ""
 },
 {
-"kifejezes": "családi pótlék",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
+"hir_cim": "Külföld - Óriási beavatkozás jön az olajpiacon, Emmanuel Macron bejelentette a rendkívüli lépést",
+"hir_forras": "Index.hu",
+"hir_url": "https://index.hu/kulfold/2026/10/02/g7-dizel-nyersolaj-felszabaditas-uzemanyagarak/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQnBM9Ih8mDgjDSMs1tC1jvLmQPWXKbAMFekII_W14VcowOe48s8hASQkngJSY",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "100 millió hordó olajat szabadít fel a G7, hogy letörje az üzemanyagárakat",
+"hir_forras": "24.hu",
+"hir_url": "https://24.hu/fn/gazdasag/2026/10/02/g7-strategiai-olajkeszlet-uzemanyagar-dizel/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNbFiQSXb1PadxT4R_rf-3xtwaUB_dkMLSHsHA7KN3LXI4djgsrZI7HGIvaGY",
+"hir_kivonat": ""
+}
+]
 },
 {
 "kifejezes": "m5",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": [
-{
-"hir_cim": "Szörnyű halálos baleset az M5-ösön",
-"hir_forras": "hiros.hu",
-"hir_url": "https://hiros.hu/halalos-karambol-az-m5-oson-lajosmizsenel/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSo8u7tUSeSGlEXglBWhAr1RGKeUx0s9VfKdGNjXURnZRhF6SYKXKYfV4nJjGs",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Hármas karambol történt az M5-ösön – Budapest felé torlódás alakult ki – Szegedi hírek",
-"hir_forras": "Szeged365",
-"hir_url": "https://szeged365.hu/2026/10/01/harmas-karambol-tortent-az-m5-oson-budapest-fele-torlodas-alakult-ki/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQmXEYEdqjWOHanVXxOuXAIfoFmLqOb7Gh3Dv7eWoXElqMW3uMO5b7K5Xd7Czw",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Tragédia az M5-ösön: egy ember meghalt, hárman megsérültek Lajosmizsénél",
-"hir_forras": "Blikk",
-"hir_url": "https://www.blikk.hu/aktualis/belfold/m5-autopalya-halalos-tomegbaleset-lajosmizse/btex497",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTMwAqsxrlGIY9dW0PaCRVQQPl3nw0nTgRDZiFnCKwJrxm895P_5qZzMLfojZk",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "kijev",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "országház",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "medikémia",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
@@ -1140,10 +1158,26 @@
 }
 ],
 "reggel_este_diff": {
-"uj_estere": [],
-"eltunt_estere": [],
-"megmaradt": [
-"bárándy péter",
+"uj_estere": [
+"alapjogokért központ",
+"bankautomata",
+"berki krisztián",
+"gázolaj",
+"házasság első látásra",
+"jármű",
+"kubatov gábor",
+"központi nyomozó főügyészség",
+"magyar labdarúgó-válogatott",
+"nagy márton",
+"nyári időszámítás",
+"orbán viktor",
+"politika",
+"századvég alapítvány",
+"ukrajna",
+"áramszünet",
+"élelmiszer"
+],
+"eltunt_estere": [
 "családi pótlék",
 "dánia–portugália",
 "esther rantzen",
@@ -1151,80 +1185,51 @@
 "havasi bertalan",
 "kijev",
 "koncesszió",
-"m5",
 "medikémia",
 "október",
 "orbán áron",
 "országház",
-"osztie zoltán",
 "ridikül",
 "részvénypiac",
 "sanofi",
 "varga bajusz veronika",
 "vénasszonyok nyara"
+],
+"megmaradt": [
+"bárándy péter",
+"m5",
+"osztie zoltán"
 ]
 },
 "reggel": {
-"szoveg": "Ma reggel a magyar Google-keresésben több téma is egyszerre pörög, és a lista élén jól látható a közélet túlsúlya. A legnagyobb kereséssel ma reggel Havasi Bertalan, az európai uniós jog és a Sanofi neve szerepel, mindhárom erős érdeklődéssel, de konkrét, hozzájuk kapcsolódó hír nélkül – így az okot egyelőre nem tudjuk megnevezni, csak annyit, hogy sokan keresték rájuk. Hasonlóan feltűnő a vénasszonyok nyara, a Ridikül, a koncesszió, a Dánia–Portugália mérkőzés, Orbán Áron, Esther Rantzen és Varga Bajusz Veronika neve is, ezekhez szintén nem érkezett kísérő hír, így inkább csak a megnövekedett érdeklődést tudjuk rögzíteni.\n\nAkad viszont néhány felkapott kifejezés, amelyhez tényleg kapcsolódik friss hír. Osztie Zoltán körül egy egyházi és politikai ügy kavarog: több sajtóforrás, köztük az Index, a 24.hu és a 444 is arról számol be, hogy a Magyar Katolikus Egyház és Magyar Péter között nézeteltérés alakult ki egy prédikáció és az ahhoz kapcsolódó elhatárolódás kapcsán. A részvénypiac iránti érdeklődés mögött gazdasági elemzések állnak, amelyek a kötvény- és részvénypiaci feszültségekről, illetve a megtakarítási lehetőségekről írnak. Bárándy Péter neve egy jogi-közéleti megszólalás nyomán került előtérbe, amelyben egy miniszteri felelősség kérdését értelmezi. Az M5-ös autópálya pedig egy halálos közlekedési baleset miatt került sokak keresésébe, amelyről több lap is beszámolt.\n\nA reggeli képet tovább színezi Kijev, az Országház, a családi pótlék, az október és a medikémia megjelenése. Az előző napi állapothoz képest több új téma is felbukkant ma reggel – köztük Bárándy Péter, az M5, az Országház és Osztie Zoltán –, miközben néhány korábbi kifejezés, például az energiatárolás vagy az időjáráshoz köthető keresések kiszorultak a listáról. Összességében óvatosan annyi szűrhető le, hogy ma reggel elsősorban a közélet, a jog és a gazdaság témái mozgatják a keresőt, kiegészülve néhány sport- és szórakoztató jellegű találattal."
+"szoveg": "Reggel kilenc körül a közélet és a gazdaság témái domináltak. Nagy keresési igény mutatkozott Havasi Bertalan, az európai uniós jog és a Sanofi iránt, de felkapott volt a vénasszonyok nyara, a Ridikül és a koncesszió is. A politikai-jogi vonalhoz Orbán Áron és Bárándy Péter neve tartozott; utóbbinál arról szóltak a hírek, hogy szerinte egy kormánydöntésre hivatkozás nem ad felmentést egy miniszter alól. Osztie Zoltán körül a Magyar Katolikus Egyház és a KDNP megszólalásáról, valamint egy prédikáció körüli vitáról érkeztek beszámolók. Az M5-ös autópálya egy halálos balesettel került a figyelembe, a részvénypiac pedig piaci feszültségekről szóló elemzésekkel."
 },
 "este": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "Estére a lista érezhetően átrendeződött. A jármű került előre, mellé az áramszünet, a bankautomata, a nyári időszámítás és a politikai figyelem olyan nevekkel, mint Orbán Viktor, Nagy Márton és a Századvég Alapítvány. Felbukkant Ukrajna, a Központi Nyomozó Főügyészség, valamint az Alapjogokért Központ is. A sport felől Kubatov Gábor – akiről egy fontos találkozó és a Ferencváros elnökválasztása kapcsán szóltak a hírek – és a magyar labdarúgó-válogatott került be, utóbbinál a Georgia elleni mérkőzés kezdőcsapatáról és műsoridejéről jelentek meg beszámolók. A gázolaj estére azután pörgött fel, hogy több lap is a dízel árának zuhanásáról és egy nagy olajpiaci beavatkozásról írt."
 },
 "teljes_nap": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A nap íve jól mutatja, hogyan tolódott el a figyelem a reggeli közéleti-gazdasági témáktól az esti, vegyesebb, erősebben hírvezérelt kép felé. Reggelről estére kikopott többek között Havasi Bertalan, az európai uniós jog, a Sanofi, a Ridikül, a koncesszió, Orbán Áron és a családi pótlék. Estére újként jött be a jármű, az áramszünet, a bankautomata, a gázolaj, Orbán Viktor, Nagy Márton, Ukrajna és a magyar labdarúgó-válogatott – ez utóbbiak egy része a focimeccs és az üzemanyagpiaci hírek köré szerveződött. Egész napon át kitartott Bárándy Péter, az M5-ös és Osztie Zoltán témája, ezek adták a nap állandó hátterét."
 },
 "het": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A hét egészét nézve kevés olyan téma van, amely több napon át vissza-visszatért: a gazdaság és Havasi Bertalan két-két napon is megjelent, a többi kifejezés jobbára csak egy-egy napot mozgott. A héten átívelő témák között ott volt a labdarúgás sok mérkőzéssel, a politika és közélet számos szereplője, valamint a megélhetéshez és energiához kötődő szavak, mint a benzin, a gázolaj, a fűtés vagy az élelmiszer. Ez a sokféleség azt mutatja, hogy a figyelem gyorsan váltott témáról témára, tartósan kiugró, napokon át pörgő egyetlen ügy nem rajzolódott ki."
 },
 "het_valos": {
 "napok": 7,
 "visszateroek": [
 {
-"kifejezes": "havasi bertalan",
-"napok_szama": 3
-},
-{
-"kifejezes": "családi pótlék",
-"napok_szama": 2
-},
-{
-"kifejezes": "dánia–portugália",
-"napok_szama": 2
-},
-{
-"kifejezes": "esther rantzen",
-"napok_szama": 2
-},
-{
-"kifejezes": "európai uniós jog",
-"napok_szama": 2
-},
-{
 "kifejezes": "gazdaság",
 "napok_szama": 2
 },
 {
-"kifejezes": "koncesszió",
-"napok_szama": 2
-},
-{
-"kifejezes": "medikémia",
-"napok_szama": 2
-},
-{
-"kifejezes": "orbán áron",
-"napok_szama": 2
-},
-{
-"kifejezes": "ridikül",
-"napok_szama": 2
-},
-{
-"kifejezes": "sanofi",
+"kifejezes": "havasi bertalan",
 "napok_szama": 2
 },
 {
 "kifejezes": "444.hu",
+"napok_szama": 1
+},
+{
+"kifejezes": "alapjogokért központ",
 "napok_szama": 1
 },
 {
@@ -1245,6 +1250,10 @@
 },
 {
 "kifejezes": "baka andrás",
+"napok_szama": 1
+},
+{
+"kifejezes": "bankautomata",
 "napok_szama": 1
 },
 {
@@ -1269,6 +1278,10 @@
 },
 {
 "kifejezes": "beol.hu",
+"napok_szama": 1
+},
+{
+"kifejezes": "berki krisztián",
 "napok_szama": 1
 },
 {
@@ -1300,6 +1313,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "családi pótlék",
+"napok_szama": 1
+},
+{
 "kifejezes": "csapadék",
 "napok_szama": 1
 },
@@ -1313,6 +1330,10 @@
 },
 {
 "kifejezes": "dr mátyás",
+"napok_szama": 1
+},
+{
+"kifejezes": "dánia–portugália",
 "napok_szama": 1
 },
 {
@@ -1332,11 +1353,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "esther rantzen",
+"napok_szama": 1
+},
+{
 "kifejezes": "eső",
 "napok_szama": 1
 },
 {
 "kifejezes": "európa",
+"napok_szama": 1
+},
+{
+"kifejezes": "európai uniós jog",
 "napok_szama": 1
 },
 {
@@ -1380,6 +1409,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "gázolaj",
+"napok_szama": 1
+},
+{
 "kifejezes": "hajdu jános",
 "napok_szama": 1
 },
@@ -1400,7 +1433,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "házasság első látásra",
+"napok_szama": 1
+},
+{
 "kifejezes": "hír",
+"napok_szama": 1
+},
+{
+"kifejezes": "jármű",
 "napok_szama": 1
 },
 {
@@ -1416,11 +1457,15 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "kijev",
+"kifejezes": "koncesszió",
 "napok_szama": 1
 },
 {
 "kifejezes": "kormány",
+"napok_szama": 1
+},
+{
+"kifejezes": "kubatov gábor",
 "napok_szama": 1
 },
 {
@@ -1429,6 +1474,10 @@
 },
 {
 "kifejezes": "kézigránát",
+"napok_szama": 1
+},
+{
+"kifejezes": "központi nyomozó főügyészség",
 "napok_szama": 1
 },
 {
@@ -1456,6 +1505,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "magyar labdarúgó-válogatott",
+"napok_szama": 1
+},
+{
 "kifejezes": "magyar péter",
 "napok_szama": 1
 },
@@ -1464,11 +1517,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "medikémia",
+"napok_szama": 1
+},
+{
 "kifejezes": "mária schmidt",
 "napok_szama": 1
 },
 {
 "kifejezes": "mészáros lőrinc",
+"napok_szama": 1
+},
+{
+"kifejezes": "nagy márton",
 "napok_szama": 1
 },
 {
@@ -1484,7 +1545,7 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "október",
+"kifejezes": "nyári időszámítás",
 "napok_szama": 1
 },
 {
@@ -1496,15 +1557,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "orbán viktor",
+"napok_szama": 1
+},
+{
+"kifejezes": "orbán áron",
+"napok_szama": 1
+},
+{
 "kifejezes": "oroszok",
 "napok_szama": 1
 },
 {
 "kifejezes": "oroszország",
-"napok_szama": 1
-},
-{
-"kifejezes": "országház",
 "napok_szama": 1
 },
 {
@@ -1517,6 +1582,10 @@
 },
 {
 "kifejezes": "palvin barbara",
+"napok_szama": 1
+},
+{
+"kifejezes": "politika",
 "napok_szama": 1
 },
 {
@@ -1540,11 +1609,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "ridikül",
+"napok_szama": 1
+},
+{
 "kifejezes": "rákay philip",
 "napok_szama": 1
 },
 {
-"kifejezes": "részvénypiac",
+"kifejezes": "sanofi",
 "napok_szama": 1
 },
 {
@@ -1572,6 +1645,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "századvég alapítvány",
+"napok_szama": 1
+},
+{
 "kifejezes": "székely gábor",
 "napok_szama": 1
 },
@@ -1588,7 +1665,7 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "varga bajusz veronika",
+"kifejezes": "ukrajna",
 "napok_szama": 1
 },
 {
@@ -1600,15 +1677,19 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "vénasszonyok nyara",
-"napok_szama": 1
-},
-{
 "kifejezes": "víz",
 "napok_szama": 1
 },
 {
 "kifejezes": "államtitkár",
+"napok_szama": 1
+},
+{
+"kifejezes": "áramszünet",
+"napok_szama": 1
+},
+{
+"kifejezes": "élelmiszer",
 "napok_szama": 1
 },
 {
@@ -1633,5 +1714,138 @@
 }
 ]
 }
+},
+"youtube": {
+"szamok": [
+{
+"szo": "szorongás",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.046,
+"ervenyes": true,
+"mai_ertek": 38,
+"csucs": 100,
+"atlag": 26.1
+},
+{
+"szo": "edzés",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.027,
+"ervenyes": true,
+"mai_ertek": 53,
+"csucs": 100,
+"atlag": 67.0
+},
+{
+"szo": "meditáció",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.047,
+"ervenyes": true,
+"mai_ertek": 85,
+"csucs": 100,
+"atlag": 82.2
+},
+{
+"szo": "befektetés",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.12,
+"ervenyes": true,
+"mai_ertek": 58,
+"csucs": 100,
+"atlag": 25.5
+},
+{
+"szo": "bitcoin",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.054,
+"ervenyes": true,
+"mai_ertek": 55,
+"csucs": 100,
+"atlag": 48.1
+},
+{
+"szo": "hírek",
+"domen": "kozelet",
+"irany": "stagnal",
+"meredekseg": -0.007,
+"ervenyes": true,
+"mai_ertek": 42,
+"csucs": 100,
+"atlag": 56.6
+},
+{
+"szo": "magyar péter",
+"domen": "kozelet",
+"irany": "stagnal",
+"meredekseg": 0.017,
+"ervenyes": true,
+"mai_ertek": 9,
+"csucs": 100,
+"atlag": 15.6
+},
+{
+"szo": "recept",
+"domen": "haztartas",
+"irany": "csokken",
+"meredekseg": -0.054,
+"ervenyes": true,
+"mai_ertek": 43,
+"csucs": 100,
+"atlag": 46.9
+},
+{
+"szo": "mese",
+"domen": "csalad",
+"irany": "stagnal",
+"meredekseg": -0.018,
+"ervenyes": true,
+"mai_ertek": 89,
+"csucs": 100,
+"atlag": 87.7
+},
+{
+"szo": "nyaralás",
+"domen": "szabadido",
+"irany": "novekszik",
+"meredekseg": 0.078,
+"ervenyes": true,
+"mai_ertek": 25,
+"csucs": 100,
+"atlag": 49.3
+},
+{
+"szo": "tanulás",
+"domen": "tanulas",
+"irany": "csokken",
+"meredekseg": -0.05,
+"ervenyes": true,
+"mai_ertek": 71,
+"csucs": 100,
+"atlag": 73.4
+},
+{
+"szo": "klíma",
+"domen": "otthon",
+"irany": "novekszik",
+"meredekseg": 0.063,
+"ervenyes": true,
+"mai_ertek": 11,
+"csucs": 100,
+"atlag": 16.8
+}
+],
+"napi": {
+"szoveg": "A magyarországi YouTube-keresésekben – amelyek a videós figyelmet közelítik – ma több szó is a saját megszokott szintje fölött jár. A befektetés iránti videóigény kiemelkedően magas a saját átlagához képest, és a szorongás szintén élénkebb a szokásosnál. A meditáció és a mese a megszokott, eleve magas tartományában maradt, a tanulás pedig stabilan erős. Ezek a szavak egymással nem összevethetők, mert mindegyik a saját, külön skáláján mozog.\n\nEnyhén visszafogottabb a szokásosnál a nyaralás és a klíma, előbbi az évszakhoz illően gyenge. Az edzés, a recept és a hírek nagyjából a saját átlaguk körül mozognak, a bitcoin kissé a megszokott szintje fölött. Magyar Péter neve a videós keresésekben alacsonyan, a saját átlaga alatt maradt."
+},
+"teljes_kep": {
+"szoveg": "A hét egészét nézve a videós érdeklődésben a befektetés ugrott a legtöbbet, alacsony szintről jelentősen feljebb kúszott, ami a leginkább szembetűnő mozgás. A szorongás és a nyaralás szintén emelkedett a hét folyamán, bár a nyaralás így is alacsony szinten maradt. A többi követett szó jóval kisebb elmozdulást mutatott: a bitcoin, a mese, a tanulás, a meditáció és a recept apró emelkedéssel, a hírek és az edzés enyhe visszaeséssel zárta a hetet, a klíma és Magyar Péter pedig gyakorlatilag változatlan maradt. A kép összességében néhány határozottan erősödő téma mellett sok stabil, alig mozduló keresést mutat."
+}
+},
+"predikcio": {
+"szoveg": "A rövid távú, egynapos előrejelzés minden követett szónál lényegében kiegyenlített, stagnáló irányt mutat – a számítás szerint sem érdemi emelkedés, sem határozott csökkenés nem rajzolódik ki egyik keresésnél sem. Fontos azonban, hogy ez csupán a közelmúlt mozgásának matematikai folytatása, nem eseményjóslat, így a valóság ettől eltérhet.\n\nA legtöbb becslés ráadásul alacsony megbízhatóságú, vagyis inkább csak óvatos jelzésként érdemes kezelni. Néhány szónál valamivel szilárdabb a kép: a napelem, a pedagógus és a rezsi előrejelzése kapott viszonylag szűkebb bizonytalansági sávot, de ezek is a változatlanság felé mutatnak. Összességében a közeljövőre nyugodt, kilengések nélküli kép valószínűsíthető, de ezt csak fenntartásokkal érdemes komolyan venni."
 }
 }
