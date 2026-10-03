@@ -1,100 +1,162 @@
 {
-"frissitve": "2026-10-03T07:09:21+00:00",
+"frissitve": "2026-10-03T19:08:42+00:00",
 "modell": "claude-opus-4-8",
 "nap": "2026-10-03",
-"mode": "reggel",
+"mode": "este",
 "valtozas": {
 "diff": {
-"irany_valtok": [],
-"mozgok": [
+"irany_valtok": [
 {
 "szo": "akciós újság",
-"valtozas": 0.0
-},
-{
-"szo": "albérlet",
-"valtozas": 0.0
-},
-{
-"szo": "benzin",
-"valtozas": 0.0
+"elozo": "stagnal",
+"mai": "novekszik"
 },
 {
 "szo": "betegség",
-"valtozas": 0.0
+"elozo": "novekszik",
+"mai": "stagnal"
 },
 {
-"szo": "csőd",
-"valtozas": 0.0
+"szo": "fizetés",
+"elozo": "stagnal",
+"mai": "novekszik"
+},
+{
+"szo": "hitel",
+"elozo": "stagnal",
+"mai": "csokken"
+},
+{
+"szo": "kormány",
+"elozo": "novekszik",
+"mai": "stagnal"
+},
+{
+"szo": "kormányablak",
+"elozo": "novekszik",
+"mai": "stagnal"
+},
+{
+"szo": "műtét",
+"elozo": "novekszik",
+"mai": "stagnal"
+},
+{
+"szo": "állás",
+"elozo": "novekszik",
+"mai": "stagnal"
+}
+],
+"mozgok": [
+{
+"szo": "kormányablak",
+"valtozas": -6.15
+},
+{
+"szo": "állás",
+"valtozas": -3.711
+},
+{
+"szo": "akciós újság",
+"valtozas": 1.926
+},
+{
+"szo": "hitel",
+"valtozas": -1.629
+},
+{
+"szo": "fizetés",
+"valtozas": 1.479
 }
 ],
 "felkapott_uj": [
+"2026",
 "autó",
+"csillagjegy",
 "deák bill gyula",
-"franciaország–olaszország",
+"horvátország–anglia",
+"időközi választás",
+"india–brazília",
 "integritás hatóság",
-"kerkez milos",
-"klebelsberg központ",
+"kamara",
+"királydinnye",
+"kéri lászló",
+"lőrincz viktória",
 "magyarország georgia",
-"pénzcentrum.hu",
-"razzia",
+"oroszország",
+"rtl híradó",
 "szepesi tibor",
-"ukrajna–észak-írország"
+"vasút",
+"vitézy dávid",
+"óraátállítás 2026 október"
 ],
 "felkapott_eltunt": [
+"alapjogokért központ",
+"bankautomata",
+"berki krisztián",
 "bárándy péter",
+"gázolaj",
+"házasság első látásra",
+"jármű",
+"kubatov gábor",
+"központi nyomozó főügyészség",
 "m5",
 "magyar labdarúgó-válogatott",
+"nagy márton",
+"nyári időszámítás",
+"orbán viktor",
 "osztie zoltán",
 "politika",
-"századvég alapítvány"
+"századvég alapítvány",
+"áramszünet",
+"élelmiszer"
 ],
 "van_elozo": true
 },
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A követett szavak közül néhánynál irányt váltott a kép a tegnapihoz képest. Az akciós újság a korábbi nyugalmas állapotból emelkedő pályára lépett, és a fizetés is a stagnálásból növekedésbe fordult. Ezzel szemben a hitel az eddigi kiegyensúlyozott szintről lefelé indult, a betegség, a kormány, a kormányablak, a műtét és az állás pedig a korábbi emelkedésből inkább nyugvópontra tértek.\n\nA napon belüli elmozdulások közül a kormányablak esett vissza a leghatározottabban, és az állás is érezhetően gyengült. A másik oldalon az akciós újság és a fizetés mozdult felfelé, miközben a hitel lefelé csúszott. Ezek a hullámzások önmagukban nem feltétlenül tartósak, csak a mai nap mozgását tükrözik.\n\nA felkapott témák között sok friss név jelent meg, köztük a 2026, a magyarország georgia, a horvátország–anglia, az időközi választás, a kéri lászló, a királydinnye, a vitézy dávid és az óraátállítás, miközben több tegnap pörgő kifejezés – például a bankautomata, a gázolaj, az orbán viktor vagy az élelmiszer – kikerült a figyelem középpontjából."
 },
 "kulcsszavak": {
 "szamok": [
 {
 "szo": "akciós újság",
-"irany": "stagnal",
-"meredekseg": 0.935,
+"irany": "novekszik",
+"meredekseg": 2.861,
 "ervenyes": true,
-"mai_ertek": 43,
-"csucs": 100.0,
-"atlag": 60.5
+"mai_ertek": 41,
+"csucs": 58.0,
+"atlag": 41.92
 },
 {
 "szo": "albérlet",
 "irany": "stagnal",
-"meredekseg": -0.335,
+"meredekseg": -0.556,
 "ervenyes": true,
-"mai_ertek": 35,
-"csucs": 71.0,
-"atlag": 43.67
+"mai_ertek": 43,
+"csucs": 80.0,
+"atlag": 39.53
 },
 {
 "szo": "benzin",
 "irany": "csokken",
-"meredekseg": -1.468,
+"meredekseg": -2.263,
 "ervenyes": true,
-"mai_ertek": 11,
-"csucs": 56.0,
-"atlag": 18.71
+"mai_ertek": 6,
+"csucs": 41.0,
+"atlag": 21.62
 },
 {
 "szo": "betegség",
-"irany": "novekszik",
-"meredekseg": 1.468,
+"irany": "stagnal",
+"meredekseg": 0.377,
 "ervenyes": true,
-"mai_ertek": 56,
-"csucs": 71.0,
-"atlag": 50.68
+"mai_ertek": 23,
+"csucs": 40.0,
+"atlag": 25.63
 },
 {
 "szo": "csőd",
 "irany": "stagnal",
-"meredekseg": 0.074,
+"meredekseg": 0.505,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -103,43 +165,43 @@
 {
 "szo": "eladó lakás",
 "irany": "stagnal",
-"meredekseg": -0.958,
+"meredekseg": -0.662,
 "ervenyes": true,
-"mai_ertek": 44,
-"csucs": 54.0,
-"atlag": 42.67
+"mai_ertek": 38,
+"csucs": 100.0,
+"atlag": 44.16
 },
 {
 "szo": "fizetés",
-"irany": "stagnal",
-"meredekseg": 0.048,
+"irany": "novekszik",
+"meredekseg": 1.527,
 "ervenyes": true,
-"mai_ertek": 34,
+"mai_ertek": 42,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "hitel",
-"irany": "stagnal",
-"meredekseg": 0.389,
+"irany": "csokken",
+"meredekseg": -1.24,
 "ervenyes": true,
-"mai_ertek": 22,
-"csucs": 40.0,
-"atlag": 30.89
+"mai_ertek": 18,
+"csucs": 36.0,
+"atlag": 25.0
 },
 {
 "szo": "háziorvos",
 "irany": "novekszik",
-"meredekseg": 2.775,
+"meredekseg": 1.797,
 "ervenyes": true,
-"mai_ertek": 55,
+"mai_ertek": 12,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "infláció",
 "irany": "novekszik",
-"meredekseg": 1.305,
+"meredekseg": 1.217,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -148,16 +210,16 @@
 {
 "szo": "iskola",
 "irany": "novekszik",
-"meredekseg": 3.777,
+"meredekseg": 2.751,
 "ervenyes": true,
-"mai_ertek": 72,
+"mai_ertek": 34,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kormány",
-"irany": "novekszik",
-"meredekseg": 1.605,
+"irany": "stagnal",
+"meredekseg": 0.403,
 "ervenyes": true,
 "mai_ertek": 4,
 "csucs": null,
@@ -165,17 +227,17 @@
 },
 {
 "szo": "kormányablak",
-"irany": "novekszik",
-"meredekseg": 5.755,
+"irany": "stagnal",
+"meredekseg": -0.395,
 "ervenyes": true,
-"mai_ertek": 14,
-"csucs": 86.0,
-"atlag": 53.21
+"mai_ertek": 11,
+"csucs": 84.0,
+"atlag": 43.56
 },
 {
 "szo": "korrupció",
 "irany": "stagnal",
-"meredekseg": -0.271,
+"meredekseg": -0.502,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -184,25 +246,25 @@
 {
 "szo": "kórház",
 "irany": "novekszik",
-"meredekseg": 2.96,
+"meredekseg": 3.239,
 "ervenyes": true,
-"mai_ertek": 100,
-"csucs": 47.0,
-"atlag": 27.67
+"mai_ertek": 16,
+"csucs": 100.0,
+"atlag": 34.82
 },
 {
 "szo": "kölcsön",
 "irany": "stagnal",
-"meredekseg": 0.667,
+"meredekseg": -0.632,
 "ervenyes": true,
-"mai_ertek": 42,
+"mai_ertek": 14,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "munkanélküliség",
 "irany": "stagnal",
-"meredekseg": -0.552,
+"meredekseg": -0.201,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -210,53 +272,53 @@
 },
 {
 "szo": "műtét",
-"irany": "novekszik",
-"meredekseg": 1.437,
-"ervenyes": true,
-"mai_ertek": 46,
-"csucs": null,
-"atlag": null
-},
-{
-"szo": "napelem",
-"irany": "novekszik",
-"meredekseg": 2.583,
-"ervenyes": true,
-"mai_ertek": 24,
-"csucs": 60.0,
-"atlag": 39.56
-},
-{
-"szo": "nyaralás",
 "irany": "stagnal",
-"meredekseg": -0.147,
-"ervenyes": true,
-"mai_ertek": 8,
-"csucs": 19.0,
-"atlag": 11.46
-},
-{
-"szo": "nyugdíj",
-"irany": "csokken",
-"meredekseg": -4.052,
-"ervenyes": true,
-"mai_ertek": 9,
-"csucs": 40.0,
-"atlag": 22.0
-},
-{
-"szo": "pedagógus",
-"irany": "csokken",
-"meredekseg": -1.187,
+"meredekseg": 0.02,
 "ervenyes": true,
 "mai_ertek": 25,
 "csucs": null,
 "atlag": null
 },
 {
+"szo": "napelem",
+"irany": "novekszik",
+"meredekseg": 1.714,
+"ervenyes": true,
+"mai_ertek": 52,
+"csucs": 83.0,
+"atlag": 52.11
+},
+{
+"szo": "nyaralás",
+"irany": "stagnal",
+"meredekseg": -0.21,
+"ervenyes": true,
+"mai_ertek": 13,
+"csucs": 23.0,
+"atlag": 11.23
+},
+{
+"szo": "nyugdíj",
+"irany": "csokken",
+"meredekseg": -2.741,
+"ervenyes": true,
+"mai_ertek": 27,
+"csucs": 41.0,
+"atlag": 14.75
+},
+{
+"szo": "pedagógus",
+"irany": "csokken",
+"meredekseg": -1.892,
+"ervenyes": true,
+"mai_ertek": 0,
+"csucs": null,
+"atlag": null
+},
+{
 "szo": "rezsi",
 "irany": "stagnal",
-"meredekseg": -0.274,
+"meredekseg": -0.21,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -265,16 +327,16 @@
 {
 "szo": "segély",
 "irany": "novekszik",
-"meredekseg": 4.57,
+"meredekseg": 3.739,
 "ervenyes": true,
-"mai_ertek": 66,
+"mai_ertek": 0,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "sürgősségi",
 "irany": "stagnal",
-"meredekseg": 0.658,
+"meredekseg": 0.956,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -286,13 +348,13 @@
 "meredekseg": null,
 "ervenyes": false,
 "mai_ertek": null,
-"csucs": 90.0,
-"atlag": 78.5
+"csucs": 18.0,
+"atlag": 12.5
 },
 {
 "szo": "várólista",
 "irany": "stagnal",
-"meredekseg": 0.23,
+"meredekseg": -0.181,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -300,120 +362,23 @@
 },
 {
 "szo": "állás",
-"irany": "novekszik",
-"meredekseg": 3.089,
+"irany": "stagnal",
+"meredekseg": -0.622,
 "ervenyes": true,
-"mai_ertek": 45,
-"csucs": 89.0,
-"atlag": 69.54
+"mai_ertek": 35,
+"csucs": 78.0,
+"atlag": 59.62
 }
 ],
 "napi": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A megélhetéshez és gazdasághoz kötődő keresések vegyes képet mutatnak. Az akciós újság a mai napon a saját szokásos szintje közelében, de határozottan emelkedő irányban mozog, a fizetés szintén élénkül. A benzin ezzel szemben feltűnően alacsonyan, mindössze hatos értéken áll, ami jóval a saját átlaga alatt van, és a hitel is csökkenő pályára került. Az albérlet és az eladó lakás nagyjából a megszokott tartományban marad, az állás pedig a szokásos szintje alatt húzódik.\n\nAz egészségügyi szavak közül a kórház a mai napon kifejezetten emelkedő irányt vett, bár az értéke így is a saját átlaga alatt van, a háziorvos szintén élénkül. A betegség, a műtét és a sürgősségi a megszokott szintjén áll, a várólista pedig ma gyakorlatilag nem mozdult.\n\nA nyugdíj feltűnően csökkenő pályán van, miközben a mai értéke még mindig a saját átlaga felett marad. Az energiához kötődő napelem a szokásos szintje közelében, enyhén emelkedő irányban mozog. A politikához kapcsolódó szavak – a kormány, a kormányablak, a korrupció – csendesek, több közülük nulla közeli értéken. Az infláció, a csőd, a munkanélküliség és a segély ma gyakorlatilag nem mutatott keresési aktivitást, utóbbi ennek ellenére emelkedő tendenciát jelez. A tüntetés mai értékéről most nincs értékelhető adat."
 }
 },
 "felkapott": {
 "top": [
 {
-"kifejezes": "kerkez milos",
+"kifejezes": "2026",
 "volumen": "20000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": [
-{
-"hir_cim": "Bejött Marco Rossi bátor kezdője, legyőztük a grúzokat",
-"hir_forras": "24.hu",
-"hir_url": "https://24.hu/sport/foci/2026/10/02/nemzetek-ligaja-magyarorszag-georgia/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR9GGn6L0dSYu2go8I5RQlo54ncSg2XSoR7csWu_aLHaDlt2PZziWpyT4GxWuM",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Tóth Alex: Kellett ez a győzelem – vissza kell vágni az ukránoknak, azt a meccset is meg kell nyerni",
-"hir_forras": "Nemzeti Sport Online",
-"hir_url": "https://www.nemzetisport.hu/magyar-valogatott/2026/10/toth-alex-kellett-ez-a-gyozelem-vissza-kell-vagni-az-ukranoknak-azt-a-meccset-is-meg-kell-nyerni",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQN-5JlL3sCOMeUsCxPDAW452yFFCo6hEeiH1w7miAtLHqw2O-N81Y5wpWVuAo",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Kerkez fejese három pontot ért a grúzok ellen, idei első NL-győzelmét szerezte meg a magyar válogatott",
-"hir_forras": "Index.hu",
-"hir_url": "https://index.hu/sport/futball/2026/10/02/nemzetek-ligaja-2026-2027-b-divizio-magyarorszag-gruzia-osszefoglalo/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcShtvunOrx4y47cWWPcVzMmiQg1HbGS0-Sjm0kYmIa9KB5ZjCU-m7zrpQW3G9o",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "jármű",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "pénzcentrum.hu",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "áramszünet",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
-},
-{
-"kifejezes": "nyári időszámítás",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "nagy márton",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "bankautomata",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
-},
-{
-"kifejezes": "orbán viktor",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "ukrajna",
-"volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
 "Sports"
@@ -422,6 +387,180 @@
 },
 {
 "kifejezes": "magyarország georgia",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "horvátország–anglia",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": [
+{
+"hir_cim": "Ma a TV-ben: Horvátország-Anglia és Spanyolország-Csehország is lesz élőben",
+"hir_forras": "Csakfoci",
+"hir_url": "https://www.csakfoci.hu/sport-tv-musor_m4sport/ma-a-tv-ben-horvatorszag-anglia-es-spanyolorszag-csehorszag-is-lesz-eloben",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ9EblllTD1EFuFKIgqFDW6cDzBgaCHGRbYRqNdWP5BFbjvXfpcCqpYe7bMxFg",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Horvát–angol és spanyol–cseh rangadók a tévében",
+"hir_forras": "Új Szó",
+"hir_url": "https://ujszo.com/sport/horvat-angol-spanyol-cseh-rangadok-teveben",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRmN2OA__JETw4YJTGrInLoC7tj87T-9uorUNt_oGKi8QMTiahrr2qcq-QiT98",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Nagyágyúk a Nemzetek Ligájában, hazai pályán a Sepsi-SIC – a keddi sportműsor",
+"hir_forras": "Székely Sport",
+"hir_url": "https://sport.szekelyhon.ro/egyeb-sportok/nagyagyuk-a-nemzetek-ligajaban-hazai-palyan-a-sepsi-sic-n-a-keddi-sportmusor",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR6mo7K3Rmtl1TN_Ne8lGZvDsxLodo3vU3daFxWQHAHIEb3u99-4cX87dpnVC8",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "kéri lászló",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "időközi választás",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "rtl híradó",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "királydinnye",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "vitézy dávid",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "kamara",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "óraátállítás 2026 október",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": [
+{
+"hir_cim": "Ne felejtsd el, vasárnap óraátállítás! 2026 őszén erre kell tekerni az órát - Ez lehet az utolsó óraállítás?",
+"hir_forras": "Pénzcentrum",
+"hir_url": "https://www.penzcentrum.hu/otthon/20261003/ne-felejtsd-el-vasarnap-oraatallitas-2026-oszen-erre-kell-tekerni-az-orat-ez-lehet-az-utolso-oraallitas-1206609",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQLSj6OuQb31v4LO6L834Ar0oUsPMyhzhscrkesKtxPRH0ptruCVyEp6igQ8zU",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Óraátállítás 2026 őszén: ekkor nyerjük vissza az elvesztett 1 órát",
+"hir_forras": "Mindmegette.hu",
+"hir_url": "https://www.mindmegette.hu/erdekessegek/oraatallitas-2026-osz-datum-hatasok",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRy4775-wVOkeuRpjo4SGZWdah_34JqfXWReWjxOW_ZIlwbPH6nNgnedSnUGd4",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Ilyen korán 6 éve nem volt óraátállítás – Ekkor kell visszaállítani az órákat októberben idén",
+"hir_forras": "marieclaire.hu",
+"hir_url": "https://marieclaire.hu/eletmod/2026/10/02/oraatallitas-2026-oktober/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ0MaO9jz7qLjl-sWs8A5MXMvf1EKUPFWrhoD13gXWLbK5R-0QTq7zyocIOBzE",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "oroszország",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": [
+{
+"hir_cim": "Oroszország: Távozzanak a külföldiek és diplomaták Ukrajnából a megtorló csapások előtt",
+"hir_forras": "24.hu",
+"hir_url": "https://24.hu/kulfold/2026/10/03/oroszorszag-urkajna-haboru-tamadas/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGoRsR1cm997G2wcz985rs68ScmmLr5TFczio_9fJIT_2QCwKDTVqCa8Zp2Wg",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Figyelmeztetést adott ki Oroszország: távozásra szólította fel a külföldi diplomatákat és állampolgárokat",
+"hir_forras": "Portfolio.hu",
+"hir_url": "https://www.portfolio.hu/global/20261003/figyelmeztetest-adott-ki-oroszorszag-tavozasra-szolitotta-fel-a-kulfoldi-diplomatakat-es-allampolgarokat-867116",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcT2BHmb6C0GFh02rnnO_bDOCaKt8Wliu7R6x7hs3nc_6BYvStR5fS1KE65kxQA",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Oroszország figyelmeztetést adott ki, folytatják a megtorló csapásokat Ukrajnában",
+"hir_forras": "Index.hu",
+"hir_url": "https://index.hu/kulfold/2026/10/03/oroszorszag-ukrajna-orosz-ukran-konfliktus-kijev-moszkva-volodimir-zelenszkij-vlagyimir-putyin-nato-europai-unio-beketargyalas/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdKw9ZxtvuYmAW3hbIlQbzVF9xGaLmMXl5u9bXVReaUctVF2oy2pc9lwea4JI",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "vasút",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "ukrajna",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
@@ -429,37 +568,55 @@
 ],
 "hirek": [
 {
-"hir_cim": "Kellemetlen helyzetbe került Schäfer András a Magyarország–Georgia-meccsen",
-"hir_forras": "ORIGO",
-"hir_url": "https://www.origo.hu/sport/sport-futball/2026/10/magyarorszag-georgia-schafer-andras-mez",
+"hir_cim": "Futball - Futball - Kerkez Milos nem léphet pályára Ukrajna ellen",
+"hir_forras": "Index.hu",
+"hir_url": "https://index.hu/sport/futball/2026/10/03/kerkez-milos-eltiltas-ukrajna-magyarorszag-nem-lephet-palyara/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ3EkPkO37wjhZjewAG90i_X6y-QOCF30BF6gjxIyGfHcWGP5xLO0IVZpV6WJ0",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTuYnZwAxDSebz-hH4hYquQZ5lo_M4-HHhUuMi52ToD8vm3-Kik8AfRAaU9F7U",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Nyomdahiba: elszúrt mezben lépett pályára a magyar válogatott",
-"hir_forras": "KISALFOLD",
-"hir_url": "https://www.kisalfold.hu/helyi-sport/2026/10/magyar-valogatott-schafer-mez",
+"hir_cim": "Halállistára tették a magyar fociválogatott pénteki győztes góljának szerzőjét",
+"hir_forras": "Mfor.hu",
+"hir_url": "https://mfor.hu/cikkek/kozelet/halallistara-tettek-a-magyar-focivalogatott-penteki-gyoztes-goljanak-szerzojet.html",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQoK9I12BPIuL4QfeaL923jg-12UIhoJtPBweNAfzOxpJcQNAAzsJWCEsnZkb4",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTG6RVpESoungUAkap7fS0XnVPWPD6akhg2n3FMAT97xc5kIGK6n12Geaz9tQ",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Schäfer András kellemetlen baki áldozata lett a magyar–grúz NL-mérkőzésen – fotó",
-"hir_forras": "Blikk",
-"hir_url": "https://www.blikk.hu/sport/magyar-foci/nemzetek-ligaja-magyarorszag-georgia-schafer-andras-baki/7wl9ztr",
+"hir_cim": "Nem áll ki a kormány az ukrán halállistára került Kerkez Milos és édesapja mellett",
+"hir_forras": "HírTv",
+"hir_url": "https://hirtv.origo.hu/hirtvsport/2026/10/kerkez-milos-ukran-halallista",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQtifH4AL_nGzFDGTNme1LMbUKWySALvY02ByBLVzr3EhYbksauBNTzJSvc4SY",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQgREadu2tSOnqTphAYh0AoCeAxV33HK9PiYMSb-4YTigpOVXK4sWgNQEMKyCg",
 "hir_kivonat": ""
 }
 ]
 },
 {
-"kifejezes": "razzia",
+"kifejezes": "india–brazília",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
-"Law and Government"
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "lőrincz viktória",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "csillagjegy",
+"volumen": "2000",
+"novekedes_pct": "400",
+"temak": [
+"Other"
 ],
 "hirek": []
 },
@@ -470,32 +627,16 @@
 "temak": [
 "Entertainment"
 ],
-"hirek": [
-{
-"hir_cim": "Eltemették Deák Bill Gyulát – galéria a blueskirály búcsúztatásáról",
-"hir_forras": "24.hu",
-"hir_url": "https://24.hu/kultura/2026/09/30/deak-bill-gyula-temetes-galeria/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg2v_UjKn_BzstYo_8_6teUdnYV-YPB8pEOReT4eGpff7xWn8c_WOmf6wL1mg",
-"hir_kivonat": ""
+"hirek": []
 },
 {
-"hir_cim": "10 hónap után megtörte a csendet Bangó Margit: fogadott testvérét gyászolja",
-"hir_forras": "RTL.hu",
-"hir_url": "https://rtl.hu/bulvar/2026/10/01/bango-margit-megtorte-a-csendet-deak-bill-gyula",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRgRggvJ0iShdmmWJZBowIW36ZAjh0EPpGJvS40De8-m8fqaO1JoKKtwJeIf74",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Hobo elárulta, miért távozott Deák Bill Gyula temetéséről a szertartás előtt",
-"hir_forras": "nlc",
-"hir_url": "https://nlc.hu/sztarok/20261002/hobo-deak-bill-gyula-temetes-terdmutet-magyarazat/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRcsMp8uNHWlv7NXeZwbtBvq39pElJ5Y7XyTA4T1NxEMzj5bZov8RkPxo6m03Y",
-"hir_kivonat": ""
-}
-]
+"kifejezes": "autó",
+"volumen": "2000",
+"novekedes_pct": "300",
+"temak": [
+"Autos and Vehicles"
+],
+"hirek": []
 },
 {
 "kifejezes": "integritás hatóság",
@@ -504,75 +645,7 @@
 "temak": [
 "Law and Government"
 ],
-"hirek": [
-{
-"hir_cim": "Elhunyt politikus került az Integritás Hatóság kockázati listájára",
-"hir_forras": "24.hu",
-"hir_url": "https://24.hu/fn/gazdasag/2026/10/02/potapi-arpad-integritas-hatosag-kockazati-lista/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSHfjRV6HzcGxdnIuadJUjkTvNkNVQ1sVvaaAtwqXTWn71UtuS_4hQwvwMqFtI",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Megjelent a legmagasabb kockázatú vagyonnyilatkozat-tételre kötelezettek listája, Orbán és Magyar is rajta van",
-"hir_forras": "Telex",
-"hir_url": "https://telex.hu/gazdasag/2026/10/01/legmagasabb-kockazatu-vagyonnyilatkozat-tetelre-kotelezettek-listaja-integritas-hatosag",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQT54QMYTSbzYtptVdKMiOaQE72jrj2D6lROqRePFqs9qmY2G9-7YGTolJGa8",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Belföld - Az Integritás Hatóság Seszták Miklóst és Hankó Balázst is a legkockázatosabb személyek közé sorolta",
-"hir_forras": "Index.hu",
-"hir_url": "https://index.hu/belfold/2026/09/25/integritas-hatosag-hanko-balazs-sesztak-miklos-nka-botrany-vagonnyilatkozat/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2PkGcarPB8X4II2jfLBfNcQxO7beqN62nd7ExDKR9iIjT0FFAd7cg5eFVtWs",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "klebelsberg központ",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
 "hirek": []
-},
-{
-"kifejezes": "autó",
-"volumen": "2000",
-"novekedes_pct": "300",
-"temak": [
-"Other"
-],
-"hirek": [
-{
-"hir_cim": "Hármas karambol volt Bicskénél",
-"hir_forras": "24.hu",
-"hir_url": "https://24.hu/belfold/2026/10/02/harmas-karambol-bicskenel/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTEwRuzIwAXOBRD3WnjA_dW6GSiOPHQm7Tsjbuhsqg8KMjnkTtgUkzS4RdAQOw",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Autó: Három autó ütközött Bicskénél, lezárták az 1-es főutat",
-"hir_forras": "| hvg.hu",
-"hir_url": "https://hvg.hu/cegauto/20261002_harom-auto-utkozott-bicske-1-es-fout",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQBbbl8kz_VObU6uJFtfSEqukh4SepA7gyHoT13B9AveNza6DHlx7hs0ko3zCg",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Hármas karambol az 1-es főúton, az egyik sérült meghalt",
-"hir_forras": "Infostart",
-"hir_url": "https://infostart.hu/belfold/2026/10/02/harmas-karambol-tortent-az-1-es-fouton",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSUXDTaJtIup3ghTtD1zHA8XN7cNyNSTelqtDCKBQBigwuB1GJnsMgIUfHL1Oc",
-"hir_kivonat": ""
-}
-]
 },
 {
 "kifejezes": "szepesi tibor",
@@ -580,87 +653,6 @@
 "novekedes_pct": "1000",
 "temak": [
 "Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "franciaország–olaszország",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "központi nyomozó főügyészség",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "ukrajna–észak-írország",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "élelmiszer",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Food and Drink"
-],
-"hirek": []
-},
-{
-"kifejezes": "alapjogokért központ",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "berki krisztián",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "kubatov gábor",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "házasság első látásra",
-"volumen": "2000",
-"novekedes_pct": "400",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "gázolaj",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
 ],
 "hirek": []
 }
@@ -1019,105 +1011,8 @@
 ],
 "este_top": [
 {
-"kifejezes": "kerkez milos",
+"kifejezes": "2026",
 "volumen": "20000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": [
-{
-"hir_cim": "Bejött Marco Rossi bátor kezdője, legyőztük a grúzokat",
-"hir_forras": "24.hu",
-"hir_url": "https://24.hu/sport/foci/2026/10/02/nemzetek-ligaja-magyarorszag-georgia/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR9GGn6L0dSYu2go8I5RQlo54ncSg2XSoR7csWu_aLHaDlt2PZziWpyT4GxWuM",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Tóth Alex: Kellett ez a győzelem – vissza kell vágni az ukránoknak, azt a meccset is meg kell nyerni",
-"hir_forras": "Nemzeti Sport Online",
-"hir_url": "https://www.nemzetisport.hu/magyar-valogatott/2026/10/toth-alex-kellett-ez-a-gyozelem-vissza-kell-vagni-az-ukranoknak-azt-a-meccset-is-meg-kell-nyerni",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQN-5JlL3sCOMeUsCxPDAW452yFFCo6hEeiH1w7miAtLHqw2O-N81Y5wpWVuAo",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Kerkez fejese három pontot ért a grúzok ellen, idei első NL-győzelmét szerezte meg a magyar válogatott",
-"hir_forras": "Index.hu",
-"hir_url": "https://index.hu/sport/futball/2026/10/02/nemzetek-ligaja-2026-2027-b-divizio-magyarorszag-gruzia-osszefoglalo/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcShtvunOrx4y47cWWPcVzMmiQg1HbGS0-Sjm0kYmIa9KB5ZjCU-m7zrpQW3G9o",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "jármű",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "pénzcentrum.hu",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "áramszünet",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
-},
-{
-"kifejezes": "nyári időszámítás",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "nagy márton",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "bankautomata",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
-},
-{
-"kifejezes": "orbán viktor",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "ukrajna",
-"volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
 "Sports"
@@ -1126,6 +1021,180 @@
 },
 {
 "kifejezes": "magyarország georgia",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "horvátország–anglia",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": [
+{
+"hir_cim": "Ma a TV-ben: Horvátország-Anglia és Spanyolország-Csehország is lesz élőben",
+"hir_forras": "Csakfoci",
+"hir_url": "https://www.csakfoci.hu/sport-tv-musor_m4sport/ma-a-tv-ben-horvatorszag-anglia-es-spanyolorszag-csehorszag-is-lesz-eloben",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ9EblllTD1EFuFKIgqFDW6cDzBgaCHGRbYRqNdWP5BFbjvXfpcCqpYe7bMxFg",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Horvát–angol és spanyol–cseh rangadók a tévében",
+"hir_forras": "Új Szó",
+"hir_url": "https://ujszo.com/sport/horvat-angol-spanyol-cseh-rangadok-teveben",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRmN2OA__JETw4YJTGrInLoC7tj87T-9uorUNt_oGKi8QMTiahrr2qcq-QiT98",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Nagyágyúk a Nemzetek Ligájában, hazai pályán a Sepsi-SIC – a keddi sportműsor",
+"hir_forras": "Székely Sport",
+"hir_url": "https://sport.szekelyhon.ro/egyeb-sportok/nagyagyuk-a-nemzetek-ligajaban-hazai-palyan-a-sepsi-sic-n-a-keddi-sportmusor",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR6mo7K3Rmtl1TN_Ne8lGZvDsxLodo3vU3daFxWQHAHIEb3u99-4cX87dpnVC8",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "kéri lászló",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "időközi választás",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "rtl híradó",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "királydinnye",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "vitézy dávid",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "kamara",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "óraátállítás 2026 október",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": [
+{
+"hir_cim": "Ne felejtsd el, vasárnap óraátállítás! 2026 őszén erre kell tekerni az órát - Ez lehet az utolsó óraállítás?",
+"hir_forras": "Pénzcentrum",
+"hir_url": "https://www.penzcentrum.hu/otthon/20261003/ne-felejtsd-el-vasarnap-oraatallitas-2026-oszen-erre-kell-tekerni-az-orat-ez-lehet-az-utolso-oraallitas-1206609",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQLSj6OuQb31v4LO6L834Ar0oUsPMyhzhscrkesKtxPRH0ptruCVyEp6igQ8zU",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Óraátállítás 2026 őszén: ekkor nyerjük vissza az elvesztett 1 órát",
+"hir_forras": "Mindmegette.hu",
+"hir_url": "https://www.mindmegette.hu/erdekessegek/oraatallitas-2026-osz-datum-hatasok",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRy4775-wVOkeuRpjo4SGZWdah_34JqfXWReWjxOW_ZIlwbPH6nNgnedSnUGd4",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Ilyen korán 6 éve nem volt óraátállítás – Ekkor kell visszaállítani az órákat októberben idén",
+"hir_forras": "marieclaire.hu",
+"hir_url": "https://marieclaire.hu/eletmod/2026/10/02/oraatallitas-2026-oktober/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ0MaO9jz7qLjl-sWs8A5MXMvf1EKUPFWrhoD13gXWLbK5R-0QTq7zyocIOBzE",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "oroszország",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": [
+{
+"hir_cim": "Oroszország: Távozzanak a külföldiek és diplomaták Ukrajnából a megtorló csapások előtt",
+"hir_forras": "24.hu",
+"hir_url": "https://24.hu/kulfold/2026/10/03/oroszorszag-urkajna-haboru-tamadas/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGoRsR1cm997G2wcz985rs68ScmmLr5TFczio_9fJIT_2QCwKDTVqCa8Zp2Wg",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Figyelmeztetést adott ki Oroszország: távozásra szólította fel a külföldi diplomatákat és állampolgárokat",
+"hir_forras": "Portfolio.hu",
+"hir_url": "https://www.portfolio.hu/global/20261003/figyelmeztetest-adott-ki-oroszorszag-tavozasra-szolitotta-fel-a-kulfoldi-diplomatakat-es-allampolgarokat-867116",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcT2BHmb6C0GFh02rnnO_bDOCaKt8Wliu7R6x7hs3nc_6BYvStR5fS1KE65kxQA",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Oroszország figyelmeztetést adott ki, folytatják a megtorló csapásokat Ukrajnában",
+"hir_forras": "Index.hu",
+"hir_url": "https://index.hu/kulfold/2026/10/03/oroszorszag-ukrajna-orosz-ukran-konfliktus-kijev-moszkva-volodimir-zelenszkij-vlagyimir-putyin-nato-europai-unio-beketargyalas/",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdKw9ZxtvuYmAW3hbIlQbzVF9xGaLmMXl5u9bXVReaUctVF2oy2pc9lwea4JI",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "vasút",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "ukrajna",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
@@ -1133,37 +1202,55 @@
 ],
 "hirek": [
 {
-"hir_cim": "Kellemetlen helyzetbe került Schäfer András a Magyarország–Georgia-meccsen",
-"hir_forras": "ORIGO",
-"hir_url": "https://www.origo.hu/sport/sport-futball/2026/10/magyarorszag-georgia-schafer-andras-mez",
+"hir_cim": "Futball - Futball - Kerkez Milos nem léphet pályára Ukrajna ellen",
+"hir_forras": "Index.hu",
+"hir_url": "https://index.hu/sport/futball/2026/10/03/kerkez-milos-eltiltas-ukrajna-magyarorszag-nem-lephet-palyara/",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ3EkPkO37wjhZjewAG90i_X6y-QOCF30BF6gjxIyGfHcWGP5xLO0IVZpV6WJ0",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTuYnZwAxDSebz-hH4hYquQZ5lo_M4-HHhUuMi52ToD8vm3-Kik8AfRAaU9F7U",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Nyomdahiba: elszúrt mezben lépett pályára a magyar válogatott",
-"hir_forras": "KISALFOLD",
-"hir_url": "https://www.kisalfold.hu/helyi-sport/2026/10/magyar-valogatott-schafer-mez",
+"hir_cim": "Halállistára tették a magyar fociválogatott pénteki győztes góljának szerzőjét",
+"hir_forras": "Mfor.hu",
+"hir_url": "https://mfor.hu/cikkek/kozelet/halallistara-tettek-a-magyar-focivalogatott-penteki-gyoztes-goljanak-szerzojet.html",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQoK9I12BPIuL4QfeaL923jg-12UIhoJtPBweNAfzOxpJcQNAAzsJWCEsnZkb4",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTG6RVpESoungUAkap7fS0XnVPWPD6akhg2n3FMAT97xc5kIGK6n12Geaz9tQ",
 "hir_kivonat": ""
 },
 {
-"hir_cim": "Schäfer András kellemetlen baki áldozata lett a magyar–grúz NL-mérkőzésen – fotó",
-"hir_forras": "Blikk",
-"hir_url": "https://www.blikk.hu/sport/magyar-foci/nemzetek-ligaja-magyarorszag-georgia-schafer-andras-baki/7wl9ztr",
+"hir_cim": "Nem áll ki a kormány az ukrán halállistára került Kerkez Milos és édesapja mellett",
+"hir_forras": "HírTv",
+"hir_url": "https://hirtv.origo.hu/hirtvsport/2026/10/kerkez-milos-ukran-halallista",
 "hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQtifH4AL_nGzFDGTNme1LMbUKWySALvY02ByBLVzr3EhYbksauBNTzJSvc4SY",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQgREadu2tSOnqTphAYh0AoCeAxV33HK9PiYMSb-4YTigpOVXK4sWgNQEMKyCg",
 "hir_kivonat": ""
 }
 ]
 },
 {
-"kifejezes": "razzia",
+"kifejezes": "india–brazília",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
-"Law and Government"
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "lőrincz viktória",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "csillagjegy",
+"volumen": "2000",
+"novekedes_pct": "400",
+"temak": [
+"Other"
 ],
 "hirek": []
 },
@@ -1174,32 +1261,16 @@
 "temak": [
 "Entertainment"
 ],
-"hirek": [
-{
-"hir_cim": "Eltemették Deák Bill Gyulát – galéria a blueskirály búcsúztatásáról",
-"hir_forras": "24.hu",
-"hir_url": "https://24.hu/kultura/2026/09/30/deak-bill-gyula-temetes-galeria/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg2v_UjKn_BzstYo_8_6teUdnYV-YPB8pEOReT4eGpff7xWn8c_WOmf6wL1mg",
-"hir_kivonat": ""
+"hirek": []
 },
 {
-"hir_cim": "10 hónap után megtörte a csendet Bangó Margit: fogadott testvérét gyászolja",
-"hir_forras": "RTL.hu",
-"hir_url": "https://rtl.hu/bulvar/2026/10/01/bango-margit-megtorte-a-csendet-deak-bill-gyula",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRgRggvJ0iShdmmWJZBowIW36ZAjh0EPpGJvS40De8-m8fqaO1JoKKtwJeIf74",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Hobo elárulta, miért távozott Deák Bill Gyula temetéséről a szertartás előtt",
-"hir_forras": "nlc",
-"hir_url": "https://nlc.hu/sztarok/20261002/hobo-deak-bill-gyula-temetes-terdmutet-magyarazat/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRcsMp8uNHWlv7NXeZwbtBvq39pElJ5Y7XyTA4T1NxEMzj5bZov8RkPxo6m03Y",
-"hir_kivonat": ""
-}
-]
+"kifejezes": "autó",
+"volumen": "2000",
+"novekedes_pct": "300",
+"temak": [
+"Autos and Vehicles"
+],
+"hirek": []
 },
 {
 "kifejezes": "integritás hatóság",
@@ -1208,75 +1279,7 @@
 "temak": [
 "Law and Government"
 ],
-"hirek": [
-{
-"hir_cim": "Elhunyt politikus került az Integritás Hatóság kockázati listájára",
-"hir_forras": "24.hu",
-"hir_url": "https://24.hu/fn/gazdasag/2026/10/02/potapi-arpad-integritas-hatosag-kockazati-lista/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSHfjRV6HzcGxdnIuadJUjkTvNkNVQ1sVvaaAtwqXTWn71UtuS_4hQwvwMqFtI",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Megjelent a legmagasabb kockázatú vagyonnyilatkozat-tételre kötelezettek listája, Orbán és Magyar is rajta van",
-"hir_forras": "Telex",
-"hir_url": "https://telex.hu/gazdasag/2026/10/01/legmagasabb-kockazatu-vagyonnyilatkozat-tetelre-kotelezettek-listaja-integritas-hatosag",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQT54QMYTSbzYtptVdKMiOaQE72jrj2D6lROqRePFqs9qmY2G9-7YGTolJGa8",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Belföld - Az Integritás Hatóság Seszták Miklóst és Hankó Balázst is a legkockázatosabb személyek közé sorolta",
-"hir_forras": "Index.hu",
-"hir_url": "https://index.hu/belfold/2026/09/25/integritas-hatosag-hanko-balazs-sesztak-miklos-nka-botrany-vagonnyilatkozat/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2PkGcarPB8X4II2jfLBfNcQxO7beqN62nd7ExDKR9iIjT0FFAd7cg5eFVtWs",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "klebelsberg központ",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
 "hirek": []
-},
-{
-"kifejezes": "autó",
-"volumen": "2000",
-"novekedes_pct": "300",
-"temak": [
-"Other"
-],
-"hirek": [
-{
-"hir_cim": "Hármas karambol volt Bicskénél",
-"hir_forras": "24.hu",
-"hir_url": "https://24.hu/belfold/2026/10/02/harmas-karambol-bicskenel/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTEwRuzIwAXOBRD3WnjA_dW6GSiOPHQm7Tsjbuhsqg8KMjnkTtgUkzS4RdAQOw",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Autó: Három autó ütközött Bicskénél, lezárták az 1-es főutat",
-"hir_forras": "| hvg.hu",
-"hir_url": "https://hvg.hu/cegauto/20261002_harom-auto-utkozott-bicske-1-es-fout",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQBbbl8kz_VObU6uJFtfSEqukh4SepA7gyHoT13B9AveNza6DHlx7hs0ko3zCg",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Hármas karambol az 1-es főúton, az egyik sérült meghalt",
-"hir_forras": "Infostart",
-"hir_url": "https://infostart.hu/belfold/2026/10/02/harmas-karambol-tortent-az-1-es-fouton",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSUXDTaJtIup3ghTtD1zHA8XN7cNyNSTelqtDCKBQBigwuB1GJnsMgIUfHL1Oc",
-"hir_kivonat": ""
-}
-]
 },
 {
 "kifejezes": "szepesi tibor",
@@ -1286,153 +1289,72 @@
 "Sports"
 ],
 "hirek": []
-},
-{
-"kifejezes": "franciaország–olaszország",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "központi nyomozó főügyészség",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "ukrajna–észak-írország",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "élelmiszer",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Food and Drink"
-],
-"hirek": []
-},
-{
-"kifejezes": "alapjogokért központ",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "berki krisztián",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "kubatov gábor",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "házasság első látásra",
-"volumen": "2000",
-"novekedes_pct": "400",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "gázolaj",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
 }
 ],
 "reggel_este_diff": {
-"uj_estere": [],
-"eltunt_estere": [],
-"megmaradt": [
+"uj_estere": [
+"2026",
+"csillagjegy",
+"horvátország–anglia",
+"időközi választás",
+"india–brazília",
+"kamara",
+"királydinnye",
+"kéri lászló",
+"lőrincz viktória",
+"oroszország",
+"rtl híradó",
+"vasút",
+"vitézy dávid",
+"óraátállítás 2026 október"
+],
+"eltunt_estere": [
 "alapjogokért központ",
-"autó",
 "bankautomata",
 "berki krisztián",
-"deák bill gyula",
 "franciaország–olaszország",
 "gázolaj",
 "házasság első látásra",
-"integritás hatóság",
 "jármű",
 "kerkez milos",
 "klebelsberg központ",
 "kubatov gábor",
 "központi nyomozó főügyészség",
-"magyarország georgia",
 "nagy márton",
 "nyári időszámítás",
 "orbán viktor",
 "pénzcentrum.hu",
 "razzia",
-"szepesi tibor",
-"ukrajna",
 "ukrajna–észak-írország",
 "áramszünet",
 "élelmiszer"
+],
+"megmaradt": [
+"autó",
+"deák bill gyula",
+"integritás hatóság",
+"magyarország georgia",
+"szepesi tibor",
+"ukrajna"
 ]
 },
 "reggel": {
-"szoveg": "Ma reggel a magyar Google-keresésben messze a legnagyobb lendületet a sport adja: a lista élén Kerkez Milos áll, akihez komoly érdeklődés tapad, feltehetően a magyar válogatott grúzok elleni, Nemzetek Ligája-mérkőzésen aratott győzelme nyomán – erről több sportlap is beszámolt, köztük a 24.hu, a Nemzeti Sport Online és az Index. Ugyanehhez a meccshez kapcsolódik a „magyarország georgia\" keresés is, amelynél a híradások egy mezzel kapcsolatos nyomdahiba kellemetlen esetét emelik ki Schäfer Andrásnál. A sport témához tartozik még az ukrán vonatkozás, valamint néhány külföldi mérkőzés is, mint a franciaország–olaszország és az ukrajna–észak-írország párosítás.\n\nA reggeli felhozatalban erősen jelen vannak a hétköznapi, praktikus keresések is: sokan néztek rá a „jármű\", az „autó\", a „bankautomata\", az „áramszünet\" és a „nyári időszámítás\" kifejezésre, utóbbi feltehetően az óraátállítás közeledtével. Az autóhoz több friss hír is társul, köztük egy halálos áldozatot követelő bicskei hármas karambolról szóló tudósítás a 24.hu, a hvg.hu és az Infostart oldaláról.\n\nA közélet felől az „integritás hatóság\" keres figyelmet, amely körül a legmagasabb kockázatú vagyonnyilatkozatokról szóló lista kavarta fel az érdeklődést – erről a 24.hu, a Telex és az Index is beszámolt. Ehhez a témakörhöz kapcsolódóan kerültek elő olyan nevek és intézmények is, mint Orbán Viktor, Nagy Márton, a Klebelsberg Központ, a központi nyomozó főügyészség vagy az alapjogokért központ. A szórakoztatóbb témák közül Deák Bill Gyula neve pörög, akinek a temetéséről és az azt követő megemlékezésekről több bulvárhír is megjelent, illetve Berki Krisztián keresése is felkapott lett.\n\nÓvatosan annyit lehet ebből a reggeli képből leszűrni, hogy a figyelem jó része a tegnapi válogatott focimeccs körül összpontosul, emellett viszont a megélhetéshez és a hétköznapi ügyekhez kötődő keresések – áram, bankautomata, élelmiszer, üzemanyag – is markánsan jelen vannak. A hosszabb távú adatokban feltűnő, hogy a „kórház\" szó iránti érdeklődés az elmúlt napokban erősen megemelkedett, míg a „nyugdíj\" és a „benzin\" keresettsége inkább csökkenő irányt mutat."
+"szoveg": "Reggel kilenc körül egyértelműen a sport uralta a figyelmet: a kerkez milos volt a legpörgőbb kifejezés, mögötte a magyarország georgia mérkőzés, az ukrajna, valamint több külföldi összecsapás. A hozzájuk tartozó hírek a magyar válogatott grúzok elleni győzelméről és a válogatott körüli eseményekről szóltak. A közéleti témák közül az orbán viktor, a nagy márton és az integritás hatóság keresése futott fel, utóbbihoz a legmagasabb kockázatú vagyonnyilatkozatokról szóló listát bemutató cikkek kapcsolódtak. A hétköznapi kereséseknél a jármű, a bankautomata, az áramszünet, az élelmiszer és a nyári időszámítás jelent meg, az autó mögött pedig egy bicskei karambolról szóló híregyüttes állt. A szórakozás oldaláról a deák bill gyula temetéséről szóló tudósítások pörögtek."
 },
 "este": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "Estére a figyelem középpontjába a 2026 és a magyarország georgia került, mellettük a horvátország–anglia mérkőzés, amelyhez a mai tévés közvetítéseket összefoglaló cikkek tartoztak. A közéleti vonalon a kéri lászló, az időközi választás, az rtl híradó, a kamara és a vitézy dávid jelent meg. Felfutott az oroszország is, amelyhez a külföldiek és diplomaták Ukrajnából való távozására felszólító, megtorló csapásokat beharangozó hírek kapcsolódtak, valamint az ukrajna, ahol a magyar válogatott elleni meccs és Kerkez Milos eltiltása került előtérbe. Az óraátállítás témáját a vasárnapi időváltozásra figyelmeztető cikkek vitték fel, a királydinnye pedig szintén az esti kép része volt."
 },
 "teljes_nap": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A nap íve jól mutatja, hogyan tolódott a figyelem a reggeli sportgyőzelemről az esti műsorokra és közéleti témákra. Reggel a kerkez milos és a válogatott grúzok elleni sikere dominált, estére viszont ez a konkrét név háttérbe szorult, és helyette a 2026, valamint az esti tévés mérkőzések, például a horvátország–anglia kerültek előtérbe. Újonnan jött fel estére az időközi választás, a kéri lászló, az rtl híradó, a kamara, a vitézy dávid, az oroszország és az óraátállítás. Egész napon át kitartott a figyelemben a magyarország georgia, az ukrajna, az autó, a deák bill gyula, az integritás hatóság és a szepesi tibor. Eltűnt viszont estére a reggel még pörgő bankautomata, a nagy márton, az orbán viktor, a razzia, az élelmiszer és a nyári időszámítás."
 },
 "het": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A hét egészét nézve néhány téma több napon is visszatért. A gazdaság, a havasi bertalan, az oroszország és az ukrajna két-két napon át is a figyelemben maradt – utóbbi kettő a háborús hírek és a magyar válogatott körüli ügyek miatt egyaránt szóba került. A többi kifejezés jellemzően csak egy-egy napig volt felkapott, köztük számos sportmérkőzés, közéleti név és hétköznapi téma, ami arra utal, hogy a heti kép inkább a napról napra váltakozó eseményekhez igazodott, mintsem egy-két tartósan uralkodó témához."
 },
 "het_valos": {
 "napok": 7,
 "visszateroek": [
 {
-"kifejezes": "alapjogokért központ",
-"napok_szama": 2
-},
-{
-"kifejezes": "bankautomata",
-"napok_szama": 2
-},
-{
-"kifejezes": "berki krisztián",
-"napok_szama": 2
-},
-{
 "kifejezes": "gazdaság",
-"napok_szama": 2
-},
-{
-"kifejezes": "gázolaj",
 "napok_szama": 2
 },
 {
@@ -1440,31 +1362,7 @@
 "napok_szama": 2
 },
 {
-"kifejezes": "házasság első látásra",
-"napok_szama": 2
-},
-{
-"kifejezes": "jármű",
-"napok_szama": 2
-},
-{
-"kifejezes": "kubatov gábor",
-"napok_szama": 2
-},
-{
-"kifejezes": "központi nyomozó főügyészség",
-"napok_szama": 2
-},
-{
-"kifejezes": "nagy márton",
-"napok_szama": 2
-},
-{
-"kifejezes": "nyári időszámítás",
-"napok_szama": 2
-},
-{
-"kifejezes": "orbán viktor",
+"kifejezes": "oroszország",
 "napok_szama": 2
 },
 {
@@ -1472,15 +1370,15 @@
 "napok_szama": 2
 },
 {
-"kifejezes": "áramszünet",
-"napok_szama": 2
-},
-{
-"kifejezes": "élelmiszer",
-"napok_szama": 2
+"kifejezes": "2026",
+"napok_szama": 1
 },
 {
 "kifejezes": "444.hu",
+"napok_szama": 1
+},
+{
+"kifejezes": "alapjogokért központ",
 "napok_szama": 1
 },
 {
@@ -1504,6 +1402,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "bankautomata",
+"napok_szama": 1
+},
+{
 "kifejezes": "belgium–franciaország",
 "napok_szama": 1
 },
@@ -1517,6 +1419,10 @@
 },
 {
 "kifejezes": "beol.hu",
+"napok_szama": 1
+},
+{
+"kifejezes": "berki krisztián",
 "napok_szama": 1
 },
 {
@@ -1553,6 +1459,10 @@
 },
 {
 "kifejezes": "csehország–anglia",
+"napok_szama": 1
+},
+{
+"kifejezes": "csillagjegy",
 "napok_szama": 1
 },
 {
@@ -1604,10 +1514,6 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "franciaország–olaszország",
-"napok_szama": 1
-},
-{
 "kifejezes": "fűtés",
 "napok_szama": 1
 },
@@ -1617,6 +1523,10 @@
 },
 {
 "kifejezes": "gyár",
+"napok_szama": 1
+},
+{
+"kifejezes": "gázolaj",
 "napok_szama": 1
 },
 {
@@ -1632,7 +1542,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "horvátország–anglia",
+"napok_szama": 1
+},
+{
 "kifejezes": "házasság",
+"napok_szama": 1
+},
+{
+"kifejezes": "házasság első látásra",
 "napok_szama": 1
 },
 {
@@ -1640,11 +1558,27 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "időközi választás",
+"napok_szama": 1
+},
+{
+"kifejezes": "india–brazília",
+"napok_szama": 1
+},
+{
 "kifejezes": "integritás hatóság",
 "napok_szama": 1
 },
 {
+"kifejezes": "jármű",
+"napok_szama": 1
+},
+{
 "kifejezes": "k&h",
+"napok_szama": 1
+},
+{
+"kifejezes": "kamara",
 "napok_szama": 1
 },
 {
@@ -1656,11 +1590,7 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "kerkez milos",
-"napok_szama": 1
-},
-{
-"kifejezes": "klebelsberg központ",
+"kifejezes": "királydinnye",
 "napok_szama": 1
 },
 {
@@ -1672,11 +1602,23 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "kubatov gábor",
+"napok_szama": 1
+},
+{
 "kifejezes": "kátai németh vilmos",
 "napok_szama": 1
 },
 {
+"kifejezes": "kéri lászló",
+"napok_szama": 1
+},
+{
 "kifejezes": "kézigránát",
+"napok_szama": 1
+},
+{
+"kifejezes": "központi nyomozó főügyészség",
 "napok_szama": 1
 },
 {
@@ -1685,6 +1627,10 @@
 },
 {
 "kifejezes": "lopás",
+"napok_szama": 1
+},
+{
+"kifejezes": "lőrincz viktória",
 "napok_szama": 1
 },
 {
@@ -1728,6 +1674,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "nagy márton",
+"napok_szama": 1
+},
+{
 "kifejezes": "nd gorica",
 "napok_szama": 1
 },
@@ -1740,6 +1690,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "nyári időszámítás",
+"napok_szama": 1
+},
+{
 "kifejezes": "ola källenius",
 "napok_szama": 1
 },
@@ -1748,15 +1702,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "orbán viktor",
+"napok_szama": 1
+},
+{
 "kifejezes": "orbán áron",
 "napok_szama": 1
 },
 {
 "kifejezes": "oroszok",
-"napok_szama": 1
-},
-{
-"kifejezes": "oroszország",
 "napok_szama": 1
 },
 {
@@ -1784,15 +1738,7 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "pénzcentrum.hu",
-"napok_szama": 1
-},
-{
 "kifejezes": "pósfai gábor",
-"napok_szama": 1
-},
-{
-"kifejezes": "razzia",
 "napok_szama": 1
 },
 {
@@ -1805,6 +1751,10 @@
 },
 {
 "kifejezes": "ridikül",
+"napok_szama": 1
+},
+{
+"kifejezes": "rtl híradó",
 "napok_szama": 1
 },
 {
@@ -1852,11 +1802,15 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "ukrajna–észak-írország",
+"kifejezes": "varga mihály",
 "napok_szama": 1
 },
 {
-"kifejezes": "varga mihály",
+"kifejezes": "vasút",
+"napok_szama": 1
+},
+{
+"kifejezes": "vitézy dávid",
 "napok_szama": 1
 },
 {
@@ -1872,11 +1826,23 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "áramszünet",
+"napok_szama": 1
+},
+{
+"kifejezes": "élelmiszer",
+"napok_szama": 1
+},
+{
 "kifejezes": "észak-írország–magyarország",
 "napok_szama": 1
 },
 {
 "kifejezes": "északír labdarúgó-válogatott vs magyar labdarúgó-válogatott tabella",
+"napok_szama": 1
+},
+{
+"kifejezes": "óraátállítás 2026 október",
 "napok_szama": 1
 },
 {
@@ -1893,5 +1859,138 @@
 }
 ]
 }
+},
+"youtube": {
+"szamok": [
+{
+"szo": "szorongás",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.034,
+"ervenyes": true,
+"mai_ertek": 39,
+"csucs": 100,
+"atlag": 25.3
+},
+{
+"szo": "edzés",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.03,
+"ervenyes": true,
+"mai_ertek": 53,
+"csucs": 100,
+"atlag": 66.5
+},
+{
+"szo": "meditáció",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.047,
+"ervenyes": true,
+"mai_ertek": 84,
+"csucs": 100,
+"atlag": 81.8
+},
+{
+"szo": "befektetés",
+"domen": "penzugy",
+"irany": "stagnal",
+"meredekseg": 0.0,
+"ervenyes": true,
+"mai_ertek": 48,
+"csucs": 100,
+"atlag": 25.6
+},
+{
+"szo": "bitcoin",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.058,
+"ervenyes": true,
+"mai_ertek": 56,
+"csucs": 100,
+"atlag": 47.1
+},
+{
+"szo": "hírek",
+"domen": "kozelet",
+"irany": "stagnal",
+"meredekseg": -0.011,
+"ervenyes": true,
+"mai_ertek": 43,
+"csucs": 100,
+"atlag": 57.7
+},
+{
+"szo": "magyar péter",
+"domen": "kozelet",
+"irany": "stagnal",
+"meredekseg": 0.017,
+"ervenyes": true,
+"mai_ertek": 9,
+"csucs": 100,
+"atlag": 15.3
+},
+{
+"szo": "recept",
+"domen": "haztartas",
+"irany": "csokken",
+"meredekseg": -0.051,
+"ervenyes": true,
+"mai_ertek": 43,
+"csucs": 100,
+"atlag": 46.4
+},
+{
+"szo": "mese",
+"domen": "csalad",
+"irany": "stagnal",
+"meredekseg": -0.018,
+"ervenyes": true,
+"mai_ertek": 89,
+"csucs": 100,
+"atlag": 89.4
+},
+{
+"szo": "nyaralás",
+"domen": "szabadido",
+"irany": "novekszik",
+"meredekseg": 0.074,
+"ervenyes": true,
+"mai_ertek": 25,
+"csucs": 100,
+"atlag": 49.8
+},
+{
+"szo": "tanulás",
+"domen": "tanulas",
+"irany": "csokken",
+"meredekseg": -0.045,
+"ervenyes": true,
+"mai_ertek": 67,
+"csucs": 100,
+"atlag": 69.6
+},
+{
+"szo": "klíma",
+"domen": "otthon",
+"irany": "novekszik",
+"meredekseg": 0.069,
+"ervenyes": true,
+"mai_ertek": 11,
+"csucs": 100,
+"atlag": 16.9
+}
+],
+"napi": {
+"szoveg": "A magyarországi videós keresésekben az egészséghez és kikapcsolódáshoz kötődő tartalmak most is erősek. A mese és a meditáció a saját megszokott, magas szintjén áll, előbbi gyakorlatilag a csúcsa közelében. Az edzés és a tanulás a maguk átlagos tartományában mozognak, enyhén lefelé tartva. A szorongás a mai napon a saját átlaga fölött van, bár a hét során sokat gyengült. A pénzügyi témák közül a befektetés a szokásosnál élénkebb érdeklődést mutat, a bitcoin a saját átlaga körül mozog. A recept és a hírek a megszokott szintjükön vannak, utóbbi kissé alatta. A magyar péter iránti videós érdeklődés alacsonyan, a saját átlaga alatt áll. A nyaralás a szokásosnál visszafogottabb, de emelkedő irányú, a klíma pedig alacsony értékről, de növekvő tendenciával mozog. Ezek a szavak mind a saját külön skálájukon értendők, egymással nem vethetők össze."
+},
+"teljes_kep": {
+"szoveg": "A hét egészét nézve a legnagyobb elmozdulás a szorongásnál látszik, amely jelentősen visszaesett a hét eleji magas szintről, és a befektetés is számottevően mérséklődött. Ezzel szemben a nyaralás iránti videós érdeklődés a hét során érezhetően emelkedett egy nagyon alacsony kiindulásról. A meditáció, a mese, a recept és a bitcoin enyhén feljebb kúszott, miközben a hírek valamelyest halványult. A többi követett téma – köztük az edzés, a tanulás, a magyar péter és a klíma – gyakorlatilag egy helyben maradt a hét folyamán, ami kiegyensúlyozott, stabil videós figyelemre utal ezeknél a témáknál."
+}
+},
+"predikcio": {
+"szoveg": "A rövid távú előrejelzések egységesen óvatos, nyugalmas képet festenek: a követett szavak mindegyikénél inkább stagnálás, azaz a jelenlegi szint közeli folytatása várható, érdemi felfelé vagy lefelé mutató elmozdulás nélkül. Fontos hangsúlyozni, hogy ez a közelmúlt tendenciájának matematikai továbbvezetése, nem eseményjóslat – a valóság könnyen eltérhet tőle. A legtöbb becslés mögött nagyon alacsony megbízhatóság áll, így ezeket inkább tájékoztató jellegűnek érdemes tekinteni. Viszonylag stabilabbnak a napelem, a pedagógus és a munkanélküliség körüli becslés tűnik, de ezek is a változatlanság irányába mutatnak. Összességében a közeljövőre most egyetlen szónál sem rajzolódik ki egyértelmű emelkedés vagy visszaesés."
 }
 }
