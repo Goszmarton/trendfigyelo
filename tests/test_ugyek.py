@@ -134,3 +134,13 @@ def test_korpusz_rendezes_es_hirek_plafon(tmp_path):
     k = u.ugy_korpusz(str(tmp_path), VEG)
     assert [c["kifejezes"] for c in k["kifejezesek"]] == ["gyakori", "ritka"]
     assert k["kifejezesek"][0]["hirek"] == ["H0", "H1", "H2"]
+
+
+def test_korpusz_rendezes_napok_szama_elsodleges(tmp_path):
+    _nap(tmp_path, "2026-10-01", [("B", 1, [], []), ("D", 1, [], []), ("C", 1, [], [])])
+    for nap in ("2026-10-05", "2026-10-06", "2026-10-07"):
+        _nap(tmp_path, nap, [("A", 1, [], [])])
+    _nap(tmp_path, "2026-10-02", [("E", 1, [], [])])
+    k = u.ugy_korpusz(str(tmp_path), VEG, ablak_nap=30)
+    # A (3 nap) elol; utana 1 napos: elso_nap szerint (10-01: B,C,D kifejezes szerint), majd E
+    assert [c["kifejezes"] for c in k["kifejezesek"]] == ["A", "B", "C", "D", "E"]
