@@ -508,6 +508,13 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 .bovites-idovonal { display: flex; gap: 1px; height: 14px; margin-top: 0.4rem; }
 .bovites-nap { flex: 1 1 0; min-width: 2px; background: #e6eaef; border-radius: 1px; }
 .bovites-nap.jelen { background: #2a78d6; }
+.bovites-kapcs-lista { display: flex; flex-direction: column; gap: 0.8rem; }
+.bovites-kapcs-kartya { border: 1px solid #c9d3df; border-radius: 10px; padding: 0.8rem 1rem; background: #fff; }
+.bovites-kapcs-cim { margin: 0 0 0.4rem; font-size: 1.05rem; }
+.bovites-kapcs-ketto { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.8rem; }
+.bovites-kapcs-oszlopcim { margin: 0; font-size: 0.9rem; color: #555; }
+.bovites-kapcs-ertek { font-size: 0.75rem; }
+.bovites-kapcs-breakout { border-color: #eb6834; background: #fdf0ea; font-weight: 600; }
 
 .bovites-szuro-sor { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-bottom: 0.5rem; }
 .bovites-szuro-chip, .bovites-rendezes-gomb { font-size: .8rem; padding: .3rem .7rem; border: 1px solid #cfcfcf;

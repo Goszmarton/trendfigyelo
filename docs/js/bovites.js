@@ -31,7 +31,7 @@ async function bov_json(url) {
 
 const BOV_RENDEZES = { napok: "Időtartam", frissesseg: "Frissesség", mozgas: "Mozgás" };
 const BOV_MOZGAS_SORREND = { erosodo: 0, stabil: 1, lecsengo: 2, nem_megallapithato: 3 };
-const bov_allapot = { szakpolitika: "", rendezes: "napok", elm: null, ugy: null };
+const bov_allapot = { szakpolitika: "", rendezes: "napok", elm: null, ugy: null, kapcs: null };
 
 function bov_elmozdulas_render(cel, elm, szak) {
   cel.innerHTML = "";
@@ -104,9 +104,52 @@ function bov_ugyek_render(cel, ugy, szak, rend) {
   cel.appendChild(lista);
 }
 
+// „Kapcsolódó keresések": kifejezésenként top + felfutó (rising) lekérdezések; a szakpolitika-szűrő NEM érinti
+function bov_kapcs_ertek(v) {
+  if (typeof v === "number") return "+" + v.toLocaleString("hu-HU") + "%";
+  return v == null ? "" : String(v);
+}
+
+function bov_kapcs_lista(cim, sorok, rising) {
+  const oszlop = bel("div", "bovites-kapcs-oszlop");
+  oszlop.appendChild(bel("h4", "bovites-kapcs-oszlopcim", cim));
+  const chipek = bel("div", "bovites-chipek");
+  (sorok || []).forEach((s) => {
+    const nagy = rising && (s.value === "Breakout" || (typeof s.value === "number" && s.value >= 5000));
+    const chip = bel("span", "bovites-chip bovites-kapcs-chip" + (nagy ? " bovites-kapcs-breakout" : ""), s.query);
+    const ertek = rising ? bov_kapcs_ertek(s.value) : (s.value == null ? "" : String(s.value));
+    if (ertek) chip.appendChild(bel("span", "bovites-kapcs-ertek halvany", " " + ertek));
+    chipek.appendChild(chip);
+  });
+  if (!(sorok || []).length) chipek.appendChild(bel("span", "halvany", "Nincs adat."));
+  oszlop.appendChild(chipek);
+  return oszlop;
+}
+
+function bov_kapcsolodo_render(cel, kapcs) {
+  if (!cel) return;
+  cel.innerHTML = "";
+  if (!kapcs) return;   // fail-soft: nincs adat -> a szekció üres
+  cel.appendChild(bel("h2", "elemzes-csoport-cim", "Kapcsolódó keresések"));
+  const lista = kapcs.kifejezesek || [];
+  if (!lista.length) { cel.appendChild(bel("p", "ures", "Még nincs kapcsolódó keresés.")); return; }
+  const racs = bel("div", "bovites-kapcs-lista");
+  lista.forEach((k) => {
+    const kartya = bel("article", "bovites-kapcs-kartya");
+    kartya.appendChild(bel("h3", "bovites-kapcs-cim", k.kifejezes));
+    const ketto = bel("div", "bovites-kapcs-ketto");
+    ketto.appendChild(bov_kapcs_lista("Top (megszokott)", k.top, false));
+    ketto.appendChild(bov_kapcs_lista("Felfutó", k.rising, true));
+    kartya.appendChild(ketto);
+    racs.appendChild(kartya);
+  });
+  cel.appendChild(racs);
+}
+
 function bov_rajzol() {
   bov_elmozdulas_render(document.getElementById("bovites-elmozdulas"), bov_allapot.elm, bov_allapot.szakpolitika);
   bov_ugyek_render(document.getElementById("bovites-ugyek"), bov_allapot.ugy, bov_allapot.szakpolitika, bov_allapot.rendezes);
+  bov_kapcsolodo_render(document.getElementById("bovites-kapcsolodo"), bov_allapot.kapcs);
   document.querySelectorAll(".bovites-szuro-chip").forEach((b) =>
     b.setAttribute("aria-pressed", String(b.dataset.szakpolitika === bov_allapot.szakpolitika)));
   document.querySelectorAll(".bovites-rendezes-gomb").forEach((b) =>
@@ -140,7 +183,8 @@ function bov_szuro_epit(cel) {
 }
 
 async function bov_init() {
-  const [elm, ugy] = await Promise.all([bov_json("data/elmozdulas.json"), bov_json("data/ugyek.json")]);
+  const [elm, ugy, kapcs] = await Promise.all([bov_json("data/elmozdulas.json"), bov_json("data/ugyek.json"),
+    bov_json("data/kapcsolodo.json")]);
   const fejlec = document.getElementById("bovites-fejlec");
   if (!elm && !ugy) {
     document.getElementById("bovites").textContent = "A bővítés adata nem érhető el.";
@@ -153,6 +197,7 @@ async function bov_init() {
   }
   bov_allapot.elm = elm;
   bov_allapot.ugy = ugy;
+  bov_allapot.kapcs = kapcs;
   bov_szuro_epit(document.getElementById("bovites-szuro"));
   bov_rajzol();
 }

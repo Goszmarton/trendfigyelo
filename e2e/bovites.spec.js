@@ -55,3 +55,27 @@ test("bővítés: szakpolitika-szűrő szűkíti az ügy-listát", async ({ page
   await page.locator('.bovites-rendezes-gomb[data-rendezes="frissesseg"]').click();
   await expect(page.locator(".bovites-ugy-nev").first()).toHaveText("Üzemanyagárak");
 });
+
+const KAPCS = { frissitve: "2026-10-07T21:00:00+00:00", kifejezesek: [
+  { kifejezes: "benzin", lekerdezve: "2026-10-07T21:00:00+00:00", volumen: 90,
+    top: [{ query: "benzin ár", value: 100 }, { query: "mol benzin", value: 19 }],
+    rising: [{ query: "benzin ársapka", value: 8350 }, { query: "hatósági áras benzin", value: "Breakout" }] }]};
+
+test("bővítés: kapcsolódó keresések szekció (top + rising) renderel", async ({ page }) => {
+  await page.route("**/data/elmozdulas.json", (r) => r.fulfill({ json: ELM }));
+  await page.route("**/data/ugyek.json", (r) => r.fulfill({ json: UGY }));
+  await page.route("**/data/kapcsolodo.json", (r) => r.fulfill({ json: KAPCS }));
+  await page.goto("/bovites.html");
+  await expect(page.locator("#bovites-kapcsolodo")).toContainText("benzin");
+  await expect(page.locator("#bovites-kapcsolodo")).toContainText("benzin ár");         // top
+  await expect(page.locator("#bovites-kapcsolodo")).toContainText("benzin ársapka");     // rising
+  await expect(page.locator("#bovites-kapcsolodo")).toContainText("Breakout");
+});
+
+test("bővítés: kapcsolódó keresések fail-soft, ha nincs adat", async ({ page }) => {
+  await page.route("**/data/elmozdulas.json", (r) => r.fulfill({ json: ELM }));
+  await page.route("**/data/ugyek.json", (r) => r.fulfill({ json: UGY }));
+  await page.route("**/data/kapcsolodo.json", (r) => r.fulfill({ status: 404, body: "" }));
+  await page.goto("/bovites.html");
+  await expect(page.locator("#bovites")).toContainText("Üzemanyagárak");   // a többi blokk változatlan
+});
