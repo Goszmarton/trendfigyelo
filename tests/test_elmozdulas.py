@@ -163,14 +163,21 @@ def test_irany_alatta_es_illeszkedik(tmp_path):
 def test_lista_abszolut_elteres_szerint(tmp_path):
     _reg(tmp_path, {
         "kicsi": {"domen": "x", "tipus": "szintmero", "racs": "ora",
-                  "intervallumok": {"1_het": _iv(mai_reziduum=12.0)}},
+                  "intervallumok": {"1_het": _iv(illeszkedes="alatta", mai_reziduum=-12.0)}},
         "nagy": {"domen": "x", "tipus": "szintmero", "racs": "ora",
-                 "intervallumok": {"1_het": _iv(illeszkedes="alatta", mai_reziduum=-20.0)}}})
+                 "intervallumok": {"1_het": _iv(mai_reziduum=20.0)}}})
     ki = em.elmozdulas_szamit(str(tmp_path))
-    assert ki["kulcsszavak"]["nagy"]["elteres"] == -5.0
+    assert ki["kulcsszavak"]["nagy"]["elteres"] == 5.0
+    assert ki["kulcsszavak"]["kicsi"]["elteres"] == -3.0
     assert ki["szokatlan_lista"] == ["nagy", "kicsi"]
 
 
 def test_racs_nap_a_1_ho_intervallumot_hasznalja(tmp_path):
     b = _egy(tmp_path, _iv(), [], racs="nap", ivn="1_ho")
     assert b["szokatlan"] is True and "1_ho" in b["sav"]
+
+
+def test_megbizhatosag_kozepes_also_hatar(tmp_path):
+    assert _egy(tmp_path, _iv(r2=0.2, pontok_hasznalt=50), [])["megbizhatosag"] == "kozepes"
+    assert _egy(tmp_path / "a", _iv(r2=0.19, pontok_hasznalt=50), [])["megbizhatosag"] == "alacsony"
+    assert _egy(tmp_path / "b", _iv(r2=0.2, pontok_hasznalt=49), [])["megbizhatosag"] == "alacsony"
