@@ -272,14 +272,16 @@ def test_ugy_osszegez_determinista_ujraszamolas_nem_az_llm_ertek():
 
 def test_grounding_fallback_temakbol_nem_egyeb():
     import copy
-    korpusz = {"kifejezesek": [{"kifejezes": "kórház", "temak": ["Health"]}, {"kifejezes": "x", "temak": []}]}
+    korpusz = {"kifejezesek": [{"kifejezes": "ismeretlen-a", "temak": []},
+                               {"kifejezes": "ismeretlen-szo", "temak": ["Health"]},
+                               {"kifejezes": "x", "temak": []}]}
     eredmeny = {"ugyek": [
-        {"nev": "Eü", "kifejezesek": ["kórház"], "szakpolitika": "HOLDbazis", "osszefoglalo": "a"},
+        {"nev": "Eü", "kifejezesek": ["ismeretlen-a", "ismeretlen-szo"], "szakpolitika": "HOLDbazis", "osszefoglalo": "a"},
         {"nev": "Érvényes", "kifejezesek": ["x", "KITALÁLT"], "szakpolitika": "oktataspolitika", "osszefoglalo": "b"}]}
     eredmeny_elo, korpusz_elo = copy.deepcopy(eredmeny), copy.deepcopy(korpusz)
     out = u.grounding_validal(eredmeny, korpusz)
     eu = next(x for x in out["ugyek"] if x["nev"] == "Eü")
-    assert eu["szakpolitika"] == u.szakpolitika.szakpolitika_besorol(kifejezes="kórház", temak=["Health"])
+    assert eu["szakpolitika"] == u.szakpolitika.szakpolitika_besorol(kifejezes="ismeretlen-a", temak=["Health"])
     assert eu["szakpolitika"] == "egeszsegpolitika"
     ervenyes = next(x for x in out["ugyek"] if x["nev"] == "Érvényes")
     assert ervenyes["szakpolitika"] == "oktataspolitika" and ervenyes["kifejezesek"] == ["x"]
