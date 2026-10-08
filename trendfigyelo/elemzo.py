@@ -74,6 +74,16 @@ RENDSZER_PROMPT = (
     "biztosnak. NEM sorolod fel újra minden szót – a szembetűnő mozgókat emeled ki, a stagnáló többséget "
     "egy-két mondattal, csoportosítva összefoglalod. A szokásos szabályok itt is: folyó bekezdés, "
     "felsorolás/mezőnév tilalma, óvatos fogalmazás, rövid „–\" gondolatjel, számot sosem találsz ki. "
+    "(12) Az esti elemzés LEGELSŐ része egy TL;DR (»Lényeg«), a `tldr` mezőben, strukturáltan: "
+    "`fo_valtozasok` = a 3 legfontosabb, ADATTAL alátámasztott változás, egy-egy TÖMÖR mondatban (a szám/irány "
+    "a kapott adatból); `kiemelt_ugyek` = legfeljebb 5 ügy, mindegyik egy mondatban: mi történik a keresésekben, "
+    "MIHEZ KÉPEST (a szó szokásos szintje vagy az előző nap) és MIÓTA tart (a heti/visszatérő adatból); "
+    "`visszatero_temak` = a több napon vissza-visszatérő témák; `intenzivebb_keresesbe` = mely FELKAPOTT ügyeket "
+    "lenne érdemes felvenni a rendszeresen követett kulcsszavak közé (a mai/visszatérő felkapottakból, NEM a már "
+    "követett szavakból), óvatos indoklással; `informaciohiany` = milyen információhiányt vagy külön vizsgálandó "
+    "kérdést vet fel a jelzés (pl. felkapott, de hír nélküli szó). CSENDES NAPON, ha nincs érdemi, kiemelésre méltó "
+    "változás: `van_tldr` = false ÉS minden TL;DR-mező ÜRES ([] / \"\") – NEM gyártasz erőltetett összefoglalót. "
+    "A TL;DR-re is: VALÓS számok, ok csak hír esetén, semmit nem találsz ki, rövid »–« gondolatjel. "
 )
 
 _RENDSZER_PROMPT_REGGEL = (
@@ -420,17 +430,35 @@ def _szekcio_csoport(*kulcsok):
             "properties": {k: sz for k in kulcsok}}
 
 
+def _tldr_sema():
+    """A TL;DR strukturált sémája (csak este). van_tldr=false + üres mezők → csendes nap (nincs render)."""
+    return {
+        "type": "object", "additionalProperties": False,
+        "required": ["van_tldr", "fo_valtozasok", "kiemelt_ugyek",
+                     "visszatero_temak", "intenzivebb_keresesbe", "informaciohiany"],
+        "properties": {
+            "van_tldr": {"type": "boolean"},
+            "fo_valtozasok": {"type": "array", "maxItems": 3, "items": {"type": "string"}},
+            "kiemelt_ugyek": {"type": "array", "maxItems": 5, "items": {"type": "string"}},
+            "visszatero_temak": {"type": "string"},
+            "intenzivebb_keresesbe": {"type": "string"},
+            "informaciohiany": {"type": "string"},
+        },
+    }
+
+
 def _valasz_sema(youtube=False, mode="este", predikcio=False):
     if mode == "reggel":
         return {"type": "object", "additionalProperties": False,
                 "required": ["felkapott"],
                 "properties": {"felkapott": _szekcio_csoport("reggel")}}
     props = {
+        "tldr": _tldr_sema(),
         "valtozas": _szekcio_sema(),
         "kulcsszavak": _szekcio_csoport("napi"),
         "felkapott": _szekcio_csoport("reggel", "este", "teljes_nap", "het"),
     }
-    required = ["valtozas", "kulcsszavak", "felkapott"]
+    required = ["tldr", "valtozas", "kulcsszavak", "felkapott"]
     if predikcio:
         props["predikcio"] = _szekcio_sema()
         required = required + ["predikcio"]
@@ -583,6 +611,8 @@ def valasz_to_artefakt(ai_valasz, payload, nap, modell, mode="este"):
         }
     if "predikcio" in payload:
         art["predikcio"] = ai_valasz["predikcio"]
+    if "tldr" in ai_valasz:
+        art["tldr"] = ai_valasz["tldr"]     # a _gondolatjel_rovidit már lefutott az ai_valasz-on (rekurzív)
     return art
 
 

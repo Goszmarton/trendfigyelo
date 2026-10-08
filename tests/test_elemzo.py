@@ -679,7 +679,7 @@ def test_epit_payload_nincs_youtube_kulcs_ha_nincs_adat():
 
 def test_valasz_sema_google_alap_valtozatlan():
     s = elemzo._valasz_sema()
-    assert set(s["required"]) == {"valtozas", "kulcsszavak", "felkapott"}
+    assert set(s["required"]) == {"tldr", "valtozas", "kulcsszavak", "felkapott"}
     assert "youtube" not in s["properties"]
 
 
@@ -1026,3 +1026,40 @@ def test_artefakt_predikcio_bekerul_ha_van_payloadban():
     ai = _ai_valasz(); ai["predikcio"] = {"szoveg": "Előrejelzés-próza."}
     art = elemzo.valasz_to_artefakt(ai, payload, nap="2026-08-31", modell="m")
     assert art["predikcio"]["szoveg"] == "Előrejelzés-próza."
+
+
+def test_tldr_sema_este_tartalmazza_a_mezoket():
+    s = elemzo._valasz_sema(mode="este")
+    assert "tldr" in s["required"] and "tldr" in s["properties"]
+    t = s["properties"]["tldr"]
+    assert t["required"] == ["van_tldr", "fo_valtozasok", "kiemelt_ugyek",
+                             "visszatero_temak", "intenzivebb_keresesbe", "informaciohiany"]
+    assert t["properties"]["van_tldr"]["type"] == "boolean"
+    assert t["properties"]["fo_valtozasok"]["maxItems"] == 3
+    assert t["properties"]["kiemelt_ugyek"]["maxItems"] == 5
+    assert t["properties"]["fo_valtozasok"]["items"]["type"] == "string"
+
+
+def test_tldr_sema_reggel_nem_tartalmazza():
+    s = elemzo._valasz_sema(mode="reggel")
+    assert "tldr" not in s.get("properties", {})
+
+
+def test_rendszer_prompt_tldr_szabaly():
+    p = elemzo.RENDSZER_PROMPT
+    assert "TL;DR" in p or "Lényeg" in p
+    assert "van_tldr" in p
+    assert "erőltetett" in p or "CSENDES" in p.upper()
+
+
+def test_valasz_to_artefakt_este_atvezeti_a_tldr_t():
+    payload = _payload_szegmensekkel(van_reggel=True, van_este=True)
+    ai = dict(_ai_valasz())
+    ai["tldr"] = {"van_tldr": True, "fo_valtozasok": ["A keresések ma élénkebbek."],
+                  "kiemelt_ugyek": ["Benzin – a szokásosnál magasabb, 3 napja tart."],
+                  "visszatero_temak": "időjárás", "intenzivebb_keresesbe": "üzemanyagár",
+                  "informaciohiany": "a benzin-kiugráshoz nem érkezett hír"}
+    art = elemzo.valasz_to_artefakt(ai, payload, nap="2026-10-08", modell="m")
+    assert art["tldr"]["van_tldr"] is True
+    assert art["tldr"]["fo_valtozasok"] == ["A keresések ma élénkebbek."]
+    assert len(art["tldr"]["kiemelt_ugyek"]) == 1
