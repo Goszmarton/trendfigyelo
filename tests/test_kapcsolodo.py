@@ -228,3 +228,21 @@ def test_gyujt_serult_json_nem_dob(tmp_path):
     tr = _FakeTr({"benzin": {"top": _df([]), "rising": _df([])}})
     out = kp.gyujt(str(tmp_path), _FakeKliens(tr), _Cfg(), datetime(2026, 10, 7, 21, tzinfo=timezone.utc))
     assert isinstance(out, dict) and out["kifejezesek"][0]["kifejezes"] == "benzin"
+
+
+def test_jeloltek_korrupt_napfajl_kihagyva(tmp_path):
+    (tmp_path / "napok").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "napok" / "2026-10-06.json").write_text("{nemjson", encoding="utf-8")
+    _nap(tmp_path, "2026-10-07", [("benzin", 90)])
+    most = datetime(2026, 10, 7, 21, tzinfo=timezone.utc)
+    out = kp.jeloltek(str(tmp_path), {}, most)
+    assert [k for k, _ in out] == ["benzin"]
+
+
+def test_gyujt_korrupt_kapcsolodo_json_dict(tmp_path):
+    (tmp_path / "kapcsolodo.json").write_text("{nemjson", encoding="utf-8")
+    _nap(tmp_path, "2026-10-07", [("benzin", 90)])
+    tr = _FakeTr({"benzin": {"top": _df([("benzin ár", 100)]), "rising": _df([])}})
+    most = datetime(2026, 10, 7, 21, tzinfo=timezone.utc)
+    out = kp.gyujt(str(tmp_path), _FakeKliens(tr), _Cfg(), most)
+    assert out["frissitve"] == most.isoformat() and len(out["kifejezesek"]) == 1
