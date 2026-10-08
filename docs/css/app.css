@@ -487,3 +487,24 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 .heti-chart-vaszon { position: relative; }
 .heti-chart-adatlista { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 @media (max-width: 640px) { #heti-het-panel { flex-basis: 100%; flex-direction: row; flex-wrap: wrap; } }
+
+/* Bővítés fül */
+.bovites-elm-racs { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.6rem; }
+.bovites-elm-kartya { border: 1px solid #c9d3df; border-left: 4px solid #8a97a6; border-radius: 8px; padding: 0.6rem 0.8rem; background: #fff; }
+.bovites-irany-emelkedik { border-left-color: #2a78d6; }
+.bovites-irany-csokken { border-left-color: #eb6834; }
+.bovites-elm-szo { font-weight: 600; }
+.bovites-elm-irany { font-size: 0.9rem; color: #555; }
+.bovites-elm-adat { font-size: 0.85rem; color: #444; margin-top: 0.15rem; }
+.bovites-ugy-lista { display: flex; flex-direction: column; gap: 0.8rem; }
+.bovites-ugy { border: 1px solid #c9d3df; border-radius: 10px; padding: 0.8rem 1rem; background: #fff; }
+.bovites-ugy-nev { margin: 0 0 0.4rem; font-size: 1.05rem; }
+.bovites-cimkek, .bovites-chipek { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.3rem 0; }
+.bovites-cimke { display: inline-block; padding: 0.1rem 0.55rem; border-radius: 999px; background: #eef2f7; color: #334; font-size: 0.8rem; margin-top: 0.3rem; }
+.bovites-cimkek .bovites-cimke { margin-top: 0; }
+.bovites-chip { padding: 0.1rem 0.5rem; border: 1px solid #d5dce5; border-radius: 6px; font-size: 0.85rem; color: #444; }
+.bovites-osszefoglalo { margin: 0.4rem 0; line-height: 1.45; }
+.bovites-meta { font-size: 0.85rem; }
+.bovites-idovonal { display: flex; gap: 1px; height: 14px; margin-top: 0.4rem; }
+.bovites-nap { flex: 1 1 0; min-width: 2px; background: #e6eaef; border-radius: 1px; }
+.bovites-nap.jelen { background: #2a78d6; }
