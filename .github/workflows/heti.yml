@@ -1,0 +1,92 @@
+name: Heti értékelés
+
+on:
+  workflow_run:
+    workflows: ["Reggeli felkapott-gyűjtés"]   # hétfő reggel, a reggeli pillanatkép után
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      het:
+        description: "Kézi teszt: adott hét (a hét HÉTFŐJE, YYYY-MM-DD) újragenerálása; üres = az őr dönt"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: heti-futtatas
+  cancel-in-progress: false
+
+jobs:
+  heti:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (a friss, épp commitolt adat)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Python beállítása
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Az őr a függőség-telepítés ELŐTT: CSAK stdlib (heti_orzo/seged). A nem-hétfői (napi) reggeli
+      # futások így nem telepítenek feleslegesen — a költséges telepítés csak akkor fut, ha az
+      # őr tényleg hetet kér (het != '').
+      - name: "Hétfő + idempotencia-őr (a generálandó hét hétfője, vagy üres = skip)"
+        id: guard
+        shell: bash
+        env:
+          KEZI_INPUT: ${{ github.event.inputs.het }}
+        run: |
+          KEZI="$KEZI_INPUT"
+          if [ -n "$KEZI" ]; then
+            echo "Kézi (workflow_dispatch) felülbírálás: $KEZI"
+            echo "het=$KEZI" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          HET="$(python -m trendfigyelo.heti_orzo docs/data)"
+          echo "Őr szerint generálandó hét: '$HET' (üres = ma nincs teendő)"
+          echo "het=$HET" >> "$GITHUB_OUTPUT"
+
+      - name: Függőségek telepítése (csak generáláskor)
+        if: steps.guard.outputs.het != ''
+        run: pip install -r requirements.txt
+
+      - name: Heti értékelés generálása
+        if: steps.guard.outputs.het != ''
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          HET: ${{ steps.guard.outputs.het }}
+        run: |
+          set -o pipefail
+          python heti.py "$HET" 2>&1 | tee heti.log
+
+      - name: Változások commitolása (CSAK a heti fájlok, KÜLÖN commit)
+        if: always() && github.ref == 'refs/heads/main' && steps.guard.outputs.het != ''
+        env:
+          HET: ${{ steps.guard.outputs.het }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase --autostash || true
+          git add docs/data/heti
+          if git diff --staged --quiet; then
+            echo "Nincs heti-értékelés-változás — nincs commit."
+          else
+            git commit -m "adat: heti értékelés ($HET, $(date -u +%Y-%m-%dT%H:%MZ))"
+            git push
+          fi
+
+      - name: Artefakt (a log + a heti fájlok — mindig)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: heti-${{ github.run_id }}
+          retention-days: 14
+          path: |
+            heti.log
+            docs/data/heti/**
