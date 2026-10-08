@@ -109,3 +109,67 @@ def test_parse_related_ures_es_szokozos_query():
     df = pd.DataFrame({"query": ["", "  ", " x "], "value": [1, 2, 3]})
     out = kp._parse_related({"top": df, "rising": None}, limit=15)
     assert out["top"] == [{"query": "x", "value": 3}]
+
+
+class _FakeTr:
+    def __init__(self, map_):
+        self._map = map_          # kif -> {top, rising} dict VAGY Exception-példány
+        self.hivott = []
+
+    def related_queries(self, keyword, geo=None, timeframe=None, headers=None):
+        self.hivott.append((keyword, geo, timeframe, headers))
+        r = self._map.get(keyword)
+        if isinstance(r, Exception):
+            raise r
+        return r
+
+
+class _FakeKliens:
+    def __init__(self, tr): self.tr = tr
+    def hivas(self, ag, fn, *a, **k): return fn(*a, **k)   # throttle nélkül (teszt)
+
+
+class _Cfg:
+    geo = "HU"; max_probak = 4
+
+
+def _df(rows):
+    import pandas as pd
+    return pd.DataFrame({"query": [q for q, _ in rows], "value": [v for _, v in rows]})
+
+
+def test_related_egy_referer_es_parse():
+    tr = _FakeTr({"benzin": {"top": _df([("benzin ár", 100)]), "rising": _df([("ársapka", "Breakout")])}})
+    out = kp.related_egy(_FakeKliens(tr), "benzin", _Cfg(), timeframe="today 3-m")
+    assert out["top"] == [{"query": "benzin ár", "value": 100}]
+    assert tr.hivott[0][3] == {"referer": "https://www.google.com/"}   # referer-header átadva
+    assert tr.hivott[0][1] == "HU" and tr.hivott[0][2] == "today 3-m"
+
+
+def test_related_egy_soft_fail():
+    tr = _FakeTr({"x": RuntimeError("kvóta")})
+    assert kp.related_egy(_FakeKliens(tr), "x", _Cfg()) is None     # nem dob, None
+
+
+def test_gyujt_merge_lekerdezve_es_retencio(tmp_path):
+    _nap(tmp_path, "2026-10-07", [("benzin", 90), ("rezsi", 50)])
+    tr = _FakeTr({"benzin": {"top": _df([("benzin ár", 100)]), "rising": _df([])},
+                  "rezsi": {"top": _df([("rezsi csökkentés", 80)]), "rising": _df([])}})
+    most = datetime(2026, 10, 7, 21, tzinfo=timezone.utc)
+    out = kp.gyujt(str(tmp_path), _FakeKliens(tr), _Cfg(), most, cap=5, retencio=30)
+    kif = {k["kifejezes"]: k for k in out["kifejezesek"]}
+    assert "benzin" in kif and kif["benzin"]["lekerdezve"] == most.isoformat()
+    assert kif["benzin"]["volumen"] == 90 and kif["benzin"]["top"][0]["query"] == "benzin ár"
+    assert out["frissitve"] == most.isoformat()
+
+
+def test_gyujt_soft_fail_kihagy(tmp_path):
+    _nap(tmp_path, "2026-10-07", [("benzin", 90)])
+    tr = _FakeTr({"benzin": RuntimeError("kvóta")})
+    out = kp.gyujt(str(tmp_path), _FakeKliens(tr), _Cfg(), datetime(2026, 10, 7, 21, tzinfo=timezone.utc))
+    assert out["kifejezesek"] == []     # soft-fail → nincs bejegyzés, de nem dob
+
+
+def test_kapcsolodo_ir(tmp_path):
+    p = kp.kapcsolodo_ir(str(tmp_path), {"frissitve": "x", "kifejezesek": []})
+    assert Path(p).exists() and json.loads(Path(p).read_text(encoding="utf-8"))["frissitve"] == "x"

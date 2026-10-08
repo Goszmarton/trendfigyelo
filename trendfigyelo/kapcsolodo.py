@@ -83,3 +83,43 @@ def jeloltek(docs_data, meglevo, most, cap=CAP, staleness_nap=STALENESS_NAP, nap
     jel = [(k, v) for k, v in vol.items() if k not in friss]
     jel.sort(key=lambda kv: (-kv[1], kv[0]))
     return jel[:cap]
+
+
+def related_egy(kliens, kif, config, timeframe=TIMEFRAME):
+    """Egy kifejezés related_queries-e a Kliens throttle-jén, KÖTELEZŐ referer-headerrel.
+    SOFT-FAIL: kvóta/429/parszolási hiba → None (kihagyva + FIGYELEM), a job NEM dől el."""
+    try:
+        r = kliens.hivas(AG, kliens.tr.related_queries, kif,
+                         geo=config.geo, timeframe=timeframe, headers=REFERER)
+    except Exception as e:   # noqa: BLE001 — soft-fail: szigorú related-kvóta/429/egyéb
+        _log.warning("FIGYELEM: a kapcsolódó keresések kimaradtak (%s): %s", kif, e)
+        return None
+    return _parse_related(r)
+
+
+def _betolt(docs_data):
+    try:
+        return json.loads((Path(docs_data) / "kapcsolodo.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+def gyujt(docs_data, kliens, config, most, cap=CAP, timeframe=TIMEFRAME,
+          staleness_nap=STALENESS_NAP, retencio=RETENCIO):
+    """A felkapott jelöltekre (jeloltek) related_queries-t gyűjt (soft-fail per szó), bemergeli a
+    meglévő kapcsolodo.json-ba (lekerdezve=most), lekerdezve szerint rendez + retencio-ra vág."""
+    adat = _betolt(docs_data)
+    bejegyzesek = {k["kifejezes"]: k for k in (adat.get("kifejezesek") or [])}
+    meglevo_lek = {k: v.get("lekerdezve") for k, v in bejegyzesek.items()}
+    for kif, vol in jeloltek(docs_data, meglevo_lek, most, cap, staleness_nap):
+        res = related_egy(kliens, kif, config, timeframe)
+        if res is None:
+            continue
+        bejegyzesek[kif] = {"kifejezes": kif, "lekerdezve": most.isoformat(),
+                            "volumen": vol, "top": res["top"], "rising": res["rising"]}
+    lista = sorted(bejegyzesek.values(), key=lambda k: k.get("lekerdezve") or "", reverse=True)[:retencio]
+    return {"frissitve": most.isoformat(), "kifejezesek": lista}
+
+
+def kapcsolodo_ir(docs_data, adat):
+    return json_export._ir_json(Path(docs_data) / "kapcsolodo.json", adat)
