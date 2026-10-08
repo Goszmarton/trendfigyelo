@@ -103,6 +103,14 @@ def test_rendszer_prompt_grounded_miert():
     assert "okot, magyarázatot, hátteret akkor SEM találsz ki" in p
 
 
+def test_rendszer_prompt_szigoru_szo_hir_parositas():
+    # a szó↔hír 1:1 párosítás erősítése: tilos a kereszt-társítás és a csoport-szennyezés,
+    # bizonytalanságnál inkább nincs ok (mindkét prompt hordozza)
+    for p in (elemzo.RENDSZER_PROMPT, elemzo._RENDSZER_PROMPT_REGGEL):
+        assert "nincs kereszt-társítás" in p
+        assert "egy szó híre nem terjed" in p
+
+
 def test_rendszer_prompt_teljesebb_lefedettseg():
     assert "MINDEN követett kulcsszó legalább egyszer" in elemzo.RENDSZER_PROMPT
 
