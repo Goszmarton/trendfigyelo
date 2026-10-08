@@ -452,3 +452,14 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 .idosor-szegmens-valto, .felkapott-szegmens-valto { display: flex; gap: .5rem; margin: .25rem 0 .75rem; flex-wrap: wrap; }
 .idosor-szegmens-valto button, .felkapott-szegmens-valto button { padding: .25rem .75rem; border: 1px solid #ccc; border-radius: 999px; background: #fff; cursor: pointer; }
 .idosor-szegmens-valto button[aria-pressed="true"], .felkapott-szegmens-valto button[aria-pressed="true"] { background: #3366cc; color: #fff; border-color: #3366cc; }
+
+.elemzes-tldr {
+  border: 1px solid #d7e0f2; border-left: 4px solid #3366cc; border-radius: 10px;
+  background: #f5f8fe; box-shadow: 0 2px 8px rgba(0,0,0,.07);
+  padding: .4rem 1.1rem 1rem; margin: 0 0 1.5rem;
+}
+.elemzes-tldr h2 { margin: .5rem 0 .2rem; }
+.elemzes-tldr h3 { font-size: .9rem; margin: .7rem 0 .2rem; color: #2a52a0; }
+.elemzes-tldr .tldr-lista { margin: .1rem 0 .3rem; padding-left: 1.2rem; }
+.elemzes-tldr .tldr-lista li { margin: .15rem 0; }
+.elemzes-tldr .tldr-proza { margin: .1rem 0 .3rem; }

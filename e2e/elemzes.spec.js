@@ -271,3 +271,50 @@ test('Naptár „Havi" jelölő: az utolsó napon NAPI ADAT NÉLKÜL (letiltott 
   await jel.click();
   await page.waitForURL(/havi\.html\?honap=2026-09/);                     // a letiltott nap ellenére navigál
 });
+
+test("TL;DR: van_tldr=true → 'Lényeg' doboz a riport ELEJÉN, a részekkel; üres rész kimarad", async ({ page }) => {
+  const A = Object.assign({}, FIXTURE, { tldr: {
+    van_tldr: true,
+    fo_valtozasok: ["A keresések ma élénkebbek a szokásosnál."],
+    kiemelt_ugyek: ["Benzin – a szokásosnál magasabb, 3 napja tart.", "Tüntetés – esemény-kiugrás."],
+    visszatero_temak: "időjárás, közlekedés",
+    intenzivebb_keresesbe: "üzemanyagár",
+    informaciohiany: "",
+  }});
+  await page.route("**/data/elemzes.json", r => r.fulfill({ json: A }));
+  await page.route("**/data/elemzesek/index.json", r => r.fulfill({ status: 404, body: "" }));
+  await page.goto("/elemzes.html");
+  const doboz = page.locator("#elemzes-tldr");
+  await expect(doboz).toHaveCount(1);
+  await expect(doboz).toContainText("Lényeg");
+  await expect(doboz).toContainText("A keresések ma élénkebbek");
+  await expect(doboz).toContainText("Benzin");
+  await expect(doboz).toContainText("időjárás");
+  await expect(doboz).toContainText("üzemanyagár");
+  await expect(doboz).not.toContainText("Információhiány");    // üres rész kimarad
+  const elotte = await page.evaluate(() => {
+    const d = document.querySelector("#elemzes-tldr");
+    const seg = document.querySelector(".elemzes-szegmens");
+    return !!(d && seg && (d.compareDocumentPosition(seg) & Node.DOCUMENT_POSITION_FOLLOWING));
+  });
+  expect(elotte).toBe(true);
+});
+
+test("TL;DR: van_tldr=false → NINCS 'Lényeg' doboz (csendes nap)", async ({ page }) => {
+  const A = Object.assign({}, FIXTURE, { tldr: {
+    van_tldr: false, fo_valtozasok: [], kiemelt_ugyek: [],
+    visszatero_temak: "", intenzivebb_keresesbe: "", informaciohiany: "",
+  }});
+  await page.route("**/data/elemzes.json", r => r.fulfill({ json: A }));
+  await page.route("**/data/elemzesek/index.json", r => r.fulfill({ status: 404, body: "" }));
+  await page.goto("/elemzes.html");
+  await expect(page.locator("#elemzes-tldr")).toHaveCount(0);
+});
+
+test("TL;DR: a reggeli riportban (nincs tldr) NINCS doboz", async ({ page }) => {
+  const A = Object.assign({}, FIXTURE, { mode: "reggel" });
+  await page.route("**/data/elemzes.json", r => r.fulfill({ json: A }));
+  await page.route("**/data/elemzesek/index.json", r => r.fulfill({ status: 404, body: "" }));
+  await page.goto("/elemzes.html");
+  await expect(page.locator("#elemzes-tldr")).toHaveCount(0);
+});

@@ -77,6 +77,37 @@ function youtube_szegmens(yt) {
   return box;
 }
 
+// TL;DR („Lényeg") kiemelt doboz a riport elején — CSAK ha van_tldr. Strukturált (NEM folyó-próza).
+function tldr_blokk(tldr) {
+  if (!tldr || !tldr.van_tldr) return null;
+  const box = document.createElement("section");
+  box.id = "elemzes-tldr";
+  box.className = "elemzes-tldr";
+  const h = document.createElement("h2");
+  h.textContent = "Lényeg";
+  box.appendChild(h);
+  function lista_resz(cim, tomb) {
+    const arr = (tomb || []).filter(Boolean);
+    if (!arr.length) return;
+    const h3 = document.createElement("h3"); h3.textContent = cim; box.appendChild(h3);
+    const ul = document.createElement("ul"); ul.className = "tldr-lista";
+    arr.forEach(function (s) { const li = document.createElement("li"); li.textContent = s; ul.appendChild(li); });
+    box.appendChild(ul);
+  }
+  function proza_resz(cim, szoveg) {
+    const s = (szoveg || "").trim();
+    if (!s) return;
+    const h3 = document.createElement("h3"); h3.textContent = cim; box.appendChild(h3);
+    const p = document.createElement("p"); p.className = "tldr-proza"; p.textContent = s; box.appendChild(p);
+  }
+  lista_resz("Fő változások", tldr.fo_valtozasok);
+  lista_resz("Kiemelt ügyek", tldr.kiemelt_ugyek);
+  proza_resz("Visszatérő témák", tldr.visszatero_temak);
+  proza_resz("Érdemes figyelni – intenzívebb keresés", tldr.intenzivebb_keresesbe);
+  proza_resz("Információhiány, vizsgálandó kérdés", tldr.informaciohiany);
+  return box;
+}
+
 function rajzol(art) {
   const t = document.getElementById("elemzes-tartalom");
   t.textContent = "";
@@ -85,6 +116,8 @@ function rajzol(art) {
 
   const atug = havi_atugras_link(art.nap);
   if (atug) t.appendChild(atug);
+  const tldrBox = tldr_blokk(art.tldr);           // TL;DR a riport elején (csak este + van_tldr)
+  if (tldrBox) t.appendChild(tldrBox);
 
   t.appendChild(szegmens_cim("Google keresések napi elemzése"));
 
