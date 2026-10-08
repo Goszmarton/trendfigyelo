@@ -23,23 +23,23 @@
   <main id="adatokrol">
     <h2 class="adat-csoport">Google Trend adatok</h2>
     <section class="adat-doboz">
-      <p><strong>Honnan?</strong> Minden adat a Google Trends nyilvános szolgáltatásából származik, kizárólag Magyarországra (<code>geo=HU</code>). Kétféle dolgot mutatunk: a Google <strong>aznap felkapott kereséseit</strong>, és <strong>13 általunk figyelt kulcsszó</strong> keresési érdeklődését.</p>
-      <p><strong>Mikor kérjük le?</strong> Naponta egyszer, automatikusan: 19:07 UTC-kor (kb. 21:07 nyári / 20:07 téli budapesti idő). Egy futás néhány percig tart.</p>
+      <p><strong>Honnan?</strong> Minden adat a Google Trends nyilvános szolgáltatásából származik, kizárólag Magyarországra (<code>geo=HU</code>). Kétféle dolgot mutatunk: a Google <strong>aznap felkapott kereséseit</strong>, és <strong>28 általunk figyelt kulcsszó</strong> keresési érdeklődését.</p>
+      <p><strong>Mikor kérjük le?</strong> Naponta kétszer, automatikusan: <strong>reggel 9:00</strong> és <strong>este 21:00</strong> (budapesti idő) körül. Egy futás néhány percig tart.</p>
     </section>
 
     <section class="adat-doboz">
       <h2>Mi a kulcsszó?</h2>
-      <p>A 13 figyelt keresőszó (pl. <em>állás</em>, <em>albérlet</em>, <em>benzin</em>, <em>tüntetés</em>), kategóriákba (munkaerőpiac, lakhatás, fogyasztás, egészség, …) sorolva. Ezekre naponta lekérjük, mennyire keresnek rájuk Magyarországon.</p>
+      <p>A 28 figyelt keresőszó (pl. <em>állás</em>, <em>albérlet</em>, <em>benzin</em>, <em>tüntetés</em>, <em>infláció</em>, <em>rezsi</em>), kategóriákba (munkaerőpiac, lakhatás, fogyasztás, egészség, …) sorolva. Ezekre naponta lekérjük, mennyire keresnek rájuk Magyarországon.</p>
     </section>
 
     <section class="adat-doboz">
       <h2>Mik a napi felkapott szavak?</h2>
-      <p>A Google által aznap <em>felkapottként</em> jelölt keresések listája - <strong>nem</strong> a mi 13 szavunk, hanem a Google saját napi trendlistája. Ezt <strong>naponta kétszer</strong> mentjük el – <strong>reggel 9:00-kor</strong> és <strong>este 21:00-kor</strong> (budapesti idő) –, és a két pillanatképet külön mutatjuk; a „Heti felkapott keresések" blokk ezekből mutat napi bontást.</p>
+      <p>A Google által aznap <em>felkapottként</em> jelölt keresések listája - <strong>nem</strong> a mi 28 szavunk, hanem a Google saját napi trendlistája. Ezt <strong>naponta kétszer</strong> mentjük el – <strong>reggel 9:00-kor</strong> és <strong>este 21:00-kor</strong> (budapesti idő) –, és a két pillanatképet külön mutatjuk; a „Heti felkapott keresések" blokk ezekből mutat napi bontást.</p>
     </section>
 
     <section class="adat-doboz">
       <h2>Órás és hosszabb sorozatok</h2>
-      <p>Minden figyelt kulcsszóra egy <strong>7 napos, órás felbontású</strong> ablakot kérünk le (<code>now 7-d</code>) - ez a friss „1 hét" nézet, minden szónál naprakész. A hosszabb nézetekhez külön <strong>napi (3 hónap)</strong> és <strong>heti (12 hónap)</strong> sorozatot is gyűjtünk. A Google hívás-korlátja miatt ezekből naponta csak <strong>2 szó</strong> frissül (a legrégebben frissítettek előre), így egy szó hosszú sorozata kb. 11 naponta újul meg.</p>
+      <p>Minden figyelt kulcsszóra egy <strong>7 napos, órás felbontású</strong> ablakot kérünk le (<code>now 7-d</code>) - ez a friss „1 hét" nézet, minden szónál naprakész. A hosszabb nézetekhez külön <strong>napi (3 hónap)</strong> és <strong>heti (12 hónap)</strong> sorozatot is gyűjtünk. A Google hívás-korlátja miatt ezeket a hosszabb sorozatokat <strong>körbeforgó rendszerben</strong> frissítjük – mindig a legrégebben frissítetteket véve előre –, így minden szó hosszú sorozata néhány naponta megújul.</p>
     </section>
 
     <section class="adat-doboz">
@@ -111,7 +111,7 @@
       <p>A Teljes nézet szavanként a <strong>leghosszabb</strong> érvényes időszakot mutatja - ez sokszor a heti (12 hónapos) sorozat. Két <strong>szándékos</strong> ok miatt ennek a vége nem a mai nap:</p>
       <ol>
         <li><strong>Heti sorozat → az utolsó teljes hét.</strong> Egy heti sorozat nem mutathat részleges, még folyamatban lévő hetet, ezért a legfrissebb heti végpont is ~4 nappal a mai nap előtt van (az aktuális, le nem zárt hét kimarad).</li>
-        <li><strong>Rotációs frissítés (2 szó/nap).</strong> A hívás-korlát miatt a hosszú sorozatok rotációban frissülnek; egy szó heti adata kb. 11 naponta újul meg. Amelyik szót régebben gyűjtöttük, annak a vége régebbi - de <strong>frissülni fog</strong> (a legrégebbieket priorizáljuk).</li>
+        <li><strong>Rotációs frissítés.</strong> A hívás-korlát miatt a hosszú sorozatok körbeforgó rendszerben frissülnek; egy szó hosszú adata néhány naponta megújul. Amelyik szót régebben gyűjtöttük, annak a vége régebbi - de <strong>frissülni fog</strong> (a legrégebbieket priorizáljuk).</li>
       </ol>
       <p class="adat-magyarazat">A <strong>friss napi adat megvan</strong>: minden szónak van naprakész „1 hét" (órás) nézete. A Teljes nézet csak azért mutathat régebbi véget, mert a leghosszabb (heti/napi) időszakot választja.</p>
     </section>
@@ -158,7 +158,7 @@
 
     <section class="adat-doboz">
       <h2>Mit elemez, és mikor fut?</h2>
-      <p>Külön veszi a <strong>13 figyelt kulcsszót</strong> (a mai kép, a teljes kép és az „1 hét" bontásban) és külön a <strong>Google napi felkapott kereséseit</strong> (napi elemzés + heti összesítés); végül összeveti az előző nappal („mi változott ma?").</p>
+      <p>Külön veszi a <strong>28 figyelt kulcsszót</strong> (a mai kép, a teljes kép és az „1 hét" bontásban) és külön a <strong>Google napi felkapott kereséseit</strong> (napi elemzés + heti összesítés); végül összeveti az előző nappal („mi változott ma?").</p>
       <p>Ha aznap van friss <strong>YouTube-adat</strong>, az elemzés egy második, nevesített szegmenssel bővül: a <strong>YouTube keresések napi elemzése</strong> a <strong>12 figyelt YouTube-szó</strong> mai értéke és átlaga alapján a videó-igény napi képéről, teljes pályájáról és heti mozgásáról ír. Amikor nincs aznapi YouTube-adat, ez a szegmens egyszerűen elmarad, a Google-elemzés pedig változatlan.</p>
       <p>Minden nap <strong>automatikusan</strong> fut, közvetlenül a napi adatgyűjtés után. Ha az AI-hívás bármiért nem sikerül, <strong>az előző napi elemzés változatlanul megmarad</strong> - sosem jelenik meg félkész szöveg.</p>
       <p class="adat-magyarazat">Minden nap elemzése elmentődik; az „Elemzés" fül naptárából bármelyik korábbi nap <strong>visszalapozható</strong>.</p>

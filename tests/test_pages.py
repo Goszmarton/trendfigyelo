@@ -416,6 +416,19 @@ def test_vendor_valos_docs_ma_zold():
     assert vendor_integritas_ellenorzes(DOCS / "vendor") == []
 
 
+def test_adatokrol_kulcsszo_szam_egyezik_a_configgal():
+    # az Infó-oldal a VALÓS figyelt kulcsszó-számot írja (ne avuljon el, mint a 13→28-nál):
+    # a számot a configból származtatjuk, így új szó hozzáadásakor a teszt figyelmeztet az Infó-frissítésre
+    import yaml
+    c = yaml.safe_load((GYOKER / "config.yaml").read_text(encoding="utf-8"))
+    db = len(c["kulcsszavak"])
+    html = (DOCS / "adatokrol.html").read_text(encoding="utf-8")
+    assert f"{db} általunk figyelt kulcsszó" in html
+    assert f"{db} figyelt keresőszó" in html
+    assert f"{db} figyelt kulcsszót" in html
+    assert "13 figyelt" not in html                    # az elavult szám már ne szerepeljen
+
+
 def test_adatokrol_predikcio_uj_viselkedesek():
     # az infó-oldal dokumentálja a rövid-horizont ráközelítést ÉS az órás-only hosszú táv "nem becsülhető"-t
     szoveg = (DOCS / "adatokrol.html").read_text(encoding="utf-8")
