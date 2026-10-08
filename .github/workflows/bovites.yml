@@ -1,0 +1,91 @@
+# .github/workflows/bovites.yml
+name: Bővítés ügy-elemzés
+
+on:
+  workflow_run:
+    workflows: ["Napi trendgyűjtés"]   # az esti teljes gyűjtés után
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      veg_nap:
+        description: "Kézi teszt: vég-nap (YYYY-MM-DD) újragenerálása; üres = az őr dönt"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bovites-futtatas
+  cancel-in-progress: false
+
+jobs:
+  bovites:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (a friss, épp commitolt adat)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Python beállítása
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Az őr a függőség-telepítés ELŐTT: CSAK stdlib (bovites_orzo/seged).
+      - name: "Napi idempotencia-őr (a generálandó vég-nap, vagy üres = skip)"
+        id: guard
+        shell: bash
+        env:
+          KEZI_INPUT: ${{ github.event.inputs.veg_nap }}
+        run: |
+          KEZI="$KEZI_INPUT"
+          if [ -n "$KEZI" ]; then
+            echo "Kézi felülbírálás: $KEZI"
+            echo "veg_nap=$KEZI" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          VEG="$(python -m trendfigyelo.bovites_orzo docs/data)"
+          echo "Őr szerint generálandó vég-nap: '$VEG' (üres = ma nincs teendő)"
+          echo "veg_nap=$VEG" >> "$GITHUB_OUTPUT"
+
+      - name: Függőségek telepítése (csak generáláskor)
+        if: steps.guard.outputs.veg_nap != ''
+        run: pip install -r requirements.txt
+
+      - name: Ügy-elemzés generálása
+        if: steps.guard.outputs.veg_nap != ''
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          VEG_NAP: ${{ steps.guard.outputs.veg_nap }}
+        run: |
+          set -o pipefail
+          python bovites.py "$VEG_NAP" 2>&1 | tee bovites.log
+
+      - name: Változások commitolása (CSAK az ugyek.json, KÜLÖN commit)
+        if: always() && github.ref == 'refs/heads/main' && steps.guard.outputs.veg_nap != ''
+        env:
+          VEG_NAP: ${{ steps.guard.outputs.veg_nap }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase --autostash || true
+          git add docs/data/ugyek.json
+          if git diff --staged --quiet; then
+            echo "Nincs ügy-elemzés-változás — nincs commit."
+          else
+            git commit -m "adat: ügy-elemzés ($VEG_NAP, $(date -u +%Y-%m-%dT%H:%MZ))"
+            git push
+          fi
+
+      - name: Artefakt (a log + az ugyek.json — mindig)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bovites-${{ github.run_id }}
+          retention-days: 14
+          path: |
+            bovites.log
+            docs/data/ugyek.json
