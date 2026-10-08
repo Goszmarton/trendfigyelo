@@ -463,3 +463,19 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 .elemzes-tldr .tldr-lista { margin: .1rem 0 .3rem; padding-left: 1.2rem; }
 .elemzes-tldr .tldr-lista li { margin: .15rem 0; }
 .elemzes-tldr .tldr-proza { margin: .1rem 0 .3rem; }
+
+/* Heti értékelés fül */
+#heti { display: flex; gap: 1rem; align-items: flex-start; flex-wrap: wrap; }
+#heti-het-panel { flex: 0 0 160px; display: flex; flex-direction: column; gap: 0.35rem; }
+#heti-tartalom { flex: 1 1 320px; min-width: 0; }
+.heti-het-gomb { text-align: left; padding: 0.4rem 0.6rem; border: 1px solid #c9d3df; border-radius: 8px;
+  background: #fff; cursor: pointer; }
+.heti-het-gomb[aria-pressed="true"] { background: #2a78d6; color: #fff; border-color: #2a78d6; }
+.heti-lista li { margin: 0.2rem 0; }
+.heti-figyelem-chart-doboz { margin-top: 0.8rem; }
+.heti-figyelem-legenda { display: flex; gap: 1.2rem; font-size: 0.9rem; margin-bottom: 0.4rem; flex-wrap: wrap; }
+.heti-leg-pont { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: middle;
+  margin-right: 4px; }
+.heti-chart-vaszon { position: relative; }
+.heti-chart-adatlista { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+@media (max-width: 640px) { #heti-het-panel { flex-basis: 100%; flex-direction: row; flex-wrap: wrap; } }
