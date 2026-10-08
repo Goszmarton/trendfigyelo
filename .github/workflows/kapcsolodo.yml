@@ -1,0 +1,82 @@
+# .github/workflows/kapcsolodo.yml
+name: Kapcsolódó keresések
+
+on:
+  workflow_run:
+    workflows: ["Napi trendgyűjtés"]   # az esti teljes felkapott után
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      cap:
+        description: "Kézi teszt: kifejezés/futás cap (üres = alap 6)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: kapcsolodo-futtatas
+  cancel-in-progress: false
+
+jobs:
+  kapcsolodo:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (a friss, épp commitolt adat)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Python beállítása
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Az őr a függőség-telepítés ELŐTT: CSAK stdlib (kapcsolodo_orzo/seged).
+      - name: "Napi egyszer-őr (fut-e ma; üres = skip)"
+        id: guard
+        shell: bash
+        run: |
+          NAP="$(python -m trendfigyelo.kapcsolodo_orzo docs/data)"
+          echo "Őr: '$NAP' (üres = ma már futott)"
+          echo "nap=$NAP" >> "$GITHUB_OUTPUT"
+
+      - name: Függőségek telepítése (csak futáskor)
+        if: steps.guard.outputs.nap != ''
+        run: pip install -r requirements.txt
+
+      - name: Kapcsolódó keresések gyűjtése
+        if: steps.guard.outputs.nap != ''
+        shell: bash
+        env:
+          CAP_INPUT: ${{ github.event.inputs.cap }}
+        run: |
+          set -o pipefail
+          if [ -n "$CAP_INPUT" ]; then CAPARG="--cap $CAP_INPUT"; else CAPARG=""; fi
+          python kapcsolodo.py $CAPARG 2>&1 | tee kapcsolodo.log
+
+      - name: Változások commitolása (CSAK a kapcsolodo.json, KÜLÖN commit)
+        if: always() && github.ref == 'refs/heads/main' && steps.guard.outputs.nap != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase --autostash || true
+          git add docs/data/kapcsolodo.json
+          if git diff --staged --quiet; then
+            echo "Nincs kapcsolódó-keresés változás — nincs commit."
+          else
+            git commit -m "adat: kapcsolódó keresések ($(date -u +%Y-%m-%dT%H:%MZ))"
+            git push
+          fi
+
+      - name: Artefakt (log + kapcsolodo.json — mindig)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kapcsolodo-${{ github.run_id }}
+          retention-days: 14
+          path: |
+            kapcsolodo.log
+            docs/data/kapcsolodo.json
