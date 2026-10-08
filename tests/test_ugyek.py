@@ -144,3 +144,54 @@ def test_korpusz_rendezes_napok_szama_elsodleges(tmp_path):
     k = u.ugy_korpusz(str(tmp_path), VEG, ablak_nap=30)
     # A (3 nap) elol; utana 1 napos: elso_nap szerint (10-01: B,C,D kifejezes szerint), majd E
     assert [c["kifejezes"] for c in k["kifejezesek"]] == ["A", "B", "C", "D", "E"]
+
+
+def test_valasz_sema_ugyek_enum_szakpolitika():
+    s = u._valasz_sema()
+    assert s["additionalProperties"] is False and s["required"] == ["ugyek"]
+    item = s["properties"]["ugyek"]["items"]
+    assert set(item["required"]) == {"nev", "kifejezesek", "szakpolitika", "osszefoglalo"}
+    assert item["additionalProperties"] is False
+    assert set(item["properties"]["szakpolitika"]["enum"]) == u.szakpolitika.SZAKPOLITIKA_SLUGOK
+
+
+def test_rendszer_prompt_grounding():
+    p = u.RENDSZER_PROMPT_UGYEK
+    assert "ügy" in p.lower() and ("GROUNDING" in p or "nem talál" in p.lower())
+    assert "csoportos" in p.lower()
+
+
+class _Stream:
+    def __init__(self, v): self._v = v
+    def __enter__(self): return self
+    def __exit__(self, *a): return False
+    def get_final_message(self):
+        import json as _j
+        b = type("B", (), {"type": "text", "text": _j.dumps(self._v, ensure_ascii=False)})()
+        return type("M", (), {"content": [b]})()
+
+
+class _Sdk:
+    def __init__(self, v): self.messages = self; self._v = v; self.n = 0
+    def stream(self, **kw): self.n += 1; return _Stream(self._v)
+
+
+def _valasz():
+    return {"ugyek": [{"nev": "Üzemanyagárak", "kifejezesek": ["benzin ára", "gázolaj"],
+                       "szakpolitika": "energia_rezsi", "osszefoglalo": "x"}]}
+
+
+def test_ugy_elemez_mock():
+    out = u.ugy_elemez({"kifejezesek": []}, kliens=u._UgyKliens(sdk=_Sdk(_valasz())))
+    assert out["ugyek"][0]["nev"] == "Üzemanyagárak"
+
+
+def test_ugy_elemez_bounded_retry():
+    class _Buko:
+        n = 0
+        def uzenet(self, *a, **k):
+            self.n += 1
+            if self.n < 2:
+                raise RuntimeError("int")
+            return _valasz()
+    assert u.ugy_elemez({}, kliens=_Buko(), alvo=lambda s: None)["ugyek"][0]["szakpolitika"] == "energia_rezsi"

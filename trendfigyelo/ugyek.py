@@ -107,3 +107,92 @@ def ugy_korpusz(docs_data, veg_nap, ablak_nap=30):
         kifejezesek.append(kif)
     kifejezesek.sort(key=lambda c: (-c["napok_szama"], c["elso_nap"], c["kifejezes"]))
     return {"ablak": {"kezdet": kezdet, "veg": veg_nap, "nap": ablak_nap}, "kifejezesek": kifejezesek}
+
+
+def _valasz_sema():
+    """Az ügy-csoportosítás strukturált sémája: ügyenként név + a korpuszból csoportosított
+    kifejezések + szakpolitika (enum) + rövid összefoglaló. additionalProperties:False."""
+    return {
+        "type": "object", "additionalProperties": False, "required": ["ugyek"],
+        "properties": {"ugyek": {"type": "array", "items": {
+            "type": "object", "additionalProperties": False,
+            "required": ["nev", "kifejezesek", "szakpolitika", "osszefoglalo"],
+            "properties": {
+                "nev": {"type": "string"},
+                "kifejezesek": {"type": "array", "items": {"type": "string"}},
+                "szakpolitika": {"type": "string", "enum": sorted(szakpolitika.SZAKPOLITIKA_SLUGOK)},
+                "osszefoglalo": {"type": "string"},
+            }}}},
+    }
+
+
+RENDSZER_PROMPT_UGYEK = (
+    "Közügy-elemző vagy egy magyar Google Trends figyelő oldalhoz. A bemeneted egy 30 napos korpusz: "
+    "a felkapott (trendelt) magyar keresőkifejezések, mindegyikhez determinista metrikákkal (hány napon "
+    "volt jelen, mikor tűnt fel, az életút-besorolása és a mozgása, a Google-témacímkék, pár hír-cím). "
+    "A feladatod a kifejezéseket JELENTÉS szerint ÜGYEKbe CSOPORTOSÍTANI — egy ügy ugyanazon közügy/téma "
+    "köré gyűlő kifejezések halmaza (például ugyanannak az árnak vagy intézkedésnek a különböző "
+    "megfogalmazásai). "
+    "SZABÁLYOK, kivétel nélkül: "
+    "(1) GROUNDING: kizárólag a korpuszban SZEREPLŐ kifejezéseket csoportosítod; új kifejezést SOHA nem "
+    "találsz ki, és egy kifejezés legfeljebb EGY ügybe kerül. "
+    "(2) Minden ügynek adj rövid, beszédes magyar NEVET, 1-2 mondatos magyar ÖSSZEFOGLALÓT (grounded, a "
+    "korpusz adataiból), és sorold be a megadott szakpolitikai kategóriák (enum) EGYIKÉBE a jelentése "
+    "és a témacímkéi alapján. "
+    "(3) A prózába SOHA ne írj mezőnevet, JSON-t vagy technikai kulcsot; magyar, laikus olvasónak. "
+    "(4) Rövid „–” gondolatjel. Ne minden kifejezés legyen külön ügy — a valódi összetartozókat vond össze; "
+    "az egyedi, társíthatatlan kifejezés maradhat önálló ügy."
+)
+
+MODELL = "claude-opus-4-8"
+MAX_TOKENS_UGYEK = 128000     # a 30-napos korpusz nagy lehet; a havi (128000) mintája, streaming kötelező
+
+RETRY_PROBAK = 3
+RETRY_BACKOFF_MP = (5, 20, 60)
+
+
+class _UgyKliens:
+    """Streaming Claude-kliens strukturált kimenettel (a heti_ertekeles._HetiKliens mintája)."""
+
+    def __init__(self, sdk=None):
+        self._sdk = sdk
+
+    def _kliens(self):
+        if self._sdk is not None:
+            return self._sdk
+        import anthropic
+        return anthropic.Anthropic()
+
+    def uzenet(self, korpusz, modell):
+        kliens = self._kliens()
+        with kliens.messages.stream(
+            model=modell, max_tokens=MAX_TOKENS_UGYEK,
+            thinking={"type": "adaptive"},
+            output_config={"effort": "medium",
+                           "format": {"type": "json_schema", "schema": _valasz_sema()}},
+            system=RENDSZER_PROMPT_UGYEK,
+            messages=[{"role": "user", "content":
+                       "Csoportosítsd az alábbi korpusz kifejezéseit ügyekbe (JSON). Csak ebből dolgozz:\n"
+                       + json.dumps(korpusz, ensure_ascii=False)}],
+        ) as folyam:
+            valasz = folyam.get_final_message()
+        szoveg = next(b.text for b in valasz.content if b.type == "text")
+        return json.loads(szoveg)
+
+
+def ugy_elemez(korpusz, kliens=None, modell=MODELL, probak=RETRY_PROBAK,
+               backoff_mp=RETRY_BACKOFF_MP, alvo=None):
+    """Bounded-retry Claude-hívás (a heti_elemez mintája); csak az utolsó bukás propagál."""
+    kliens = kliens or _UgyKliens()
+    alvo = alvo if alvo is not None else time.sleep
+    utolso = None
+    for i in range(probak):
+        try:
+            return kliens.uzenet(korpusz, modell)
+        except Exception as e:   # noqa: BLE001 — intermittens API-hiba: bounded retry
+            utolso = e
+            if i + 1 < probak:
+                _log.warning("FIGYELEM: az ügy-elemzés elhasalt (%s); újrapróba %d/%d %d mp múlva.",
+                             e, i + 2, probak, backoff_mp[i])
+                alvo(backoff_mp[i])
+    raise utolso
