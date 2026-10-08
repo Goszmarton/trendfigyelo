@@ -880,7 +880,7 @@ test("idősor-legend: a bal #idosor-legend N kattintható elemet tartalmaz (data
   await expect(page.locator(`${I} .idosor-legend-elem`)).toHaveCount(0);   // a legend NEM a jobb (chart) dobozban van
 });
 
-test("idősor-legend: kattintásra az elem .kiemelt lesz + data-idosor-aktiv tükör; újrakatt törli (toggle)", async ({ page }) => {
+test("idősor-legend: MULTI-SELECT — kattintásra TÖBB elem is kiemelhető (toggle), mindegyik KÜLÖN színnel; a tükör a listát hordozza", async ({ page }) => {
   await mock(page, { legfrissebb: { top_trendek: MAI16 }, kategoriak: KAT_IDOSOR });
   await page.goto("/trendek.html");
   const bE = page.locator('#idosor-legend .idosor-legend-elem[data-kategoria="B"]');
@@ -889,13 +889,19 @@ test("idősor-legend: kattintásra az elem .kiemelt lesz + data-idosor-aktiv tü
   await expect(page.locator("#idosor-legend .idosor-legend-elem.kiemelt")).toHaveCount(1);
   await expect(page.locator("#idosor-legend .idosor-legend-elem").first()).toHaveClass(/kiemelt/);   // az első a kiemelt
   await expect(page.locator(I)).not.toHaveAttribute("data-idosor-aktiv", "");                         // van alap-kiválasztás
-  // katt B-re → B kiemelt, más nem; a tükör B
+  // katt B-re → MOST az első ÉS B is kiemelt (multi-select); a tükör tartalmazza B-t
   await bE.click();
   await expect(bE).toHaveClass(/kiemelt/);
-  await expect(page.locator("#idosor-legend .idosor-legend-elem.kiemelt")).toHaveCount(1);
-  await expect(page.locator(I)).toHaveAttribute("data-idosor-aktiv", "B");
-  // újra B → reset (toggle)
+  await expect(page.locator("#idosor-legend .idosor-legend-elem.kiemelt")).toHaveCount(2);            // első + B
+  await expect(page.locator(I)).toHaveAttribute("data-idosor-aktiv", /B/);                            // a tükör a listát hordozza
+  // a két kiemelt pötty KÜLÖN palette-színű
+  const szinek = await page.evaluate(function () {
+    const el = document.querySelectorAll("#idosor-legend .idosor-legend-elem.kiemelt .idosor-legend-pont");
+    return Array.prototype.map.call(el, function (p) { return getComputedStyle(p).backgroundColor; });
+  });
+  expect(new Set(szinek).size).toBe(2);                                                               // két különböző szín
+  // újra B → B kikapcsol, az első MARAD (nem reset-elte az egészet)
   await bE.click();
-  await expect(page.locator("#idosor-legend .idosor-legend-elem.kiemelt")).toHaveCount(0);
-  await expect(page.locator(I)).toHaveAttribute("data-idosor-aktiv", "");
+  await expect(bE).not.toHaveClass(/kiemelt/);
+  await expect(page.locator("#idosor-legend .idosor-legend-elem.kiemelt")).toHaveCount(1);
 });

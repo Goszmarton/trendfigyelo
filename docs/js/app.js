@@ -1617,10 +1617,14 @@ const ATTR_T = {
   idosor_chart_rendered: "data-idosor-chart-rendered", idosor_aktiv: "data-idosor-aktiv",  // Szelet 2
 };
 const OTHER_CIMKE = "Other";       // a Google gyűjtő-KATEGÓRIÁJA (van szűrő-gomb, szürke, utolsó)
-// kategória-idősor: minden vonal ALAPBÓL szürke; a kiválasztott KÉK (a többi chart szürke-kék palettája). Nincs
-// csiricsáré per-kategória szín (SZEMLE-döntés); a kiemelés a bar-chart aktív/tompított mintáját követi.
+// kategória-idősor: minden vonal ALAPBÓL szürke; EGY VAGY TÖBB kategória is kiemelhető (toggle), mindegyik
+// KÜLÖN színnel a validált kategorikus palettából (dataviz-skill, light-mód, CVD-biztos fix sorrend). A
+// szín a kiválasztási sorrend szerinti palette-slot; a legend (bal doboz) névvel+színes pöttyel azonosít
+// (ez a kontraszt-relief a világosabb hue-khoz). Nincs ciklizás a vonalstílusban; 8+ felett ismétlődhet a szín
+// (interaktív kiemelés, a legend akkor is azonosít — gyakorlatban <8 van kiválasztva).
 const IDOSOR_SZURKE = "#cccccc";
-const IDOSOR_KIEMELT = KATEGORIA_ALAP_SZIN;   // #3366cc — az app kék akcentusa
+const IDOSOR_PALETTA = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7", "#e34948"];
+function idosor_kateg_szin(idx) { return IDOSOR_PALETTA[idx % IDOSOR_PALETTA.length]; }
 const EGYEB_CIMKE = "egyéb";       // a besorolás HIÁNYA ([]/hiányzó mező) — NINCS szűrő-gomb
 const OSSZES_CIMKE = "Összes";
 const TREND_URES_SZOVEG = "Ma nem érkezett friss felkapott trend erre a napra.";
@@ -1634,7 +1638,8 @@ const TREND_NORMALIZALAS_SZOVEG = "A görbék magassága nem összemérhető: mi
 // Task 9: az eloszlás-chart NEM modul-globális többé — szegmensenként a konténeren (container._kchart), mert
 // két blokk (reggel/este) SAJÁT chart-példányt tart; a takarítás ezért a .trend-szegmens konténereken jár körbe.
 let idosor_chart = null;           // a kategória-idősor line-chart SAJÁT példánya (Szelet 2)
-let idosor_aktiv = "";             // a kiemelt (kék) kategória neve, vagy "" (mind szürke) — a bar aktív-mintája
+let idosor_aktivak = [];           // a kiemelt kategóriák neve (kiválasztási sorrend); [] = mind szürke
+let idosor_szin_slot = {};         // {kategoria: palette-slot} — STABIL szín: egy másik kikapcsolása NEM festi át a túlélőket
 let trend_chart_peldanyok = [];    // 8a: sparkline Chart-példányok TÖMBJE (MIN-TCP: NEM kifejezés-kulcsú — két
                                    // azonos kifejezésű trend különben felülírta egymást → árva Chart). KÜLÖN a
                                    // kulcsszó chart_peldanyok-tól. Csak destroy-all a rendeltetése (nincs kikeresés).
@@ -1771,14 +1776,15 @@ function trend_idosor_tukor_epit(idosor) {
   return adat;
 }
 
-// egy vonal stílusa az AKTÍV kiemelés függvényében (szürke alap / kék kiemelt / halvány tompított — a bar mintája).
+// egy vonal stílusa az AKTÍV kiválasztás függvényében: nincs kiválasztva → MIND szürke; kiválasztva →
+// a SAJÁT palette-színe (vastag, pontokkal, felül); a többi (ha van kiválasztás) → halvány tompított.
 function idosor_vonal_stilus(nev) {
-  if (!idosor_aktiv) return { szin: IDOSOR_SZURKE, vastag: 1.5, pont: 0, sorrend: 1 };   // alap: MIND szürke
-  if (nev === idosor_aktiv) return { szin: IDOSOR_KIEMELT, vastag: 2.5, pont: 2.5, sorrend: 0 };  // kiemelt: kék, felül
-  return { szin: "#e6e6e6", vastag: 1, pont: 0, sorrend: 2 };                            // tompított
+  if (!idosor_aktivak.length) return { szin: IDOSOR_SZURKE, vastag: 1.5, pont: 0, sorrend: 1 };   // alap: MIND szürke
+  if (nev in idosor_szin_slot) return { szin: idosor_kateg_szin(idosor_szin_slot[nev]), vastag: 2.5, pont: 2.5, sorrend: 0 };  // kiemelt: STABIL saját szín, felül
+  return { szin: "#e6e6e6", vastag: 1, pont: 0, sorrend: 2 };                                       // tompított
 }
 
-// az aktív kategória átszínezése (a count-ok/adatok VÁLTOZATLANOK — csak szín/vastagság/sorrend, mint a bar szinez).
+// a kiválasztott kategóriák átszínezése (a count-ok/adatok VÁLTOZATLANOK — csak szín/vastagság/sorrend).
 function idosor_szinez() {
   if (idosor_chart) {
     idosor_chart.data.datasets.forEach(function (ds) {
@@ -1789,19 +1795,31 @@ function idosor_szinez() {
     idosor_chart.update();
   }
   const blokk = document.getElementById("idosor-blokk");
-  if (blokk) blokk.setAttribute(ATTR_T.idosor_aktiv, idosor_aktiv);   // DOM-tükör az aktív állapotról (a SAJÁT szekción)
-  // a BAL HTML-legend aktív állapotának szinkronja: .kiemelt CSAK az aktív kategórián (kék pötty + kék szöveg)
+  if (blokk) blokk.setAttribute(ATTR_T.idosor_aktiv, idosor_aktivak.join("|"));   // DOM-tükör: a kiválasztott lista (| elválasztó)
+  // a BAL HTML-legend szinkronja: minden kiválasztott elem .kiemelt + a SAJÁT színe (pötty-háttér + szöveg) inline
   const legendEl = document.getElementById("idosor-legend");
   if (legendEl) {
     Array.prototype.forEach.call(legendEl.querySelectorAll("." + OSZT_T.idosor_legend_elem), function (b) {
-      const akt = idosor_aktiv !== "" && b.getAttribute(ATTR_T.kategoria) === idosor_aktiv;
+      const nev = b.getAttribute(ATTR_T.kategoria);
+      const akt = nev in idosor_szin_slot;
       b.classList.toggle(OSZT_T.kiemelt, akt);
+      const szin = akt ? idosor_kateg_szin(idosor_szin_slot[nev]) : "";
+      b.style.color = szin;                                                        // kiválasztott: saját színű szöveg
+      const pont = b.querySelector("." + OSZT_T.idosor_legend_pont);
+      if (pont) pont.style.backgroundColor = szin;                                 // kiválasztott: saját színű pötty
     });
   }
 }
 
+function _idosor_szabad_slot() {
+  const hasznalt = {}; idosor_aktivak.forEach(function (k) { hasznalt[idosor_szin_slot[k]] = true; });
+  let s = 0; while (hasznalt[s]) s++; return s;   // a legkisebb még nem foglalt palette-slot (stabil szín-kiosztás)
+}
 function idosor_aktiv_valt(nev) {
-  idosor_aktiv = (idosor_aktiv === (nev || "")) ? "" : (nev || "");   // ugyanarra kattintva reset (toggle)
+  if (!nev) { idosor_aktivak = []; idosor_szin_slot = {}; idosor_szinez(); return; }   // üres területre katt → mind töröl
+  const idx = idosor_aktivak.indexOf(nev);
+  if (idx >= 0) { idosor_aktivak.splice(idx, 1); delete idosor_szin_slot[nev]; }        // újrakatt → kikapcsol (a slot felszabadul)
+  else { idosor_szin_slot[nev] = _idosor_szabad_slot(); idosor_aktivak.push(nev); }     // új → a legkisebb szabad slot
   idosor_szinez();
 }
 
@@ -1810,8 +1828,10 @@ function idosor_aktiv_valt(nev) {
 function trend_idosor_chart_epit(canvas, idosor) {
   canvas.setAttribute(ATTR_T.idosor_chart_rendered, "true");   // DOM-szerződés akkor is, ha nincs Chart (a tükör a forrás)
   if (typeof Chart === "undefined") return;
-  // alap: az ELSŐ kategória KIEMELVE (kék), nem „mind szürke" — így rögtön olvasható egy görbe (user-kérés)
-  idosor_aktiv = (idosor.vonalak && idosor.vonalak[0] && idosor.vonalak[0].nev) || "";
+  // alap: az ELSŐ kategória KIEMELVE (az első palette-színnel), nem „mind szürke" — rögtön olvasható egy görbe (user-kérés)
+  const _elso = (idosor.vonalak && idosor.vonalak[0] && idosor.vonalak[0].nev) || "";
+  idosor_aktivak = _elso ? [_elso] : [];
+  idosor_szin_slot = _elso ? { [_elso]: 0 } : {};
   idosor_chart = new Chart(canvas, {
     type: "line",
     data: {
@@ -1914,7 +1934,7 @@ function idosor_blokk_render() {
 
   // idempotencia / re-render biztonság: a korábbi chart + generált elemek törlése (a statikus h2 MARAD)
   if (idosor_chart) { idosor_chart.destroy(); idosor_chart = null; }
-  idosor_aktiv = "";
+  idosor_aktivak = []; idosor_szin_slot = {};
   blokk.querySelectorAll("." + OSZT_T.idosor_chart_doboz + ", ." + OSZT_T.idosor_adat + ", ." + OSZT_T.idosor_magyarazat
     + ", .idosor-szegmens-valto, .idosor-info")
     .forEach(function (e) { e.remove(); });
@@ -1952,14 +1972,14 @@ function idosor_blokk_render() {
   const mag = document.createElement("p");
   mag.className = OSZT_T.idosor_magyarazat;
   mag.textContent = "A vonalak a Google Trends napi kategória-osztályozását követik – nem a mi besorolásunk "
-    + "(egy trend több kategóriába is eshet). A szürke vonalak közül kattintással emelhető ki egy kategória. "
+    + "(egy trend több kategóriába is eshet). A szürke vonalak közül kattintással EGY VAGY TÖBB kategória is kiemelhető – mindegyik külön színnel; újrakattintásra kikapcsol. "
     + "A kategória-idősor " + (idosor.napok[0] || "") + "-től érhető el – a korábbi napokon nincs kategória-adat.";
   blokk.appendChild(mag);
 
   legendEl.appendChild(idosor_legend_epit(idosor));   // BAL doboz: HTML-legend
   blokk.setAttribute(ATTR_T.idosor_aktiv, "");        // pre-build kezdőállapot (a chart-build után az idosor_szinez felülírja)
 
-  trend_idosor_chart_epit(canvas, idosor);   // a canvas már a jobb dobozban van (itt áll be idosor_aktiv = az ELSŐ kategória)
+  trend_idosor_chart_epit(canvas, idosor);   // a canvas már a jobb dobozban van (itt áll be az ELSŐ kategória kiválasztottra)
   idosor_szinez();   // az alap (első kategória) tükrözése a DOM-mirror (data-idosor-aktiv) + a bal legend (.kiemelt) felé
 }
 
