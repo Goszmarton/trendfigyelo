@@ -250,3 +250,37 @@ def test_ugy_generalas_fail_soft(tmp_path, monkeypatch):
         def uzenet(self, *a, **k): raise RuntimeError("tartós")
     assert u.ugy_generalas(str(tmp_path), "2026-10-07", "2026-10-08T07:00:00+00:00", kliens=_Buko()) is None
     assert not (tmp_path / "ugyek.json").exists()
+
+
+def test_ugy_osszegez_determinista_ujraszamolas_nem_az_llm_ertek():
+    korpusz = {"ablak": {"kezdet": "2026-09-08", "veg": "2026-10-07", "nap": 30}, "kifejezesek": [
+        {"kifejezes": "a", "napok": ["2026-10-05", "2026-10-06"],
+         "volumen_sor": [{"nap": "2026-10-05", "max_volumen": 5}, {"nap": "2026-10-06", "max_volumen": 10}]},
+        {"kifejezes": "b", "napok": ["2026-10-06", "2026-10-07"],
+         "volumen_sor": [{"nap": "2026-10-06", "max_volumen": 5}, {"nap": "2026-10-07", "max_volumen": 40}]}]}
+    eredmeny = {"ugyek": [{"nev": "Ü", "kifejezesek": ["a", "b"], "szakpolitika": "egyeb",
+                           "osszefoglalo": "s", "eletut": "visszatero", "mozgas": "lecsengo"}]}
+    ugy = u.ugy_osszegez(eredmeny, korpusz)["ugyek"][0]
+    assert ugy["eletut"] == "ujonnan_megfigyelt"          # újraszámolt, NEM a bemeneti LLM-érték
+    assert ugy["mozgas"] == "erosodo"
+    assert ugy["napok_szama"] == 3
+    iv = {p["nap"]: p for p in ugy["idovonal"]}
+    assert iv["2026-10-06"]["ossz_volumen"] == 15          # összeg, nem felülírás
+    assert iv["2026-10-05"]["ossz_volumen"] == 5 and iv["2026-10-07"]["ossz_volumen"] == 40
+    assert all(p["jelen"] is True for p in ugy["idovonal"])
+
+
+def test_grounding_fallback_temakbol_nem_egyeb():
+    import copy
+    korpusz = {"kifejezesek": [{"kifejezes": "kórház", "temak": ["Health"]}, {"kifejezes": "x", "temak": []}]}
+    eredmeny = {"ugyek": [
+        {"nev": "Eü", "kifejezesek": ["kórház"], "szakpolitika": "HOLDbazis", "osszefoglalo": "a"},
+        {"nev": "Érvényes", "kifejezesek": ["x", "KITALÁLT"], "szakpolitika": "oktataspolitika", "osszefoglalo": "b"}]}
+    eredmeny_elo, korpusz_elo = copy.deepcopy(eredmeny), copy.deepcopy(korpusz)
+    out = u.grounding_validal(eredmeny, korpusz)
+    eu = next(x for x in out["ugyek"] if x["nev"] == "Eü")
+    assert eu["szakpolitika"] == u.szakpolitika.szakpolitika_besorol(kifejezes="kórház", temak=["Health"])
+    assert eu["szakpolitika"] == "egeszsegpolitika"
+    ervenyes = next(x for x in out["ugyek"] if x["nev"] == "Érvényes")
+    assert ervenyes["szakpolitika"] == "oktataspolitika" and ervenyes["kifejezesek"] == ["x"]
+    assert eredmeny == eredmeny_elo and korpusz == korpusz_elo   # nem mutál
