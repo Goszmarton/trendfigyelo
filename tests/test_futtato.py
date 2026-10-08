@@ -1627,3 +1627,30 @@ def test_futtat_este_injektal_varhato_gyujtes_datumot(tmp_path):
     assert fajl.exists()   # az esti regresszió-írás megtörtént (NEM bukott el a helperen)
     adat = json.loads(fajl.read_text(encoding="utf-8"))["kulcsszavak"]
     assert adat["infláció"]["varhato_gyujtes_datum"] == "2026-09-04"
+
+
+def test_esti_futas_hivja_az_elmozdulas_irt(tmp_path, monkeypatch):
+    """Esti (teljes) futás: a regresszió után az elmozdulas_ir meghívódik a docs/data mappára."""
+    from trendfigyelo import elmozdulas
+    hivott = {}
+    monkeypatch.setattr(elmozdulas, "elmozdulas_ir", lambda dd: hivott.setdefault("dd", dd))
+    cfg = _config([KulcsszoTetel("a", "megelhetes", "szintmero")])
+    docs_data = tmp_path / "docs" / "data"
+    most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)
+    futtato.futtat(cfg, KulcsszoAdatKliens(), tmp_path / "adatok", docs_data, most=most)
+    assert hivott.get("dd") == docs_data
+
+
+def test_elmozdulas_hiba_nem_blokkol(tmp_path, monkeypatch, capsys):
+    """Az elmozdulas_ir hibája nem viszi el a főfutást (fail-soft, FIGYELEM a logba)."""
+    from trendfigyelo import elmozdulas
+
+    def _dob(*a, **k):
+        raise ValueError("bumm")
+    monkeypatch.setattr(elmozdulas, "elmozdulas_ir", _dob)
+    cfg = _config([KulcsszoTetel("a", "megelhetes", "szintmero")])
+    docs_data = tmp_path / "docs" / "data"
+    most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)
+    kod = futtato.futtat(cfg, KulcsszoAdatKliens(), tmp_path / "adatok", docs_data, most=most)
+    assert kod == 0
+    assert "elmozdulás" in capsys.readouterr().out

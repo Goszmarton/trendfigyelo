@@ -11,7 +11,7 @@ import os
 import sys
 from pathlib import Path
 
-from . import (felkapott, idosorok, json_export, kategoriak, kulcsszavak, lanc, naplo,
+from . import (elmozdulas, felkapott, idosorok, json_export, kategoriak, kulcsszavak, lanc, naplo,
                nyers_kimenet, regresszio, seged, varhato_gyujtes)
 from .config import betolt
 from .kliens import AgFeladva, Kliens, PlafonTullepve
@@ -505,6 +505,14 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None, mode="este"
                 bejegyzesek.append({"ag": "regresszio", "eredmeny": "hiba",
                                     "hivasok_szama": 0, "hibakodok": type(e).__name__})
                 print(f"FIGYELEM: a regresszió kimaradt — nem blokkolja az adatmentést ({e}).")
+
+        # ---------- szokatlan-elmozdulás (származtatott, VÉDETTEN; determinista) ----------
+        # Nulla Google-hívás (plafon/tervezett_hivasszam érintetlen). A frissen kiírt
+        # kulcsszo_regresszio.json-t olvassa, ezért a regresszió UTÁN fut; hibája nem blokkol.
+        try:
+            elmozdulas.elmozdulas_ir(docs_data_mappa)
+        except Exception as e:
+            print(f"FIGYELEM: az elmozdulás kimaradt — nem blokkolja az adatmentést ({e}).")
 
         # ---------- másodlagos (nap/het) regresszió (származtatott, VÉDETTEN; Task 6a) ----------
         # KÜLÖN fájl (kulcsszo_masodlagos_regresszio.json), hogy az órás nézet érintetlen legyen.
