@@ -19,9 +19,15 @@
     <p class="halvany">Magyarországi (geo=HU) YouTube-keresési trendek, napi frissítéssel.</p>
   </header>
   <main>
-    <section id="youtube-attekinto">
-      <h2>A kulcsszavak trendje</h2>
-    </section>
+    <!-- KIEMELT összefoglaló: trend-irány + közvetlenül alatta a mai eltérés a trendtől, egy kártyában -->
+    <div class="attekinto-kiemelt">
+      <section id="youtube-attekinto" class="attekinto-panel" data-mod="trend" aria-label="A kulcsszavak trendje">
+        <h2>A kulcsszavak trendje</h2>
+      </section>
+      <section id="youtube-attekinto-elteres" class="attekinto-panel" data-mod="elteres" aria-label="Mai eltérés a kulcsszavak trendjétől">
+        <h2>Mai eltérés a kulcsszavak trendjétől</h2>
+      </section>
+    </div>
     <section class="szekcio">
       <div class="vezerlo-sav"><span class="vezerlo-cim">Idő-ablak</span>
         <div id="youtube-intervallum-vezerlo"></div></div>

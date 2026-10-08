@@ -694,7 +694,7 @@ function attekinto_magyarazat_epit(mod) {
   p.className = "attekinto-magyarazat";
   const t = function (s) { p.appendChild(document.createTextNode(s)); };
   if (mod === "trend") {
-    t("A szó keresettségének iránya a teljes megjelenített időszakban – a trendvonal (regressziós egyenes) meredeksége. ");
+    t("A szó keresettségének iránya a teljes megjelenített időszakban – a változást a LINEÁRIS trend (a regressziós egyenes) meredeksége mutatja. ");
     p.appendChild(attekinto_glif("▲", TREND_SZIN.novekszik)); t(" növekvő (emelkedik) · ");
     p.appendChild(attekinto_glif("▼", TREND_SZIN.csokken));   t(" csökkenő (esik) · ");
     p.appendChild(attekinto_glif("■", TREND_SZIN.stagnal));   t(" stagnáló (nagyjából egy szinten). A tüntetés esemény-jellegű – nincs trendje, ott a szintet az elmúlt 52 hét mediánjához mérjük (");
@@ -1329,7 +1329,10 @@ function lusta_megfigyel(kartyak) {
 // MINDEN .attekinto-panel-be rajzol (a lap TETEJÉN és ALJÁN is ugyanaz az áttekintő) — egy adatszámítás,
 // két megjelenítés. A csoportosítás egyszer készül, a kitöltés panelenként (külön DOM-példányok).
 function attekinto_blokk_render() {
-  const panelek = document.querySelectorAll(".attekinto-panel");
+  // CSAK a Google-dashboard áttekintő-paneljei (a YouTube-fül panelei is `.attekinto-panel`-ek,
+  // de azokat a youtube.js tölti saját YT-adattal — a #dashboard-szűkítés nélkül ez az init
+  // felülírná/ürítené őket a YT-oldalon betöltetlen Google-reggel).
+  const panelek = document.querySelectorAll("#dashboard .attekinto-panel");
   if (!panelek.length) return;
   const reg = egyesitett_reg();
   const csoportok = {};

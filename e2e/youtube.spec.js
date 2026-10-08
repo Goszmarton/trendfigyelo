@@ -89,3 +89,38 @@ test("YouTube-fül: a trend-blokk (#youtube-attekinto) LEGFELÜL van és a címe
   });
   expect(felul).toBe(true);
 });
+
+// ── ELTÉRÉS-PANEL a YouTube-fülön (2026-10-08): a trend alatt, EGY kiemelt kártyában, a mai eltérést mutatja ──
+test("YouTube-fül: a 'Mai eltérés…' panel a trend ALATT, a kiemelt konténerben, data-illeszkedes chippel", async ({ page }) => {
+  await mock(page, {
+    reg: { kulcsszavak: {
+      "edzés": { racs: "nap", aktiv: true, domen: "egeszseg", tipus: "szintmero",
+                 intervallumok: { "1_het": ivErvenyes(), "2_het": ivErvenyes(),
+                                  "1_ho": ivErvenyes(), "3_ho": ivErvenyes(), "1_ev": ivErvenyes() } },
+    }},
+    nyers: { kulcsszavak: {
+      "edzés": [{ kulcsszo:"edzés", racs:"nap", timeframe:"today 3-m",
+                  ablak_kezdet_utc: iso(Date.UTC(2026,4,22)), ablak_veg_utc: iso(Date.UTC(2026,7,20)),
+                  pontok: napiPontok(90) }],
+    }},
+  });
+  await page.goto("/youtube.html");
+  await expect(page.locator("#youtube-attekinto-elteres")).toHaveAttribute("data-mod", "elteres");
+  await expect(page.locator("#youtube-attekinto-elteres h2")).toHaveText("Mai eltérés a kulcsszavak trendjétől");
+  await expect(page.locator("#youtube-attekinto-elteres .attekinto-lista")).toHaveCount(1);
+  // a mai-eltérés chip az illeszkedés-glifet hordozza (data-illeszkedes), nem a trend-glifet
+  await expect(page.locator('#youtube-attekinto-elteres .attekinto-ikon[data-illeszkedes]')).toHaveCount(1);
+  // mindkét panel a KIEMELT konténerben, a trend a kártya-szekció ELŐTT
+  await expect(page.locator(".attekinto-kiemelt #youtube-attekinto")).toHaveCount(1);
+  await expect(page.locator(".attekinto-kiemelt #youtube-attekinto-elteres")).toHaveCount(1);
+  const sorrend = await page.evaluate(() => {
+    const trend = document.querySelector("#youtube-attekinto");
+    const elt = document.querySelector("#youtube-attekinto-elteres");
+    const blokk = document.querySelector("#youtube-blokk");
+    return !!(trend && elt && blokk
+      && (trend.compareDocumentPosition(elt) & Node.DOCUMENT_POSITION_FOLLOWING)
+      && (elt.compareDocumentPosition(blokk) & Node.DOCUMENT_POSITION_FOLLOWING));
+  });
+  expect(sorrend).toBe(true);
+});
+

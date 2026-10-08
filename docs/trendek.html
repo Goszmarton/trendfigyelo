@@ -22,10 +22,16 @@
 
   <div id="dashboard">
     <hr class="blokk-vonal">
-    <!-- felső panel: a szavak TREND-iránya (növekvő/stagnáló/csökkenő) — az id a POZÍCIÓT jelöli (felül), a tartalmat a data-mod -->
-    <section id="attekinto-blokk" class="attekinto-panel" data-mod="trend" aria-label="A kulcsszavak trendje">
-      <h2>A kulcsszavak trendje</h2>
-    </section>
+    <!-- KIEMELT összefoglaló (a lap tetején): a szavak TREND-iránya + közvetlenül alatta a MAI ELTÉRÉS
+         a saját trendjüktől — egy közös, kiemelt kártyában. Az id-k a data-mod-dal töltődnek. -->
+    <div class="attekinto-kiemelt">
+      <section id="attekinto-blokk" class="attekinto-panel" data-mod="trend" aria-label="A kulcsszavak trendje">
+        <h2>A kulcsszavak trendje</h2>
+      </section>
+      <section id="attekinto-blokk-alul" class="attekinto-panel" data-mod="elteres" aria-label="Áttekintő – mai eltérés a trendtől">
+        <h2>Mai eltérés a kulcsszavak trendjétől</h2>
+      </section>
+    </div>
     <!-- §7.1 per-szekció elrendezés: minden szekció a SAJÁT (sticky) vezérlősávjával -->
     <div class="szekcio">
       <aside class="vezerlo-sav">
@@ -39,11 +45,6 @@
         <!-- szavanként külön chart regresszióval + mérőszámokkal — Task 9b -->
       </section>
     </div>
-
-    <!-- a Kulcsszavak ALATT, a napi kategória-idősor ELŐTT: a szavak MAI ELTÉRÉSE a saját trendjüktől -->
-    <section id="attekinto-blokk-alul" class="attekinto-panel" data-mod="elteres" aria-label="Áttekintő – mai eltérés a trendtől">
-      <h2>Mai eltérés a kulcsszavak trendjétől</h2>
-    </section>
 
     <hr class="blokk-vonal">
 

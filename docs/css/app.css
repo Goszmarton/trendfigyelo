@@ -383,6 +383,21 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 .attekinto-panel,
 #youtube-attekinto { background: #fff; border: 1px solid #e3e3e3; border-radius: 6px; padding: 1rem; box-sizing: border-box; }
 
+/* KIEMELT összefoglaló-konténer (a lap tetején): a trend + mai-eltérés panel EGY kiemelt kártyában.
+   A belső panelek keret/árnyék nélkül (a konténer adja a kiemelést), finom elválasztó a kettő közt. */
+.attekinto-kiemelt {
+  background: #f5f8fe; border: 1px solid #d7e0f2; border-left: 4px solid #3366cc;
+  border-radius: 10px; box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+  padding: .3rem 1.1rem .8rem; margin-bottom: 1.5rem; box-sizing: border-box;
+}
+.attekinto-kiemelt .attekinto-panel,
+.attekinto-kiemelt #youtube-attekinto {
+  background: transparent; border: none; border-radius: 0; box-shadow: none; padding: .6rem 0;
+}
+.attekinto-kiemelt .attekinto-panel + .attekinto-panel {
+  border-top: 1px solid #d7e0f2;   /* finom elválasztó a trend és az eltérés panel közt */
+}
+
 /* TÖMÖR ELRENDEZÉS: a kategória-cellák FIX oszlop-rácsban, a nagy kategóriák egymás MELLETT, a teljes
    szélességben; az oszlopok közt vékony elválasztó csík (border-left a nem-első oszlopon). Cellán belül a
    domén-címke balra (fix szélesség), a szó-chipek jobbra (wrap). */

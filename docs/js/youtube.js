@@ -223,8 +223,14 @@
   // ── trend-panel (app.js attekinto_blokk_render/attekinto_panel_kitolt/attekinto_kartya lehatárolt
   //    átvétele, "trend" módban): teljes_valaszt(szoreg).iv.irany → TREND_SZOVEG[irany]. A chip-ugrás a
   //    #youtube-blokk-ra megy (nem a Google #kulcsszo-blokk-jára, mint az app.js eredetiben). ────────────
+  // MINDKÉT YT-áttekintő panelt kitölti: trend-irány (#youtube-attekinto) + mai eltérés
+  // (#youtube-attekinto-elteres). Egy adathalmaz, két mód — az app.js attekinto mintájára.
   function yt_attekinto_render(reg) {
-    const blokk = document.getElementById(ATT);
+    yt_attekinto_panel_kitolt(document.getElementById(ATT), reg, "trend");
+    yt_attekinto_panel_kitolt(document.getElementById("youtube-attekinto-elteres"), reg, "elteres");
+  }
+
+  function yt_attekinto_panel_kitolt(blokk, reg, mod) {
     if (!blokk) return;
     // szelektív törlés (mint az app.js attekinto-útja): a statikus <h2> cím MEGMARAD az újrarajzolás során
     blokk.querySelectorAll(".attekinto-lista, .attekinto-magyarazat").forEach(function (e) { e.remove(); });
@@ -251,17 +257,17 @@
         const chipek = document.createElement("span");
         chipek.className = "attekinto-chipek";
         szavak.forEach(function (szo) {
-          chipek.appendChild(yt_attekinto_kartya(szo, reg[szo]));
+          chipek.appendChild(yt_attekinto_kartya(szo, reg[szo], mod));
         });
         sor.appendChild(chipek);
         lista.appendChild(sor);
       });
       blokk.appendChild(lista);
     }
-    blokk.appendChild(attekinto_magyarazat_epit("trend"));
+    blokk.appendChild(attekinto_magyarazat_epit(mod));
   }
 
-  function yt_attekinto_kartya(szo, szoreg) {
+  function yt_attekinto_kartya(szo, szoreg, mod) {
     const k = document.createElement("span");
     k.className = "attekinto-kartya";
     k.setAttribute("data-kulcsszo", szo);
@@ -275,15 +281,22 @@
     k.addEventListener("keydown", function (e) {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); ugras(); }
     });
+    // az ikon + szöveg a panel MÓDJA szerint (YouTube: nincs esemenyjelzo szó)
     const tv = teljes_valaszt(szoreg);
-    const ir = tv && tv.iv && tv.iv.irany;
-    let cim = null;
-    if (ir && TREND_SZOVEG[ir]) {
+    const iv = tv && tv.iv;
+    let attr = null, ertek = null, cim = null;
+    if (mod === "elteres") {
+      const allapot = iv && iv.illeszkedes;
+      if (allapot && ELTERES_SZOVEG[allapot]) { attr = "data-illeszkedes"; ertek = allapot; cim = ELTERES_SZOVEG[allapot]; }
+    } else {
+      const ir = iv && iv.irany;
+      if (ir && TREND_SZOVEG[ir]) { attr = "data-trend"; ertek = ir; cim = TREND_SZOVEG[ir]; }
+    }
+    if (attr && ertek) {
       const ikon = document.createElement("span");
       ikon.className = "attekinto-ikon";
-      ikon.setAttribute("data-trend", ir);
+      ikon.setAttribute(attr, ertek);
       k.appendChild(ikon);
-      cim = TREND_SZOVEG[ir];
     }
     const nev = document.createElement("span");
     nev.className = "attekinto-szo";
