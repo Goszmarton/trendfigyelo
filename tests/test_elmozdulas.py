@@ -181,3 +181,66 @@ def test_megbizhatosag_kozepes_also_hatar(tmp_path):
     assert _egy(tmp_path, _iv(r2=0.2, pontok_hasznalt=50), [])["megbizhatosag"] == "kozepes"
     assert _egy(tmp_path / "a", _iv(r2=0.19, pontok_hasznalt=50), [])["megbizhatosag"] == "alacsony"
     assert _egy(tmp_path / "b", _iv(r2=0.2, pontok_hasznalt=49), [])["megbizhatosag"] == "alacsony"
+
+
+# ---- per-intervallum merge a masodlagos regresszioval (cross-file fix) ----
+def _reg2(tmp_path, elsod, masod):
+    _ir(tmp_path / "kulcsszo_regresszio.json", {"szamitva_utc": "2026-10-07T18:00:00+00:00",
+                                                "kulcsszavak": elsod})
+    _ir(tmp_path / "kulcsszo_masodlagos_regresszio.json", {"kulcsszavak": masod})
+
+
+def _w(iv, racs="nap"):
+    return {"domen": "x", "tipus": "szintmero", "racs": racs, "intervallumok": {"1_ho": iv}}
+
+
+def test_masodlagos_fallback_ha_elsodleges_ervenytelen(tmp_path):
+    _reg2(tmp_path, {"korrupcio": _w({"ervenyes": False, "ok": "keves_pont"})},
+          {"korrupcio": _w(_iv(illeszkedes="felette", mai_reziduum=5.0))})
+    ki = em.elmozdulas_szamit(str(tmp_path))
+    k = ki["kulcsszavak"]["korrupcio"]
+    assert k["szokatlan"] is True and k["irany"] == "emelkedik"
+    assert k["sav"]["1_ho"]["also"]
+    assert "korrupcio" in ki["szokatlan_lista"]
+
+
+def test_masodlagos_fallback_ha_elsodleges_iv_hianyzik(tmp_path):
+    _reg2(tmp_path, {"rezsi": {"domen": "x", "tipus": "szintmero", "racs": "het", "intervallumok": {}}},
+          {"rezsi": _w(_iv(illeszkedes="alatta", mai_reziduum=-6.0), racs="het")})
+    k = em.elmozdulas_szamit(str(tmp_path))["kulcsszavak"]["rezsi"]
+    assert k["irany"] == "csokken" and k["sav"]
+
+
+def test_elsodleges_nyer_ha_ervenyes(tmp_path):
+    _reg2(tmp_path, {"a": _w(_iv(illeszkedes="illeszkedik", mai_reziduum=1.0))},
+          {"a": _w(_iv(illeszkedes="felette", mai_reziduum=9.0))})
+    k = em.elmozdulas_szamit(str(tmp_path))["kulcsszavak"]["a"]
+    assert k["szokatlan"] is False and k["elteres_nyers"] == 1.0
+
+
+def test_mindketto_ervenytelen_kihagy(tmp_path):
+    _reg2(tmp_path, {"a": _w({"ervenyes": False})}, {"a": _w({"ervenyes": False})})
+    assert "a" not in em.elmozdulas_szamit(str(tmp_path))["kulcsszavak"]
+
+
+def _p2(nap, e):
+    return {"idopont_utc": f"2026-10-{nap:02d}T00:00:00+00:00", "ertek": e, "reszleges": False}
+
+
+def test_masodlagos_idotartam_a_masodlagos_nyersbol(tmp_path):
+    iv = _iv(ablak_kezdet_utc="2026-09-07T00:00:00+00:00", ablak_veg_utc="2026-10-07T00:00:00+00:00")
+    _reg2(tmp_path, {"a": _w({"ervenyes": False})}, {"a": _w(iv)})
+    pts = [_p2(3, 40), _p2(5, 90), _p2(6, 92), _p2(7, 95)]
+    _ir(tmp_path / "kulcsszo_masodlagos_nyers.json", {"kulcsszavak": {"a": [
+        {"ablak_kezdet_utc": "2026-09-07T00:00:00+00:00", "ablak_veg_utc": "2026-10-07T00:00:00+00:00",
+         "pontok": pts},
+        {"ablak_kezdet_utc": "2025-10-05T00:00:00+00:00", "ablak_veg_utc": "2026-10-04T00:00:00+00:00",
+         "pontok": [_p2(1, 1)]}]}})
+    k = em.elmozdulas_szamit(str(tmp_path))["kulcsszavak"]["a"]
+    assert k["idotartam_pont"] == 3 and k["idotartam_ota_utc"] == "2026-10-05T00:00:00+00:00"
+
+
+def test_masodlagos_idotartam_failsoft_nyers_nelkul(tmp_path):
+    _reg2(tmp_path, {"a": _w({"ervenyes": False})}, {"a": _w(_iv())})
+    k = em.elmozdulas_szamit(str(tmp_path))["kulcsszavak"]["a"]
+    assert k["szokatlan"] is True and k["idotartam_pont"] == 0 and k["idotartam_ota_utc"] is None

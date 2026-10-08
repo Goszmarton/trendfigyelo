@@ -81,29 +81,53 @@ def _betolt(docs_data, nev):
         return {}
 
 
+def _masodlagos_pontok(ablakok, iv):
+    """A másodlagos nyers ablakok közül az intervallum ablakával (kezdet+vég) egyezőt adja; fail-soft: []."""
+    try:
+        for ab in ablakok or []:
+            if (ab.get("ablak_kezdet_utc") == iv.get("ablak_kezdet_utc")
+                    and ab.get("ablak_veg_utc") == iv.get("ablak_veg_utc")):
+                return ab.get("pontok") or []
+    except (AttributeError, TypeError):
+        pass
+    return []
+
+
 def elmozdulas_szamit(docs_data):
     """Per követett kulcsszó az elsődleges intervallumból: szokatlan/irány/eltérés/mióta-tart/
     megbízhatóság/sáv + szakpolitika. Determinista, csak olvas."""
     reg = _betolt(docs_data, "kulcsszo_regresszio.json")
     reg2 = _betolt(docs_data, "kulcsszo_masodlagos_regresszio.json")
     nyers = _betolt(docs_data, "kulcsszo_nyers.json").get("kulcsszavak") or {}
-    egyesitett = {}
-    egyesitett.update((reg.get("kulcsszavak") or {}))
-    for szo, w in (reg2.get("kulcsszavak") or {}).items():
-        egyesitett.setdefault(szo, w)
+    nyers2 = _betolt(docs_data, "kulcsszo_masodlagos_nyers.json").get("kulcsszavak") or {}
+    elsod = reg.get("kulcsszavak") or {}
+    masod = reg2.get("kulcsszavak") or {}
     out = {}
-    for szo, w in egyesitett.items():
+    # per-INTERVALLUM merge (mint a frontend egyesitett_reg): az elsődleges intervallum, ha érvényes,
+    # különben a másodlagos azonos intervalluma. A metaadat az elsődleges entryből, ennek híján a másodlagosból.
+    for szo in list(elsod) + [s for s in masod if s not in elsod]:
+        o = elsod.get(szo) or {}
+        m = masod.get(szo) or {}
+        w = o or m
         racs = w.get("racs") or "ora"
         ivn = ELSODLEGES_IV.get(racs, "1_het")
-        iv = (w.get("intervallumok") or {}).get(ivn) or {}
+        oiv = (o.get("intervallumok") or {}).get(ivn) or {}
+        miv = (m.get("intervallumok") or {}).get(ivn) or {}
+        if oiv.get("ervenyes"):
+            iv, masodlagos_forras = oiv, False
+        else:
+            iv, masodlagos_forras = miv, True
         if not iv.get("ervenyes"):
             continue
         illeszkedes = iv.get("illeszkedes")
         szokatlan = illeszkedes in ("felette", "alatta")
         mad = float(iv.get("reziduum_szokasos") or 0.0)
         mai = float(iv.get("mai_reziduum") or 0.0)
-        ablakok = nyers.get(szo) or []
-        pontok = (ablakok[-1].get("pontok") if ablakok else []) or []
+        if masodlagos_forras:
+            pontok = _masodlagos_pontok(nyers2.get(szo), iv)
+        else:
+            ablakok = nyers.get(szo) or []
+            pontok = (ablakok[-1].get("pontok") if ablakok else []) or []
         tart, ota = _idotartam(iv, pontok)
         out[szo] = {
             "szokatlan": szokatlan,

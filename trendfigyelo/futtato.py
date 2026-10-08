@@ -506,14 +506,6 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None, mode="este"
                                     "hivasok_szama": 0, "hibakodok": type(e).__name__})
                 print(f"FIGYELEM: a regresszió kimaradt — nem blokkolja az adatmentést ({e}).")
 
-        # ---------- szokatlan-elmozdulás (származtatott, VÉDETTEN; determinista) ----------
-        # Nulla Google-hívás (plafon/tervezett_hivasszam érintetlen). A frissen kiírt
-        # kulcsszo_regresszio.json-t olvassa, ezért a regresszió UTÁN fut; hibája nem blokkol.
-        try:
-            elmozdulas.elmozdulas_ir(docs_data_mappa)
-        except Exception as e:
-            print(f"FIGYELEM: az elmozdulás kimaradt — nem blokkolja az adatmentést ({e}).")
-
         # ---------- másodlagos (nap/het) regresszió (származtatott, VÉDETTEN; Task 6a) ----------
         # KÜLÖN fájl (kulcsszo_masodlagos_regresszio.json), hogy az órás nézet érintetlen legyen.
         # Nulla Google-hívás; az órás regresszió mintája szerint egy hibája SOHA nem viheti el az
@@ -537,6 +529,14 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None, mode="este"
                 bejegyzesek.append({"ag": "regresszio_masodlagos", "eredmeny": "hiba",
                                     "hivasok_szama": 0, "hibakodok": type(e).__name__})
                 print(f"FIGYELEM: a másodlagos regresszió kimaradt — nem blokkolja az adatmentést ({e}).")
+
+        # ---------- szokatlan-elmozdulás (származtatott, VÉDETTEN; determinista) ----------
+        # Nulla Google-hívás (plafon/tervezett_hivasszam érintetlen). A frissen kiírt
+        # kulcsszo_regresszio.json-t ÉS a másodlagos regressziót olvassa, ezért mindkettő UTÁN fut; hibája nem blokkol.
+        try:
+            elmozdulas.elmozdulas_ir(docs_data_mappa)
+        except Exception as e:
+            print(f"FIGYELEM: az elmozdulás kimaradt — nem blokkolja az adatmentést ({e}).")
 
     # ---------- folytonosság-diagnosztika (B2, származtatott; CSAK naplóz, VÉDETTEN) ----------
     # A napi_ir ekkorra már beírta a mai nap_iso-t az index.json-ba. Az utolsó két rögzített
