@@ -59,7 +59,10 @@ async function blokk_betolt(blokk) {
 
 async function init() {
   // blokkonkénti izoláció is: egy blokk hibája se döntse el a másikat
-  await Promise.allSettled(BLOKKOK.map(blokk_betolt));
+  // SZOKÁSOS-SÁV: az elmozdulas.json opcionális és fail-soft (hiány/hiba → nincs sáv, NINCS hibaüzenet); a blokkokkal
+  // PÁRHUZAMOSAN töltjük (nem lassítja a vezérlők megjelenését).
+  const elmozdulas_ig = json_betolt("elmozdulas.json").then(function (j) { adat["elmozdulas.json"] = j; }).catch(function () {});
+  await Promise.allSettled(BLOKKOK.map(blokk_betolt).concat([elmozdulas_ig]));
   await vezerlok_render();
 }
 
@@ -94,6 +97,7 @@ const ATTR = {
   mltrend: "data-mltrend",   // a #kulcsszo-blokk ML-trend kapcsoló-állapota: "be" | "ki" (alapból ki)
   nemlin: "data-nemlin",     // a kártyán: van kirajzolható nemlin_xy ÉS a kapcsoló bekapcsolt (Task 6 rajzolja a görbét)
   predikcio: "data-predikcio",   // a #kulcsszo-blokk PREDIKCIÓ-sáv aktív horizontja: "1_nap|1_het|1_ho|3_ho|1_ev|ki" (alapból "ki")
+  szokasos_sav: "data-szokasos-sav",   // blokk: kapcsoló "be"|"ki" (alapból ki); kártya: "true" ha van kirajzolható sáv az intervallumra
   predikcio_aktiv: "data-predikcio-aktiv",   // a kártyán: van kirajzolható predikció-blokk a kiválasztott horizonthoz (Task 7 rajzolja)
 };
 // ADATFORRÁS-MARKER: kapcsolóval BE/KI (alapból KI). A jelölt vonal SZÜRKE (meta, nem adat — a kék adattól/
@@ -115,6 +119,12 @@ const MLTREND_INFO = "Bekapcsolva minden kirajzolható charton egy lila görbe m
 // narancs=szint, szürke=marker, lila=nemlin, ZÖLD=predikció) — Task 7 rajzolja a görbét/sávot ezzel a színnel.
 const PREDIKCIO_SZIN = "#16a085";
 const PREDIKCIO_SAV_SZIN = "rgba(22, 160, 133, 0.15)";   // halvány kitöltés a bizonytalansági sávhoz (also/felso közt)
+// SZOKÁSOS TARTOMÁNY (bővítés Task 4): kapcsolóval BE/KI (alapból KI). A backend (elmozdulas.json `sav`) adja a
+// pontokat — a frontend nem számol statisztikát, csak rajzol. Halvány szürke sáv a szokatlan elmozdulás referenciája.
+const SZOKASOS_SAV_SZIN = "rgba(120, 120, 120, 0.14)";   // halvány szürke „szokásos tartomány" sáv
+const SZOKASOS_SAV_GOMB_BE = "Szokásos tartomány – bekapcsolva";
+const SZOKASOS_SAV_GOMB_KI = "Szokásos tartomány";
+const SZOKASOS_SAV_INFO = "Bekapcsolva a charton egy halvány szürke sáv mutatja az adott szó szokásos ingadozási tartományát; a sávon kívüli kitérés szokatlan elmozdulásnak számít.";
 // cimke: rövid gomb-felirat (VÁLTOZATLAN); ragozott: a kártya-szövegbe illő, nyelvtanilag helyes
 // alak ("…pont (1 hétre)") — a cimke + "-ra" toldás ("1 hét-ra") nyelvtanilag hibás lenne.
 const PREDIKCIO_HORIZONTOK = [
@@ -1015,6 +1025,7 @@ function racs_epit(ablak, iv, racs, szint) {
   }
   return { labels: labels, ertekek: ertekek, xy: xy, vonal: vonal, vonal_van: vonal_van, vonal_xy: vonal_xy,
            szint_vonal: szint_vonal, szint_xy: szint_xy, nemlin_xy: nemlin_xy, nemlin: nemlin,
+           slot_hely: function (iso) { return slot_index(iso, racs) - rajz_kezd; },   // SZOKÁSOS-SÁV: pont → label-index
            adat_veg: lezart[lezart.length - 1].idopont_utc,
            szakadas: ertekek.filter(function (v) { return v === null; }).length,
            csupa_nulla: lezart.length > 0 && !van_nemnulla };
@@ -1022,7 +1033,7 @@ function racs_epit(ablak, iv, racs, szint) {
 
 // egy kulcsszó-kártya (EAGER DOM); a canvas ELEM azonnal, a Chart.js-példány LUSTA (data-rendered).
 // BINÁRIS szerződés: rajzolható → canvas + .merteszamok; nem rajzolható → .ures (mérőszám NÉLKÜL, spec 6:599).
-function kartya_letrehoz(szo, szoreg, aktiv_kulcs, adatforras_be, mltrend_be, predikcio_horizont) {
+function kartya_letrehoz(szo, szoreg, aktiv_kulcs, adatforras_be, mltrend_be, predikcio_horizont, szokasos_sav_be) {
   const kartya = document.createElement("div");
   kartya.className = OSZT.kartya;
   kartya.setAttribute(ATTR.kulcsszo, szo);
@@ -1071,6 +1082,18 @@ function kartya_letrehoz(szo, szoreg, aktiv_kulcs, adatforras_be, mltrend_be, pr
   // ML-TREND (Task 5): CSAK a kapcsoló ÁLLAPOTÁTÓL függ, NEM a nézettől (teljes-ág ÉS normál ág egyaránt idejut) —
   // Task 6 a data-nemlin="true" kártyákon rajzolja a lila görbét (racs.nemlin_xy).
   if (mltrend_be && racs.nemlin_xy) kartya.setAttribute(ATTR.nemlin, "true");
+  // SZOKÁSOS-SÁV: a kapcsoló BE ÉS van `sav` a kártyán ÉPP mutatott intervallumra (teljes módban a per-szó választott
+  // intervallum) → a nyers pontok a kártyán; a chart_letrehoz mindkét ága az x-tengelyhez illesztve rajzolja.
+  if (szokasos_sav_be) {
+    const sav_iv_kulcs = (aktiv_kulcs === TELJES_KULCS) ? (teljes_valasztott && teljes_valasztott.kulcs) : aktiv_kulcs;
+    const el = adat["elmozdulas.json"];
+    const sav = (el && el.kulcsszavak && el.kulcsszavak[szo] && el.kulcsszavak[szo].sav && sav_iv_kulcs)
+      ? el.kulcsszavak[szo].sav[sav_iv_kulcs] : null;
+    if (sav && sav.also && sav.felso && sav.also.length && sav.felso.length) {
+      kartya._sav = sav;
+      kartya.setAttribute(ATTR.szokasos_sav, "true");
+    }
+  }
   // PREDIKCIÓ (Task 7): CSAK a TELJES (idő-tengelyű) nézeten — a jövő-időbélyegek nem térképezhetők a
   // kategória-nézet fix-ablakos label-indexeire (a predikció-gomb kattintása a teljes nézetre vált, lásd lent).
   // A szónak lehet a kiválasztott horizonthoz mergelt blokkja (predikcio) — VAGY egy sentinel
@@ -1196,6 +1219,13 @@ function chart_letrehoz(kartya) {
     // ML-TREND (Task 6): a lila LOESS-görbe — CSAK ha a kapcsoló BE (data-nemlin="true", Task 5 dönti el) ÉS
     // van racs.nemlin_xy (van_struktura). Additív dataset, a meglévő kék/piros/narancs/szürke VÁLTOZATLAN.
     if (kartya.getAttribute(ATTR.nemlin) === "true" && racs.nemlin_xy) ds.push({ data: racs.nemlin_xy, spanGaps: true, borderColor: NEMLIN_SZIN, borderWidth: 2, pointRadius: 0, tension: 0.3 });
+    // SZOKÁSOS-SÁV: halvány szürke also/felso dataset-pár (a predikció-sáv technikája: felső `fill:"-1"`); a pontok a
+    // lineáris tengelyre {x:ms,y}. A tooltip változatlan (datasetIndex 0 szűrő). Fail-soft: sav nélkül nincs ds.
+    if (kartya.getAttribute(ATTR.szokasos_sav) === "true" && kartya._sav) {
+      const xy_p = function (p) { return { x: iso_ms(p.idopont_utc), y: p.ertek }; };
+      ds.push({ data: kartya._sav.also.map(xy_p), spanGaps: true, borderColor: "rgba(0,0,0,0)", borderWidth: 0, pointRadius: 0, fill: false });
+      ds.push({ data: kartya._sav.felso.map(xy_p), spanGaps: true, borderColor: "rgba(0,0,0,0)", borderWidth: 0, pointRadius: 0, fill: "-1", backgroundColor: SZOKASOS_SAV_SZIN });
+    }
     // a mért adatpontok (a predikció-anchorhoz ÉS a lenti x-tengelyhez is); a kártya felbontása a zoom-döntéshez
     const teljes_pts = racs.xy.filter(function (p) { return p.y !== null; });
     const felb = kartya.getAttribute(ATTR.felbontas);   // "ora" / "nap" / "het"
@@ -1278,6 +1308,17 @@ function chart_letrehoz(kartya) {
   // ML-TREND (Task 6): ugyanaz a guard, mint a teljes-ág fenti; a label-indexelt `racs.nemlin` a saját slot-
   // pozíciókra rakott görbe-pontok (racs_epit), a köztes null-okat a spanGaps:true hidalja át.
   if (kartya.getAttribute(ATTR.nemlin) === "true" && racs.nemlin) datasetek.push({ data: racs.nemlin, spanGaps: true, borderColor: NEMLIN_SZIN, borderWidth: 2, pointRadius: 0, tension: 0.3 });
+  // SZOKÁSOS-SÁV (kompakt ág): a sav-pontok a label-indexelt rácsra (a rajzolt ablakon kívüliek kimaradnak); a
+  // köztes null-okat a spanGaps hidalja át. Ugyanaz a dataset-pár, mint a teljes-ágban.
+  if (kartya.getAttribute(ATTR.szokasos_sav) === "true" && kartya._sav && racs.slot_hely) {
+    const label_sorba = function (arr) {
+      const ki = new Array(racs.ertekek.length).fill(null);
+      arr.forEach(function (p) { const i = racs.slot_hely(p.idopont_utc); if (i >= 0 && i < ki.length) ki[i] = p.ertek; });
+      return ki;
+    };
+    datasetek.push({ data: label_sorba(kartya._sav.also), spanGaps: true, borderColor: "rgba(0,0,0,0)", borderWidth: 0, pointRadius: 0, fill: false });
+    datasetek.push({ data: label_sorba(kartya._sav.felso), spanGaps: true, borderColor: "rgba(0,0,0,0)", borderWidth: 0, pointRadius: 0, fill: "-1", backgroundColor: SZOKASOS_SAV_SZIN });
+  }
   chart_peldanyok[kartya.getAttribute(ATTR.kulcsszo)] = new Chart(canvas, {
     type: "line",
     data: { labels: racs.labels, datasets: datasetek },
@@ -1437,7 +1478,7 @@ function kulcsszo_blokk_render() {
   const blokk = document.getElementById("kulcsszo-blokk");
   if (!blokk) return;
   chart_takarit();   // váltáskor: régi példányok destroy + megfigyelő le
-  blokk.querySelectorAll("." + OSZT.frissesseg + ", ." + OSZT.csoport + ", .adatforras-sav, .mltrend-sav, .predikcio-sav").forEach(function (e) { e.remove(); });
+  blokk.querySelectorAll("." + OSZT.frissesseg + ", ." + OSZT.csoport + ", .adatforras-sav, .mltrend-sav, .szokasos-sav-sav, .predikcio-sav").forEach(function (e) { e.remove(); });
   // Task 6: a PREDIKCIÓ-sáv default állapota TÉNYLEGESEN kiírt attribútum ("ki"), nem csupán hiány —
   // a mltrend/adatforras mintától eltérően itt 5 érték közül választunk, a hiány nem egyértelmű "ki".
   if (!blokk.hasAttribute(ATTR.predikcio)) blokk.setAttribute(ATTR.predikcio, "ki");
@@ -1445,6 +1486,7 @@ function kulcsszo_blokk_render() {
   const aktiv = blokk.getAttribute(ATTR.aktiv);
   const adatforras_be = blokk.getAttribute(ATTR.adatforras) === "be";   // ADATFORRÁS-MARKER kapcsoló (alapból KI)
   const mltrend_be = blokk.getAttribute(ATTR.mltrend) === "be";   // ML-TREND kapcsoló (alapból KI)
+  const szokasos_sav_be = blokk.getAttribute(ATTR.szokasos_sav) === "be";   // SZOKÁSOS-SÁV kapcsoló (alapból KI)
   const predikcio_horizont = blokk.getAttribute(ATTR.predikcio) || "ki";   // PREDIKCIÓ aktív horizontja (alapból "ki")
   // request 2: a „Kulcsszavak" cím a nézet-leírással bővül (aktiv szerint); nincs aktív → csak a bázis cím
   const cim_h2 = blokk.querySelector("h2");
@@ -1480,7 +1522,7 @@ function kulcsszo_blokk_render() {
     h3.textContent = d === null ? "Egyéb" : DOMEN_MAGYAR[d];
     cs.appendChild(h3);
     szavak.forEach(function (szo) {
-      const k = kartya_letrehoz(szo, reg.kulcsszavak[szo], aktiv, adatforras_be, mltrend_be, predikcio_horizont);
+      const k = kartya_letrehoz(szo, reg.kulcsszavak[szo], aktiv, adatforras_be, mltrend_be, predikcio_horizont, szokasos_sav_be);
       cs.appendChild(k);
       if (k.getAttribute(ATTR.drawable) === "true") {
         rajzolhatok.push(k);
@@ -1555,6 +1597,29 @@ function kulcsszo_blokk_render() {
     if (ref) ref.insertAdjacentElement("afterend", sav); else blokk.appendChild(sav);
   }
 
+  // SZOKÁSOS-SÁV kapcsoló (bővítés Task 4) — a mltrend-sáv MINTÁJÁRA, MINDEN nézetben; alapból KI.
+  if (rajzolhatok.length) {
+    const sav = document.createElement("div");
+    sav.className = "szokasos-sav-sav";
+    const gomb = document.createElement("button");
+    gomb.type = "button";
+    gomb.className = "szokasos-sav-gomb";
+    gomb.setAttribute("aria-pressed", szokasos_sav_be ? "true" : "false");
+    gomb.textContent = szokasos_sav_be ? SZOKASOS_SAV_GOMB_BE : SZOKASOS_SAV_GOMB_KI;
+    gomb.addEventListener("click", function () {
+      blokk.setAttribute(ATTR.szokasos_sav, szokasos_sav_be ? "ki" : "be");
+      kulcsszo_blokk_render();
+    });
+    sav.appendChild(gomb);
+    const info = document.createElement("p");
+    info.className = "szokasos-sav-info";
+    info.textContent = SZOKASOS_SAV_INFO;
+    sav.appendChild(info);
+    const ref = blokk.querySelector(".mltrend-sav") || blokk.querySelector(".adatforras-sav") ||
+      blokk.querySelector("." + OSZT.frissesseg) || blokk.querySelector("h2");
+    if (ref) ref.insertAdjacentElement("afterend", sav); else blokk.appendChild(sav);
+  }
+
   // PREDIKCIÓ-sáv (Task 6) — a mltrend-sáv MINTÁJÁRA (3. gomb-sáv, ALATTA ha az is jelen van), de 5
   // EGYMÁST KIZÁRÓ gombbal (rádió-szerű): egy horizont lehet aktív; az aktívra kattintva → "ki",
   // másikra kattintva → VÁLT. Alapból KI (nincs predikció rajzolva — azt Task 7 végzi).
@@ -1584,7 +1649,7 @@ function kulcsszo_blokk_render() {
     info.className = "predikcio-info";
     info.textContent = PREDIKCIO_INFO;
     sav.appendChild(info);
-    const ref = blokk.querySelector(".mltrend-sav") || blokk.querySelector(".adatforras-sav") ||
+    const ref = blokk.querySelector(".szokasos-sav-sav") || blokk.querySelector(".mltrend-sav") || blokk.querySelector(".adatforras-sav") ||
       blokk.querySelector("." + OSZT.frissesseg) || blokk.querySelector("h2");
     if (ref) ref.insertAdjacentElement("afterend", sav); else blokk.appendChild(sav);
   }

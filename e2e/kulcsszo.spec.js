@@ -1733,3 +1733,71 @@ test("Predikció: rmse_veg>=50 esetén 'közel a teljes skála' szöveg, nincs s
   await expect(kartya).not.toContainText("±148,7 pont");
   await expect(kartya).not.toContainText("±148");
 });
+
+// ── SZOKÁSOS-SÁV kapcsoló (bővítés Task 4): alapból KI; BE → data-szokasos-sav + halvány sáv dataset-pár ──
+function szokasosSavFixture() {
+  const ivNemlin = { ...hetIvErv(0, 52) };
+  const pontokSav = (ertek) => Array.from({ length: 20 }, (_, i) => ({ idopont_utc: racs_iso(i * 2, 7), ertek }));
+  const sav = { also: pontokSav(35), felso: pontokSav(65) };
+  return {
+    mockArgs: {
+      regObj: reg({ "kórház": regSzo({ domen: "egeszseg", intervallumok: {
+        "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"), "1_ho": ivHibas("keves_pont"),
+        "3_ho": ivHibas("keves_pont"), "1_ev": ivHibas("nincs_lancolas") } }) }),
+      nyersObj: nyers({ "kórház": [nyersRekord("kórház")] }),
+      mpRegObj: mpReg({ "kórház": mpSzo("het", { "1_het": ivHibas("keves_pont"), "2_het": ivHibas("keves_pont"),
+        "1_ho": ivHibas("keves_pont"), "3_ho": ivHibas("keves_pont"), "1_ev": ivNemlin }, { domen: "egeszseg" }) }),
+      mpNyersObj: mpNyers({ "kórház": [racs_nyersRekord("kórház", 52, 7)] }),
+    },
+    elmozdulas: { szamitva_utc: "2026-10-08T19:00:00+00:00",
+      kulcsszavak: { "kórház": { sav: { "1_ev": sav } } }, szokatlan_lista: [] },
+  };
+}
+const page_eval_szokasos = () => {
+  const p = (window.chart_peldanyok || {})["kórház"];
+  return !!p && p.data.datasets.some((d) => d.backgroundColor === "rgba(120, 120, 120, 0.14)");
+};
+
+test("szokásos-sáv kapcsoló: alapból KI, BE → data-szokasos-sav='true' + sáv-dataset (teljes nézet)", async ({ page }) => {
+  const fx = szokasosSavFixture();
+  await mock(page, fx.mockArgs);
+  await page.route(/elmozdulas\.json/, (r) =>
+    r.fulfill({ contentType: "application/json", body: JSON.stringify(fx.elmozdulas) }));
+  await page.goto("/trendek.html");
+  const gomb = page.locator("#kulcsszo-blokk .szokasos-sav-gomb");
+  await expect(gomb).toHaveCount(1);
+  const k = page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="kórház"]');
+  await expect(k).not.toHaveAttribute("data-szokasos-sav", /.*/);
+  await gomb.click();  // BE
+  await expect(k).toHaveAttribute("data-szokasos-sav", "true");
+  await expect(k).toHaveAttribute("data-rendered", "true");
+  expect(await page.evaluate(page_eval_szokasos)).toBe(true);
+  await page.locator("#kulcsszo-blokk .szokasos-sav-gomb").click();  // KI
+  await expect(k).not.toHaveAttribute("data-szokasos-sav", /.*/);
+});
+
+test("szokásos-sáv: normál (kompakt) nézetben is rajzol; sav nélkül fail-soft (nincs sáv)", async ({ page }) => {
+  const fx = szokasosSavFixture();
+  await mock(page, fx.mockArgs);
+  await page.route(/elmozdulas\.json/, (r) =>
+    r.fulfill({ contentType: "application/json", body: JSON.stringify(fx.elmozdulas) }));
+  await page.goto("/trendek.html");
+  await page.locator("#kulcsszo-blokk .szokasos-sav-gomb").click();
+  await page.locator('button[data-intervallum="1_ev"]').click();
+  await expect(page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="kórház"]'))
+    .toHaveAttribute("data-rendered", "true");
+  expect(await page.evaluate(page_eval_szokasos)).toBe(true);
+});
+
+test("szokásos-sáv: hiányzó elmozdulas.json → fail-soft, nincs sáv, nincs hibaüzenet", async ({ page }) => {
+  const fx = szokasosSavFixture();
+  await mock(page, fx.mockArgs);
+  await page.route(/elmozdulas\.json/, (r) => r.fulfill({ status: 404, body: "nincs" }));
+  await page.goto("/trendek.html");
+  await page.locator("#kulcsszo-blokk .szokasos-sav-gomb").click();
+  const k = page.locator('#kulcsszo-blokk .kulcsszo-chart[data-kulcsszo="kórház"]');
+  await expect(k).toHaveAttribute("data-rendered", "true");
+  await expect(k).not.toHaveAttribute("data-szokasos-sav", /.*/);
+  expect(await page.evaluate(page_eval_szokasos)).toBe(false);
+  await expect(page.locator("#kulcsszo-blokk .hiba")).toHaveCount(0);
+});
