@@ -255,3 +255,67 @@ def heti_elemez(korpusz, kliens=None, modell=MODELL,
                              e, i + 2, probak, backoff_mp[i])
                 alvo(backoff_mp[i])
     raise utolso
+
+
+def grounding_validal(eredmeny, korpusz):
+    """Hallucináció-védelem: az `erosodo`/`gyengulo` szó-listákat a korpusz kulcsszó-halmazára szűri
+    (a nem-korpuszbeli kiesik). A prózai mezők (vezetoi_osszefoglalo, melyebb_temak, összefüggés,
+    figyelendők) NEM szűrtek — ezek a modell értelmezései a grounded számok fölött. Determinista,
+    nem mutálja a bemenetet."""
+    kov = {s.get("szo") for s in (korpusz.get("kulcsszavak") or [])}
+    kov |= {s.get("kifejezes") for s in (korpusz.get("felkapott") or [])}
+    kov |= {s.get("szo") for s in (korpusz.get("youtube") or [])}
+    fa = eredmeny.get("figyelem_atrendezodes") or {}
+    tiszta = {
+        "erosodo": [sz for sz in (fa.get("erosodo") or []) if sz in kov],
+        "gyengulo": [sz for sz in (fa.get("gyengulo") or []) if sz in kov],
+    }
+    return {**eredmeny, "figyelem_atrendezodes": tiszta}
+
+
+def figyelem_adat(korpusz):
+    """A divergáló sávdiagram DETERMINISTA adata: a nem-None eltérésű követett szavak, az eltérés
+    szerint CSÖKKENŐ sorrendben (erősödő = pozitív felül, gyengülő = negatív alul)."""
+    sorok = [{"szo": s.get("szo"), "elteres": s.get("elteres_szokasostol"),
+              "irany": s.get("irany"), "illeszkedes": s.get("illeszkedes"), "domen": s.get("domen")}
+             for s in (korpusz.get("kulcsszavak") or []) if s.get("elteres_szokasostol") is not None]
+    return sorted(sorok, key=lambda x: x["elteres"], reverse=True)
+
+
+def heti_ir(docs_data, het_kezdet, eredmeny):
+    """A heti eredmény külön `heti/<het_kezdet>.json`-ba, atomi írással (a havi_nlp_ir mintája)."""
+    mappa = Path(docs_data) / "heti"
+    mappa.mkdir(parents=True, exist_ok=True)
+    return json_export._ir_json(mappa / (het_kezdet + ".json"), eredmeny)
+
+
+def heti_index_ir(docs_data):
+    """A heti mappa hetei a frontend hét-választójához (az index.json-t kihagyva)."""
+    mappa = Path(docs_data) / "heti"
+    hetek = sorted(p.stem for p in mappa.glob("*.json") if p.stem != "index")
+    return json_export._ir_json(mappa / "index.json",
+                                {"hetek": hetek, "legutolso": hetek[-1] if hetek else None})
+
+
+def heti_generalas(docs_data, het_kezdet, keszult_iso, kliens=None):
+    """A heti értékelés generáló belépési pontja: korpusz → Claude (fail-soft: tartós hibán None) →
+    grounding → figyelem-diagramadat + het/keszult/modell/korpusz-meta → atomi írás. A keszult_iso
+    PARAMÉTER (nincs argless datetime.now())."""
+    korpusz = heti_korpusz(docs_data, het_kezdet)
+    try:
+        eredmeny = heti_elemez(korpusz, kliens=kliens)
+    except Exception as e:   # noqa: BLE001 — tartós API-hiba a bounded retry után: fail-soft
+        _log.error("HIBA: a heti értékelés tartósan elhasalt (%s hét): %s", het_kezdet, e)
+        return None
+    eredmeny = grounding_validal(eredmeny, korpusz)
+    eredmeny["het_kezdet"] = korpusz["het_kezdet"]
+    eredmeny["het_veg"] = korpusz["het_veg"]
+    eredmeny["iso_het"] = korpusz["iso_het"]
+    eredmeny["figyelem"] = figyelem_adat(korpusz)
+    eredmeny["keszult"] = keszult_iso
+    eredmeny["modell"] = MODELL
+    eredmeny["korpusz"] = {"het_kezdet": korpusz["het_kezdet"], "het_veg": korpusz["het_veg"],
+                           "iso_het": korpusz["iso_het"], "napok": korpusz["napok"],
+                           "egyedi_felkapott": len(korpusz["felkapott"])}
+    heti_ir(docs_data, het_kezdet, eredmeny)
+    return eredmeny

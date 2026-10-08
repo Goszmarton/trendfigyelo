@@ -171,3 +171,62 @@ def test_heti_elemez_bounded_retry(monkeypatch):
             return _teljes_valasz()
     out = he.heti_elemez({}, kliens=_Buko(), alvo=lambda s: None)
     assert out["google_youtube_osszefugges"] == "gy"
+
+
+def test_grounding_kiszuri_a_nem_korpuszbeli_hivatkozast():
+    korpusz = {"kulcsszavak": [{"szo": "benzinár"}, {"szo": "nyugdíj"}],
+               "felkapott": [{"kifejezes": "tüntetés"}], "youtube": [{"szo": "szorongás"}]}
+    eredmeny = {"figyelem_atrendezodes": {"erosodo": ["benzinár", "KITALÁLT"], "gyengulo": ["nyugdíj"]},
+                "vezetoi_osszefoglalo": ["x"], "ugyek_eletutja": {},
+                "melyebb_temak": [], "google_youtube_osszefugges": "", "jovo_heti_figyelendok": []}
+    out = he.grounding_validal(eredmeny, korpusz)
+    assert "benzinár" in out["figyelem_atrendezodes"]["erosodo"]
+    assert "KITALÁLT" not in out["figyelem_atrendezodes"]["erosodo"]   # nem korpuszbeli → kiesik
+
+
+def test_figyelem_adat_rendezett_nem_none():
+    korpusz = {"kulcsszavak": [
+        {"szo": "a", "elteres_szokasostol": 12.0, "irany": "nő", "illeszkedes": "felette", "domen": "d"},
+        {"szo": "b", "elteres_szokasostol": None, "irany": None, "illeszkedes": None, "domen": "d"},
+        {"szo": "c", "elteres_szokasostol": -7.0, "irany": "csökken", "illeszkedes": "alatta", "domen": "d"}]}
+    adat = he.figyelem_adat(korpusz)
+    assert [x["szo"] for x in adat] == ["a", "c"]            # None kiesik, eltérés szerint csökkenő
+    assert adat[0]["elteres"] == 12.0 and adat[1]["elteres"] == -7.0
+
+
+def test_heti_generalas_ir_es_meta(tmp_path):
+    _regresszio_fajl(tmp_path); _youtube_fajl(tmp_path)
+    sdk = _HamisSdk(_teljes_valasz())
+    out = he.heti_generalas(str(tmp_path), "2026-09-29", "2026-10-06T07:00:00+00:00",
+                            kliens=he._HetiKliens(sdk=sdk))
+    assert out is not None
+    p = tmp_path / "heti" / "2026-09-29.json"
+    assert p.exists()
+    mentve = json.loads(p.read_text(encoding="utf-8"))
+    assert mentve["het_kezdet"] == "2026-09-29" and mentve["het_veg"] == "2026-10-05"
+    assert mentve["iso_het"] == "2026-W40"
+    assert mentve["keszult"] == "2026-10-06T07:00:00+00:00"
+    assert mentve["modell"] == "claude-opus-4-8"
+    assert mentve["vezetoi_osszefoglalo"] == ["a", "b"]
+    assert any(x["szo"] == "benzinár" for x in mentve["figyelem"])
+    assert mentve["korpusz"]["napok"] == 0
+
+
+def test_heti_generalas_fail_soft_none(tmp_path):
+    _regresszio_fajl(tmp_path); _youtube_fajl(tmp_path)
+    class _Buko:
+        def uzenet(self, *a, **k): raise RuntimeError("tartós")
+    out = he.heti_generalas(str(tmp_path), "2026-09-29", "2026-10-06T07:00:00+00:00",
+                            kliens=_Buko())
+    assert out is None
+    assert not (tmp_path / "heti" / "2026-09-29.json").exists()
+
+
+def test_heti_index_ir(tmp_path):
+    for h in ("2026-09-22", "2026-09-29"):
+        (tmp_path / "heti").mkdir(parents=True, exist_ok=True)
+        (tmp_path / "heti" / f"{h}.json").write_text("{}", encoding="utf-8")
+    he.heti_index_ir(str(tmp_path))
+    idx = json.loads((tmp_path / "heti" / "index.json").read_text(encoding="utf-8"))
+    assert idx["hetek"] == ["2026-09-22", "2026-09-29"]
+    assert idx["legutolso"] == "2026-09-29"
