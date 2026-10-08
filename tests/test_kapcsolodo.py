@@ -57,3 +57,55 @@ def test_parse_related_limit():
     df = pd.DataFrame({"query": [f"q{i}" for i in range(20)], "value": list(range(20))})
     out = kp._parse_related({"top": df, "rising": df}, limit=15)
     assert len(out["top"]) == 15 and len(out["rising"]) == 15
+
+
+MOST = datetime(2026, 10, 7, 21, tzinfo=timezone.utc)
+
+
+def test_jeloltek_napok_vissza_ablak(tmp_path):
+    _nap(tmp_path, "2026-10-05", [("regi", 99)])
+    _nap(tmp_path, "2026-10-06", [("kozep", 50)])
+    _nap(tmp_path, "2026-10-07", [("uj", 40)])
+    jel = kp.jeloltek(str(tmp_path), {}, MOST, cap=10, staleness_nap=7)
+    assert sorted(k for k, _ in jel) == ["kozep", "uj"]
+
+
+def test_jeloltek_staleness_hatar(tmp_path):
+    _nap(tmp_path, "2026-10-07", [("b", 90)])
+    het = {"b": "2026-09-30T21:00:00+00:00"}    # pontosan 7 nap
+    assert kp.jeloltek(str(tmp_path), het, MOST, cap=5, staleness_nap=7) == [("b", 90)]
+    hat = {"b": "2026-10-01T21:00:00+00:00"}    # 6 nap
+    assert kp.jeloltek(str(tmp_path), hat, MOST, cap=5, staleness_nap=7) == []
+
+
+def test_jeloltek_egyenlo_volumen_nev_szerint(tmp_path):
+    _nap(tmp_path, "2026-10-07", [("z", 50), ("a", 50)])
+    assert kp.jeloltek(str(tmp_path), {}, MOST, cap=1, staleness_nap=7) == [("a", 50)]
+
+
+def test_jeloltek_reggel_es_lapos_formatum(tmp_path):
+    n = tmp_path / "napok"
+    n.mkdir()
+    (n / "2026-10-06.json").write_text(json.dumps(
+        {"trendek": [{"kifejezes": "lapos", "volumen": 10}]}), encoding="utf-8")
+    (n / "2026-10-07.json").write_text(json.dumps(
+        {"reggel": {"trendek": [{"kifejezes": "reggeli", "volumen": 20}]}}), encoding="utf-8")
+    jel = kp.jeloltek(str(tmp_path), {}, MOST, cap=10, staleness_nap=7)
+    assert jel == [("reggeli", 20), ("lapos", 10)]
+
+
+def test_jeloltek_robusztussag(tmp_path):
+    _nap(tmp_path, "2026-10-07", [("ok", 5), ("", 99), ("  ", 98)])
+    p = tmp_path / "napok" / "2026-10-07.json"
+    d = json.loads(p.read_text(encoding="utf-8"))
+    d["este"]["trendek"].append({"kifejezes": "nincsvol", "volumen": None})
+    p.write_text(json.dumps(d), encoding="utf-8")
+    (tmp_path / "napok" / "index.json").write_text("{\"trendek\": [{\"kifejezes\": \"idx\", \"volumen\": 1000}]}", encoding="utf-8")
+    jel = kp.jeloltek(str(tmp_path), {}, MOST, cap=10, staleness_nap=7)
+    assert jel == [("ok", 5), ("nincsvol", 0)]
+
+
+def test_parse_related_ures_es_szokozos_query():
+    df = pd.DataFrame({"query": ["", "  ", " x "], "value": [1, 2, 3]})
+    out = kp._parse_related({"top": df, "rising": None}, limit=15)
+    assert out["top"] == [{"query": "x", "value": 3}]
