@@ -39,11 +39,11 @@ test("heti.html: a fül betölt, a Heti értékelés menüpont aktív", async ({
 test("Infó oldal: adat + elemzés dobozok, csoportcímek, aktív fül + üres lábléc", async ({ page }) => {
   await page.goto("/adatokrol.html");
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Infó");
-  await expect(page.locator("#adatokrol .adat-doboz")).toHaveCount(24);  // 10 Google (+ nemlin-trend, adatforrás-marker, előrejelzés) + 5 YouTube + 3 napi elemzés + 5 havi elemzés doboz
-  await expect(page.locator("#adatokrol .adat-csoport")).toHaveCount(4);  // Google + YouTube + „Az elemzés" (napi) + „A havi elemzés"
+  await expect(page.locator("#adatokrol .adat-doboz")).toHaveCount(28);  // 10 Google (+ nemlin-trend, adatforrás-marker, előrejelzés) + 5 YouTube + 3 napi elemzés + 4 heti elemzés + 5 havi elemzés doboz
+  await expect(page.locator("#adatokrol .adat-csoport")).toHaveCount(5);  // Google + YouTube + „Az elemzés" (napi) + „A heti elemzés" + „A havi elemzés"
   await expect(page.locator("#adatokrol .adat-csoport")).toHaveText([
     "Google Trend adatok", "YouTube Trend adatok", "Az elemzés (napi AI-összefoglaló)",
-    "A havi elemzés (havi AI-összefoglaló)"]);
+    "A heti elemzés (heti AI-összefoglaló)", "A havi elemzés (havi AI-összefoglaló)"]);
   await expect(page.locator("#adatokrol")).toContainText("Google Trends");
   await expect(page.locator("#adatokrol")).toContainText("52 hét heti mediánjához");   // tüntetés-medián
   // nemlineáris (LOESS) trend doboz: nem-parametrikus statisztikai simítás + out-of-sample R² + mindig-görbe
@@ -57,6 +57,8 @@ test("Infó oldal: adat + elemzés dobozok, csoportcímek, aktív fül + üres l
   // elemzés-rész: pontos, precíz — a modell és a „Python számol / AI csak szöveg" elv nevesítve
   await expect(page.locator("#adatokrol")).toContainText("claude-opus-4-8");
   await expect(page.locator("#adatokrol")).toContainText("Python");
+  await expect(page.locator("#adatokrol")).toContainText("hétfő");
+  await expect(page.locator("#adatokrol")).toContainText("ügyek tartóssága");
   await expect(page.locator("#labresz")).toBeAttached();
   // YouTube-doboz: a fül fogalmi kerete (videó-igény, 12 szó/8 kosár, napi/heti rács, VALÓS Python-trend)
   await expect(page.locator("#adatokrol-youtube")).toBeAttached();

@@ -165,6 +165,27 @@
       <p class="adat-magyarazat">Minden nap elemzése elmentődik; az „Elemzés" fül naptárából bármelyik korábbi nap <strong>visszalapozható</strong>.</p>
     </section>
 
+    <h2 class="adat-csoport">A heti elemzés (heti AI-összefoglaló)</h2>
+    <section class="adat-doboz">
+      <h2>Mikor készül</h2>
+      <p>Minden <strong>hétfő reggel</strong>, a reggeli felkapott-gyűjtés után, automatikusan lefut az előző <strong>hétfő-vasárnap</strong> hétre. Az új heti értékelés magától megjelenik a „Heti értékelés" fülön; a korábbi hetek a hét-választóval visszanézhetők.</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Mit tartalmaz</h2>
+      <p>Hat részt: vezetői összefoglaló; a figyelem átrendeződése (mely témák erősödtek/gyengültek a szokásos szintjükhöz képest); az <strong>ügyek tartóssága</strong> és életútja (rövid kiugrás, hosszabb kiugrás, visszatérő); 2-3 mélyebb témaelemzés; a Google- és YouTube-adatok összefüggése; és mit érdemes figyelni a jövő héten.</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Honnan jönnek a számok</h2>
+      <p>A számokat Python számolja a már meglévő mérésekből (a követett szavak heti iránya és a szokásos szinttől való eltérése, a héten felkapott szavak, a YouTube-trendek); a <code>claude-opus-4-8</code> modell ebből írja a szöveget. A modell semmit nem talál ki: okot vagy eseményt csak akkor ír, ha a héten tényleg volt hozzá hír (grounding).</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>A figyelem-diagram</h2>
+      <p>A „figyelem átrendeződése" résznél egy sávdiagram a követett szavakat a szokásos szintjüktől való eltérésük szerint rendezi: a <strong>kék</strong> sávok a szokásos fölötti (erősödő), a <strong>narancs</strong> sávok a szokásos alatti (gyengülő) heteket jelölik. Ez a diagram a VALÓS mért számokból készül.</p>
+    </section>
+
     <h2 class="adat-csoport">A havi elemzés (havi AI-összefoglaló)</h2>
     <section class="adat-doboz">
       <h2>Mi a havi elemzés?</h2>
