@@ -9,7 +9,7 @@ def test_ures_argv(capsys):
 def test_siker(monkeypatch):
     hiv = {}
     monkeypatch.setattr(be.ugyek, "ugy_generalas",
-                        lambda dd, veg, ki, **kw: hiv.setdefault("v", (dd, veg, ki)) or {"ok": 1})
+                        lambda dd, veg, ki, **kw: hiv.setdefault("v", (dd, veg, ki)) and {"ugyek": []})
     assert be.main(["2026-10-07"]) == 0
     assert hiv["v"][1] == "2026-10-07"
 
