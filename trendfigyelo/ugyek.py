@@ -196,3 +196,72 @@ def ugy_elemez(korpusz, kliens=None, modell=MODELL, probak=RETRY_PROBAK,
                              e, i + 2, probak, backoff_mp[i])
                 alvo(backoff_mp[i])
     raise utolso
+
+
+def grounding_validal(eredmeny, korpusz):
+    """Minden ügy `kifejezesek`-je a korpusz kifejezés-halmazára szűrve; üres taggé vált ügy kiesik;
+    érvénytelen `szakpolitika` → determinista fallback a tagokból. Nem mutálja a bemenetet."""
+    korp = {c.get("kifejezes") for c in (korpusz.get("kifejezesek") or [])}
+    tema_map = {c.get("kifejezes"): (c.get("temak") or []) for c in (korpusz.get("kifejezesek") or [])}
+    ugyek = []
+    for ugy in (eredmeny.get("ugyek") or []):
+        kif = [k for k in (ugy.get("kifejezesek") or []) if k in korp]
+        if not kif:
+            continue
+        sp = ugy.get("szakpolitika")
+        if sp not in szakpolitika.SZAKPOLITIKA_SLUGOK:
+            temak = []
+            for k in kif:
+                temak += tema_map.get(k, [])
+            sp = szakpolitika.szakpolitika_besorol(kifejezes=kif[0], temak=temak)
+        ugyek.append({**ugy, "kifejezesek": kif, "szakpolitika": sp})
+    return {**eredmeny, "ugyek": ugyek}
+
+
+def ugy_osszegez(eredmeny, korpusz):
+    """Minden ügy ÉLETÚT-metrikáját a TAGJAI (kifejezései) metrikáiból aggregálja (determinista):
+    napok uniója, első/utolsó nap, napok_szama, életút/mozgás, idővonal (napi jelenlét)."""
+    kmap = {c["kifejezes"]: c for c in (korpusz.get("kifejezesek") or [])}
+    veg = (korpusz.get("ablak") or {}).get("veg")
+    ablak_nap = (korpusz.get("ablak") or {}).get("nap") or 30
+    ugyek = []
+    for ugy in (eredmeny.get("ugyek") or []):
+        tagok = [kmap[k] for k in ugy.get("kifejezesek", []) if k in kmap]
+        napok = sorted({n for t in tagok for n in (t.get("napok") or [])})
+        vol = {}
+        for t in tagok:
+            for p in (t.get("volumen_sor") or []):
+                vol[p["nap"]] = vol.get(p["nap"], 0) + int(p.get("max_volumen") or 0)
+        idovonal = [{"nap": n, "jelen": True, "ossz_volumen": vol.get(n, 0)} for n in napok]
+        kif_agg = {"napok": napok, "elso_nap": napok[0] if napok else None,
+                   "utolso_nap": napok[-1] if napok else None}
+        ugyek.append({**ugy,
+                      "elso_nap": kif_agg["elso_nap"], "utolso_nap": kif_agg["utolso_nap"],
+                      "napok_szama": len(napok),
+                      "eletut": _eletut(kif_agg, veg or napok[-1], ablak_nap) if napok else "egyeb",
+                      "mozgas": _mozgas([{"max_volumen": p["ossz_volumen"]} for p in idovonal]),
+                      "idovonal": idovonal})
+    return {**eredmeny, "ugyek": ugyek}
+
+
+def ugy_ir(docs_data, eredmeny):
+    return json_export._ir_json(Path(docs_data) / "ugyek.json", eredmeny)
+
+
+def ugy_generalas(docs_data, veg_nap, keszult_iso, ablak_nap=30, kliens=None):
+    """Belépési pont: korpusz → Claude (fail-soft: tartós hibán None, NEM ír) → grounding →
+    ügy-összegzés → meta → atomi írás. A keszult_iso/veg_nap PARAMÉTER (nincs argless now())."""
+    korpusz = ugy_korpusz(docs_data, veg_nap, ablak_nap=ablak_nap)
+    try:
+        eredmeny = ugy_elemez(korpusz, kliens=kliens)
+    except Exception as e:   # noqa: BLE001 — tartós API-hiba a bounded retry után: fail-soft
+        _log.error("HIBA: az ügy-elemzés tartósan elhasalt (%s): %s", veg_nap, e)
+        return None
+    eredmeny = grounding_validal(eredmeny, korpusz)
+    eredmeny = ugy_osszegez(eredmeny, korpusz)
+    eredmeny["ablak"] = korpusz["ablak"]
+    eredmeny["keszult"] = keszult_iso
+    eredmeny["szamitva_utc"] = keszult_iso
+    eredmeny["modell"] = MODELL
+    ugy_ir(docs_data, eredmeny)
+    return eredmeny

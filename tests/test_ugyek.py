@@ -195,3 +195,58 @@ def test_ugy_elemez_bounded_retry():
                 raise RuntimeError("int")
             return _valasz()
     assert u.ugy_elemez({}, kliens=_Buko(), alvo=lambda s: None)["ugyek"][0]["szakpolitika"] == "energia_rezsi"
+
+
+def test_grounding_kiszuri_a_nem_korpuszbeli_kifejezest_es_enumot():
+    korpusz = {"kifejezesek": [{"kifejezes": "benzin ára"}, {"kifejezes": "gázolaj"}]}
+    eredmeny = {"ugyek": [
+        {"nev": "Üzemanyag", "kifejezesek": ["benzin ára", "KITALÁLT"], "szakpolitika": "energia_rezsi", "osszefoglalo": "x"},
+        {"nev": "Üres", "kifejezesek": ["NINCS"], "szakpolitika": "egyeb", "osszefoglalo": "y"},
+        {"nev": "Rossz enum", "kifejezesek": ["gázolaj"], "szakpolitika": "HOLDbazis", "osszefoglalo": "z"}]}
+    out = u.grounding_validal(eredmeny, korpusz)
+    nevek = [x["nev"] for x in out["ugyek"]]
+    assert "Üres" not in nevek                                  # üres taggé vált → kiesik
+    uzem = next(x for x in out["ugyek"] if x["nev"] == "Üzemanyag")
+    assert uzem["kifejezesek"] == ["benzin ára"]                # KITALÁLT kiesett
+    rossz = next(x for x in out["ugyek"] if x["nev"] == "Rossz enum")
+    assert rossz["szakpolitika"] in u.szakpolitika.SZAKPOLITIKA_SLUGOK   # érvénytelen enum → determinista fallback
+
+
+def test_ugy_osszegez_a_tagokbol():
+    korpusz = {"kifejezesek": [
+        {"kifejezes": "a", "napok": ["2026-10-01", "2026-10-02"], "elso_nap": "2026-10-01",
+         "utolso_nap": "2026-10-02", "volumen_sor": [{"nap": "2026-10-01", "max_volumen": 10}], "eletut": "egyeb", "mozgas": "stabil"},
+        {"kifejezes": "b", "napok": ["2026-10-02", "2026-10-03"], "elso_nap": "2026-10-02",
+         "utolso_nap": "2026-10-03", "volumen_sor": [{"nap": "2026-10-03", "max_volumen": 20}], "eletut": "egyeb", "mozgas": "erosodo"}]}
+    eredmeny = {"ugyek": [{"nev": "Ü", "kifejezesek": ["a", "b"], "szakpolitika": "egyeb", "osszefoglalo": "s"}]}
+    out = u.ugy_osszegez(eredmeny, korpusz)
+    ugy = out["ugyek"][0]
+    assert ugy["elso_nap"] == "2026-10-01" and ugy["utolso_nap"] == "2026-10-03"
+    assert ugy["napok_szama"] == 3                               # a,b napjainak uniója: 01,02,03
+    assert ugy["eletut"] in ("ujonnan_megfigyelt", "folyamatosan_jelenlevo", "visszatero", "egyeb")
+    assert [p["nap"] for p in ugy["idovonal"]] == ["2026-10-01", "2026-10-02", "2026-10-03"]
+
+
+def test_ugy_generalas_ir_es_meta(tmp_path):
+    (tmp_path / "napok").mkdir(parents=True)
+    (tmp_path / "napok" / "2026-10-07.json").write_text(
+        json.dumps({"este": {"trendek": [{"kifejezes": "benzin ára", "volumen": 50, "temak": [], "hirek": []}]}}),
+        encoding="utf-8")
+    sdk = _Sdk({"ugyek": [{"nev": "Üzemanyag", "kifejezesek": ["benzin ára"],
+                           "szakpolitika": "energia_rezsi", "osszefoglalo": "x"}]})
+    out = u.ugy_generalas(str(tmp_path), "2026-10-07", "2026-10-08T07:00:00+00:00",
+                          kliens=u._UgyKliens(sdk=sdk))
+    assert out is not None
+    mentve = json.loads((tmp_path / "ugyek.json").read_text(encoding="utf-8"))
+    assert mentve["modell"] == "claude-opus-4-8" and mentve["ablak"]["veg"] == "2026-10-07"
+    assert mentve["ugyek"][0]["nev"] == "Üzemanyag" and "idovonal" in mentve["ugyek"][0]
+
+
+def test_ugy_generalas_fail_soft(tmp_path, monkeypatch):
+    monkeypatch.setattr(u.time, "sleep", lambda s: None)        # a bounded retry ne aludjon valósan
+    (tmp_path / "napok").mkdir(parents=True)
+    (tmp_path / "napok" / "2026-10-07.json").write_text(json.dumps({"este": {"trendek": []}}), encoding="utf-8")
+    class _Buko:
+        def uzenet(self, *a, **k): raise RuntimeError("tartós")
+    assert u.ugy_generalas(str(tmp_path), "2026-10-07", "2026-10-08T07:00:00+00:00", kliens=_Buko()) is None
+    assert not (tmp_path / "ugyek.json").exists()
