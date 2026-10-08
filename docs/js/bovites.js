@@ -29,11 +29,15 @@ async function bov_json(url) {
   } catch (e) { return null; }
 }
 
-function bov_elmozdulas_render(cel, elm) {
+const BOV_RENDEZES = { napok: "Időtartam", frissesseg: "Frissesség", mozgas: "Mozgás" };
+const BOV_MOZGAS_SORREND = { erosodo: 0, stabil: 1, lecsengo: 2, nem_megallapithato: 3 };
+const bov_allapot = { szakpolitika: "", rendezes: "napok", elm: null, ugy: null };
+
+function bov_elmozdulas_render(cel, elm, szak) {
   cel.innerHTML = "";
   cel.appendChild(bel("h2", "elemzes-csoport-cim", "Szokatlan változások"));
-  const lista = (elm && elm.szokatlan_lista) || [];
   const kulcsszavak = (elm && elm.kulcsszavak) || {};
+  const lista = ((elm && elm.szokatlan_lista) || []).filter((szo) => !szak || (kulcsszavak[szo] || {}).szakpolitika === szak);
   if (!elm) { cel.appendChild(bel("p", "ures", "A szokatlan változások adata nem érhető el.")); return; }
   if (!lista.length) { cel.appendChild(bel("p", "ures", "Nincs szokatlan elmozdulás.")); return; }
   const racs = bel("div", "bovites-elm-racs");
@@ -84,15 +88,55 @@ function bov_ugy_kartya(u) {
   return k;
 }
 
-function bov_ugyek_render(cel, ugy) {
+function bov_ugyek_render(cel, ugy, szak, rend) {
   cel.innerHTML = "";
   cel.appendChild(bel("h2", "elemzes-csoport-cim", "Ügyek életútja"));
   if (!ugy) { cel.appendChild(bel("p", "ures", "Az ügyek adata nem érhető el.")); return; }
-  const ugyek = (ugy.ugyek || []).slice().sort((a, b) => (b.napok_szama || 0) - (a.napok_szama || 0));
+  const rendezo = {
+    napok: (a, b) => (b.napok_szama || 0) - (a.napok_szama || 0),
+    frissesseg: (a, b) => String(b.utolso_nap || "").localeCompare(String(a.utolso_nap || "")),
+    mozgas: (a, b) => (BOV_MOZGAS_SORREND[a.mozgas] ?? 9) - (BOV_MOZGAS_SORREND[b.mozgas] ?? 9),
+  }[rend] || ((a, b) => 0);
+  const ugyek = (ugy.ugyek || []).filter((u) => !szak || u.szakpolitika === szak).slice().sort(rendezo);
   if (!ugyek.length) { cel.appendChild(bel("p", "ures", "Nincs megjeleníthető ügy.")); return; }
   const lista = bel("div", "bovites-ugy-lista");
   ugyek.forEach((u) => lista.appendChild(bov_ugy_kartya(u)));
   cel.appendChild(lista);
+}
+
+function bov_rajzol() {
+  bov_elmozdulas_render(document.getElementById("bovites-elmozdulas"), bov_allapot.elm, bov_allapot.szakpolitika);
+  bov_ugyek_render(document.getElementById("bovites-ugyek"), bov_allapot.ugy, bov_allapot.szakpolitika, bov_allapot.rendezes);
+  document.querySelectorAll(".bovites-szuro-chip").forEach((b) =>
+    b.setAttribute("aria-pressed", String(b.dataset.szakpolitika === bov_allapot.szakpolitika)));
+  document.querySelectorAll(".bovites-rendezes-gomb").forEach((b) =>
+    b.setAttribute("aria-pressed", String(b.dataset.rendezes === bov_allapot.rendezes)));
+}
+
+function bov_szuro_epit(cel) {
+  if (!cel) return;
+  cel.innerHTML = "";
+  const sor = bel("div", "bovites-szuro-sor");
+  const chip = (kulcs, felirat) => {
+    const b = bel("button", "bovites-szuro-chip", felirat);
+    b.type = "button";
+    b.dataset.szakpolitika = kulcs;
+    b.addEventListener("click", () => { bov_allapot.szakpolitika = kulcs; bov_rajzol(); });
+    sor.appendChild(b);
+  };
+  chip("", "Összes");
+  Object.keys(BOV_SZAKPOLITIKA).forEach((k) => chip(k, BOV_SZAKPOLITIKA[k]));
+  cel.appendChild(sor);
+  const rsor = bel("div", "bovites-szuro-sor");
+  rsor.appendChild(bel("span", "halvany", "Ügyek rendezése:"));
+  Object.keys(BOV_RENDEZES).forEach((k) => {
+    const b = bel("button", "bovites-rendezes-gomb", BOV_RENDEZES[k]);
+    b.type = "button";
+    b.dataset.rendezes = k;
+    b.addEventListener("click", () => { bov_allapot.rendezes = k; bov_rajzol(); });
+    rsor.appendChild(b);
+  });
+  cel.appendChild(rsor);
 }
 
 async function bov_init() {
@@ -107,8 +151,10 @@ async function bov_init() {
     const ab = ugy && ugy.ablak;
     fejlec.textContent = ab ? "Ablak: " + ab.kezdet + " – " + ab.veg + " (" + ab.nap + " nap)" : "";
   }
-  bov_elmozdulas_render(document.getElementById("bovites-elmozdulas"), elm);
-  bov_ugyek_render(document.getElementById("bovites-ugyek"), ugy);
+  bov_allapot.elm = elm;
+  bov_allapot.ugy = ugy;
+  bov_szuro_epit(document.getElementById("bovites-szuro"));
+  bov_rajzol();
 }
 
 bov_init();

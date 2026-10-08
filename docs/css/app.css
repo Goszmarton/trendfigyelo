@@ -508,3 +508,9 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 .bovites-idovonal { display: flex; gap: 1px; height: 14px; margin-top: 0.4rem; }
 .bovites-nap { flex: 1 1 0; min-width: 2px; background: #e6eaef; border-radius: 1px; }
 .bovites-nap.jelen { background: #2a78d6; }
+
+.bovites-szuro-sor { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-bottom: 0.5rem; }
+.bovites-szuro-chip, .bovites-rendezes-gomb { font-size: .8rem; padding: .3rem .7rem; border: 1px solid #cfcfcf;
+  border-radius: 999px; background: #f6f6f6; cursor: pointer; }
+.bovites-szuro-chip:hover, .bovites-rendezes-gomb:hover { background: #ececec; }
+.bovites-szuro-chip[aria-pressed="true"], .bovites-rendezes-gomb[aria-pressed="true"] { background: #3366cc; color: #fff; border-color: #3366cc; }
