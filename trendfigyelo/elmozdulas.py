@@ -81,16 +81,30 @@ def _betolt(docs_data, nev):
         return {}
 
 
-def _masodlagos_pontok(ablakok, iv):
-    """A másodlagos nyers ablakok közül az intervallum ablakával (kezdet+vég) egyezőt adja; fail-soft: []."""
+def _ablak_pontok(ablakok, iv):
+    """A nyers ablakok közül az intervallumot TARTALMAZÓ (legszűkebb), ennek híján a legközelebbi végű
+    (>= az intervallum vége) pontjai, az intervallum ablakára szűrve. Ha az intervallumnak nincs ablaka:
+    a legutolsó nyers ablak. Fail-soft: [] ."""
     try:
-        for ab in ablakok or []:
-            if (ab.get("ablak_kezdet_utc") == iv.get("ablak_kezdet_utc")
-                    and ab.get("ablak_veg_utc") == iv.get("ablak_veg_utc")):
-                return ab.get("pontok") or []
-    except (AttributeError, TypeError):
-        pass
-    return []
+        ablakok = [a for a in (ablakok or []) if isinstance(a, dict)]
+        if not ablakok:
+            return []
+        if not (iv.get("ablak_kezdet_utc") and iv.get("ablak_veg_utc")):
+            return ablakok[-1].get("pontok") or []
+        k, v = _ts(iv["ablak_kezdet_utc"]), _ts(iv["ablak_veg_utc"])
+        ak = [(_ts(a["ablak_kezdet_utc"]), _ts(a["ablak_veg_utc"]), a) for a in ablakok
+              if a.get("ablak_kezdet_utc") and a.get("ablak_veg_utc")]
+        tart = [x for x in ak if x[0] <= k and x[1] >= v]
+        if tart:
+            ab = min(tart, key=lambda x: x[1] - x[0])[2]
+        else:
+            vegu = [x for x in ak if x[1] >= v]
+            if not vegu:
+                return []
+            ab = max(vegu, key=lambda x: x[1])[2]
+        return [p for p in (ab.get("pontok") or []) if k <= _ts(p["idopont_utc"]) <= v]
+    except (AttributeError, TypeError, ValueError, KeyError):
+        return []
 
 
 def elmozdulas_szamit(docs_data):
@@ -123,11 +137,7 @@ def elmozdulas_szamit(docs_data):
         szokatlan = illeszkedes in ("felette", "alatta")
         mad = float(iv.get("reziduum_szokasos") or 0.0)
         mai = float(iv.get("mai_reziduum") or 0.0)
-        if masodlagos_forras:
-            pontok = _masodlagos_pontok(nyers2.get(szo), iv)
-        else:
-            ablakok = nyers.get(szo) or []
-            pontok = (ablakok[-1].get("pontok") if ablakok else []) or []
+        pontok = _ablak_pontok(nyers2.get(szo) if masodlagos_forras else nyers.get(szo), iv)
         tart, ota = _idotartam(iv, pontok)
         out[szo] = {
             "szokatlan": szokatlan,

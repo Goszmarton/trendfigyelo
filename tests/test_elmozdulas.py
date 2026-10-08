@@ -244,3 +244,24 @@ def test_masodlagos_idotartam_failsoft_nyers_nelkul(tmp_path):
     _reg2(tmp_path, {"a": _w({"ervenyes": False})}, {"a": _w(_iv())})
     k = em.elmozdulas_szamit(str(tmp_path))["kulcsszavak"]["a"]
     assert k["szokatlan"] is True and k["idotartam_pont"] == 0 and k["idotartam_ota_utc"] is None
+
+
+def test_masodlagos_idotartam_tartalmazo_hosszabb_ablakbol(tmp_path):
+    iv = _iv(ablak_kezdet_utc="2026-10-01T00:00:00+00:00", ablak_veg_utc="2026-10-07T00:00:00+00:00")
+    _reg2(tmp_path, {"a": _w({"ervenyes": False})}, {"a": _w(iv)})
+    pts = [_p2(1, 30), _p2(5, 90), _p2(6, 92), _p2(7, 95), _p2(8, 99)]   # a 8-as az intervallumon kívül
+    _ir(tmp_path / "kulcsszo_masodlagos_nyers.json", {"kulcsszavak": {"a": [
+        {"ablak_kezdet_utc": "2026-07-01T00:00:00+00:00", "ablak_veg_utc": "2026-10-08T00:00:00+00:00",
+         "pontok": [_p2(1, 1)] + pts}]}})
+    k = em.elmozdulas_szamit(str(tmp_path))["kulcsszavak"]["a"]
+    assert k["idotartam_pont"] == 3 and k["idotartam_ota_utc"] == "2026-10-05T00:00:00+00:00"
+
+
+def test_masodlagos_idotartam_nincs_tartalmazo_ablak_failsoft(tmp_path):
+    iv = _iv(ablak_kezdet_utc="2026-10-01T00:00:00+00:00", ablak_veg_utc="2026-10-07T00:00:00+00:00")
+    _reg2(tmp_path, {"a": _w({"ervenyes": False})}, {"a": _w(iv)})
+    _ir(tmp_path / "kulcsszo_masodlagos_nyers.json", {"kulcsszavak": {"a": [
+        {"ablak_kezdet_utc": "2026-07-01T00:00:00+00:00", "ablak_veg_utc": "2026-10-03T00:00:00+00:00",
+         "pontok": [_p2(1, 30), _p2(2, 99)]}]}})
+    k = em.elmozdulas_szamit(str(tmp_path))["kulcsszavak"]["a"]
+    assert k["idotartam_pont"] == 0 and k["idotartam_ota_utc"] is None
