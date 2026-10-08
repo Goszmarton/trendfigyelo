@@ -127,3 +127,131 @@ def heti_korpusz(docs_data, het_kezdet_iso):
         "felkapott": felkapott,
         "youtube": _youtube_het(docs_data),
     }
+
+
+def _valasz_sema():
+    """A heti értékelés 6 részének strukturált sémája (spec §4). Minden mező kötelező (üres megengedett),
+    additionalProperties:False."""
+    str_lista = {"type": "array", "items": {"type": "string"}}
+    return {
+        "type": "object", "additionalProperties": False,
+        "required": ["vezetoi_osszefoglalo", "figyelem_atrendezodes", "ugyek_eletutja",
+                     "melyebb_temak", "google_youtube_osszefugges", "jovo_heti_figyelendok"],
+        "properties": {
+            "vezetoi_osszefoglalo": {"type": "array", "maxItems": 5, "items": {"type": "string"}},
+            "figyelem_atrendezodes": {
+                "type": "object", "additionalProperties": False,
+                "required": ["erosodo", "gyengulo"],
+                "properties": {"erosodo": str_lista, "gyengulo": str_lista}},
+            "ugyek_eletutja": {
+                "type": "object", "additionalProperties": False,
+                "required": ["rovid_kiugras", "hosszabb_kiugras", "visszatero"],
+                "properties": {"rovid_kiugras": {"type": "string"},
+                               "hosszabb_kiugras": {"type": "string"},
+                               "visszatero": {"type": "string"}}},
+            "melyebb_temak": {
+                "type": "array", "maxItems": 3,
+                "items": {"type": "object", "additionalProperties": False,
+                          "required": ["tema", "keresesi_palya", "kapcsolodo_kifejezesek",
+                                       "ellenorzott_esemenyek", "magyarazat"],
+                          "properties": {"tema": {"type": "string"},
+                                         "keresesi_palya": {"type": "string"},
+                                         "kapcsolodo_kifejezesek": {"type": "string"},
+                                         "ellenorzott_esemenyek": {"type": "string"},
+                                         "magyarazat": {"type": "string"}}}},
+            "google_youtube_osszefugges": {"type": "string"},
+            "jovo_heti_figyelendok": {"type": "array", "items": {"type": "string"}},
+        },
+    }
+
+
+RENDSZER_PROMPT_HETI = (
+    "Heti értékelést készítő elemző vagy egy magyar Google Trends és YouTube figyelő oldalhoz. A "
+    "bemeneted egy HETI korpusz az előző hétfő–vasárnap hétről: (1) a KÖVETETT keresőszavak heti "
+    "iránya (nő/csökken/stagnál), a szokásos szintjükhöz mért helyzete (felette/alatta/illeszkedik) "
+    "és a szokásostól való eltérésük; (2) a héten FELKAPOTT (trendelt) keresőszavak, szavanként azzal, "
+    "hogy hány külön napon trendeltek, a legmagasabb volumennel, a Google-témacímkékkel és néhány "
+    "hír-címmel; (3) a YouTube-keresőszavak heti iránya/szintje. A feladatod az ügyek tartósságának és "
+    "ÖSSZEFÜGGÉSÉNEK értékelése — mi tartott ki, mi volt rövid kiugrás, mi tért vissza, és hol látszik "
+    "kapcsolat a témák és a két adatforrás között. "
+    "SZABÁLYOK, kivétel nélkül: "
+    "(1) MINDEN kimenet magyar nyelven, LAIKUS olvasónak, folyó mondatokban — SOHA ne írj mezőnevet, "
+    "JSON-t vagy technikai kulcsot a szövegbe. "
+    "(2) GROUNDING: kizárólag a kapott korpusz számaiból/szavaiból/híreiből dolgozol; keresőszót, "
+    "eseményt vagy okot SOHA nem találsz ki. Okot vagy eseményt CSAK akkor írsz, ha a korpuszban "
+    "ténylegesen van hozzá hír — hír nélkül csak a megfigyelt mozgást írod le, magyarázat nélkül. "
+    "(3) A hat rész: "
+    "`vezetoi_osszefoglalo` = legfeljebb 5 megállapítás arról, mi változott a héten és miért érdemes "
+    "vele foglalkozni (ha csendes volt a hét, ezt őszintén jelezd). "
+    "`figyelem_atrendezodes` = mely témák ERŐSÖDTEK (`erosodo`) és mely GYENGÜLTEK (`gyengulo`) a "
+    "szokásos szintjükhöz képest — az illeszkedés/irány/eltérés alapján. "
+    "`ugyek_eletutja` = az ügyek tartóssága: `rovid_kiugras` (ami csak egy-két napig szökött fel), "
+    "`hosszabb_kiugras` (ami több napon át kitartott), `visszatero` (ami a héten belül vagy korábbról "
+    "vissza-visszatért). "
+    "`melyebb_temak` = 2–3 kiemelt téma MÉLYEBB elemzése, mindegyikhez: `keresesi_palya` (hogyan "
+    "mozgott a héten a keresés), `kapcsolodo_kifejezesek` (a korpuszból kapcsolódó szavak), "
+    "`ellenorzott_esemenyek` (CSAK a korpusz hír-címeiből), `magyarazat` (grounded értelmezés). "
+    "`google_youtube_osszefugges` = hol látszik közös vagy párhuzamos mozgás a követett Google-szavak "
+    "és a YouTube-szavak között (téma- vagy iránybeli egybeesés) — ha nincs, ezt mondd ki. "
+    "`jovo_heti_figyelendok` = mire érdemes figyelni a jövő héten, a heti pályából és a visszatérőkből "
+    "levezetve, ÓVATOSAN (ez nem eseményjóslás, hanem figyelmeztetés, mit érdemes nézni). "
+    "(4) Ahol a fogalmazás óvatosabb, azt a mondat maga hordozza; a rövid gondolatjel „–”."
+)
+
+
+MODELL = "claude-opus-4-8"
+MAX_TOKENS_HETI = 64000   # gondolkodás + strukturált kimenet KÖZÖS kerete; a heti a napi (32000) és a
+#  havi (128000) közt — 6 rész + 2–3 mély elemzés. Csonkolásnál (json.loads hiba) emelni (max 128000).
+
+
+class _HetiKliens:
+    """A heti Claude-kliens: az anthropic SDK-t STREAMELVE hívja strukturált kimenettel (a havi_nlp
+    _NlpKliens mintája). Az `sdk` injektálható (teszt); None → anthropic.Anthropic() a kulccsal."""
+
+    def __init__(self, sdk=None):
+        self._sdk = sdk
+
+    def _kliens(self):
+        if self._sdk is not None:
+            return self._sdk
+        import anthropic
+        return anthropic.Anthropic()
+
+    def uzenet(self, korpusz, modell):
+        kliens = self._kliens()
+        with kliens.messages.stream(
+            model=modell, max_tokens=MAX_TOKENS_HETI,
+            thinking={"type": "adaptive"},
+            output_config={"effort": "medium",
+                           "format": {"type": "json_schema", "schema": _valasz_sema()}},
+            system=RENDSZER_PROMPT_HETI,
+            messages=[{"role": "user", "content":
+                       "Értékeld az alábbi heti korpuszt (JSON). Csak ebből dolgozz:\n"
+                       + json.dumps(korpusz, ensure_ascii=False)}],
+        ) as folyam:
+            valasz = folyam.get_final_message()
+        szoveg = next(b.text for b in valasz.content if b.type == "text")
+        return json.loads(szoveg)
+
+
+RETRY_PROBAK = 3
+RETRY_BACKOFF_MP = (5, 20, 60)
+
+
+def heti_elemez(korpusz, kliens=None, modell=MODELL,
+                probak=RETRY_PROBAK, backoff_mp=RETRY_BACKOFF_MP, alvo=None):
+    """A heti Claude-hívás BOUNDED RETRY-vel (a havi_nlp_elemez mintája): intermittens API-hibánál
+    `probak` próba, közöttük `backoff_mp` várakozás; csak az utolsó bukás propagál."""
+    kliens = kliens or _HetiKliens()
+    alvo = alvo if alvo is not None else time.sleep
+    utolso = None
+    for i in range(probak):
+        try:
+            return kliens.uzenet(korpusz, modell)
+        except Exception as e:   # noqa: BLE001 — intermittens API-hiba: bounded retry, végül propagál
+            utolso = e
+            if i + 1 < probak:
+                _log.warning("FIGYELEM: a heti elemzés elhasalt (%s); újrapróba %d/%d %d mp múlva.",
+                             e, i + 2, probak, backoff_mp[i])
+                alvo(backoff_mp[i])
+    raise utolso

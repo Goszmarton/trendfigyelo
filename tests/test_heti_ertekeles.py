@@ -100,3 +100,74 @@ def test_heti_korpusz_youtube_ervenyes_es_ervenytelen(tmp_path):
     yt = {y["szo"]: y for y in k["youtube"]}
     assert yt["szorongás"]["irany"] == "stagnál" and yt["szorongás"]["nincs_adat"] is False
     assert yt["fejfájás"]["nincs_adat"] is True and yt["fejfájás"]["irany"] is None
+
+
+def test_valasz_sema_hat_resz():
+    s = he._valasz_sema()
+    assert s["additionalProperties"] is False
+    props = s["properties"]
+    assert set(s["required"]) == {
+        "vezetoi_osszefoglalo", "figyelem_atrendezodes", "ugyek_eletutja",
+        "melyebb_temak", "google_youtube_osszefugges", "jovo_heti_figyelendok"}
+    assert props["vezetoi_osszefoglalo"]["maxItems"] == 5
+    assert set(props["figyelem_atrendezodes"]["required"]) == {"erosodo", "gyengulo"}
+    assert set(props["ugyek_eletutja"]["required"]) == {"rovid_kiugras", "hosszabb_kiugras", "visszatero"}
+    assert props["melyebb_temak"]["maxItems"] == 3
+    tema = props["melyebb_temak"]["items"]
+    assert set(tema["required"]) == {
+        "tema", "keresesi_palya", "kapcsolodo_kifejezesek", "ellenorzott_esemenyek", "magyarazat"}
+    assert tema["additionalProperties"] is False
+
+
+def test_rendszer_prompt_grounding_es_hat_resz():
+    p = he.RENDSZER_PROMPT_HETI
+    assert "hétfő" in p and "vasárnap" in p
+    assert "GROUNDING" in p or "nem találsz ki" in p
+    assert "tartóssság" in p or "tartóss" in p or "tartós" in p   # az ügyek tartóssága
+    assert "ellenőrzött" in p or "hír" in p                       # események csak hírből
+
+
+class _HamisStream:
+    def __init__(self, valasz): self._v = valasz
+    def __enter__(self): return self
+    def __exit__(self, *a): return False
+    def get_final_message(self):
+        class _B:
+            type = "text"
+            text = None
+        b = _B(); b.text = json.dumps(self._v, ensure_ascii=False)
+        return type("M", (), {"content": [b]})
+
+
+class _HamisSdk:
+    def __init__(self, valasz): self.messages = self; self._v = valasz; self.hivasok = 0
+    def stream(self, **kw): self.hivasok += 1; return _HamisStream(self._v)
+
+
+def _teljes_valasz():
+    return {"vezetoi_osszefoglalo": ["a", "b"],
+            "figyelem_atrendezodes": {"erosodo": ["benzinár"], "gyengulo": ["nyugdíj"]},
+            "ugyek_eletutja": {"rovid_kiugras": "x", "hosszabb_kiugras": "y", "visszatero": "z"},
+            "melyebb_temak": [{"tema": "T", "keresesi_palya": "p", "kapcsolodo_kifejezesek": "k",
+                               "ellenorzott_esemenyek": "e", "magyarazat": "m"}],
+            "google_youtube_osszefugges": "gy",
+            "jovo_heti_figyelendok": ["f1"]}
+
+
+def test_heti_elemez_mock_sdk_atveszi_a_valaszt():
+    sdk = _HamisSdk(_teljes_valasz())
+    out = he.heti_elemez({"het_kezdet": "2026-09-29", "kulcsszavak": [], "felkapott": [], "youtube": []},
+                         kliens=he._HetiKliens(sdk=sdk))
+    assert out["vezetoi_osszefoglalo"] == ["a", "b"]
+    assert sdk.hivasok == 1
+
+
+def test_heti_elemez_bounded_retry(monkeypatch):
+    class _Buko:
+        def uzenet(self, *a, **k):
+            self.n = getattr(self, "n", 0) + 1
+            if self.n < 2:
+                raise RuntimeError("intermittens")
+            return _teljes_valasz()
+    out = he.heti_elemez({}, kliens=_Buko(), alvo=lambda s: None)
+    assert out["google_youtube_osszefugges"] == "gy"
