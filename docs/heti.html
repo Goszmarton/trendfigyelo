@@ -3,35 +3,33 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Havi elemzés – Trendfigyelő</title>
+  <title>Heti értékelés – Trendfigyelő</title>
   <link rel="stylesheet" href="css/app.css">
-  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
 </head>
 <body>
   <nav id="fomenu" aria-label="Fő menü">
     <a href="elemzes.html">Napi Elemzések</a>
-    <a href="heti.html">Heti értékelés</a>
-    <a href="havi.html" class="aktiv" aria-current="page">Havi elemzés</a>
+    <a href="heti.html" class="aktiv" aria-current="page">Heti értékelés</a>
+    <a href="havi.html">Havi elemzés</a>
     <a href="trendek.html">Google Trendek</a>
     <a href="youtube.html">YouTube Trendek</a>
     <a href="adatokrol.html">Infó</a>
   </nav>
 
   <header class="fejlec-doboz">
-    <h1>Havi elemzés</h1>
-    <p class="halvany" id="havi-fejlec">Betöltés…</p>
+    <h1>Heti értékelés</h1>
+    <p class="halvany" id="heti-fejlec">Betöltés…</p>
   </header>
 
-  <main id="havi">
-    <aside id="havi-honap-panel" aria-label="Hónap választó"></aside>
-    <section id="havi-tartalom" aria-live="polite"></section>
+  <main id="heti">
+    <aside id="heti-het-panel" aria-label="Hét választó"></aside>
+    <section id="heti-tartalom" aria-live="polite"></section>
   </main>
 
   <footer id="labresz" aria-label="Lábléc"></footer>
 
   <script src="js/app.js"></script>
   <script src="vendor/chartjs/chart.umd.js"></script>
-  <script src="vendor/leaflet/leaflet.js"></script>
-  <script src="js/havi.js"></script>
+  <script src="js/heti.js"></script>
 </body>
 </html>
