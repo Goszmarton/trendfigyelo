@@ -173,3 +173,58 @@ def test_gyujt_soft_fail_kihagy(tmp_path):
 def test_kapcsolodo_ir(tmp_path):
     p = kp.kapcsolodo_ir(str(tmp_path), {"frissitve": "x", "kifejezesek": []})
     assert Path(p).exists() and json.loads(Path(p).read_text(encoding="utf-8"))["frissitve"] == "x"
+
+
+def _bej(kif, lek):
+    return {"kifejezes": kif, "lekerdezve": lek, "volumen": 1,
+            "top": [{"query": "t", "value": 1}], "rising": [{"query": "r", "value": 2}]}
+
+
+def _ir_kapcs(tmp_path, bejegyzesek):
+    (tmp_path / "kapcsolodo.json").write_text(
+        json.dumps({"frissitve": "x", "kifejezesek": bejegyzesek}, ensure_ascii=False), encoding="utf-8")
+
+
+def test_gyujt_merge_sort_retencio(tmp_path):
+    regi = [_bej("old1", "2026-09-01T00:00:00+00:00"), _bej("old2", "2026-09-10T00:00:00+00:00"),
+            _bej("old3", "2026-09-20T00:00:00+00:00")]
+    _ir_kapcs(tmp_path, regi)
+    _nap(tmp_path, "2026-10-07", [("uj", 80)])
+    tr = _FakeTr({"uj": {"top": _df([("uj ar", 5)]), "rising": _df([])}})
+    most = datetime(2026, 10, 7, 21, tzinfo=timezone.utc)
+    out = kp.gyujt(str(tmp_path), _FakeKliens(tr), _Cfg(), most, retencio=3)
+    nevek = [k["kifejezes"] for k in out["kifejezesek"]]
+    assert nevek == ["uj", "old3", "old2"]
+    assert out["kifejezesek"][1] == regi[2] and out["kifejezesek"][2] == regi[1]
+    tr2 = _FakeTr({"uj": {"top": _df([("uj ar", 5)]), "rising": _df([])}})
+    out2 = kp.gyujt(str(tmp_path), _FakeKliens(tr2), _Cfg(), most, retencio=30)
+    assert [k["kifejezes"] for k in out2["kifejezesek"]] == ["uj", "old3", "old2", "old1"]
+
+
+def test_gyujt_friss_kizar_es_cap(tmp_path):
+    most = datetime(2026, 10, 7, 21, tzinfo=timezone.utc)
+    friss = _bej("benzin", "2026-10-06T21:00:00+00:00")
+    _ir_kapcs(tmp_path, [friss])
+    _nap(tmp_path, "2026-10-07", [("benzin", 99), ("a", 50), ("b", 40), ("c", 30)])
+    ures = {"top": _df([]), "rising": _df([])}
+    tr = _FakeTr({"benzin": ures, "a": ures, "b": ures, "c": ures})
+    out = kp.gyujt(str(tmp_path), _FakeKliens(tr), _Cfg(), most, cap=2)
+    hivott = [h[0] for h in tr.hivott]
+    assert "benzin" not in hivott
+    assert len(hivott) == 2
+    assert friss in out["kifejezesek"]
+
+
+def test_gyujt_rising_tarolva(tmp_path):
+    _nap(tmp_path, "2026-10-07", [("benzin", 90)])
+    tr = _FakeTr({"benzin": {"top": _df([]), "rising": _df([("arsapka", 250)])}})
+    out = kp.gyujt(str(tmp_path), _FakeKliens(tr), _Cfg(), datetime(2026, 10, 7, 21, tzinfo=timezone.utc))
+    assert out["kifejezesek"][0]["rising"] == [{"query": "arsapka", "value": 250}]
+
+
+def test_gyujt_serult_json_nem_dob(tmp_path):
+    (tmp_path / "kapcsolodo.json").write_text("{nemjson", encoding="utf-8")
+    _nap(tmp_path, "2026-10-07", [("benzin", 90)])
+    tr = _FakeTr({"benzin": {"top": _df([]), "rising": _df([])}})
+    out = kp.gyujt(str(tmp_path), _FakeKliens(tr), _Cfg(), datetime(2026, 10, 7, 21, tzinfo=timezone.utc))
+    assert isinstance(out, dict) and out["kifejezesek"][0]["kifejezes"] == "benzin"
