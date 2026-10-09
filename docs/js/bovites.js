@@ -57,17 +57,38 @@ function bov_elmozdulas_render(cel, elm, szak) {
   cel.appendChild(racs);
 }
 
-// napi jelenlét-sáv: egy cella / nap; jelen = kitöltött, nincs = halvány; a cím tartalmazza a napot + volument
-function bov_idovonal(sor) {
+// napi jelenlét-idővonal: egy cella / nap (bal=régebbi, jobb=újabb). Jelen = kék, a volumen szerint árnyalva
+// (sötétebb = több keresés), nincs jelen = halvány. Felirat + jelmagyarázat + a két végdátum segít az értelmezésben.
+function bov_idovonal(sor, elso, utolso) {
+  const doboz = bel("div", "bovites-idovonal-doboz");
+  doboz.appendChild(bel("div", "bovites-idovonal-cim halvany", "Napi jelenlét az ablakban (régebbi → újabb):"));
   const sav = bel("div", "bovites-idovonal");
   sav.setAttribute("role", "img");
-  sav.setAttribute("aria-label", "Napi jelenlét az ablakban");
+  sav.setAttribute("aria-label", "Napi jelenlét" + (elso && utolso ? " " + elso + "-tól " + utolso + "-ig" : "")
+    + ": sötétebb kék = több keresés aznap, halvány = nincs jelen.");
+  const volok = (sor || []).filter((p) => p.jelen).map((p) => Number(p.ossz_volumen) || 0);
+  const maxVol = volok.length ? Math.max.apply(null, volok) : 0;
   (sor || []).forEach((p) => {
     const c = bel("span", "bovites-nap" + (p.jelen ? " jelen" : ""));
+    if (p.jelen) {
+      const t = maxVol > 0 ? (Number(p.ossz_volumen) || 0) / maxVol : 1;
+      c.style.backgroundColor = "rgba(42, 120, 214, " + (0.35 + 0.65 * t).toFixed(2) + ")";
+    }
     c.title = p.nap + (p.jelen ? " – jelen, összvolumen: " + p.ossz_volumen : " – nincs jelen");
     sav.appendChild(c);
   });
-  return sav;
+  doboz.appendChild(sav);
+  const jm = bel("div", "bovites-idovonal-jelmagy halvany");
+  jm.appendChild(bel("span", "bovites-idovonal-datum", elso || ""));
+  const kulcs = bel("span", "bovites-idovonal-kulcs");
+  kulcs.appendChild(bel("span", "bovites-nap jelen bovites-nap-minta"));
+  kulcs.appendChild(document.createTextNode(" jelen (sötétebb = több keresés) · "));
+  kulcs.appendChild(bel("span", "bovites-nap bovites-nap-minta"));
+  kulcs.appendChild(document.createTextNode(" nincs jelen"));
+  jm.appendChild(kulcs);
+  jm.appendChild(bel("span", "bovites-idovonal-datum", utolso || ""));
+  doboz.appendChild(jm);
+  return doboz;
 }
 
 function bov_ugy_kartya(u) {
@@ -84,7 +105,7 @@ function bov_ugy_kartya(u) {
   k.appendChild(chipek);
   k.appendChild(bel("div", "bovites-meta halvany",
     u.elso_nap + " – " + u.utolso_nap + " · " + u.napok_szama + " nap"));
-  k.appendChild(bov_idovonal(u.idovonal));
+  k.appendChild(bov_idovonal(u.idovonal, u.elso_nap, u.utolso_nap));
   return k;
 }
 
@@ -110,9 +131,10 @@ function bov_kapcs_ertek(v) {
   return v == null ? "" : String(v);
 }
 
-function bov_kapcs_lista(cim, sorok, rising) {
+function bov_kapcs_lista(cim, sorok, rising, sugo) {
   const oszlop = bel("div", "bovites-kapcs-oszlop");
   oszlop.appendChild(bel("h4", "bovites-kapcs-oszlopcim", cim));
+  if (sugo) oszlop.appendChild(bel("div", "bovites-kapcs-sugo halvany", sugo));
   const chipek = bel("div", "bovites-chipek");
   (sorok || []).forEach((s) => {
     const nagy = rising && (s.value === "Breakout" || (typeof s.value === "number" && s.value >= 5000));
@@ -138,8 +160,10 @@ function bov_kapcsolodo_render(cel, kapcs) {
     const kartya = bel("article", "bovites-kapcs-kartya");
     kartya.appendChild(bel("h3", "bovites-kapcs-cim", k.kifejezes));
     const ketto = bel("div", "bovites-kapcs-ketto");
-    ketto.appendChild(bov_kapcs_lista("Top (megszokott)", k.top, false));
-    ketto.appendChild(bov_kapcs_lista("Felfutó", k.rising, true));
+    ketto.appendChild(bov_kapcs_lista("Top (megszokott)", k.top, false,
+      "A szám = relatív népszerűség 0–100 (100 = a leggyakoribb kapcsolódó keresés)."));
+    ketto.appendChild(bov_kapcs_lista("Felfutó", k.rising, true,
+      "A szám = mennyivel nőtt a keresés; a „Breakout” kiugró (nagy) felfutás."));
     kartya.appendChild(ketto);
     racs.appendChild(kartya);
   });

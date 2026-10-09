@@ -507,14 +507,22 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 .bovites-chip { padding: 0.1rem 0.5rem; border: 1px solid #d5dce5; border-radius: 6px; font-size: 0.85rem; color: #444; }
 .bovites-osszefoglalo { margin: 0.4rem 0; line-height: 1.45; }
 .bovites-meta { font-size: 0.85rem; }
-.bovites-idovonal { display: flex; gap: 1px; height: 14px; margin-top: 0.4rem; }
+.bovites-idovonal-doboz { margin-top: 0.5rem; }
+.bovites-idovonal-cim { font-size: 0.8rem; margin-bottom: 0.2rem; }
+.bovites-idovonal { display: flex; gap: 1px; height: 16px; }
 .bovites-nap { flex: 1 1 0; min-width: 2px; background: #e6eaef; border-radius: 1px; }
 .bovites-nap.jelen { background: #2a78d6; }
+.bovites-idovonal-jelmagy { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;
+  justify-content: space-between; font-size: 0.78rem; margin-top: 0.25rem; }
+.bovites-idovonal-kulcs { display: inline-flex; align-items: center; gap: 0.2rem; }
+.bovites-nap-minta { flex: 0 0 auto; display: inline-block; width: 11px; height: 11px; vertical-align: middle; }
+.bovites-idovonal-datum { white-space: nowrap; }
 .bovites-kapcs-lista { display: flex; flex-direction: column; gap: 0.8rem; }
 .bovites-kapcs-kartya { border: 1px solid #c9d3df; border-radius: 10px; padding: 0.8rem 1rem; background: #fff; }
 .bovites-kapcs-cim { margin: 0 0 0.4rem; font-size: 1.05rem; }
 .bovites-kapcs-ketto { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.8rem; }
 .bovites-kapcs-oszlopcim { margin: 0; font-size: 0.9rem; color: #555; }
+.bovites-kapcs-sugo { font-size: 0.76rem; margin: 0.1rem 0 0.35rem; line-height: 1.35; }
 .bovites-kapcs-ertek { font-size: 0.75rem; }
 .bovites-kapcs-breakout { border-color: #eb6834; background: #fdf0ea; font-weight: 600; }
 

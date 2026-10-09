@@ -97,6 +97,24 @@ test("bővítés: kapcsolódó keresések szekció (top + rising) renderel", asy
   await expect(page.locator("#bovites-kapcsolodo")).toContainText("benzin ár");         // top
   await expect(page.locator("#bovites-kapcsolodo")).toContainText("benzin ársapka");     // rising
   await expect(page.locator("#bovites-kapcsolodo")).toContainText("Breakout");
+  // a számok jelentése (oszlop-súgók) megjelenik
+  await expect(page.locator("#bovites-kapcsolodo")).toContainText("relatív népszerűség");
+  await expect(page.locator("#bovites-kapcsolodo")).toContainText("mennyivel nőtt");
+});
+
+test("bővítés: ügy-idővonal felirattal + jelmagyarázattal + volumen-árnyalással", async ({ page }) => {
+  await mock(page);
+  await page.goto("/bovites.html");
+  await page.locator('.bovites-alful[data-panel="ugyek"]').click();
+  const kartya = page.locator(".bovites-ugy").first();
+  await expect(kartya.locator(".bovites-idovonal-cim")).toContainText("Napi jelenlét");
+  await expect(kartya.locator(".bovites-idovonal-jelmagy")).toContainText("jelen");
+  await expect(kartya.locator(".bovites-idovonal-jelmagy")).toContainText("nincs jelen");
+  // a két végdátum a jelmagyarázatban
+  await expect(kartya.locator(".bovites-idovonal-jelmagy")).toContainText("2026-09-10");
+  await expect(kartya.locator(".bovites-idovonal-jelmagy")).toContainText("2026-10-07");
+  // a jelen napok volumen szerint árnyalva (inline rgba háttér a sáv celláin)
+  await expect(kartya.locator(".bovites-idovonal .bovites-nap").first()).toHaveAttribute("style", /rgba\(42, 120, 214/);
 });
 
 test("bővítés: kapcsolódó keresések fail-soft, ha nincs adat", async ({ page }) => {
