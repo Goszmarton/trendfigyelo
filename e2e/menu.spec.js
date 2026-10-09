@@ -10,10 +10,10 @@ test("menüsor: 7 fül, aktív = Google Trendek; a linkek helyesek + sorrend", a
   await expect(page.locator('#fomenu a[href="havi.html"]')).toHaveText("Havi elemzés");
   await expect(page.locator('#fomenu a[href="trendek.html"]')).toHaveText("Google Trendek");
   await expect(page.locator('#fomenu a[href="youtube.html"]')).toHaveText("YouTube Trendek");
-  await expect(page.locator('#fomenu a[href="bovites.html"]')).toHaveText("Bővítés");
+  await expect(page.locator('#fomenu a[href="bovites.html"]')).toHaveText("Radar");
   await expect(page.locator('#fomenu a[href="adatokrol.html"]')).toHaveText("Infó");
-  // sorrend: Napi Elemzések · Heti értékelés · Havi elemzés · Google Trendek · YouTube Trendek · Bővítés · Infó
-  await expect(page.locator("#fomenu a")).toHaveText(["Napi Elemzések", "Heti értékelés", "Havi elemzés", "Google Trendek", "YouTube Trendek", "Bővítés", "Infó"]);
+  // sorrend: Napi Elemzések · Heti értékelés · Havi elemzés · Google Trendek · YouTube Trendek · Radar · Infó
+  await expect(page.locator("#fomenu a")).toHaveText(["Napi Elemzések", "Heti értékelés", "Havi elemzés", "Google Trendek", "YouTube Trendek", "Radar", "Infó"]);
   await expect(page.locator("#labresz")).toBeAttached();          // üres lábléc jelen
   await expect(page.locator("#adatokrol")).toHaveCount(0);        // az infó-tartalom NEM a főoldalon van
 });
@@ -27,20 +27,20 @@ test("youtube.html: a fül betölt, a YouTube menüpont aktív", async ({ page }
 test("havi.html: a fül betölt, a Havi elemzés menüpont aktív", async ({ page }) => {
   await page.goto("/havi.html");
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Havi elemzés");
-  await expect(page.locator("#fomenu a")).toHaveText(["Napi Elemzések", "Heti értékelés", "Havi elemzés", "Google Trendek", "YouTube Trendek", "Bővítés", "Infó"]);
+  await expect(page.locator("#fomenu a")).toHaveText(["Napi Elemzések", "Heti értékelés", "Havi elemzés", "Google Trendek", "YouTube Trendek", "Radar", "Infó"]);
 });
 
 test("heti.html: a fül betölt, a Heti értékelés menüpont aktív", async ({ page }) => {
   await page.goto("/heti.html");
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Heti értékelés");
-  await expect(page.locator("#fomenu a")).toHaveText(["Napi Elemzések", "Heti értékelés", "Havi elemzés", "Google Trendek", "YouTube Trendek", "Bővítés", "Infó"]);
+  await expect(page.locator("#fomenu a")).toHaveText(["Napi Elemzések", "Heti értékelés", "Havi elemzés", "Google Trendek", "YouTube Trendek", "Radar", "Infó"]);
   await expect(page.locator("#heti")).toBeAttached();
 });
 
-test("bovites.html: a fül betölt, a Bővítés menüpont aktív", async ({ page }) => {
+test("bovites.html: a fül betölt, a Radar menüpont aktív", async ({ page }) => {
   await page.goto("/bovites.html");
-  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Bővítés");
-  await expect(page.locator("#fomenu a")).toHaveText(["Napi Elemzések", "Heti értékelés", "Havi elemzés", "Google Trendek", "YouTube Trendek", "Bővítés", "Infó"]);
+  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Radar");
+  await expect(page.locator("#fomenu a")).toHaveText(["Napi Elemzések", "Heti értékelés", "Havi elemzés", "Google Trendek", "YouTube Trendek", "Radar", "Infó"]);
   await expect(page.locator("#bovites")).toBeAttached();
 });
 
@@ -48,10 +48,10 @@ test("Infó oldal: adat + elemzés dobozok, csoportcímek, aktív fül + üres l
   await page.goto("/adatokrol.html");
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Infó");
   await expect(page.locator("#adatokrol .adat-doboz")).toHaveCount(32);  // 10 Google (+ nemlin-trend, adatforrás-marker, előrejelzés) + 5 YouTube + 3 napi elemzés + 4 heti elemzés + 5 havi elemzés + 4 bővítés doboz
-  await expect(page.locator("#adatokrol .adat-csoport")).toHaveCount(6);  // Google + YouTube + „Az elemzés" (napi) + „A heti elemzés" + „A havi elemzés" + „A Bővítés fül"
+  await expect(page.locator("#adatokrol .adat-csoport")).toHaveCount(6);  // Google + YouTube + „Az elemzés" (napi) + „A heti elemzés" + „A havi elemzés" + „A Radar fül"
   await expect(page.locator("#adatokrol .adat-csoport")).toHaveText([
     "Google Trend adatok", "YouTube Trend adatok", "Az elemzés (napi AI-összefoglaló)",
-    "A heti elemzés (heti AI-összefoglaló)", "A havi elemzés (havi AI-összefoglaló)", "A Bővítés fül"]);
+    "A heti elemzés (heti AI-összefoglaló)", "A havi elemzés (havi AI-összefoglaló)", "A Radar fül"]);
   await expect(page.locator("#adatokrol")).toContainText("szokatlan");
   await expect(page.locator("#adatokrol")).toContainText("ügyek életútja");
   await expect(page.locator("#adatokrol")).toContainText("kapcsolódó keresés");

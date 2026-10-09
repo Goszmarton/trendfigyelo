@@ -39,12 +39,18 @@ test("heti: a 6 rész + a figyelem-diagram renderel", async ({ page }) => {
   await expect(page.locator("#heti-tartalom")).toContainText("nyugdíj");
 });
 
-test("heti: hét-választó — korábbi hét betölthető", async ({ page }) => {
+test("heti: hónap-naptár — adat-hét napja kiemelve, korábbi hétre kattintva kiválasztódik", async ({ page }) => {
   await mock(page, hetiArt("2026-09-28"));
   await page.goto("/heti.html");
-  await expect(page.locator(".heti-het-gomb")).toHaveCount(2);
-  await page.locator('.heti-het-gomb[data-het="2026-09-21"]').click();
-  await expect(page.locator('.heti-het-gomb[data-het="2026-09-21"]')).toHaveAttribute("aria-pressed", "true");
+  // a hét-naptár megjelenik, az adat-hetek napjai kiemelve (a 2026-09-28 és 2026-09-21 hétfők is)
+  await expect(page.locator("#heti-het-panel .naptar")).toBeAttached();
+  await expect(page.locator('#heti-het-panel .nap-cella[data-nap="2026-09-28"].heti-adat-het')).toBeAttached();
+  // alapból a legutolsó hét (09-28) a kiválasztott
+  await expect(page.locator('#heti-het-panel .nap-cella[data-nap="2026-09-28"]')).toHaveAttribute("aria-current", "date");
+  // a korábbi hét (09-21 hétfő) napjára kattintva az a hét lesz a kiválasztott
+  await page.locator('#heti-het-panel .nap-cella[data-nap="2026-09-21"]').click();
+  await expect(page.locator('#heti-het-panel .nap-cella[data-nap="2026-09-21"]')).toHaveAttribute("aria-current", "date");
+  await expect(page.locator('#heti-het-panel .nap-cella[data-nap="2026-09-28"]')).not.toHaveAttribute("aria-current", "date");
 });
 
 test("heti: fail-soft, ha nincs adat", async ({ page }) => {

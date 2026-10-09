@@ -151,23 +151,66 @@ function rajzol_heti(art) {
   t.appendChild(s6);
 }
 
-function heti_panel_epit(hetek, aktiv) {
-  const panel = document.getElementById("heti-het-panel");
-  panel.textContent = "";
-  panel.appendChild(helem("h2", "halvany", "Hét"));
-  hetek.slice().sort().reverse().forEach((h) => {
-    const g = document.createElement("button");
-    g.type = "button"; g.className = "heti-het-gomb";
-    g.setAttribute("data-het", h);
-    g.setAttribute("aria-pressed", h === aktiv ? "true" : "false");
-    g.textContent = heti_cimke(h);
-    g.addEventListener("click", () => {
-      panel.querySelectorAll(".heti-het-gomb").forEach((b) =>
-        b.setAttribute("aria-pressed", b.getAttribute("data-het") === h ? "true" : "false"));
-      heti_valt(h);
-    });
-    panel.appendChild(g);
+let heti_hetek = [];              // a rendelkezésre álló hetek (mindegyik a hét HÉTFŐJE, ISO)
+let heti_naptar_kotve = false;
+
+// Egy nap ISO-jából a HETE HÉTFŐJE (ISO). Tiszta aritmetika, NINCS new Date(): a naptar_hetnap_hetfo0
+// (app.js, Sakamoto, 0=hétfő) adja a hét-napot, majd visszalépünk a hónaphatáron át a naptar_honap_napjai-val.
+function het_hetfo(iso) {
+  let [y, mo, d] = iso.split("-").map(Number);
+  d -= naptar_hetnap_hetfo0(y, mo, d);                 // a hét hétfőjére
+  while (d < 1) { mo--; if (mo < 1) { mo = 12; y--; } d += naptar_honap_napjai(y, mo); }
+  return y + "-" + String(mo).padStart(2, "0") + "-" + String(d).padStart(2, "0");
+}
+
+// Hónap-naptár a HETEK választásához (a napi elemzés archívum-naptárának mintája, a megosztott
+// naptar_epit-tel): a hét MINDEN napja egy adat-hét része; bármely napra kattintva a hét hétfőjét
+// töltjük be. Az adat-hetek halványan kiemelve, a kiválasztott hét erősen.
+function heti_naptar_render() {
+  const el = document.getElementById("heti-het-panel");
+  if (!el || !heti_hetek.length) return;
+  const keszlet = new Set(heti_hetek);
+  const elso_ho = heti_hetek[0].slice(0, 7);
+  const utolso_ho = heti_hetek[heti_hetek.length - 1].slice(0, 7);
+  let valasztott = el.getAttribute("data-valasztott-het");
+  if (!valasztott || !keszlet.has(valasztott)) valasztott = heti_hetek[heti_hetek.length - 1];
+  let honap = el.getAttribute("data-honap") || valasztott.slice(0, 7);
+  if (honap < elso_ho) honap = elso_ho;
+  if (honap > utolso_ho) honap = utolso_ho;
+  el.setAttribute("data-valasztott-het", valasztott);
+  el.setAttribute("data-honap", honap);
+  el.textContent = "";
+  el.appendChild(helem("h2", "halvany", "Hét — kattints egy hétre"));
+  el.appendChild(naptar_epit(honap, elso_ho, utolso_ho, function (iso) {
+    const hetfo = het_hetfo(iso);
+    const vanAdat = keszlet.has(hetfo);                // a hét bármely napja választható, ha a hétnek van adata
+    return {
+      valaszthato: vanAdat,
+      extraOsztaly: (vanAdat ? "heti-adat-het" : "") + (hetfo === valasztott ? " valasztott" : ""),
+      aria: hetfo === valasztott ? "date" : null,
+    };
+  }));
+}
+
+function heti_naptar_kot() {
+  if (heti_naptar_kotve) return;
+  const el = document.getElementById("heti-het-panel");
+  if (!el) return;
+  el.addEventListener("click", function (ev) {
+    const btn = ev.target && ev.target.closest ? ev.target.closest("button") : null;
+    if (!btn || btn.disabled) return;
+    if (btn.classList.contains("nap-cella")) {          // egy nap → a HETE betöltése
+      const hetfo = het_hetfo(btn.getAttribute("data-nap"));
+      el.setAttribute("data-valasztott-het", hetfo);
+      heti_naptar_render();
+      heti_valt(hetfo);
+    } else if (btn.classList.contains("honap-lep")) {   // hónap-lépés (a kiválasztott hét VÁLTOZATLAN)
+      const cur = el.getAttribute("data-honap") || "";
+      el.setAttribute("data-honap", naptar_honap_lep(cur, btn.classList.contains("elore") ? 1 : -1));
+      heti_naptar_render();
+    }
   });
+  heti_naptar_kotve = true;
 }
 
 async function heti_valt(het) {
@@ -185,12 +228,15 @@ async function heti_indit() {
     const r = await fetch("data/heti/index.json");
     if (r.ok) idx = await r.json();
   } catch (e) { /* nincs index */ }
-  const hetek = (idx.hetek && idx.hetek.length) ? idx.hetek.slice() : [];
-  if (!hetek.length) { await heti_valt("_nincs_"); return; }   // fail-soft: üres → „nem érhető el"
+  heti_hetek = (idx.hetek && idx.hetek.length) ? idx.hetek.slice().sort() : [];
+  if (!heti_hetek.length) { await heti_valt("_nincs_"); return; }   // fail-soft: üres → „nem érhető el", nincs naptár
   const kert = url_het();
-  const kezdo = (kert && hetek.indexOf(kert) >= 0) ? kert
-    : (idx.legutolso && hetek.indexOf(idx.legutolso) >= 0 ? idx.legutolso : hetek[hetek.length - 1]);
-  heti_panel_epit(hetek, kezdo);
+  const kezdo = (kert && heti_hetek.indexOf(kert) >= 0) ? kert
+    : (idx.legutolso && heti_hetek.indexOf(idx.legutolso) >= 0 ? idx.legutolso : heti_hetek[heti_hetek.length - 1]);
+  const panel = document.getElementById("heti-het-panel");
+  if (panel) panel.setAttribute("data-valasztott-het", kezdo);
+  heti_naptar_render();
+  heti_naptar_kot();
   await heti_valt(kezdo);
 }
 

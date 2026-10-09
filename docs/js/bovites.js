@@ -1,5 +1,5 @@
 "use strict";
-// „Bővítés" fül — a backend JSON-jainak renderelése: szokatlan változások (data/elmozdulas.json)
+// „Radar" fül — a backend JSON-jainak renderelése: szokatlan változások (data/elmozdulas.json)
 // és ügyek életútja + napi jelenlét-idővonal (data/ugyek.json). A frontend nem számol statisztikát,
 // csak megjelenít. NINCS new Date().
 
