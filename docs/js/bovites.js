@@ -31,7 +31,7 @@ async function bov_json(url) {
 
 const BOV_RENDEZES = { napok: "Időtartam", frissesseg: "Frissesség", mozgas: "Mozgás" };
 const BOV_MOZGAS_SORREND = { erosodo: 0, stabil: 1, lecsengo: 2, nem_megallapithato: 3 };
-const bov_allapot = { szakpolitika: "", rendezes: "napok", elm: null, ugy: null, kapcs: null };
+const bov_allapot = { alful: "elmozdulas", szakpolitika: "", rendezes: "napok", elm: null, ugy: null, kapcs: null };
 
 function bov_elmozdulas_render(cel, elm, szak) {
   cel.innerHTML = "";
@@ -156,10 +156,11 @@ function bov_rajzol() {
     b.setAttribute("aria-pressed", String(b.dataset.rendezes === bov_allapot.rendezes)));
 }
 
-function bov_szuro_epit(cel) {
+// szakpolitika-szűrő chip-sor (hozzáfűz, nem töröl) — a Szokatlan változások és az Ügyek panelbe is kerül
+function bov_szakpolitika_epit(cel) {
   if (!cel) return;
-  cel.innerHTML = "";
   const sor = bel("div", "bovites-szuro-sor");
+  sor.appendChild(bel("span", "halvany", "Szakpolitika:"));
   const chip = (kulcs, felirat) => {
     const b = bel("button", "bovites-szuro-chip", felirat);
     b.type = "button";
@@ -170,6 +171,11 @@ function bov_szuro_epit(cel) {
   chip("", "Összes");
   Object.keys(BOV_SZAKPOLITIKA).forEach((k) => chip(k, BOV_SZAKPOLITIKA[k]));
   cel.appendChild(sor);
+}
+
+// rendezés-sor (hozzáfűz) — csak az Ügyek életútja panelben
+function bov_rendezes_epit(cel) {
+  if (!cel) return;
   const rsor = bel("div", "bovites-szuro-sor");
   rsor.appendChild(bel("span", "halvany", "Ügyek rendezése:"));
   Object.keys(BOV_RENDEZES).forEach((k) => {
@@ -182,23 +188,48 @@ function bov_szuro_epit(cel) {
   cel.appendChild(rsor);
 }
 
+// alfül-váltás: a kiválasztott panel látszik, a többi rejtett; a fülgombok aria-selected + .aktiv szinkron
+function bov_alful_valt(nev) {
+  bov_allapot.alful = nev;
+  ["elmozdulas", "ugyek", "kapcsolodo"].forEach((n) => {
+    const p = document.getElementById("bovites-panel-" + n);
+    if (p) p.hidden = (n !== nev);
+  });
+  document.querySelectorAll(".bovites-alful").forEach((b) => {
+    const akt = b.dataset.panel === nev;
+    b.classList.toggle("aktiv", akt);
+    b.setAttribute("aria-selected", String(akt));
+  });
+}
+
+function bov_alfulek_kot() {
+  const bar = document.getElementById("bovites-alfulek");
+  if (!bar) return;
+  bar.addEventListener("click", (ev) => {
+    const b = ev.target && ev.target.closest ? ev.target.closest(".bovites-alful") : null;
+    if (b && b.dataset.panel) bov_alful_valt(b.dataset.panel);
+  });
+}
+
 async function bov_init() {
   const [elm, ugy, kapcs] = await Promise.all([bov_json("data/elmozdulas.json"), bov_json("data/ugyek.json"),
     bov_json("data/kapcsolodo.json")]);
-  const fejlec = document.getElementById("bovites-fejlec");
-  if (!elm && !ugy) {
-    document.getElementById("bovites").textContent = "A bővítés adata nem érhető el.";
-    if (fejlec) fejlec.textContent = "Nem érhető el.";
-    return;
-  }
-  if (fejlec) {
-    const ab = ugy && ugy.ablak;
-    fejlec.textContent = ab ? "Ablak: " + ab.kezdet + " – " + ab.veg + " (" + ab.nap + " nap)" : "";
-  }
   bov_allapot.elm = elm;
   bov_allapot.ugy = ugy;
   bov_allapot.kapcs = kapcs;
-  bov_szuro_epit(document.getElementById("bovites-szuro"));
+  const fejlec = document.getElementById("bovites-fejlec");
+  if (fejlec) {
+    if (!elm && !ugy) {
+      fejlec.textContent = "Nem érhető el.";
+    } else {
+      const ab = ugy && ugy.ablak;
+      fejlec.textContent = ab ? "Ablak: " + ab.kezdet + " – " + ab.veg + " (" + ab.nap + " nap)" : "";
+    }
+  }
+  bov_szakpolitika_epit(document.getElementById("bovites-szuro-elm"));
+  bov_szakpolitika_epit(document.getElementById("bovites-szuro-ugy"));
+  bov_rendezes_epit(document.getElementById("bovites-szuro-ugy"));
+  bov_alfulek_kot();
   bov_rajzol();
 }
 

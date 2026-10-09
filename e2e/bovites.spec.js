@@ -27,11 +27,35 @@ test("bővítés: szokatlan-változások blokk + ügy-lista renderel", async ({ 
   await expect(page.locator(".bovites-ugy")).toHaveCount(1);
 });
 
+test("bővítés: alfülek váltása mutatja/rejti a paneleket + leírás látszik", async ({ page }) => {
+  await mock(page);
+  await page.goto("/bovites.html");
+  // alapból a Szokatlan változások panel látszik, a másik kettő rejtett
+  await expect(page.locator("#bovites-panel-elmozdulas")).toBeVisible();
+  await expect(page.locator("#bovites-panel-ugyek")).toBeHidden();
+  await expect(page.locator("#bovites-panel-kapcsolodo")).toBeHidden();
+  // a látszó panelnek van magyarázó leírása
+  await expect(page.locator("#bovites-panel-elmozdulas .bovites-leiras")).toBeVisible();
+  await expect(page.locator("#bovites-panel-elmozdulas .bovites-leiras")).toContainText("követett keresőszavak");
+  // Ügyek életútja fülre váltva az a panel látszik, a fülgomb kijelölve
+  await page.locator('.bovites-alful[data-panel="ugyek"]').click();
+  await expect(page.locator("#bovites-panel-ugyek")).toBeVisible();
+  await expect(page.locator("#bovites-panel-elmozdulas")).toBeHidden();
+  await expect(page.locator('.bovites-alful[data-panel="ugyek"]')).toHaveAttribute("aria-selected", "true");
+  await expect(page.locator('.bovites-alful[data-panel="elmozdulas"]')).toHaveAttribute("aria-selected", "false");
+  // Kapcsolódó keresések fülre váltva
+  await page.locator('.bovites-alful[data-panel="kapcsolodo"]').click();
+  await expect(page.locator("#bovites-panel-kapcsolodo")).toBeVisible();
+  await expect(page.locator("#bovites-panel-ugyek")).toBeHidden();
+});
+
 test("bővítés: fail-soft, ha nincs adat", async ({ page }) => {
   await page.route("**/data/elmozdulas.json", (r) => r.fulfill({ status: 404, body: "" }));
   await page.route("**/data/ugyek.json", (r) => r.fulfill({ status: 404, body: "" }));
   await page.goto("/bovites.html");
   await expect(page.locator("#bovites")).toContainText("nem érhető el");
+  // az alfülek a hiba ellenére megmaradnak
+  await expect(page.locator(".bovites-alful")).toHaveCount(3);
 });
 
 test("bővítés: szakpolitika-szűrő szűkíti az ügy-listát", async ({ page }) => {
@@ -42,17 +66,19 @@ test("bővítés: szakpolitika-szűrő szűkíti az ügy-listát", async ({ page
         kifejezesek: ["iskola"], elso_nap: "2026-09-10", utolso_nap: "2026-10-01", napok_szama: 4,
         idovonal: [{ nap: "2026-09-10", jelen: true, ossz_volumen: 20 }], osszefoglalo: "y" }] } }));
   await page.goto("/bovites.html");
+  await page.locator('.bovites-alful[data-panel="ugyek"]').click();
   await expect(page.locator(".bovites-ugy")).toHaveCount(2);
-  await page.locator('.bovites-szuro-chip[data-szakpolitika="energia_rezsi"]').click();
+  // a szűrő-chip az Ügyek panelben (a globális állapotot állítja, így az elmozdulás-listát is szűri)
+  await page.locator('#bovites-szuro-ugy .bovites-szuro-chip[data-szakpolitika="energia_rezsi"]').click();
   await expect(page.locator(".bovites-ugy")).toHaveCount(1);
   await expect(page.locator("#bovites-ugyek")).toContainText("Üzemanyagárak");
   await expect(page.locator("#bovites-elmozdulas")).toContainText("benzin");
-  await page.locator('.bovites-szuro-chip[data-szakpolitika="oktataspolitika"]').click();
+  await page.locator('#bovites-szuro-ugy .bovites-szuro-chip[data-szakpolitika="oktataspolitika"]').click();
   await expect(page.locator(".bovites-ugy")).toHaveCount(1);
   await expect(page.locator("#bovites-elmozdulas")).not.toContainText("benzin");
-  await page.locator('.bovites-szuro-chip[data-szakpolitika=""]').click();
+  await page.locator('#bovites-szuro-ugy .bovites-szuro-chip[data-szakpolitika=""]').click();
   await expect(page.locator(".bovites-ugy")).toHaveCount(2);
-  await page.locator('.bovites-rendezes-gomb[data-rendezes="frissesseg"]').click();
+  await page.locator('#bovites-szuro-ugy .bovites-rendezes-gomb[data-rendezes="frissesseg"]').click();
   await expect(page.locator(".bovites-ugy-nev").first()).toHaveText("Üzemanyagárak");
 });
 
@@ -66,6 +92,7 @@ test("bővítés: kapcsolódó keresések szekció (top + rising) renderel", asy
   await page.route("**/data/ugyek.json", (r) => r.fulfill({ json: UGY }));
   await page.route("**/data/kapcsolodo.json", (r) => r.fulfill({ json: KAPCS }));
   await page.goto("/bovites.html");
+  await page.locator('.bovites-alful[data-panel="kapcsolodo"]').click();
   await expect(page.locator("#bovites-kapcsolodo")).toContainText("benzin");
   await expect(page.locator("#bovites-kapcsolodo")).toContainText("benzin ár");         // top
   await expect(page.locator("#bovites-kapcsolodo")).toContainText("benzin ársapka");     // rising

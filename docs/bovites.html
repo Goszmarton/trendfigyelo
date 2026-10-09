@@ -23,10 +23,28 @@
   </header>
 
   <main id="bovites">
-    <section id="bovites-szuro" aria-label="Szűrők"></section>
-    <section id="bovites-elmozdulas" aria-label="Szokatlan változások" aria-live="polite"></section>
-    <section id="bovites-ugyek" aria-label="Ügyek életútja" aria-live="polite"></section>
-    <section id="bovites-kapcsolodo" aria-label="Kapcsolódó keresések" aria-live="polite"></section>
+    <div id="bovites-alfulek" class="bovites-alfulek" role="tablist" aria-label="Radar nézetek">
+      <button type="button" class="bovites-alful aktiv" data-panel="elmozdulas" role="tab" aria-selected="true">Szokatlan változások <span class="bovites-alful-forras">(követett keresőszavak)</span></button>
+      <button type="button" class="bovites-alful" data-panel="ugyek" role="tab" aria-selected="false">Ügyek életútja <span class="bovites-alful-forras">(felkapott napi keresések alapján)</span></button>
+      <button type="button" class="bovites-alful" data-panel="kapcsolodo" role="tab" aria-selected="false">Kapcsolódó keresések <span class="bovites-alful-forras">(felkapott napi keresések)</span></button>
+    </div>
+
+    <section class="bovites-panel" id="bovites-panel-elmozdulas" role="tabpanel">
+      <p class="bovites-leiras">Itt azt látod, mely <strong>követett keresőszavak</strong> mozdultak el a megszokottól: a szó a szokásos szintjéhez képest <strong>emelkedik</strong> vagy <strong>csökken</strong>-e, <strong>mekkora az eltérés</strong> (a szokásos ingadozás hányszorosa), <strong>mióta tart</strong>, és mennyire <strong>megbízható</strong> a jelzés. A kártya bal oldali színes sávja az irányt jelzi. A szakpolitikai szűrővel szűkítheted a listát. A megszokott tartomány a <a href="trendek.html">Google Trendek</a> fül chartjain halvány sávként is bekapcsolható.</p>
+      <div id="bovites-szuro-elm" class="bovites-szuro" aria-label="Szakpolitikai szűrő"></div>
+      <section id="bovites-elmozdulas" aria-live="polite"></section>
+    </section>
+
+    <section class="bovites-panel" id="bovites-panel-ugyek" role="tabpanel" hidden>
+      <p class="bovites-leiras">A napi <strong>felkapott keresések</strong> üggyé csoportosítva (a <code>claude-opus-4-8</code> kapcsolja össze az azonos témájú kifejezéseket). Minden ügynél látod a <strong>besorolását</strong> (újonnan megfigyelt / folyamatosan jelen / visszatérő), a <strong>mozgását</strong> (erősödő / stabil / lecsengő), a hozzá tartozó kifejezéseket, egy rövid összefoglalót, és egy <strong>napi jelenlét-idővonalat</strong> az ablakból. Szakpolitika szerint szűrhető, időtartam / frissesség / mozgás szerint rendezhető.</p>
+      <div id="bovites-szuro-ugy" class="bovites-szuro" aria-label="Szakpolitikai szűrő és rendezés"></div>
+      <section id="bovites-ugyek" aria-live="polite"></section>
+    </section>
+
+    <section class="bovites-panel" id="bovites-panel-kapcsolodo" role="tabpanel" hidden>
+      <p class="bovites-leiras">A napi <strong>felkapott keresések</strong> mögé nézünk be: a Google Trends „kapcsolódó keresések" alapján témánként a <strong>megszokott (Top)</strong> és a <strong>most felfutó (Felfutó, „Breakout")</strong> keresések — mire kíváncsiak még az emberek az adott téma körül. Naponta pár felkapott téma frissül.</p>
+      <section id="bovites-kapcsolodo" aria-live="polite"></section>
+    </section>
   </main>
 
   <footer id="labresz" aria-label="Lábléc"></footer>
