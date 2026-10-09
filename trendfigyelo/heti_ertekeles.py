@@ -138,7 +138,7 @@ def _valasz_sema():
         "required": ["vezetoi_osszefoglalo", "figyelem_atrendezodes", "ugyek_eletutja",
                      "melyebb_temak", "google_youtube_osszefugges", "jovo_heti_figyelendok"],
         "properties": {
-            "vezetoi_osszefoglalo": {"type": "array", "maxItems": 5, "items": {"type": "string"}},
+            "vezetoi_osszefoglalo": {"type": "array", "items": {"type": "string"}},   # darabszám-korlát a promptban (az output_config sémában a maxItems API-hiba: 400)
             "figyelem_atrendezodes": {
                 "type": "object", "additionalProperties": False,
                 "required": ["erosodo", "gyengulo"],
@@ -150,7 +150,7 @@ def _valasz_sema():
                                "hosszabb_kiugras": {"type": "string"},
                                "visszatero": {"type": "string"}}},
             "melyebb_temak": {
-                "type": "array", "maxItems": 3,
+                "type": "array",   # „2–3 mély elemzés" a promptban (a maxItems az output_config sémában API-hiba: 400)
                 "items": {"type": "object", "additionalProperties": False,
                           "required": ["tema", "keresesi_palya", "kapcsolodo_kifejezesek",
                                        "ellenorzott_esemenyek", "magyarazat"],

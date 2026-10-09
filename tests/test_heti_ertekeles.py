@@ -109,10 +109,12 @@ def test_valasz_sema_hat_resz():
     assert set(s["required"]) == {
         "vezetoi_osszefoglalo", "figyelem_atrendezodes", "ugyek_eletutja",
         "melyebb_temak", "google_youtube_osszefugges", "jovo_heti_figyelendok"}
-    assert props["vezetoi_osszefoglalo"]["maxItems"] == 5
+    # Darabszám-korlát a PROMPTban, NEM a sémában (az output_config.format.schema a maxItems-t tömbön 400-zal
+    # elutasítja). Regresszió-őr: maxItems NE kerüljön vissza.
+    assert props["vezetoi_osszefoglalo"]["type"] == "array" and "maxItems" not in props["vezetoi_osszefoglalo"]
     assert set(props["figyelem_atrendezodes"]["required"]) == {"erosodo", "gyengulo"}
     assert set(props["ugyek_eletutja"]["required"]) == {"rovid_kiugras", "hosszabb_kiugras", "visszatero"}
-    assert props["melyebb_temak"]["maxItems"] == 3
+    assert props["melyebb_temak"]["type"] == "array" and "maxItems" not in props["melyebb_temak"]
     tema = props["melyebb_temak"]["items"]
     assert set(tema["required"]) == {
         "tema", "keresesi_palya", "kapcsolodo_kifejezesek", "ellenorzott_esemenyek", "magyarazat"}

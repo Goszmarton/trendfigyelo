@@ -438,8 +438,8 @@ def _tldr_sema():
                      "visszatero_temak", "intenzivebb_keresesbe", "informaciohiany"],
         "properties": {
             "van_tldr": {"type": "boolean"},
-            "fo_valtozasok": {"type": "array", "maxItems": 3, "items": {"type": "string"}},
-            "kiemelt_ugyek": {"type": "array", "maxItems": 5, "items": {"type": "string"}},
+            "fo_valtozasok": {"type": "array", "items": {"type": "string"}},   # darabszám-korlát a promptban (az output_config sémában a maxItems API-hiba: 400)
+            "kiemelt_ugyek": {"type": "array", "items": {"type": "string"}},   # a prompt mondja: „legfeljebb 5 ügy"
             "visszatero_temak": {"type": "string"},
             "intenzivebb_keresesbe": {"type": "string"},
             "informaciohiany": {"type": "string"},

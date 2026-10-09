@@ -1035,9 +1035,12 @@ def test_tldr_sema_este_tartalmazza_a_mezoket():
     assert t["required"] == ["van_tldr", "fo_valtozasok", "kiemelt_ugyek",
                              "visszatero_temak", "intenzivebb_keresesbe", "informaciohiany"]
     assert t["properties"]["van_tldr"]["type"] == "boolean"
-    assert t["properties"]["fo_valtozasok"]["maxItems"] == 3
-    assert t["properties"]["kiemelt_ugyek"]["maxItems"] == 5
+    # A darabszám-korlát a PROMPTban van, NEM a sémában: az Anthropic output_config.format.schema
+    # a 'maxItems'-t tömbön 400-zal elutasítja. Regresszió-őr: a maxItems NE kerüljön vissza a sémába.
+    assert t["properties"]["fo_valtozasok"]["type"] == "array" and "maxItems" not in t["properties"]["fo_valtozasok"]
+    assert t["properties"]["kiemelt_ugyek"]["type"] == "array" and "maxItems" not in t["properties"]["kiemelt_ugyek"]
     assert t["properties"]["fo_valtozasok"]["items"]["type"] == "string"
+    assert "legfeljebb 5" in elemzo.RENDSZER_PROMPT   # a korlát a promptban marad
 
 
 def test_tldr_sema_reggel_nem_tartalmazza():
