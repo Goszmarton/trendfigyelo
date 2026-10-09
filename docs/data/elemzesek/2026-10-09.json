@@ -1,8 +1,8 @@
 {
-"frissitve": "2026-10-09T07:11:19+00:00",
+"frissitve": "2026-10-09T19:08:26+00:00",
 "modell": "claude-opus-4-8",
 "nap": "2026-10-09",
-"mode": "reggel",
+"mode": "este",
 "valtozas": {
 "diff": {
 "irany_valtok": [
@@ -15,6 +15,11 @@
 "szo": "albérlet",
 "elozo": "novekszik",
 "mai": "stagnal"
+},
+{
+"szo": "benzin",
+"elozo": "csokken",
+"mai": "novekszik"
 },
 {
 "szo": "betegség",
@@ -39,11 +44,16 @@
 {
 "szo": "infláció",
 "elozo": "csokken",
-"mai": "novekszik"
+"mai": "stagnal"
 },
 {
 "szo": "iskola",
 "elozo": "csokken",
+"mai": "novekszik"
+},
+{
+"szo": "korrupció",
+"elozo": "novekszik",
 "mai": "stagnal"
 },
 {
@@ -67,59 +77,52 @@
 "mai": "stagnal"
 },
 {
-"szo": "sürgősségi",
-"elozo": "stagnal",
-"mai": "csokken"
+"szo": "napelem",
+"elozo": "csokken",
+"mai": "stagnal"
+},
+{
+"szo": "segély",
+"elozo": "csokken",
+"mai": "stagnal"
 }
 ],
 "mozgok": [
 {
-"szo": "infláció",
-"valtozas": 5.052
+"szo": "iskola",
+"valtozas": 4.203
 },
 {
-"szo": "iskola",
-"valtozas": 2.282
+"szo": "infláció",
+"valtozas": 3.88
+},
+{
+"szo": "benzin",
+"valtozas": 3.549
 },
 {
 "szo": "háziorvos",
-"valtozas": 2.14
+"valtozas": 3.433
 },
 {
-"szo": "műtét",
-"valtozas": 2.053
-},
-{
-"szo": "kormányablak",
-"valtozas": 1.691
+"szo": "pedagógus",
+"valtozas": -2.811
 }
 ],
 "felkapott_uj": [
-"angelina jolie",
-"anne carson",
-"bródy jános",
-"diplomata útlevél",
-"el niño",
-"fenntarthatóság",
-"ferencvárosi tc",
-"gulácsi péter",
-"hajdu jános",
-"hegedűs zsolt",
-"hont andrás",
-"kovács kristóf",
+"diego maradona",
+"fűtés klímával",
+"galatasaray–kasimpasa",
+"hans-dieter flick",
+"jövedéki adó",
 "kövér lászló",
-"m1",
-"molnár áron",
-"nyugdíjrendszer",
-"paks ii atomerőmű",
-"pintér dániel",
-"revolut",
-"susan dell",
-"szálasi ferenc",
-"szövetségi kapitány",
-"villanyszámla",
-"várhegyi attila",
-"zivatar"
+"magyar péter",
+"medvetámadás",
+"milák kristóf",
+"novák előd",
+"ruff bálint",
+"sztárban sztár",
+"tóth gabi"
 ],
 "felkapott_eltunt": [
 "2027",
@@ -131,7 +134,6 @@
 "eva marie saint",
 "fásy ádám",
 "halálbüntetés",
-"holnapi időjárás",
 "hulladék",
 "hír",
 "járvány",
@@ -148,50 +150,50 @@
 ],
 "van_elozo": true
 },
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A mai nap több követett szó irányfordulatát hozta. A háziorvos, az iskola, a betegség és a benzin a korábbi lankadás vagy stagnálás után emelkedő pályára váltott, miközben a kórház a korábbi egyhelyben állásból lefelé fordult. Az iskola mutatja a legnagyobb napi elmozdulást, mögötte az infláció, a benzin és a háziorvos sorakozik, a pedagógus pedig ezekkel ellentétben visszább húzódott.\n\nAz albérlet és az eladó lakás a korábbi élénkülésből stagnálásba lassult, a fizetés, a kölcsön és több más megélhetési szó pedig a korábbi csökkenésből sima egyhelyben állásba került. Ezek inkább a hullámzás kiegyenlítődését jelzik, semmint határozott új irányt.\n\nA felkapottak között ma új belépőként jelent meg többek között a magyar péter, a ruff bálint, a sztárban sztár, a jövedéki adó és több sportnév, miközben kihullott a listáról például az állampapír, a fásy ádám és a bankszámla."
 },
 "kulcsszavak": {
 "szamok": [
 {
 "szo": "akciós újság",
 "irany": "stagnal",
-"meredekseg": 0.615,
+"meredekseg": -0.679,
 "ervenyes": true,
-"mai_ertek": 32,
-"csucs": 59.0,
-"atlag": 45.32
+"mai_ertek": 29,
+"csucs": 82.0,
+"atlag": 46.96
 },
 {
 "szo": "albérlet",
 "irany": "stagnal",
-"meredekseg": 0.694,
+"meredekseg": -0.434,
 "ervenyes": true,
-"mai_ertek": 50,
-"csucs": 68.0,
-"atlag": 43.7
+"mai_ertek": 23,
+"csucs": 35.0,
+"atlag": 24.82
 },
 {
 "szo": "benzin",
-"irany": "csokken",
-"meredekseg": -1.24,
+"irany": "novekszik",
+"meredekseg": 1.403,
 "ervenyes": true,
-"mai_ertek": 23,
-"csucs": 61.0,
-"atlag": 26.35
+"mai_ertek": 16,
+"csucs": 33.0,
+"atlag": 21.41
 },
 {
 "szo": "betegség",
 "irany": "novekszik",
-"meredekseg": 2.056,
+"meredekseg": 1.024,
 "ervenyes": true,
-"mai_ertek": 52,
-"csucs": 75.0,
-"atlag": 53.84
+"mai_ertek": 48,
+"csucs": 72.0,
+"atlag": 48.56
 },
 {
 "szo": "csőd",
 "irany": "stagnal",
-"meredekseg": 0.364,
+"meredekseg": 0.079,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -200,43 +202,43 @@
 {
 "szo": "eladó lakás",
 "irany": "stagnal",
-"meredekseg": 0.672,
+"meredekseg": 0.081,
 "ervenyes": true,
-"mai_ertek": 33,
-"csucs": 46.0,
-"atlag": 38.63
+"mai_ertek": 43,
+"csucs": 45.0,
+"atlag": 38.0
 },
 {
 "szo": "fizetés",
 "irany": "stagnal",
-"meredekseg": 0.212,
+"meredekseg": 0.523,
 "ervenyes": true,
-"mai_ertek": 30,
+"mai_ertek": 61,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "hitel",
 "irany": "novekszik",
-"meredekseg": 2.4,
+"meredekseg": 1.287,
 "ervenyes": true,
-"mai_ertek": 42,
-"csucs": 74.0,
-"atlag": 54.16
+"mai_ertek": 35,
+"csucs": 69.0,
+"atlag": 49.68
 },
 {
 "szo": "háziorvos",
 "irany": "novekszik",
-"meredekseg": 1.811,
+"meredekseg": 3.104,
 "ervenyes": true,
-"mai_ertek": 59,
+"mai_ertek": 61,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "infláció",
-"irany": "novekszik",
-"meredekseg": 1.767,
+"irany": "stagnal",
+"meredekseg": 0.595,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -244,35 +246,35 @@
 },
 {
 "szo": "iskola",
-"irany": "stagnal",
-"meredekseg": 0.298,
+"irany": "novekszik",
+"meredekseg": 2.219,
 "ervenyes": true,
-"mai_ertek": 83,
+"mai_ertek": 69,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kormány",
 "irany": "stagnal",
-"meredekseg": -0.609,
+"meredekseg": 0.298,
 "ervenyes": true,
-"mai_ertek": 13,
+"mai_ertek": 15,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kormányablak",
 "irany": "novekszik",
-"meredekseg": 4.475,
+"meredekseg": 4.712,
 "ervenyes": true,
-"mai_ertek": 30,
-"csucs": 96.0,
-"atlag": 61.16
+"mai_ertek": 9,
+"csucs": 88.0,
+"atlag": 52.0
 },
 {
 "szo": "korrupció",
-"irany": "novekszik",
-"meredekseg": 1.088,
+"irany": "stagnal",
+"meredekseg": 0.184,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -281,25 +283,25 @@
 {
 "szo": "kórház",
 "irany": "csokken",
-"meredekseg": -1.07,
+"meredekseg": -1.862,
 "ervenyes": true,
-"mai_ertek": 17,
-"csucs": 50.0,
-"atlag": 27.14
+"mai_ertek": 18,
+"csucs": 66.0,
+"atlag": 36.7
 },
 {
 "szo": "kölcsön",
 "irany": "stagnal",
-"meredekseg": -0.499,
+"meredekseg": -0.081,
 "ervenyes": true,
-"mai_ertek": 71,
+"mai_ertek": 63,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "munkanélküliség",
 "irany": "stagnal",
-"meredekseg": 0.627,
+"meredekseg": -0.059,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -308,52 +310,52 @@
 {
 "szo": "műtét",
 "irany": "stagnal",
-"meredekseg": -0.224,
+"meredekseg": 0.469,
 "ervenyes": true,
-"mai_ertek": 29,
+"mai_ertek": 23,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "napelem",
-"irany": "csokken",
-"meredekseg": -1.526,
+"irany": "stagnal",
+"meredekseg": -0.182,
 "ervenyes": true,
-"mai_ertek": 27,
-"csucs": 72.0,
-"atlag": 42.44
+"mai_ertek": 35,
+"csucs": 100.0,
+"atlag": 35.58
 },
 {
 "szo": "nyaralás",
 "irany": "stagnal",
-"meredekseg": -0.037,
+"meredekseg": 0.076,
 "ervenyes": true,
-"mai_ertek": 54,
-"csucs": 83.0,
-"atlag": 50.08
+"mai_ertek": 8,
+"csucs": 100.0,
+"atlag": 16.5
 },
 {
 "szo": "nyugdíj",
 "irany": "csokken",
-"meredekseg": -5.234,
+"meredekseg": -4.074,
 "ervenyes": true,
-"mai_ertek": 12,
-"csucs": 24.0,
-"atlag": 15.43
+"mai_ertek": 39,
+"csucs": 22.0,
+"atlag": 13.55
 },
 {
 "szo": "pedagógus",
 "irany": "novekszik",
-"meredekseg": 3.045,
+"meredekseg": 1.342,
 "ervenyes": true,
-"mai_ertek": 0,
+"mai_ertek": 17,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "rezsi",
 "irany": "stagnal",
-"meredekseg": -0.161,
+"meredekseg": 0.031,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -361,8 +363,8 @@
 },
 {
 "szo": "segély",
-"irany": "csokken",
-"meredekseg": -1.001,
+"irany": "stagnal",
+"meredekseg": -0.217,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -370,10 +372,10 @@
 },
 {
 "szo": "sürgősségi",
-"irany": "csokken",
-"meredekseg": -1.778,
+"irany": "stagnal",
+"meredekseg": -0.432,
 "ervenyes": true,
-"mai_ertek": 38,
+"mai_ertek": 64,
 "csucs": null,
 "atlag": null
 },
@@ -383,13 +385,13 @@
 "meredekseg": null,
 "ervenyes": false,
 "mai_ertek": null,
-"csucs": 53.0,
-"atlag": 48.0
+"csucs": 20.0,
+"atlag": 20.0
 },
 {
 "szo": "várólista",
 "irany": "stagnal",
-"meredekseg": 0.146,
+"meredekseg": 0.268,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -398,39 +400,99 @@
 {
 "szo": "állás",
 "irany": "novekszik",
-"meredekseg": 3.351,
+"meredekseg": 2.697,
 "ervenyes": true,
-"mai_ertek": 56,
-"csucs": 83.0,
-"atlag": 66.88
+"mai_ertek": 43,
+"csucs": 73.0,
+"atlag": 58.33
 }
 ],
 "napi": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "Az egészségügyi szavak adják ma a legérdekesebb képet. A háziorvos 61-es értékkel a szokásos szintje fölé került, és a hét eleji nagyon alacsony szintről emelkedett ide, míg a kórház 18-ra esett vissza, jóval a 36,7-es átlaga alá. A sürgősségi 64-en áll, a betegség 48-on, nagyjából a megszokott szintjén, a műtét pedig csendesen 23 körül mozog.\n\nA megélhetési szavak vegyes képet mutatnak: a fizetés 61-en, a kölcsön 63-on a megszokott sávjában mozog, a hitel 35-re élénkült, a benzin viszont 16-os értékével a szokásos szintje alatt marad, miközben az iránya felfelé fordult. Az akciós újság 29-en a saját átlaga alatt van, az albérlet és az eladó lakás pedig a megszokott tartományában maradt.\n\nKülön kiemelkedik a nyugdíj, amely 39-es mai értékkel jóval a 13,5 körüli átlaga fölött jár. Az iskola 69-en a szokásosnál élénkebb, az állás 43-on a megszokott szintje alatt van. A kormányablak, kormány, korrupció, infláció, csőd, munkanélküliség, rezsi, segély és várólista ma alig vagy egyáltalán nem mozdult, lényegében háttérben maradt."
 }
 },
 "felkapott": {
 "top": [
 {
-"kifejezes": "el niño",
+"kifejezes": "magyar péter",
 "volumen": "20000",
-"novekedes_pct": "1000",
+"novekedes_pct": "600",
 "temak": [
-"Other"
+"Politics",
+"Law and Government"
 ],
 "hirek": []
 },
 {
-"kifejezes": "zivatar",
-"volumen": "10000",
-"novekedes_pct": "1000",
+"kifejezes": "holnapi időjárás",
+"volumen": "20000",
+"novekedes_pct": "100",
 "temak": [
 "Climate"
 ],
-"hirek": []
+"hirek": [
+{
+"hir_cim": "Az időjárás holnap alaposan próbára teszi a hangulatunkat",
+"hir_forras": "BAON",
+"hir_url": "https://www.baon.hu/helyi-idojaras/2026/10/milyen-ido-lesz-holnap-oktober-10-borult-eso",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSKkygrJMq1RE4oWtw0nwsISuKbVtaRLANcE_kIrdt_WVrOUCxJYe6w1xdi30g",
+"hir_kivonat": ""
 },
 {
-"kifejezes": "nyugdíjrendszer",
+"hir_cim": "Esőfelhők lepik el az eget, de a hőmérséklet még meglepően magas lehet",
+"hir_forras": "HEOL",
+"hir_url": "https://www.heol.hu/helyi-idojaras/2026/10/holnapi-idojaras-heves-eso-zapor",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR5Mh2l6IMbVdTKDs2bUGTlkbN4TH4CGPB_O62RqLadtSSE8ENZaQtOIH1-AcQ",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Felhős idő lehet holnap, eső is előfordulhat",
+"hir_forras": "Gyulai Hírlap",
+"hir_url": "https://www.gyulaihirlap.hu/166398-felhos-ido-lehet-holnap-eso-is-elofordulhat",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsAXWhtO4Jeh3ybeudd7fHMn2XRV47IWO0rkZLiAOECukM7negbYRCobizHwQ",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "holnapi időjárás",
+"volumen": "10000",
+"novekedes_pct": "200",
+"temak": [
+"Climate"
+],
+"hirek": [
+{
+"hir_cim": "Az időjárás holnap alaposan próbára teszi a hangulatunkat",
+"hir_forras": "BAON",
+"hir_url": "https://www.baon.hu/helyi-idojaras/2026/10/milyen-ido-lesz-holnap-oktober-10-borult-eso",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSKkygrJMq1RE4oWtw0nwsISuKbVtaRLANcE_kIrdt_WVrOUCxJYe6w1xdi30g",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Esőfelhők lepik el az eget, de a hőmérséklet még meglepően magas lehet",
+"hir_forras": "HEOL",
+"hir_url": "https://www.heol.hu/helyi-idojaras/2026/10/holnapi-idojaras-heves-eso-zapor",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR5Mh2l6IMbVdTKDs2bUGTlkbN4TH4CGPB_O62RqLadtSSE8ENZaQtOIH1-AcQ",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Felhős idő lehet holnap, eső is előfordulhat",
+"hir_forras": "Gyulai Hírlap",
+"hir_url": "https://www.gyulaihirlap.hu/166398-felhos-ido-lehet-holnap-eso-is-elofordulhat",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsAXWhtO4Jeh3ybeudd7fHMn2XRV47IWO0rkZLiAOECukM7negbYRCobizHwQ",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "ruff bálint",
 "volumen": "10000",
 "novekedes_pct": "1000",
 "temak": [
@@ -439,46 +501,17 @@
 "hirek": []
 },
 {
-"kifejezes": "hegedűs zsolt",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "m1",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "fenntarthatóság",
+"kifejezes": "sztárban sztár",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
-"Pets and Animals",
-"Hobbies and Leisure"
+"Entertainment"
 ],
 "hirek": []
 },
 {
-"kifejezes": "diplomata útlevél",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government",
-"Politics"
-],
-"hirek": []
-},
-{
-"kifejezes": "villanyszámla",
-"volumen": "5000",
+"kifejezes": "jövedéki adó",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Business and Finance"
@@ -486,11 +519,76 @@
 "hirek": []
 },
 {
-"kifejezes": "kovács kristóf",
+"kifejezes": "novák előd",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
-"Entertainment"
+"Politics",
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "tóth gabi",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "milák kristóf",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "galatasaray–kasimpasa",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "hans-dieter flick",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "diego maradona",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "fűtés klímával",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Hobbies and Leisure",
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "medvetámadás",
+"volumen": "2000",
+"novekedes_pct": "700",
+"temak": [
+"Other"
 ],
 "hirek": []
 },
@@ -501,143 +599,6 @@
 "temak": [
 "Law and Government",
 "Politics"
-],
-"hirek": []
-},
-{
-"kifejezes": "hont andrás",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
-},
-{
-"kifejezes": "bródy jános",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "susan dell",
-"volumen": "2000",
-"novekedes_pct": "600",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "molnár áron",
-"volumen": "2000",
-"novekedes_pct": "700",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "várhegyi attila",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Politics"
-],
-"hirek": []
-},
-{
-"kifejezes": "szálasi ferenc",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Politics",
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "paks ii atomerőmű",
-"volumen": "2000",
-"novekedes_pct": "800",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
-},
-{
-"kifejezes": "angelina jolie",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "gulácsi péter",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "ferencvárosi tc",
-"volumen": "2000",
-"novekedes_pct": "300",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "anne carson",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Hobbies and Leisure",
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "pintér dániel",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "szövetségi kapitány",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "hajdu jános",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "revolut",
-"volumen": "2000",
-"novekedes_pct": "800",
-"temak": [
-"Other"
 ],
 "hirek": []
 }
@@ -876,25 +837,85 @@
 ],
 "este_top": [
 {
-"kifejezes": "el niño",
+"kifejezes": "magyar péter",
 "volumen": "20000",
-"novekedes_pct": "1000",
+"novekedes_pct": "600",
 "temak": [
-"Other"
+"Politics",
+"Law and Government"
 ],
 "hirek": []
 },
 {
-"kifejezes": "zivatar",
-"volumen": "10000",
-"novekedes_pct": "1000",
+"kifejezes": "holnapi időjárás",
+"volumen": "20000",
+"novekedes_pct": "100",
 "temak": [
 "Climate"
 ],
-"hirek": []
+"hirek": [
+{
+"hir_cim": "Az időjárás holnap alaposan próbára teszi a hangulatunkat",
+"hir_forras": "BAON",
+"hir_url": "https://www.baon.hu/helyi-idojaras/2026/10/milyen-ido-lesz-holnap-oktober-10-borult-eso",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSKkygrJMq1RE4oWtw0nwsISuKbVtaRLANcE_kIrdt_WVrOUCxJYe6w1xdi30g",
+"hir_kivonat": ""
 },
 {
-"kifejezes": "nyugdíjrendszer",
+"hir_cim": "Esőfelhők lepik el az eget, de a hőmérséklet még meglepően magas lehet",
+"hir_forras": "HEOL",
+"hir_url": "https://www.heol.hu/helyi-idojaras/2026/10/holnapi-idojaras-heves-eso-zapor",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR5Mh2l6IMbVdTKDs2bUGTlkbN4TH4CGPB_O62RqLadtSSE8ENZaQtOIH1-AcQ",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Felhős idő lehet holnap, eső is előfordulhat",
+"hir_forras": "Gyulai Hírlap",
+"hir_url": "https://www.gyulaihirlap.hu/166398-felhos-ido-lehet-holnap-eso-is-elofordulhat",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsAXWhtO4Jeh3ybeudd7fHMn2XRV47IWO0rkZLiAOECukM7negbYRCobizHwQ",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "holnapi időjárás",
+"volumen": "10000",
+"novekedes_pct": "200",
+"temak": [
+"Climate"
+],
+"hirek": [
+{
+"hir_cim": "Az időjárás holnap alaposan próbára teszi a hangulatunkat",
+"hir_forras": "BAON",
+"hir_url": "https://www.baon.hu/helyi-idojaras/2026/10/milyen-ido-lesz-holnap-oktober-10-borult-eso",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSKkygrJMq1RE4oWtw0nwsISuKbVtaRLANcE_kIrdt_WVrOUCxJYe6w1xdi30g",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Esőfelhők lepik el az eget, de a hőmérséklet még meglepően magas lehet",
+"hir_forras": "HEOL",
+"hir_url": "https://www.heol.hu/helyi-idojaras/2026/10/holnapi-idojaras-heves-eso-zapor",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcR5Mh2l6IMbVdTKDs2bUGTlkbN4TH4CGPB_O62RqLadtSSE8ENZaQtOIH1-AcQ",
+"hir_kivonat": ""
+},
+{
+"hir_cim": "Felhős idő lehet holnap, eső is előfordulhat",
+"hir_forras": "Gyulai Hírlap",
+"hir_url": "https://www.gyulaihirlap.hu/166398-felhos-ido-lehet-holnap-eso-is-elofordulhat",
+"hir_ido_utc": "",
+"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsAXWhtO4Jeh3ybeudd7fHMn2XRV47IWO0rkZLiAOECukM7negbYRCobizHwQ",
+"hir_kivonat": ""
+}
+]
+},
+{
+"kifejezes": "ruff bálint",
 "volumen": "10000",
 "novekedes_pct": "1000",
 "temak": [
@@ -903,46 +924,17 @@
 "hirek": []
 },
 {
-"kifejezes": "hegedűs zsolt",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "m1",
-"volumen": "10000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "fenntarthatóság",
+"kifejezes": "sztárban sztár",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
-"Pets and Animals",
-"Hobbies and Leisure"
+"Entertainment"
 ],
 "hirek": []
 },
 {
-"kifejezes": "diplomata útlevél",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government",
-"Politics"
-],
-"hirek": []
-},
-{
-"kifejezes": "villanyszámla",
-"volumen": "5000",
+"kifejezes": "jövedéki adó",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Business and Finance"
@@ -950,11 +942,76 @@
 "hirek": []
 },
 {
-"kifejezes": "kovács kristóf",
+"kifejezes": "novák előd",
 "volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
-"Entertainment"
+"Politics",
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "tóth gabi",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "milák kristóf",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "galatasaray–kasimpasa",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "hans-dieter flick",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "diego maradona",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "fűtés klímával",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Hobbies and Leisure",
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "medvetámadás",
+"volumen": "2000",
+"novekedes_pct": "700",
+"temak": [
+"Other"
 ],
 "hirek": []
 },
@@ -967,149 +1024,25 @@
 "Politics"
 ],
 "hirek": []
-},
-{
-"kifejezes": "hont andrás",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
-},
-{
-"kifejezes": "bródy jános",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "susan dell",
-"volumen": "2000",
-"novekedes_pct": "600",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "molnár áron",
-"volumen": "2000",
-"novekedes_pct": "700",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "várhegyi attila",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Politics"
-],
-"hirek": []
-},
-{
-"kifejezes": "szálasi ferenc",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Politics",
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "paks ii atomerőmű",
-"volumen": "2000",
-"novekedes_pct": "800",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
-},
-{
-"kifejezes": "angelina jolie",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "gulácsi péter",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "ferencvárosi tc",
-"volumen": "2000",
-"novekedes_pct": "300",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "anne carson",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Hobbies and Leisure",
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "pintér dániel",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "szövetségi kapitány",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "hajdu jános",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "revolut",
-"volumen": "2000",
-"novekedes_pct": "800",
-"temak": [
-"Other"
-],
-"hirek": []
 }
 ],
 "reggel_este_diff": {
-"uj_estere": [],
-"eltunt_estere": [],
-"megmaradt": [
+"uj_estere": [
+"diego maradona",
+"fűtés klímával",
+"galatasaray–kasimpasa",
+"hans-dieter flick",
+"holnapi időjárás",
+"jövedéki adó",
+"magyar péter",
+"medvetámadás",
+"milák kristóf",
+"novák előd",
+"ruff bálint",
+"sztárban sztár",
+"tóth gabi"
+],
+"eltunt_estere": [
 "angelina jolie",
 "anne carson",
 "bródy jános",
@@ -1122,7 +1055,6 @@
 "hegedűs zsolt",
 "hont andrás",
 "kovács kristóf",
-"kövér lászló",
 "m1",
 "molnár áron",
 "nyugdíjrendszer",
@@ -1135,53 +1067,36 @@
 "villanyszámla",
 "várhegyi attila",
 "zivatar"
+],
+"megmaradt": [
+"kövér lászló"
 ]
 },
 "reggel": {
-"szoveg": "Ma reggel a magyar Google-keresésben egyértelműen az időjárás és a hétköznapi megélhetés témái viszik a prímet. A legnagyobb mozgást az „el niño"
+"szoveg": "A reggeli pillanatképben az el niño vezetett, mellette a zivatar és a nyugdíjrendszer pörgött, utóbbi az időjárási és megélhetési témák felé tereli a figyelmet. Felbukkant a hegedűs zsolt, az m1, a villanyszámla és a diplomata útlevél is. A politikai és közéleti nevek közül a kövér lászló, a várhegyi attila és a szálasi ferenc jelent meg, a szórakozás felől pedig a bródy jános és az angelina jolie. Ezekhez a reggeli szavakhoz konkrét háttérhír nem érkezett, így csak a felkapottságukat tudjuk rögzíteni."
 },
 "este": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "Estére a magyar péter és a holnapi időjárás került a lista élére, mindkettő nagy keresési volumennel. A holnapi időjáráshoz több megyei lap is esős, felhős, de meglepően enyhe időt ígérő előrejelzést közölt. Mellettük a ruff bálint neve ugrott ki erősen, és felbukkant a sztárban sztár, a tóth gabi, valamint több sportnév, mint a milák kristóf, a galatasaray–kasimpasa és a hans-dieter flick. A jövedéki adó, a novák előd, a kövér lászló és a fűtés klímával is az esti listán szerepelt. Az időjáráson kívül ezekhez a szavakhoz nem társult háttérhír."
 },
 "teljes_nap": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A nap íve jól mutatja a figyelem átrendeződését: reggel még az időjárási jelenségek és a nyugdíjrendszer domináltak, estére viszont a közéleti és szórakoztató nevek, mindenekelőtt a magyar péter és a ruff bálint vették át a vezetést. A kövér lászló az egyetlen szó, amely reggel és este is kitartott a listán. Számos reggeli téma, köztük az el niño, a zivatar, a villanyszámla és több sportnév estére elhalványult, miközben új belépőként jött be a sztárban sztár, a tóth gabi, a jövedéki adó és több labdarúgó-mérkőzés. A holnapi időjárás mindvégig stabilan jelen volt."
 },
 "het": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A héten legtöbbször a holnapi időjárás tért vissza, három különböző napon, ami a tartós időjárási figyelmet jelzi. Két-két napon bukkant fel a fásy ádám, az m1 és az állampapír. A többi szó, köztük a magyar péter, a jövedéki adó, a medvetámadás és a számos sportmérkőzés egy-egy napon jelent meg, így inkább a napi hírek pillanatnyi lenyomatai, mint tartós témák."
 },
 "het_valos": {
 "napok": 7,
 "visszateroek": [
 {
-"kifejezes": "m1",
+"kifejezes": "holnapi időjárás",
 "napok_szama": 3
-},
-{
-"kifejezes": "diplomata útlevél",
-"napok_szama": 2
-},
-{
-"kifejezes": "el niño",
-"napok_szama": 2
 },
 {
 "kifejezes": "fásy ádám",
 "napok_szama": 2
 },
 {
-"kifejezes": "hegedűs zsolt",
-"napok_szama": 2
-},
-{
-"kifejezes": "holnapi időjárás",
-"napok_szama": 2
-},
-{
-"kifejezes": "nyugdíjrendszer",
-"napok_szama": 2
-},
-{
-"kifejezes": "villanyszámla",
+"kifejezes": "m1",
 "napok_szama": 2
 },
 {
@@ -1205,15 +1120,7 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "angelina jolie",
-"napok_szama": 1
-},
-{
 "kifejezes": "anglia–csehország",
-"napok_szama": 1
-},
-{
-"kifejezes": "anne carson",
 "napok_szama": 1
 },
 {
@@ -1246,10 +1153,6 @@
 },
 {
 "kifejezes": "bohár dániel",
-"napok_szama": 1
-},
-{
-"kifejezes": "bródy jános",
 "napok_szama": 1
 },
 {
@@ -1293,6 +1196,14 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "diego maradona",
+"napok_szama": 1
+},
+{
+"kifejezes": "diplomata útlevél",
+"napok_szama": 1
+},
+{
 "kifejezes": "donald trump",
 "napok_szama": 1
 },
@@ -1301,19 +1212,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "el niño",
+"napok_szama": 1
+},
+{
 "kifejezes": "európai unió",
 "napok_szama": 1
 },
 {
 "kifejezes": "f1",
-"napok_szama": 1
-},
-{
-"kifejezes": "fenntarthatóság",
-"napok_szama": 1
-},
-{
-"kifejezes": "ferencvárosi tc",
 "napok_szama": 1
 },
 {
@@ -1333,7 +1240,11 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "gulácsi péter",
+"kifejezes": "fűtés klímával",
+"napok_szama": 1
+},
+{
+"kifejezes": "galatasaray–kasimpasa",
 "napok_szama": 1
 },
 {
@@ -1345,15 +1256,19 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "hajdu jános",
-"napok_szama": 1
-},
-{
 "kifejezes": "halálbüntetés",
 "napok_szama": 1
 },
 {
+"kifejezes": "hans-dieter flick",
+"napok_szama": 1
+},
+{
 "kifejezes": "hatvanpuszta",
+"napok_szama": 1
+},
+{
+"kifejezes": "hegedűs zsolt",
 "napok_szama": 1
 },
 {
@@ -1362,10 +1277,6 @@
 },
 {
 "kifejezes": "hidegfront",
-"napok_szama": 1
-},
-{
-"kifejezes": "hont andrás",
 "napok_szama": 1
 },
 {
@@ -1405,6 +1316,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "jövedéki adó",
+"napok_szama": 1
+},
+{
 "kifejezes": "kamara",
 "napok_szama": 1
 },
@@ -1430,10 +1345,6 @@
 },
 {
 "kifejezes": "királydinnye",
-"napok_szama": 1
-},
-{
-"kifejezes": "kovács kristóf",
 "napok_szama": 1
 },
 {
@@ -1469,6 +1380,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "magyar péter",
+"napok_szama": 1
+},
+{
 "kifejezes": "magyarország",
 "napok_szama": 1
 },
@@ -1481,11 +1396,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "medvetámadás",
+"napok_szama": 1
+},
+{
 "kifejezes": "messi",
 "napok_szama": 1
 },
 {
-"kifejezes": "molnár áron",
+"kifejezes": "milák kristóf",
 "napok_szama": 1
 },
 {
@@ -1505,7 +1424,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "novák előd",
+"napok_szama": 1
+},
+{
 "kifejezes": "nyugdíjkorhatár",
+"napok_szama": 1
+},
+{
+"kifejezes": "nyugdíjrendszer",
 "napok_szama": 1
 },
 {
@@ -1525,19 +1452,11 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "paks ii atomerőmű",
-"napok_szama": 1
-},
-{
 "kifejezes": "palackvisszaváltási rendszer",
 "napok_szama": 1
 },
 {
 "kifejezes": "pintér dezső",
-"napok_szama": 1
-},
-{
-"kifejezes": "pintér dániel",
 "napok_szama": 1
 },
 {
@@ -1549,11 +1468,11 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "revolut",
+"kifejezes": "rtl híradó",
 "napok_szama": 1
 },
 {
-"kifejezes": "rtl híradó",
+"kifejezes": "ruff bálint",
 "napok_szama": 1
 },
 {
@@ -1562,10 +1481,6 @@
 },
 {
 "kifejezes": "stohl luca",
-"napok_szama": 1
-},
-{
-"kifejezes": "susan dell",
 "napok_szama": 1
 },
 {
@@ -1581,15 +1496,11 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "sztárban sztár",
+"napok_szama": 1
+},
+{
 "kifejezes": "sztárban sztár kiesője",
-"napok_szama": 1
-},
-{
-"kifejezes": "szálasi ferenc",
-"napok_szama": 1
-},
-{
-"kifejezes": "szövetségi kapitány",
 "napok_szama": 1
 },
 {
@@ -1602,6 +1513,10 @@
 },
 {
 "kifejezes": "tél",
+"napok_szama": 1
+},
+{
+"kifejezes": "tóth gabi",
 "napok_szama": 1
 },
 {
@@ -1621,11 +1536,11 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "vitézy dávid",
+"kifejezes": "villanyszámla",
 "napok_szama": 1
 },
 {
-"kifejezes": "várhegyi attila",
+"kifejezes": "vitézy dávid",
 "napok_szama": 1
 },
 {
@@ -1642,10 +1557,6 @@
 },
 {
 "kifejezes": "zach galifianakis",
-"napok_szama": 1
-},
-{
-"kifejezes": "zivatar",
 "napok_szama": 1
 },
 {
@@ -1666,5 +1577,156 @@
 }
 ]
 }
+},
+"youtube": {
+"szamok": [
+{
+"szo": "szorongás",
+"domen": "egeszseg",
+"irany": "stagnal",
+"meredekseg": 0.005,
+"ervenyes": true,
+"mai_ertek": 39,
+"csucs": 100,
+"atlag": 27.7
+},
+{
+"szo": "edzés",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.035,
+"ervenyes": true,
+"mai_ertek": 56,
+"csucs": 100,
+"atlag": 67.3
+},
+{
+"szo": "meditáció",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.046,
+"ervenyes": true,
+"mai_ertek": 81,
+"csucs": 100,
+"atlag": 81.5
+},
+{
+"szo": "befektetés",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.044,
+"ervenyes": true,
+"mai_ertek": 45,
+"csucs": 100,
+"atlag": 20.7
+},
+{
+"szo": "bitcoin",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.038,
+"ervenyes": true,
+"mai_ertek": 50,
+"csucs": 100,
+"atlag": 45.4
+},
+{
+"szo": "hírek",
+"domen": "kozelet",
+"irany": "stagnal",
+"meredekseg": -0.002,
+"ervenyes": true,
+"mai_ertek": 66,
+"csucs": 100,
+"atlag": 57.6
+},
+{
+"szo": "magyar péter",
+"domen": "kozelet",
+"irany": "stagnal",
+"meredekseg": 0.012,
+"ervenyes": true,
+"mai_ertek": 9,
+"csucs": 100,
+"atlag": 15.3
+},
+{
+"szo": "recept",
+"domen": "haztartas",
+"irany": "csokken",
+"meredekseg": -0.052,
+"ervenyes": true,
+"mai_ertek": 43,
+"csucs": 100,
+"atlag": 46.7
+},
+{
+"szo": "mese",
+"domen": "csalad",
+"irany": "csokken",
+"meredekseg": -0.025,
+"ervenyes": true,
+"mai_ertek": 91,
+"csucs": 100,
+"atlag": 90.8
+},
+{
+"szo": "nyaralás",
+"domen": "szabadido",
+"irany": "novekszik",
+"meredekseg": 0.067,
+"ervenyes": true,
+"mai_ertek": 24,
+"csucs": 100,
+"atlag": 50.0
+},
+{
+"szo": "tanulás",
+"domen": "tanulas",
+"irany": "csokken",
+"meredekseg": -0.049,
+"ervenyes": true,
+"mai_ertek": 69,
+"csucs": 100,
+"atlag": 74.9
+},
+{
+"szo": "klíma",
+"domen": "otthon",
+"irany": "novekszik",
+"meredekseg": 0.072,
+"ervenyes": true,
+"mai_ertek": 12,
+"csucs": 100,
+"atlag": 16.4
+}
+],
+"napi": {
+"szoveg": "A videós figyelemben a mese és a meditáció áll a legmagasabban, 91-es és 81-es értékkel, mindkettő a saját megszokott szintje körül. A tanulás 69-en szintén élénk, bár kissé a megszokottja alatt. A hírek 66-on a szokásosnál valamivel erősebb. A nyaralás 24-re esett vissza, jóval a saját 50-es átlaga alá, ami az őszi időszakban nem meglepő, bár az iránya a héten belül enyhén emelkedő. A klíma 12-vel alacsonyan, de emelkedő irányban mozog. A befektetés 45-ön jóval a 20,7-es átlaga fölött jár, a bitcoin 50-en a megszokott szintjén. A szorongás 39-cel a saját átlaga fölött van, az edzés és a recept pedig a megszokott sávjában marad."
+},
+"teljes_kep": {
+"szoveg": "A héten a videós érdeklődésben a befektetés ugrott a leglátványosabban, 11-ről 45-re, és a szorongás is erősen emelkedett, 11-ről 39-re. Mérsékeltebben nőtt a bitcoin és a hírek iránti figyelem is. Ezzel szemben a tanulás esett vissza a legjobban, 83-ról 69-re, a nyaralás és a recept pedig kisebb mértékben csökkent. A mese, a meditáció és az edzés magas, de enyhén lefelé csúszó pályán maradt, a magyar péter videós kereslete pedig a hét során lényegében változatlanul alacsony szinten állt. Mivel ezek a szavak mind a saját skálájukon mozognak, egymáshoz nem mérhetők, csak a saját heti irányuk olvasható ki."
+}
+},
+"predikcio": {
+"szoveg": "A rövid távú előrejelzés a követett szavak egészénél egyöntetűen kiegyenlített képet mutat: mind a 28 szó esetében stagnálás a legvalószínűbb irány a következő napra, érdemi emelkedő vagy csökkenő jelzés egyiknél sem rajzolódik ki. Fontos azonban, hogy ez a közelmúlt trendjének matematikai folytatása, nem eseményjóslat, és a legtöbb becslés megbízhatósága alacsony. Viszonylag stabilabbnak a napelem, a pedagógus és a munkanélküliség előrejelzése tűnik, míg a várólista, az albérlet, az eladó lakás és több más szó becslése széles bizonytalansági sávval érkezik, vagyis ezeknél a valóság könnyen eltérhet a kirajzolódó iránytól."
+},
+"tldr": {
+"van_tldr": true,
+"fo_valtozasok": [
+"A háziorvos iránti érdeklődés markánsan felerősödött, a hét eleji alacsony szintről a mai 61-es értékig kúszott fel, ami a szokásos átlagát is meghaladja.",
+"A kórház keresése a hét eleji 84,5-es csúcsról 12,9-ig zuhant, ma 18-on áll, jóval a szokásos szintje alatt.",
+"A nyugdíj a megszokott 13,5 körüli átlagához képest ma kiugróan magas, 39-es értéket mutat."
+],
+"kiemelt_ugyek": [
+"A háziorvos, iskola és állás keresése is élénkülő irányba fordult, az iskola ma 69-en, a szokásosnál élénkebben.",
+"A kórház egyértelmű lefelé fordult, a hét eleji csúcsról a megszokott szintje alá csúszott.",
+"A benzin napok óta halk mozgásból emelkedő irányba váltott, bár mai értéke (16) a szokásos szintje alatt marad.",
+"Magyar Péter neve mind a webes keresésben, mind a felkapottak között este is kiemelkedik, hír nélkül.",
+"A holnapi időjárás három napja visszatérő téma, ma este is a lista élén, mögötte konkrét esős előrejelzésekkel."
+],
+"visszatero_temak": "Több napon át vissza-visszatért a holnapi időjárás, emellett a Fásy Ádám, az M1 és az állampapír is több napon felbukkant.",
+"intenzivebb_keresesbe": "Érdemes lehet megfigyelni a jövedéki adót és a fűtés klímával témát, mert a megélhetési és energiaköltség-érdeklődéshez kapcsolódnak, bár ezekhez ma nem érkezett háttérhír. A ruff bálint név erős kiugrása szintén figyelmet érdemelhet.",
+"informaciohiany": "Több erősen felkapott szóhoz – magyar péter, ruff bálint, novák előd, kövér lászló, sztárban sztár – nem társult hír, így a mögöttes ok az adatból nem állapítható meg."
 }
 }
