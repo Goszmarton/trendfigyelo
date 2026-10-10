@@ -4,7 +4,7 @@ const { test, expect } = require("@playwright/test");
 test("menüsor: 8 link + 2 csoportcímke, aktív = Google; a linkek helyesek + sorrend", async ({ page }) => {
   await page.goto("/trendek.html");
   await expect(page.locator("#fomenu a")).toHaveCount(8);
-  await expect(page.locator("#fomenu .fomenu-cimke")).toHaveText(["Elemzések", "Statisztikák"]);
+  await expect(page.locator("#fomenu .fomenu-cimke")).toHaveText(["Elemzések", "Jelzések", "Statisztikák"]);
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Google");
   await expect(page.locator('#fomenu a[href="index.html"]')).toHaveText("Áttekintő");
   await expect(page.locator('#fomenu a[href="elemzes.html"]')).toHaveText("Napi");
