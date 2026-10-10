@@ -86,8 +86,8 @@ test("navigáció: a Trendek főoldalról az Az adatokról oldalra és vissza", 
   await expect(page.locator("#dashboard")).toBeVisible();
 });
 
-test("landing: a gyökér (/) az Elemzések oldalra irányít át", async ({ page }) => {
+test("landing: a gyökér (/) az Áttekintő nyitóoldalt szolgálja", async ({ page }) => {
   await page.goto("/");
-  await expect(page).toHaveURL(/elemzes\.html$/);                       // átirányítás
-  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Napi");
+  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Áttekintő");
+  await expect(page.locator(".attekinto-kartya")).toHaveCount(3);
 });

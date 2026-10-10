@@ -3,11 +3,67 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="0; url=elemzes.html">
-  <link rel="canonical" href="elemzes.html">
-  <title>Trendfigyelő</title>
+  <title>Trendfigyelő – Áttekintő</title>
+  <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
-  <p>Átirányítás az <a href="elemzes.html">Elemzések</a> oldalra…</p>
+  <nav id="fomenu" aria-label="Fő menü">
+    <a href="index.html" class="fomenu-home aktiv" aria-current="page">Áttekintő</a>
+    <div class="fomenu-csoport" aria-label="Elemzések">
+      <span class="fomenu-cimke">Elemzések</span>
+      <a href="elemzes.html">Napi</a>
+      <a href="heti.html">Heti</a>
+      <a href="havi.html">Havi</a>
+    </div>
+    <a href="bovites.html" class="fomenu-onallo">Radar</a>
+    <div class="fomenu-csoport" aria-label="Statisztikák">
+      <span class="fomenu-cimke">Statisztikák</span>
+      <a href="trendek.html">Google</a>
+      <a href="youtube.html">YouTube</a>
+    </div>
+    <a href="adatokrol.html" class="fomenu-onallo">Infó</a>
+  </nav>
+
+  <header class="fejlec-doboz attekinto-hero">
+    <h1>Trendfigyelő</h1>
+    <p>Mire figyel ma Magyarország? Napi, heti és havi AI-elemzések, radar-jelzések és nyers keresési statisztikák egy helyen.</p>
+  </header>
+
+  <main id="attekinto">
+    <section id="attekinto-kiemelt" aria-label="Mai kiemelt" aria-live="polite"></section>
+
+    <div class="attekinto-kartyak">
+      <section class="attekinto-kartya">
+        <h2>Elemzések</h2>
+        <p>Napi, heti és havi AI-összefoglalók arról, mi mozgatja a közbeszédet.</p>
+        <nav class="attekinto-kartya-linkek" aria-label="Elemzések">
+          <a href="elemzes.html">Napi</a>
+          <a href="heti.html">Heti</a>
+          <a href="havi.html">Havi</a>
+        </nav>
+      </section>
+      <section class="attekinto-kartya">
+        <h2>Radar</h2>
+        <p>Szokatlan elmozdulások, ügyek életútja és kapcsolódó keresések.</p>
+        <nav class="attekinto-kartya-linkek" aria-label="Radar">
+          <a href="bovites.html">Radar megnyitása</a>
+        </nav>
+      </section>
+      <section class="attekinto-kartya">
+        <h2>Statisztikák</h2>
+        <p>Nyers keresési és YouTube-nézettségi grafikonok.</p>
+        <nav class="attekinto-kartya-linkek" aria-label="Statisztikák">
+          <a href="trendek.html">Google</a>
+          <a href="youtube.html">YouTube</a>
+        </nav>
+      </section>
+    </div>
+
+    <a class="attekinto-info-sav" href="adatokrol.html">Hogyan készül? Mit jelentenek az adatok? → Infó</a>
+  </main>
+
+  <footer id="labresz" aria-label="Lábléc"></footer>
+
+  <script src="js/attekinto.js"></script>
 </body>
 </html>

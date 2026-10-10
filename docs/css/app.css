@@ -89,6 +89,26 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
   .fomenu-cimke { flex-basis: 100%; padding-left: .2rem; }
 }
 
+/* Áttekintő nyitóoldal */
+.attekinto-hero p { margin: .3rem 0 0; color: #444; max-width: 60ch; }
+#attekinto { padding: 0 .4rem; }
+#attekinto-kiemelt:empty { display: none; }
+#attekinto-kiemelt { background: #f3f6fb; border-left: 3px solid #2a78d6; border-radius: 6px; padding: .7rem .9rem; margin: 0 0 1rem; }
+.attekinto-kiemelt-cim { margin: 0 0 .3rem; font-size: 1rem; }
+.attekinto-kiemelt-mondat { margin: 0 0 .5rem; color: #333; line-height: 1.5; }
+.attekinto-kiemelt-chipek { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: .5rem; }
+.attekinto-chip { display: inline-block; padding: .1rem .55rem; border-radius: 999px; background: #e6eefb; color: #1b3a63; font-size: .82rem; }
+.attekinto-kiemelt-link { font-size: .9rem; }
+.attekinto-kartyak { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: .9rem; margin-bottom: 1rem; }
+.attekinto-kartya { border: 1px solid #e3e3e3; border-radius: 8px; padding: .9rem 1rem; background: #fff; }
+.attekinto-kartya h2 { margin: 0 0 .3rem; font-size: 1.1rem; }
+.attekinto-kartya p { margin: 0 0 .6rem; color: #555; line-height: 1.45; }
+.attekinto-kartya-linkek { display: flex; flex-wrap: wrap; gap: .5rem; }
+.attekinto-kartya-linkek a { font-size: .9rem; color: #2a78d6; text-decoration: none; padding: .2rem .5rem; border: 1px solid #cfe0f5; border-radius: 6px; }
+.attekinto-kartya-linkek a:hover { background: #eef4fc; }
+.attekinto-info-sav { display: block; text-align: center; padding: .7rem; border: 1px dashed #c9c9c9; border-radius: 8px; color: #444; text-decoration: none; }
+.attekinto-info-sav:hover { background: #f6f6f6; }
+
 /* „Az adatokról" oldal — tematikus dobozok (mint a főoldal szekciói) */
 #adatokrol { max-width: 44rem; }
 .adat-csoport { font-size: 1.25rem; margin: 1.8rem 0 .8rem; padding-bottom: .3rem;
