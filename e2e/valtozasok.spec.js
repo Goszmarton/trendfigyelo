@@ -14,6 +14,8 @@ test("változások: renderel + idősáv (számítva) + szakpolitika-szűrő", as
   await expect(page.locator("#radar-idosav")).toContainText("számítva: 2026-10-07");
   await expect(page.locator("#bovites-elmozdulas")).toContainText("benzin");
   await expect(page.locator("#bovites-elmozdulas")).toContainText("emelkedik");
+  await expect(page.locator("#bovites-elmozdulas")).toContainText("mióta tart: 5 mérés");
+  await expect(page.locator("#bovites-elmozdulas")).not.toContainText("pont");
   await expect(page.locator(".bovites-elm-kartya")).toHaveCount(2);
   await page.locator('#bovites-szuro-elm .bovites-szuro-chip[data-szakpolitika="energia_rezsi"]').click();
   await expect(page.locator(".bovites-elm-kartya")).toHaveCount(1);

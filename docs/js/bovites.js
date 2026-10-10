@@ -48,7 +48,7 @@ function bov_elmozdulas_render(cel, elm, szak) {
     kartya.appendChild(bel("div", "bovites-elm-irany", BOV_IRANY[k.irany] || k.irany || ""));
     const r = [];
     if (typeof k.elteres === "number") r.push("eltérés: ×" + String(k.elteres).replace(".", ",") + " a szokásoshoz képest");
-    if (k.idotartam_pont != null) r.push("mióta tart: " + k.idotartam_pont + " pont");
+    if (k.idotartam_pont != null) r.push("mióta tart: " + k.idotartam_pont + " mérés");
     if (k.megbizhatosag) r.push("megbízhatóság: " + (BOV_MEGBIZ[k.megbizhatosag] || k.megbizhatosag));
     r.forEach((t) => kartya.appendChild(bel("div", "bovites-elm-adat", t)));
     if (k.szakpolitika) kartya.appendChild(bel("span", "bovites-cimke", BOV_SZAKPOLITIKA[k.szakpolitika] || k.szakpolitika));
