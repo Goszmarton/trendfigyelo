@@ -1,46 +1,47 @@
 const { test, expect } = require("@playwright/test");
 
 // Menüsor (Excel-fül) + „Az adatokról" külön oldal — statikus szerkezet-őr (nincs adat-mock, a nav statikus).
-test("menüsor: 7 fül, aktív = Google Trendek; a linkek helyesek + sorrend", async ({ page }) => {
+test("menüsor: 8 link + 2 csoportcímke, aktív = Google; a linkek helyesek + sorrend", async ({ page }) => {
   await page.goto("/trendek.html");
-  await expect(page.locator("#fomenu a")).toHaveCount(7);
-  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Google Trendek");
-  await expect(page.locator('#fomenu a[href="elemzes.html"]')).toHaveText("Napi Elemzések");
-  await expect(page.locator('#fomenu a[href="heti.html"]')).toHaveText("Heti értékelés");
-  await expect(page.locator('#fomenu a[href="havi.html"]')).toHaveText("Havi elemzés");
-  await expect(page.locator('#fomenu a[href="trendek.html"]')).toHaveText("Google Trendek");
-  await expect(page.locator('#fomenu a[href="youtube.html"]')).toHaveText("YouTube Trendek");
+  await expect(page.locator("#fomenu a")).toHaveCount(8);
+  await expect(page.locator("#fomenu .fomenu-cimke")).toHaveText(["Elemzések", "Statisztikák"]);
+  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Google");
+  await expect(page.locator('#fomenu a[href="index.html"]')).toHaveText("Áttekintő");
+  await expect(page.locator('#fomenu a[href="elemzes.html"]')).toHaveText("Napi");
+  await expect(page.locator('#fomenu a[href="heti.html"]')).toHaveText("Heti");
+  await expect(page.locator('#fomenu a[href="havi.html"]')).toHaveText("Havi");
   await expect(page.locator('#fomenu a[href="bovites.html"]')).toHaveText("Radar");
+  await expect(page.locator('#fomenu a[href="trendek.html"]')).toHaveText("Google");
+  await expect(page.locator('#fomenu a[href="youtube.html"]')).toHaveText("YouTube");
   await expect(page.locator('#fomenu a[href="adatokrol.html"]')).toHaveText("Infó");
-  // sorrend: Napi Elemzések · Heti értékelés · Havi elemzés · Google Trendek · YouTube Trendek · Radar · Infó
-  await expect(page.locator("#fomenu a")).toHaveText(["Napi Elemzések", "Heti értékelés", "Havi elemzés", "Google Trendek", "YouTube Trendek", "Radar", "Infó"]);
-  await expect(page.locator("#labresz")).toBeAttached();          // üres lábléc jelen
-  await expect(page.locator("#adatokrol")).toHaveCount(0);        // az infó-tartalom NEM a főoldalon van
+  await expect(page.locator("#fomenu a")).toHaveText(["Áttekintő", "Napi", "Heti", "Havi", "Radar", "Google", "YouTube", "Infó"]);
+  await expect(page.locator("#labresz")).toBeAttached();
+  await expect(page.locator("#adatokrol")).toHaveCount(0);
 });
 
 test("youtube.html: a fül betölt, a YouTube menüpont aktív", async ({ page }) => {
   await page.goto("/youtube.html");
-  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("YouTube Trendek");
+  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("YouTube");
   await expect(page.locator("#youtube-blokk")).toBeAttached();
 });
 
 test("havi.html: a fül betölt, a Havi elemzés menüpont aktív", async ({ page }) => {
   await page.goto("/havi.html");
-  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Havi elemzés");
-  await expect(page.locator("#fomenu a")).toHaveText(["Napi Elemzések", "Heti értékelés", "Havi elemzés", "Google Trendek", "YouTube Trendek", "Radar", "Infó"]);
+  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Havi");
+  await expect(page.locator("#fomenu a")).toHaveText(["Áttekintő", "Napi", "Heti", "Havi", "Radar", "Google", "YouTube", "Infó"]);
 });
 
 test("heti.html: a fül betölt, a Heti értékelés menüpont aktív", async ({ page }) => {
   await page.goto("/heti.html");
-  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Heti értékelés");
-  await expect(page.locator("#fomenu a")).toHaveText(["Napi Elemzések", "Heti értékelés", "Havi elemzés", "Google Trendek", "YouTube Trendek", "Radar", "Infó"]);
+  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Heti");
+  await expect(page.locator("#fomenu a")).toHaveText(["Áttekintő", "Napi", "Heti", "Havi", "Radar", "Google", "YouTube", "Infó"]);
   await expect(page.locator("#heti")).toBeAttached();
 });
 
 test("bovites.html: a fül betölt, a Radar menüpont aktív", async ({ page }) => {
   await page.goto("/bovites.html");
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Radar");
-  await expect(page.locator("#fomenu a")).toHaveText(["Napi Elemzések", "Heti értékelés", "Havi elemzés", "Google Trendek", "YouTube Trendek", "Radar", "Infó"]);
+  await expect(page.locator("#fomenu a")).toHaveText(["Áttekintő", "Napi", "Heti", "Havi", "Radar", "Google", "YouTube", "Infó"]);
   await expect(page.locator("#bovites")).toBeAttached();
 });
 
@@ -88,5 +89,5 @@ test("navigáció: a Trendek főoldalról az Az adatokról oldalra és vissza", 
 test("landing: a gyökér (/) az Elemzések oldalra irányít át", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveURL(/elemzes\.html$/);                       // átirányítás
-  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Napi Elemzések");
+  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Napi");
 });

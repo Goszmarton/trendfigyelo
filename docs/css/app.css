@@ -78,6 +78,17 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 #fomenu a.aktiv { background: #fff; color: #1a3a8a; font-weight: 600; border-color: #e3e3e3;
   border-bottom: 1px solid #fff; }
 
+/* Csoportosított főmenü */
+.fomenu-csoport { display: inline-flex; align-items: center; gap: .2rem; padding-left: .5rem; margin-left: .25rem; border-left: 1px solid #ddd; }
+.fomenu-onallo { padding-left: .5rem; margin-left: .25rem; border-left: 1px solid #ddd; }
+.fomenu-cimke { font-size: .64rem; text-transform: uppercase; letter-spacing: .04em; color: #999; white-space: nowrap; padding-right: .1rem; }
+@media (max-width: 640px) {
+  #fomenu { flex-wrap: wrap; }
+  .fomenu-csoport { flex-basis: 100%; flex-wrap: wrap; border-left: none; padding-left: .2rem; margin-left: 0; }
+  .fomenu-onallo { border-left: none; padding-left: .4rem; margin-left: 0; }
+  .fomenu-cimke { flex-basis: 100%; padding-left: .2rem; }
+}
+
 /* „Az adatokról" oldal — tematikus dobozok (mint a főoldal szekciói) */
 #adatokrol { max-width: 44rem; }
 .adat-csoport { font-size: 1.25rem; margin: 1.8rem 0 .8rem; padding-bottom: .3rem;
