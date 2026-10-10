@@ -533,8 +533,13 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 .bovites-ugy { border: 1px solid #c9d3df; border-radius: 10px; padding: 0.8rem 1rem; background: #fff; }
 .bovites-ugy-nev { margin: 0 0 0.4rem; font-size: 1.05rem; }
 .bovites-cimkek, .bovites-chipek { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.3rem 0; }
-.bovites-cimke { display: inline-block; padding: 0.1rem 0.55rem; border-radius: 999px; background: #eef2f7; color: #334; font-size: 0.8rem; margin-top: 0.3rem; }
+.bovites-cimke { display: inline-block; padding: 0.1rem 0.55rem; border-radius: 999px; background: #e9eefb; color: #26408c; font-size: 0.8rem; margin-top: 0.3rem; }
 .bovites-cimkek .bovites-cimke { margin-top: 0; }
+/* címketípusok eltérő színe, hogy a kártyán ne csússzon egybe a szakpolitika / életút / mozgás pill */
+.bovites-eletut { background: #efe9fb; color: #5b36a3; }                      /* életút-besorolás – lila */
+.bovites-mozgas-erosodo { background: #e4f4ec; color: #136a4f; }             /* erősödő – zöld */
+.bovites-mozgas-lecsengo { background: #fbeadf; color: #a85117; }            /* lecsengő – narancs */
+.bovites-mozgas-stabil, .bovites-mozgas-nem_megallapithato { background: #eceff3; color: #475562; }  /* stabil/ismeretlen – semleges */
 .bovites-chip { padding: 0.1rem 0.5rem; border: 1px solid #d5dce5; border-radius: 6px; font-size: 0.85rem; color: #444; }
 .bovites-osszefoglalo { margin: 0.4rem 0; line-height: 1.45; }
 .bovites-meta { font-size: 0.85rem; }
@@ -562,6 +567,16 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
   border-radius: 999px; background: #f6f6f6; cursor: pointer; }
 .bovites-szuro-chip:hover, .bovites-rendezes-gomb:hover { background: #ececec; }
 .bovites-szuro-chip[aria-pressed="true"], .bovites-rendezes-gomb[aria-pressed="true"] { background: #3366cc; color: #fff; border-color: #3366cc; }
+/* Ügyek rendezés-gombok: gombonként saját szín, hogy a sor ne legyen egyforma (aktív = kitöltött) */
+.bovites-rendezes-gomb[data-rendezes="napok"] { background: #fff; color: #2167c0; border-color: #a8c6ee; }
+.bovites-rendezes-gomb[data-rendezes="frissesseg"] { background: #fff; color: #0b6e62; border-color: #8fd0c8; }
+.bovites-rendezes-gomb[data-rendezes="mozgas"] { background: #fff; color: #9c5d0a; border-color: #e0bd80; }
+.bovites-rendezes-gomb[data-rendezes="napok"]:hover { background: #eaf2fc; }
+.bovites-rendezes-gomb[data-rendezes="frissesseg"]:hover { background: #e4f4f1; }
+.bovites-rendezes-gomb[data-rendezes="mozgas"]:hover { background: #fbf1e0; }
+.bovites-rendezes-gomb[data-rendezes="napok"][aria-pressed="true"] { background: #2167c0; border-color: #2167c0; color: #fff; }
+.bovites-rendezes-gomb[data-rendezes="frissesseg"][aria-pressed="true"] { background: #0b6e62; border-color: #0b6e62; color: #fff; }
+.bovites-rendezes-gomb[data-rendezes="mozgas"][aria-pressed="true"] { background: #9c5d0a; border-color: #9c5d0a; color: #fff; }
 
 /* Radar alfülek + panelek + leírások */
 .bovites-alfulek { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.9rem; border-bottom: 2px solid #e3e8ef; }
