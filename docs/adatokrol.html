@@ -227,26 +227,26 @@
       <p>A havi elemzés egy <strong>teljes naptári hónapot</strong> fed le, és <strong>automatikusan, a hó utolsó napján</strong> készül el - közvetlenül az esti napi adatgyűjtés után, amikor a teljes havi adat összegyűlt. Ha az AI-hívás bármiért nem sikerül, a következő futás <strong>újrapróbálja</strong>; sosem jelenik meg félkész havi elemzés. A „Napi elemzés" fül naptárában a <strong>hó utolsó napján</strong> a „Havi" jelölő visz rá; a Havi fülön pedig a bal oldali <strong>hónap-naptárból</strong> bármelyik korábbi, már elkészült hónap előhívható.</p>
     </section>
 
-    <h2 class="adat-csoport">A Radar fül</h2>
+    <h2 class="adat-csoport">A Radar (Változások · Ügyek · Kapcsolódó)</h2>
     <section class="adat-doboz">
-      <h2>Szokatlan változások (elmozdulásfigyelő)</h2>
-      <p>A Radar fül első blokkja azt mutatja, mely keresőkifejezések <strong>szokatlanul</strong> mozdultak el: egy kifejezés a megszokotthoz képest <strong>emelkedik</strong> vagy <strong>csökken</strong>-e, <strong>mekkora az eltérés</strong>, <strong>mióta tart</strong>, és mennyire <strong>megbízható</strong> a jelzés. A megszokott tartomány a Google Trendek fül chartjain <strong>halvány sávként</strong> kapcsolható be.</p>
+      <h2>Változások – szokatlan elmozdulások</h2>
+      <p>A <strong>Változások</strong> oldal azt mutatja, mely <strong>követett keresőszavak</strong> mozdultak el szokatlanul a megszokottól: a szó <strong>emelkedik</strong> vagy <strong>csökken</strong>-e, <strong>mekkora az eltérés</strong> (hányszorosa a szokásos ingadozásnak), <strong>mióta tart</strong> (hány egymást követő legutóbbi mérés lóg ki a szokásos sávból), és mennyire <strong>megbízható</strong> a jelzés. Minden szót a <strong>saját szokásos szintjéhez</strong> mérünk: az óránként gyűjtött szavakat az elmúlt <strong>hét</strong>, a napi/heti szavakat az elmúlt <strong>hónap</strong> trendjéhez. A megszokott tartomány a Google Trendek fül chartjain <strong>halvány sávként</strong> is bekapcsolható. Az oldal tetején jelzés mutatja, mikorra számítottuk az aktuális kiugrásokat.</p>
       <p class="adat-magyarazat">A számokat <strong>Python számolja</strong> a meglévő mérésekből - az eltérést, a tartamot és a megbízhatóságot nem az AI találja ki.</p>
     </section>
 
     <section class="adat-doboz">
-      <h2>Ügyek életútja</h2>
-      <p>A felkapott keresések <strong>ügyekbe</strong> vannak csoportosítva: a <code>claude-opus-4-8</code> modell kapcsolja össze az összetartozó kifejezéseket. Az ügyek életútja minden ügyet besorol: <strong>egyszeri</strong>, <strong>folyamatosan jelen lévő</strong> vagy <strong>visszatérő</strong>, a mozgása pedig <strong>erősödő</strong>, <strong>stabil</strong> vagy <strong>lecsengő</strong>. A nézet <strong>gördülő 30 napot</strong> fed le, és <strong>naponta frissül</strong>.</p>
-    </section>
-
-    <section class="adat-doboz">
-      <h2>Közpolitikai szűrő</h2>
-      <p>Minden ügy és kulcsszó egy <strong>szakpolitikai területbe</strong> van sorolva, összesen <strong>8 kategóriában</strong>: szociál-, egészség-, oktatás-, gazdaság- és foglalkoztatás-, lakhatás-, energia/rezsi, közélet/közigazgatás, illetve egyéb. A Radar fülön a lista <strong>szakpolitika szerint szűrhető</strong>.</p>
+      <h2>Ügyek – az ügyek életútja</h2>
+      <p>Az <strong>Ügyek</strong> oldalon a napi felkapott keresések <strong>ügyekbe</strong> vannak csoportosítva: a <code>claude-opus-4-8</code> modell kapcsolja össze az összetartozó kifejezéseket (a mérőszámokat a kódunk számolja, nem az AI). A nézet <strong>gördülő 30 napot</strong> fed le, és <strong>naponta frissül</strong>. Minden ügy kap egy besorolást - <strong>újonnan megfigyelt</strong>, <strong>folyamatosan jelen</strong> vagy <strong>visszatérő</strong> -, és egy mozgást: <strong>erősödő</strong>, <strong>stabil</strong> vagy <strong>lecsengő</strong>. Egy <strong>napi jelenlét-idővonal</strong> naptár-igazítva mutatja, mely napokon pörgött a téma (sötétebb kék = több keresés, halvány = aznap nem volt jelen). Az ügyek <strong>időtartam / frissesség / mozgás</strong> szerint rendezhetők.</p>
     </section>
 
     <section class="adat-doboz">
       <h2>Kapcsolódó keresések</h2>
-      <p>A napi felkapott témák mögé nézünk be — a Google Trends <strong>»kapcsolódó keresések«</strong> (related queries) alapján témánként a <strong>megszokott</strong> (top) és a <strong>most felfutó</strong> (rising) keresések. Naponta pár felkapott téma frissül (új adatgyűjtés). <strong>»Mire kíváncsiak egy témán belül az emberek?«</strong></p>
+      <p>A <strong>Kapcsolódó</strong> oldal a napi felkapott témák mögé néz a Google Trends <strong>„kapcsolódó keresések"</strong> (related queries) alapján, témánként kétféle listával: a <strong>Top</strong> a téma körül leggyakrabban együtt keresett kifejezések (0–100 relatív népszerűség, 100 = a leggyakoribb), a <strong>Felfutó</strong> pedig a mostanában leginkább megugró keresések (a % a növekedés, a „Breakout" kiugró felfutás). A Top/Felfutó listák az <strong>elmúlt 3 hónap</strong> adatából számítanak, miközben maguk a <strong>témák</strong> a közelmúlt (utolsó pár nap) felkapottjai - naponta pár téma frissül (külön, szűk kvótájú adatgyűjtés).</p>
+    </section>
+
+    <section class="adat-doboz">
+      <h2>Közpolitikai szűrő (Változások és Ügyek)</h2>
+      <p>Minden ügy és kulcsszó egy <strong>szakpolitikai területbe</strong> van sorolva, összesen <strong>8 kategóriában</strong>: szociál-, egészség-, oktatás-, gazdaság- és foglalkoztatás-, lakhatás-, energia/rezsi, közélet/közigazgatás, illetve egyéb. A <strong>Változások</strong> és az <strong>Ügyek</strong> oldalon a lista <strong>szakpolitika szerint szűrhető</strong>.</p>
     </section>
   </main>
 

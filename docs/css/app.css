@@ -80,12 +80,17 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 
 /* Csoportosított főmenü */
 .fomenu-csoport { display: inline-flex; align-items: center; gap: .2rem; padding-left: .5rem; margin-left: .25rem; border-left: 1px solid #ddd; }
-.fomenu-onallo { padding-left: .5rem; margin-left: .25rem; border-left: 1px solid #ddd; }
+.fomenu-onallo { padding-left: .5rem; }
+/* az Infó külön áll a jobb szélen — nagyobb térköz + saját elválasztó vonal a résben
+   (az #fomenu a felülírja a sima .fomenu-onallo bal szegélyét, ezért kell a nagyobb specificitás + ::before) */
+#fomenu a.fomenu-onallo { margin-left: 1rem; position: relative; }
+#fomenu a.fomenu-onallo::before { content: ""; position: absolute; left: -.55rem; top: .2rem; bottom: .2rem; border-left: 1px solid #cfcfcf; }
 .fomenu-cimke { font-size: .64rem; text-transform: uppercase; letter-spacing: .04em; color: #999; white-space: nowrap; padding-right: .1rem; }
 @media (max-width: 640px) {
   #fomenu { flex-wrap: wrap; }
   .fomenu-csoport { flex-basis: 100%; flex-wrap: wrap; border-left: none; padding-left: .2rem; margin-left: 0; }
-  .fomenu-onallo { border-left: none; padding-left: .4rem; margin-left: 0; }
+  #fomenu a.fomenu-onallo { padding-left: .4rem; margin-left: 0; }
+  #fomenu a.fomenu-onallo::before { display: none; }
   .fomenu-cimke { flex-basis: 100%; padding-left: .2rem; }
 }
 

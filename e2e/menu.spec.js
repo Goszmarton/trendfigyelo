@@ -44,10 +44,10 @@ test("Infó oldal: adat + elemzés dobozok, csoportcímek, aktív fül + üres l
   await page.goto("/adatokrol.html");
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Infó");
   await expect(page.locator("#adatokrol .adat-doboz")).toHaveCount(32);  // 10 Google (+ nemlin-trend, adatforrás-marker, előrejelzés) + 5 YouTube + 3 napi elemzés + 4 heti elemzés + 5 havi elemzés + 4 bővítés doboz
-  await expect(page.locator("#adatokrol .adat-csoport")).toHaveCount(6);  // Google + YouTube + „Az elemzés" (napi) + „A heti elemzés" + „A havi elemzés" + „A Radar fül"
+  await expect(page.locator("#adatokrol .adat-csoport")).toHaveCount(6);  // Google + YouTube + „Az elemzés" (napi) + „A heti elemzés" + „A havi elemzés" + „A Radar"
   await expect(page.locator("#adatokrol .adat-csoport")).toHaveText([
     "Google Trend adatok", "YouTube Trend adatok", "Az elemzés (napi AI-összefoglaló)",
-    "A heti elemzés (heti AI-összefoglaló)", "A havi elemzés (havi AI-összefoglaló)", "A Radar fül"]);
+    "A heti elemzés (heti AI-összefoglaló)", "A havi elemzés (havi AI-összefoglaló)", "A Radar (Változások · Ügyek · Kapcsolódó)"]);
   await expect(page.locator("#adatokrol")).toContainText("szokatlan");
   await expect(page.locator("#adatokrol")).toContainText("ügyek életútja");
   await expect(page.locator("#adatokrol")).toContainText("kapcsolódó keresés");
