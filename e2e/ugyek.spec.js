@@ -31,6 +31,20 @@ test("ügyek: renderel + idősáv (gördülő 30 nap) + szűrő + rendezés + id
   await expect(page.locator(".bovites-ugy-nev").first()).toHaveText("Üzemanyagárak");
 });
 
+test("ügyek: az idővonal NAPTÁR-igazított — minden nap egy cella, a hiányzó napok halványan", async ({ page }) => {
+  await page.route("**/data/ugyek.json", (r) => r.fulfill({ json: UGY }));
+  await page.goto("/ugyek.html");
+  const sav = page.locator(".bovites-ugy").first().locator(".bovites-idovonal");
+  // Üzemanyagárak: 2026-09-10 – 2026-10-07 = 28 naptári nap, ebből 2 jelen (09-10, 10-07), 26 „nincs jelen"
+  await expect(sav.locator(".bovites-nap")).toHaveCount(28);
+  await expect(sav.locator(".bovites-nap.jelen")).toHaveCount(2);
+  // egy belső (hiányzó) nap cellája nincs jelen és a címéből kiolvasható
+  await expect(sav.locator('.bovites-nap[title*="2026-09-20 – nincs jelen"]')).toHaveCount(1);
+  // a két jelenléti nap a két szélen (bal=régebbi, jobb=újabb)
+  await expect(sav.locator(".bovites-nap").first()).toHaveClass(/jelen/);
+  await expect(sav.locator(".bovites-nap").last()).toHaveClass(/jelen/);
+});
+
 test("ügyek: fail-soft, ha nincs adat", async ({ page }) => {
   await page.route("**/data/ugyek.json", (r) => r.fulfill({ status: 404, body: "" }));
   await page.goto("/ugyek.html");

@@ -57,8 +57,26 @@ function bov_elmozdulas_render(cel, elm, szak) {
   cel.appendChild(racs);
 }
 
-// napi jelenlét-idővonal: egy cella / nap (bal=régebbi, jobb=újabb). Jelen = kék, a volumen szerint árnyalva
-// (sötétebb = több keresés), nincs jelen = halvány. Felirat + jelmagyarázat + a két végdátum segít az értelmezésben.
+// minden naptári nap [elso..utolso] között, ISO-sztringként (Date nélkül, determinista).
+function bov_nap_lista(elso, utolso) {
+  const ki = [];
+  if (!elso || !utolso || elso > utolso) return ki;
+  const szokoev = (y) => (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;
+  const honap_hossz = (y, m) => [31, szokoev(y) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m - 1];
+  const pad = (n) => String(n).padStart(2, "0");
+  let [y, m, d] = elso.split("-").map(Number);
+  for (let i = 0; i < 1000; i++) {                 // biztonsági felső korlát (~2,7 év)
+    const iso = y + "-" + pad(m) + "-" + pad(d);
+    ki.push(iso);
+    if (iso >= utolso) break;
+    if (++d > honap_hossz(y, m)) { d = 1; if (++m > 12) { m = 1; y++; } }
+  }
+  return ki;
+}
+
+// napi jelenlét-idővonal: egy cella / NAPTÁRI nap (bal=régebbi, jobb=újabb). Jelen = kék, a volumen szerint
+// árnyalva (sötétebb = több keresés); a hiányzó napok halványak. A backend csak a JELEN napokat küldi,
+// ezért a teljes [elso..utolso] naptári tartományt magunk töltjük ki. Felirat + jelmagyarázat + végdátumok segítenek.
 function bov_idovonal(sor, elso, utolso) {
   const doboz = bel("div", "bovites-idovonal-doboz");
   doboz.appendChild(bel("div", "bovites-idovonal-cim halvany", "Napi jelenlét az ablakban (régebbi → újabb):"));
@@ -66,15 +84,19 @@ function bov_idovonal(sor, elso, utolso) {
   sav.setAttribute("role", "img");
   sav.setAttribute("aria-label", "Napi jelenlét" + (elso && utolso ? " " + elso + "-tól " + utolso + "-ig" : "")
     + ": sötétebb kék = több keresés aznap, halvány = nincs jelen.");
-  const volok = (sor || []).filter((p) => p.jelen).map((p) => Number(p.ossz_volumen) || 0);
+  const jelenMap = {};
+  (sor || []).forEach((p) => { if (p.jelen) jelenMap[p.nap] = Number(p.ossz_volumen) || 0; });
+  const volok = Object.keys(jelenMap).map((k) => jelenMap[k]);
   const maxVol = volok.length ? Math.max.apply(null, volok) : 0;
-  (sor || []).forEach((p) => {
-    const c = bel("span", "bovites-nap" + (p.jelen ? " jelen" : ""));
-    if (p.jelen) {
-      const t = maxVol > 0 ? (Number(p.ossz_volumen) || 0) / maxVol : 1;
+  const napok = (elso && utolso) ? bov_nap_lista(elso, utolso) : (sor || []).map((p) => p.nap);
+  napok.forEach((nap) => {
+    const jelen = Object.prototype.hasOwnProperty.call(jelenMap, nap);
+    const c = bel("span", "bovites-nap" + (jelen ? " jelen" : ""));
+    if (jelen) {
+      const t = maxVol > 0 ? jelenMap[nap] / maxVol : 1;
       c.style.backgroundColor = "rgba(42, 120, 214, " + (0.35 + 0.65 * t).toFixed(2) + ")";
     }
-    c.title = p.nap + (p.jelen ? " – jelen, összvolumen: " + p.ossz_volumen : " – nincs jelen");
+    c.title = nap + (jelen ? " – jelen, összvolumen: " + jelenMap[nap] : " – nincs jelen");
     sav.appendChild(c);
   });
   doboz.appendChild(sav);
