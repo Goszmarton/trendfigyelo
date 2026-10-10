@@ -89,5 +89,5 @@ test("navigáció: a Trendek főoldalról az Az adatokról oldalra és vissza", 
 test("landing: a gyökér (/) az Áttekintő nyitóoldalt szolgálja", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Áttekintő");
-  await expect(page.locator(".attekinto-kartya")).toHaveCount(3);
+  await expect(page.locator(".nyitooldal-kartya")).toHaveCount(3);
 });
