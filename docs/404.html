@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trendfigyelő – Áttekintő</title>
+  <script>
+    // Bármely ismeretlen (vagy régi, elmentett) útvonal az Áttekintő nyitóoldalra visz.
+    // Host-érzékeny: GitHub Pages projekt-oldalon a /<repo>/ gyökérre, saját domainen a / gyökérre.
+    (function () {
+      var seg = location.pathname.split("/").filter(Boolean);
+      var base = (location.hostname.indexOf("github.io") !== -1 && seg.length) ? "/" + seg[0] + "/" : "/";
+      location.replace(base);
+    })();
+  </script>
+</head>
+<body>
+  <p>Átirányítás az <a href="/">Áttekintő</a> oldalra…</p>
+</body>
+</html>
