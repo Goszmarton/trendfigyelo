@@ -583,21 +583,11 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 .bovites-rendezes-gomb[data-rendezes="frissesseg"][aria-pressed="true"] { background: #0b6e62; border-color: #0b6e62; color: #fff; }
 .bovites-rendezes-gomb[data-rendezes="mozgas"][aria-pressed="true"] { background: #9c5d0a; border-color: #9c5d0a; color: #fff; }
 
-/* Radar alfülek + panelek + leírások */
-.bovites-alfulek { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.9rem; border-bottom: 2px solid #e3e8ef; }
-.bovites-alful { background: none; border: none; padding: 0.5rem 0.85rem; cursor: pointer; font-size: 0.95rem;
-  color: #556; border-bottom: 3px solid transparent; margin-bottom: -2px; }
-.bovites-alful:hover { color: #2a78d6; }
-.bovites-alful.aktiv { color: #1b3a63; font-weight: 600; border-bottom-color: #2a78d6; }
-.bovites-alful-forras { color: #9aa3ad; font-weight: 400; font-size: 0.82rem; }
+/* Radar panelek + leírások */
 .bovites-leiras { background: #f3f6fb; border-left: 3px solid #2a78d6; padding: 0.6rem 0.85rem;
   border-radius: 6px; margin: 0 0 0.9rem; color: #334; line-height: 1.5; }
 .bovites-leiras a { color: #2a78d6; }
 .bovites-szuro { margin-bottom: 0.8rem; }
-@media (max-width: 640px) {
-  .bovites-alful { padding: 0.4rem 0.55rem; font-size: 0.88rem; }
-  .bovites-alful-forras { display: none; }
-}
 
 /* Radar aloldalak idősáv-jelzése */
 .radar-idosav { display: inline-block; margin-top: .4rem; padding: .25rem .7rem; border-radius: 999px;
