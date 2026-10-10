@@ -38,13 +38,6 @@ test("heti.html: a fül betölt, a Heti értékelés menüpont aktív", async ({
   await expect(page.locator("#heti")).toBeAttached();
 });
 
-test("bovites.html: a fül betölt, a Radar menüpont aktív", async ({ page }) => {
-  await page.goto("/bovites.html");
-  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Radar");
-  await expect(page.locator("#fomenu a")).toHaveText(["Áttekintő", "Napi", "Heti", "Havi", "Radar", "Google", "YouTube", "Infó"]);
-  await expect(page.locator("#bovites")).toBeAttached();
-});
-
 test("Infó oldal: adat + elemzés dobozok, csoportcímek, aktív fül + üres lábléc", async ({ page }) => {
   await page.goto("/adatokrol.html");
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Infó");

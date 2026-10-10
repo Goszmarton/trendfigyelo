@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ügyek életútja – Radar – Trendfigyelő</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <nav id="fomenu" aria-label="Fő menü">
+    <a href="index.html" class="fomenu-home">Áttekintő</a>
+    <div class="fomenu-csoport" aria-label="Elemzések">
+      <span class="fomenu-cimke">Elemzések</span>
+      <a href="elemzes.html">Napi</a>
+      <a href="heti.html">Heti</a>
+      <a href="havi.html">Havi</a>
+    </div>
+    <div class="fomenu-csoport" aria-label="Radar">
+      <span class="fomenu-cimke">Radar</span>
+      <a href="valtozasok.html">Változások</a>
+      <a href="ugyek.html" class="aktiv" aria-current="page">Ügyek</a>
+      <a href="kapcsolodo.html">Kapcsolódó</a>
+    </div>
+    <div class="fomenu-csoport" aria-label="Statisztikák">
+      <span class="fomenu-cimke">Statisztikák</span>
+      <a href="trendek.html">Google</a>
+      <a href="youtube.html">YouTube</a>
+    </div>
+    <a href="adatokrol.html" class="fomenu-onallo">Infó</a>
+  </nav>
+
+  <header class="fejlec-doboz">
+    <h1>Ügyek életútja</h1>
+    <p class="radar-idosav" id="radar-idosav"></p>
+  </header>
+
+  <main id="bovites">
+    <p class="bovites-leiras">A napi <strong>felkapott keresések</strong> üggyé csoportosítva (a <code>claude-opus-4-8</code> kapcsolja össze az azonos témájú kifejezéseket). Minden ügynél látod a <strong>besorolását</strong> (újonnan megfigyelt / folyamatosan jelen / visszatérő), a <strong>mozgását</strong> (erősödő / stabil / lecsengő), a hozzá tartozó kifejezéseket, egy rövid összefoglalót, és egy <strong>napi jelenlét-idővonalat</strong> az ablakból. Szakpolitika szerint szűrhető, időtartam / frissesség / mozgás szerint rendezhető.</p>
+    <div id="bovites-szuro-ugy" class="bovites-szuro" aria-label="Szakpolitikai szűrő és rendezés"></div>
+    <section id="bovites-ugyek" aria-live="polite"></section>
+  </main>
+
+  <footer id="labresz" aria-label="Lábléc"></footer>
+
+  <script src="js/bovites.js"></script>
+</body>
+</html>

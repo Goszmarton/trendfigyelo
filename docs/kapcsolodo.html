@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kapcsolódó keresések – Radar – Trendfigyelő</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <nav id="fomenu" aria-label="Fő menü">
+    <a href="index.html" class="fomenu-home">Áttekintő</a>
+    <div class="fomenu-csoport" aria-label="Elemzések">
+      <span class="fomenu-cimke">Elemzések</span>
+      <a href="elemzes.html">Napi</a>
+      <a href="heti.html">Heti</a>
+      <a href="havi.html">Havi</a>
+    </div>
+    <div class="fomenu-csoport" aria-label="Radar">
+      <span class="fomenu-cimke">Radar</span>
+      <a href="valtozasok.html">Változások</a>
+      <a href="ugyek.html">Ügyek</a>
+      <a href="kapcsolodo.html" class="aktiv" aria-current="page">Kapcsolódó</a>
+    </div>
+    <div class="fomenu-csoport" aria-label="Statisztikák">
+      <span class="fomenu-cimke">Statisztikák</span>
+      <a href="trendek.html">Google</a>
+      <a href="youtube.html">YouTube</a>
+    </div>
+    <a href="adatokrol.html" class="fomenu-onallo">Infó</a>
+  </nav>
+
+  <header class="fejlec-doboz">
+    <h1>Kapcsolódó keresések</h1>
+    <p class="radar-idosav" id="radar-idosav"></p>
+  </header>
+
+  <main id="bovites">
+    <p class="bovites-leiras">A napi <strong>felkapott keresések</strong> mögé nézünk be: a Google Trends „kapcsolódó keresések" alapján témánként a <strong>megszokott (Top)</strong> és a <strong>most felfutó (Felfutó, „Breakout")</strong> keresések — mire kíváncsiak még az emberek az adott téma körül. A <strong>Top</strong> melletti szám a relatív népszerűség (0–100, ahol a <strong>100 a leggyakoribb</strong> kapcsolódó keresés); a <strong>Felfutó</strong> melletti szám azt mutatja, <strong>mennyivel nőtt</strong> a keresés (a „Breakout" kiugróan nagy felfutás). Naponta pár felkapott téma frissül.</p>
+    <section id="bovites-kapcsolodo" aria-live="polite"></section>
+  </main>
+
+  <footer id="labresz" aria-label="Lábléc"></footer>
+
+  <script src="js/bovites.js"></script>
+</body>
+</html>

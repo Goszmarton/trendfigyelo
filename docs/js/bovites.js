@@ -31,7 +31,7 @@ async function bov_json(url) {
 
 const BOV_RENDEZES = { napok: "Időtartam", frissesseg: "Frissesség", mozgas: "Mozgás" };
 const BOV_MOZGAS_SORREND = { erosodo: 0, stabil: 1, lecsengo: 2, nem_megallapithato: 3 };
-const bov_allapot = { alful: "elmozdulas", szakpolitika: "", rendezes: "napok", elm: null, ugy: null, kapcs: null };
+const bov_allapot = { szakpolitika: "", rendezes: "napok", elm: null, ugy: null, kapcs: null };
 
 function bov_elmozdulas_render(cel, elm, szak) {
   cel.innerHTML = "";
@@ -171,9 +171,12 @@ function bov_kapcsolodo_render(cel, kapcs) {
 }
 
 function bov_rajzol() {
-  bov_elmozdulas_render(document.getElementById("bovites-elmozdulas"), bov_allapot.elm, bov_allapot.szakpolitika);
-  bov_ugyek_render(document.getElementById("bovites-ugyek"), bov_allapot.ugy, bov_allapot.szakpolitika, bov_allapot.rendezes);
-  bov_kapcsolodo_render(document.getElementById("bovites-kapcsolodo"), bov_allapot.kapcs);
+  const elmCel = document.getElementById("bovites-elmozdulas");
+  if (elmCel) bov_elmozdulas_render(elmCel, bov_allapot.elm, bov_allapot.szakpolitika);
+  const ugyCel = document.getElementById("bovites-ugyek");
+  if (ugyCel) bov_ugyek_render(ugyCel, bov_allapot.ugy, bov_allapot.szakpolitika, bov_allapot.rendezes);
+  const kapcsCel = document.getElementById("bovites-kapcsolodo");
+  if (kapcsCel) bov_kapcsolodo_render(kapcsCel, bov_allapot.kapcs);
   document.querySelectorAll(".bovites-szuro-chip").forEach((b) =>
     b.setAttribute("aria-pressed", String(b.dataset.szakpolitika === bov_allapot.szakpolitika)));
   document.querySelectorAll(".bovites-rendezes-gomb").forEach((b) =>
@@ -212,48 +215,30 @@ function bov_rendezes_epit(cel) {
   cel.appendChild(rsor);
 }
 
-// alfül-váltás: a kiválasztott panel látszik, a többi rejtett; a fülgombok aria-selected + .aktiv szinkron
-function bov_alful_valt(nev) {
-  bov_allapot.alful = nev;
-  ["elmozdulas", "ugyek", "kapcsolodo"].forEach((n) => {
-    const p = document.getElementById("bovites-panel-" + n);
-    if (p) p.hidden = (n !== nev);
-  });
-  document.querySelectorAll(".bovites-alful").forEach((b) => {
-    const akt = b.dataset.panel === nev;
-    b.classList.toggle("aktiv", akt);
-    b.setAttribute("aria-selected", String(akt));
-  });
-}
+function bov_datum(s) { return (s ? String(s) : "").slice(0, 10); }
 
-function bov_alfulek_kot() {
-  const bar = document.getElementById("bovites-alfulek");
-  if (!bar) return;
-  bar.addEventListener("click", (ev) => {
-    const b = ev.target && ev.target.closest ? ev.target.closest(".bovites-alful") : null;
-    if (b && b.dataset.panel) bov_alful_valt(b.dataset.panel);
-  });
+function bov_idosav_ir(szoveg) {
+  const cel = document.getElementById("radar-idosav");
+  if (cel) cel.textContent = szoveg || "";
 }
 
 async function bov_init() {
-  const [elm, ugy, kapcs] = await Promise.all([bov_json("data/elmozdulas.json"), bov_json("data/ugyek.json"),
-    bov_json("data/kapcsolodo.json")]);
-  bov_allapot.elm = elm;
-  bov_allapot.ugy = ugy;
-  bov_allapot.kapcs = kapcs;
-  const fejlec = document.getElementById("bovites-fejlec");
-  if (fejlec) {
-    if (!elm && !ugy) {
-      fejlec.textContent = "Nem érhető el.";
-    } else {
-      const ab = ugy && ugy.ablak;
-      fejlec.textContent = ab ? "Ablak: " + ab.kezdet + " – " + ab.veg + " (" + ab.nap + " nap)" : "";
-    }
+  if (document.getElementById("bovites-elmozdulas")) {
+    bov_allapot.elm = await bov_json("data/elmozdulas.json");
+    bov_idosav_ir(bov_allapot.elm
+      ? "Aktuális kiugrások — a szavak szokásos szintjéhez képest · számítva: " + bov_datum(bov_allapot.elm.szamitva_utc)
+      : "");
+    bov_szakpolitika_epit(document.getElementById("bovites-szuro-elm"));
+  } else if (document.getElementById("bovites-ugyek")) {
+    bov_allapot.ugy = await bov_json("data/ugyek.json");
+    const ab = bov_allapot.ugy && bov_allapot.ugy.ablak;
+    bov_idosav_ir(ab ? "Gördülő " + ab.nap + " napos ablak: " + ab.kezdet + " – " + ab.veg : "");
+    bov_szakpolitika_epit(document.getElementById("bovites-szuro-ugy"));
+    bov_rendezes_epit(document.getElementById("bovites-szuro-ugy"));
+  } else if (document.getElementById("bovites-kapcsolodo")) {
+    bov_allapot.kapcs = await bov_json("data/kapcsolodo.json");
+    bov_idosav_ir(bov_allapot.kapcs ? "Naponta frissül · utolsó: " + bov_datum(bov_allapot.kapcs.frissitve) : "");
   }
-  bov_szakpolitika_epit(document.getElementById("bovites-szuro-elm"));
-  bov_szakpolitika_epit(document.getElementById("bovites-szuro-ugy"));
-  bov_rendezes_epit(document.getElementById("bovites-szuro-ugy"));
-  bov_alfulek_kot();
   bov_rajzol();
 }
 
