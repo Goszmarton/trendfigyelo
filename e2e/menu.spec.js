@@ -1,20 +1,22 @@
 const { test, expect } = require("@playwright/test");
 
 // Menüsor (Excel-fül) + „Az adatokról" külön oldal — statikus szerkezet-őr (nincs adat-mock, a nav statikus).
-test("menüsor: 8 link + 2 csoportcímke, aktív = Google; a linkek helyesek + sorrend", async ({ page }) => {
+test("menüsor: 10 link + 2 csoportcímke, aktív = Google; a linkek helyesek + sorrend", async ({ page }) => {
   await page.goto("/trendek.html");
-  await expect(page.locator("#fomenu a")).toHaveCount(8);
-  await expect(page.locator("#fomenu .fomenu-cimke")).toHaveText(["Elemzések", "Jelzések", "Statisztikák"]);
+  await expect(page.locator("#fomenu a")).toHaveCount(10);
+  await expect(page.locator("#fomenu .fomenu-cimke")).toHaveText(["Elemzések", "Radar", "Statisztikák"]);
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Google");
   await expect(page.locator('#fomenu a[href="index.html"]')).toHaveText("Áttekintő");
   await expect(page.locator('#fomenu a[href="elemzes.html"]')).toHaveText("Napi");
   await expect(page.locator('#fomenu a[href="heti.html"]')).toHaveText("Heti");
   await expect(page.locator('#fomenu a[href="havi.html"]')).toHaveText("Havi");
-  await expect(page.locator('#fomenu a[href="bovites.html"]')).toHaveText("Radar");
+  await expect(page.locator('#fomenu a[href="valtozasok.html"]')).toHaveText("Változások");
+  await expect(page.locator('#fomenu a[href="ugyek.html"]')).toHaveText("Ügyek");
+  await expect(page.locator('#fomenu a[href="kapcsolodo.html"]')).toHaveText("Kapcsolódó");
   await expect(page.locator('#fomenu a[href="trendek.html"]')).toHaveText("Google");
   await expect(page.locator('#fomenu a[href="youtube.html"]')).toHaveText("YouTube");
   await expect(page.locator('#fomenu a[href="adatokrol.html"]')).toHaveText("Infó");
-  await expect(page.locator("#fomenu a")).toHaveText(["Áttekintő", "Napi", "Heti", "Havi", "Radar", "Google", "YouTube", "Infó"]);
+  await expect(page.locator("#fomenu a")).toHaveText(["Áttekintő", "Napi", "Heti", "Havi", "Változások", "Ügyek", "Kapcsolódó", "Google", "YouTube", "Infó"]);
   await expect(page.locator("#labresz")).toBeAttached();
   await expect(page.locator("#adatokrol")).toHaveCount(0);
 });
@@ -28,13 +30,13 @@ test("youtube.html: a fül betölt, a YouTube menüpont aktív", async ({ page }
 test("havi.html: a fül betölt, a Havi elemzés menüpont aktív", async ({ page }) => {
   await page.goto("/havi.html");
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Havi");
-  await expect(page.locator("#fomenu a")).toHaveText(["Áttekintő", "Napi", "Heti", "Havi", "Radar", "Google", "YouTube", "Infó"]);
+  await expect(page.locator("#fomenu a")).toHaveText(["Áttekintő", "Napi", "Heti", "Havi", "Változások", "Ügyek", "Kapcsolódó", "Google", "YouTube", "Infó"]);
 });
 
 test("heti.html: a fül betölt, a Heti értékelés menüpont aktív", async ({ page }) => {
   await page.goto("/heti.html");
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Heti");
-  await expect(page.locator("#fomenu a")).toHaveText(["Áttekintő", "Napi", "Heti", "Havi", "Radar", "Google", "YouTube", "Infó"]);
+  await expect(page.locator("#fomenu a")).toHaveText(["Áttekintő", "Napi", "Heti", "Havi", "Változások", "Ügyek", "Kapcsolódó", "Google", "YouTube", "Infó"]);
   await expect(page.locator("#heti")).toBeAttached();
 });
 
@@ -83,4 +85,17 @@ test("landing: a gyökér (/) az Áttekintő nyitóoldalt szolgálja", async ({ 
   await page.goto("/");
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Áttekintő");
   await expect(page.locator(".nyitooldal-kartya")).toHaveCount(3);
+});
+
+test("valtozasok.html: a Változások menüpont aktív", async ({ page }) => {
+  await page.goto("/valtozasok.html");
+  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Változások");
+});
+test("ugyek.html: az Ügyek menüpont aktív", async ({ page }) => {
+  await page.goto("/ugyek.html");
+  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Ügyek");
+});
+test("kapcsolodo.html: a Kapcsolódó menüpont aktív", async ({ page }) => {
+  await page.goto("/kapcsolodo.html");
+  await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Kapcsolódó");
 });
