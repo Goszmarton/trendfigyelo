@@ -184,7 +184,7 @@ def _index_html() -> str:
 
 
 def _trendek_html() -> str:
-    # A Google Trendek app-oldal tartalma (a landing-váltás után az index.html → redirect,
+    # A Google Trendek app-oldal tartalma (a landing-váltás után az index.html az Áttekintő nyitóoldal,
     # a tényleges Google Trendek tartalom a trendek.html-ben él).
     return (DOCS / "trendek.html").read_text(encoding="utf-8")
 
@@ -196,10 +196,20 @@ def _trendek_html() -> str:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def test_index_html_letezik():
-    # A landing-váltás után az index.html EGY REDIRECT az Elemzésekre; a Google Trendek
-    # app-oldal tartalom (váz-horgonyok) a trendek.html-ben él.
+    # A landing-váltás után az index.html az „Áttekintő" nyitóoldal (NEM redirect):
+    # hero + 3 terület-kártya + Infó-sáv + a mai kiemelt JS. A Google Trendek app-oldal
+    # tartalom (váz-horgonyok) a trendek.html-ben él.
     idx = _index_html()
-    assert 'http-equiv="refresh"' in idx and "elemzes.html" in idx   # index.html → Elemzések redirect
+    assert 'http-equiv="refresh"' not in idx                       # már NEM redirect
+    assert "Trendfigyelő" in idx
+    for horgony in (
+        'id="nyitooldal"', 'id="nyitooldal-kiemelt"',
+        'nyitooldal-kartya', 'nyitooldal-info-sav',
+        'href="adatokrol.html"',
+        'href="css/app.css"',
+        'src="js/nyitooldal.js"',
+    ):
+        assert horgony in idx, horgony
     html = _trendek_html()
     assert "Trendfigyelő" in html                                  # tartós azonosító (Task 1)
     # Task 5 váz-horgonyok: a kétblokkos elrendezés (§7.1) + a két vezérlő + a saját/vendorolt eszközök.
