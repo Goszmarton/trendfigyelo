@@ -1,21 +1,22 @@
 {
   "ugyek": [
     {
-      "nev": "Üzemanyagárak a kutakon",
+      "nev": "Üzemanyagárak és benzinkutak",
       "kifejezesek": [
-        "gázolaj",
         "benzin",
+        "gázolaj",
         "benzinkút",
         "olaj",
         "gáz",
-        "omv"
+        "omv",
+        "jövedéki adó"
       ],
       "szakpolitika": "energia_rezsi",
-      "osszefoglalo": "A benzin és a gázolaj ára, illetve a benzinkutak körüli keresések erősödtek a vizsgált időszakban – a téma vissza-visszatért a felkapott kifejezések közé.",
+      "osszefoglalo": "A benzin és gázolaj ára, valamint a benzinkutak és a jövedéki adó kérdése többször is felkapott téma volt a hónapban – a benzin kereséseknél kiugró csúcsokkal.",
       "elso_nap": "2026-09-14",
-      "utolso_nap": "2026-10-03",
-      "napok_szama": 15,
-      "eletut": "folyamatosan_jelenlevo",
+      "utolso_nap": "2026-10-10",
+      "napok_szama": 17,
+      "eletut": "visszatero",
       "mozgas": "erosodo",
       "idovonal": [
         {
@@ -92,20 +93,31 @@
           "nap": "2026-10-03",
           "jelen": true,
           "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-09",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-10",
+          "jelen": true,
+          "ossz_volumen": 5000
         }
       ]
     },
     {
-      "nev": "Rezsi, áram és áramszünet",
+      "nev": "Rezsi, villanyszámla és áramellátás",
       "kifejezesek": [
         "villanyszámla",
         "elektromos áram",
         "áramszünet",
-        "fűtés",
-        "fűtés klímával"
+        "energiatárolás",
+        "atomerőmű",
+        "paks ii atomerőmű"
       ],
       "szakpolitika": "energia_rezsi",
-      "osszefoglalo": "A villanyszámla, az elektromos áram és az áramszünetek, valamint a fűtési megoldások iránti érdeklődés a rezsiköltségek köré szerveződött.",
+      "osszefoglalo": "A villanyszámlával, az áramellátással és áramszünetekkel, valamint az energiatárolással és az atomerőművekkel kapcsolatos keresések a lakossági rezsi iránti érdeklődést mutatják.",
       "elso_nap": "2026-09-16",
       "utolso_nap": "2026-10-11",
       "napok_szama": 11,
@@ -133,9 +145,9 @@
           "ossz_volumen": 10000
         },
         {
-          "nap": "2026-09-27",
+          "nap": "2026-10-01",
           "jelen": true,
-          "ossz_volumen": 10000
+          "ossz_volumen": 20000
         },
         {
           "nap": "2026-10-02",
@@ -160,7 +172,7 @@
         {
           "nap": "2026-10-10",
           "jelen": true,
-          "ossz_volumen": 1000
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-10-11",
@@ -170,45 +182,7 @@
       ]
     },
     {
-      "nev": "Atomenergia és energiatárolás",
-      "kifejezesek": [
-        "atomerőmű",
-        "paks ii atomerőmű",
-        "energiatárolás",
-        "nemzetközi atomenergia-ügynökség"
-      ],
-      "szakpolitika": "gazdasag_foglalkoztatas",
-      "osszefoglalo": "Az atomerőművek, köztük a Paks II beruházás, valamint az energiatárolás témája többször felbukkant, elsősorban gazdasági-energetikai összefüggésben.",
-      "elso_nap": "2026-09-19",
-      "utolso_nap": "2026-10-10",
-      "napok_szama": 4,
-      "eletut": "visszatero",
-      "mozgas": "lecsengo",
-      "idovonal": [
-        {
-          "nap": "2026-09-19",
-          "jelen": true,
-          "ossz_volumen": 500
-        },
-        {
-          "nap": "2026-10-01",
-          "jelen": true,
-          "ossz_volumen": 20000
-        },
-        {
-          "nap": "2026-10-09",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-10",
-          "jelen": true,
-          "ossz_volumen": 2000
-        }
-      ]
-    },
-    {
-      "nev": "Nyugdíj és nyugdíjrendszer",
+      "nev": "Nyugdíjrendszer és nyugdíjkorhatár",
       "kifejezesek": [
         "nyugdíjkorhatár",
         "nyugdíjrendszer",
@@ -216,11 +190,11 @@
         "öregségi nyugdíj",
         "14 havi nyugdíj 2027"
       ],
-      "szakpolitika": "szocialpolitika",
-      "osszefoglalo": "A nyugdíjkorhatár, a nyugdíjrendszer és a 2027-es 14. havi nyugdíj kérdése erős, visszatérő keresési téma volt, a legnagyobb kiugrásokkal az időszak végén.",
+      "szakpolitika": "gazdasag_foglalkoztatas",
+      "osszefoglalo": "A nyugdíjkorhatár, a nyugdíjrendszer átalakítása és a 2027-re ígért 14. havi nyugdíj többször visszatért a keresések között, erősödő érdeklődéssel.",
       "elso_nap": "2026-09-14",
-      "utolso_nap": "2026-10-12",
-      "napok_szama": 10,
+      "utolso_nap": "2026-10-13",
+      "napok_szama": 11,
       "eletut": "visszatero",
       "mozgas": "erosodo",
       "idovonal": [
@@ -273,11 +247,16 @@
           "nap": "2026-10-12",
           "jelen": true,
           "ossz_volumen": 20000
+        },
+        {
+          "nap": "2026-10-13",
+          "jelen": true,
+          "ossz_volumen": 10000
         }
       ]
     },
     {
-      "nev": "Megtakarítás és állampapír",
+      "nev": "Megtakarítás, állampapír és tőzsde",
       "kifejezesek": [
         "megtakarítás",
         "állampapír",
@@ -285,7 +264,7 @@
         "részvénypiac"
       ],
       "szakpolitika": "gazdasag_foglalkoztatas",
-      "osszefoglalo": "A lakossági megtakarítás, az állampapír és a részvénypiac iránti érdeklődés végig jelen volt, erősödő mozgással az állampapír körül.",
+      "osszefoglalo": "A megtakarítási formák, az állampapír és a részvénypiac iránti érdeklődés végig jelen volt, az állampapírnál kiugró csúccsal október elején.",
       "elso_nap": "2026-09-15",
       "utolso_nap": "2026-10-08",
       "napok_szama": 10,
@@ -345,89 +324,43 @@
       ]
     },
     {
-      "nev": "Bankok és banki szolgáltatások",
+      "nev": "Családtámogatás és juttatások folyósítása",
       "kifejezesek": [
-        "k&h",
-        "bank",
-        "otp bank nyrt.",
-        "mbh bank",
-        "bankautomata",
-        "bankkártya",
-        "bankszámla",
-        "revolut"
+        "családi pótlék",
+        "folyósítás"
       ],
-      "szakpolitika": "gazdasag_foglalkoztatas",
-      "osszefoglalo": "A nagy hazai bankok, valamint a bankautomaták, bankkártyák és bankszámlák körüli keresések a pénzügyi szolgáltatások témáját fedik le.",
-      "elso_nap": "2026-09-13",
-      "utolso_nap": "2026-10-09",
-      "napok_szama": 12,
+      "szakpolitika": "szocialpolitika",
+      "osszefoglalo": "A családi pótlék és a juttatások folyósítása körüli kérdések a szociális támogatások iránti lakossági érdeklődést jelzik.",
+      "elso_nap": "2026-09-15",
+      "utolso_nap": "2026-10-02",
+      "napok_szama": 4,
       "eletut": "visszatero",
-      "mozgas": "lecsengo",
+      "mozgas": "stabil",
       "idovonal": [
-        {
-          "nap": "2026-09-13",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-09-14",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
         {
           "nap": "2026-09-15",
           "jelen": true,
           "ossz_volumen": 2000
         },
         {
-          "nap": "2026-09-24",
-          "jelen": true,
-          "ossz_volumen": 25000
-        },
-        {
-          "nap": "2026-09-25",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-09-28",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-09-29",
+          "nap": "2026-09-30",
           "jelen": true,
           "ossz_volumen": 10000
         },
         {
-          "nap": "2026-09-30",
+          "nap": "2026-10-01",
           "jelen": true,
-          "ossz_volumen": 5000
+          "ossz_volumen": 12000
         },
         {
           "nap": "2026-10-02",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-10-03",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-10-08",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-10-09",
           "jelen": true,
           "ossz_volumen": 2000
         }
       ]
     },
     {
-      "nev": "Őszi időjárás és lehűlés",
+      "nev": "Időjárás, lehűlés és csapadék",
       "kifejezesek": [
         "időjárás",
         "holnapi időjárás",
@@ -436,26 +369,34 @@
         "hőmérséklet",
         "csapadék",
         "eső",
-        "hidegfront",
-        "hideg",
-        "tél",
         "vihar",
         "zivatar",
+        "hidegfront",
+        "hideg",
+        "fagy",
+        "tél",
         "ciklon",
-        "telihold",
         "idokep",
         "időkép",
         "weather",
-        "panama"
+        "vénasszonyok nyara",
+        "aszály",
+        "el niño",
+        "telihold"
       ],
       "szakpolitika": "energia_rezsi",
-      "osszefoglalo": "Az őszi lehűlés, a csapadék, viharok és a hőmérséklet alakulása kiemelkedő keresési téma volt – az „időjárás” kifejezés az egyik legnagyobb volumenű tétel az időszakban.",
-      "elso_nap": "2026-09-17",
-      "utolso_nap": "2026-10-12",
-      "napok_szama": 18,
+      "osszefoglalo": "Az őszi időjárás – a nyár végi hőség és aszály után érkező lehűlés, esők, viharok és az első fagyok – kiemelkedően magas keresési volumeneket produkált, különösen az időjárás és a holnapi időjárás lekérdezéseknél.",
+      "elso_nap": "2026-09-15",
+      "utolso_nap": "2026-10-13",
+      "napok_szama": 22,
       "eletut": "visszatero",
       "mozgas": "erosodo",
       "idovonal": [
+        {
+          "nap": "2026-09-15",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
         {
           "nap": "2026-09-17",
           "jelen": true,
@@ -479,22 +420,27 @@
         {
           "nap": "2026-09-24",
           "jelen": true,
-          "ossz_volumen": 25000
+          "ossz_volumen": 27000
+        },
+        {
+          "nap": "2026-09-25",
+          "jelen": true,
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-09-26",
           "jelen": true,
-          "ossz_volumen": 2000
+          "ossz_volumen": 4000
         },
         {
           "nap": "2026-09-27",
           "jelen": true,
-          "ossz_volumen": 5000
+          "ossz_volumen": 15000
         },
         {
           "nap": "2026-09-28",
           "jelen": true,
-          "ossz_volumen": 2000
+          "ossz_volumen": 22000
         },
         {
           "nap": "2026-09-29",
@@ -505,6 +451,11 @@
           "nap": "2026-10-01",
           "jelen": true,
           "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-10-02",
+          "jelen": true,
+          "ossz_volumen": 5000
         },
         {
           "nap": "2026-10-04",
@@ -524,17 +475,17 @@
         {
           "nap": "2026-10-08",
           "jelen": true,
-          "ossz_volumen": 70000
+          "ossz_volumen": 90000
         },
         {
           "nap": "2026-10-09",
           "jelen": true,
-          "ossz_volumen": 30000
+          "ossz_volumen": 50000
         },
         {
           "nap": "2026-10-10",
           "jelen": true,
-          "ossz_volumen": 152000
+          "ossz_volumen": 150000
         },
         {
           "nap": "2026-10-11",
@@ -545,62 +496,11 @@
           "nap": "2026-10-12",
           "jelen": true,
           "ossz_volumen": 2000
-        }
-      ]
-    },
-    {
-      "nev": "Aszály és El Niño",
-      "kifejezesek": [
-        "aszály",
-        "el niño"
-      ],
-      "szakpolitika": "gazdasag_foglalkoztatas",
-      "osszefoglalo": "Az aszály és az El Niño jelenség iránti érdeklődés erősödött, a száraz időjárás mezőgazdasági és gazdasági hatásaira utalva.",
-      "elso_nap": "2026-09-15",
-      "utolso_nap": "2026-10-09",
-      "napok_szama": 8,
-      "eletut": "visszatero",
-      "mozgas": "erosodo",
-      "idovonal": [
-        {
-          "nap": "2026-09-15",
-          "jelen": true,
-          "ossz_volumen": 5000
         },
         {
-          "nap": "2026-09-24",
+          "nap": "2026-10-13",
           "jelen": true,
           "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-25",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-26",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-27",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-09-28",
-          "jelen": true,
-          "ossz_volumen": 20000
-        },
-        {
-          "nap": "2026-10-08",
-          "jelen": true,
-          "ossz_volumen": 20000
-        },
-        {
-          "nap": "2026-10-09",
-          "jelen": true,
-          "ossz_volumen": 20000
         }
       ]
     },
@@ -609,16 +509,15 @@
       "kifejezesek": [
         "nyári időszámítás",
         "óraátállítás 2026",
-        "óraátállítás 2026 október",
-        "vénasszonyok nyara"
+        "óraátállítás 2026 október"
       ],
       "szakpolitika": "egyeb",
-      "osszefoglalo": "Az őszi óraátállítás és a nyári időszámítás vége rendszeresen felkapott téma volt október elején.",
+      "osszefoglalo": "Az őszi óraátállítás időpontja és a nyári időszámítás vége rendszeresen keresett téma volt október elején.",
       "elso_nap": "2026-09-29",
       "utolso_nap": "2026-10-06",
       "napok_szama": 5,
       "eletut": "folyamatosan_jelenlevo",
-      "mozgas": "lecsengo",
+      "mozgas": "erosodo",
       "idovonal": [
         {
           "nap": "2026-09-29",
@@ -628,7 +527,7 @@
         {
           "nap": "2026-10-02",
           "jelen": true,
-          "ossz_volumen": 10000
+          "ossz_volumen": 5000
         },
         {
           "nap": "2026-10-03",
@@ -644,211 +543,6 @@
           "nap": "2026-10-06",
           "jelen": true,
           "ossz_volumen": 1000
-        }
-      ]
-    },
-    {
-      "nev": "Infláció, árak és a forint",
-      "kifejezesek": [
-        "infláció",
-        "élelmiszer",
-        "euró",
-        "forint",
-        "magyar forint"
-      ],
-      "szakpolitika": "gazdasag_foglalkoztatas",
-      "osszefoglalo": "Az infláció, az élelmiszerárak és a forint árfolyama a megélhetési költségekhez kapcsolódó, visszatérő gazdasági keresések voltak.",
-      "elso_nap": "2026-09-16",
-      "utolso_nap": "2026-10-07",
-      "napok_szama": 8,
-      "eletut": "visszatero",
-      "mozgas": "stabil",
-      "idovonal": [
-        {
-          "nap": "2026-09-16",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-17",
-          "jelen": true,
-          "ossz_volumen": 7000
-        },
-        {
-          "nap": "2026-09-22",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-23",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-24",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-02",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-03",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-07",
-          "jelen": true,
-          "ossz_volumen": 5000
-        }
-      ]
-    },
-    {
-      "nev": "Családtámogatás",
-      "kifejezesek": [
-        "családi pótlék"
-      ],
-      "szakpolitika": "szocialpolitika",
-      "osszefoglalo": "A családi pótlék iránti érdeklődés a hónap fordulóján, a juttatások folyósításának időszakában bukkant fel.",
-      "elso_nap": "2026-09-15",
-      "utolso_nap": "2026-10-02",
-      "napok_szama": 3,
-      "eletut": "visszatero",
-      "mozgas": "stabil",
-      "idovonal": [
-        {
-          "nap": "2026-09-15",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-01",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-02",
-          "jelen": true,
-          "ossz_volumen": 2000
-        }
-      ]
-    },
-    {
-      "nev": "KATA és adózás, vállalkozások",
-      "kifejezesek": [
-        "kata adózás",
-        "jövedéki adó",
-        "adóhatóság",
-        "vállalkozás",
-        "5g",
-        "mezőgazdaság",
-        "agrárpolitika",
-        "gyár",
-        "beruházás",
-        "nagyócsa"
-      ],
-      "szakpolitika": "gazdasag_foglalkoztatas",
-      "osszefoglalo": "A KATA adózás, a jövedéki adó, az adóhatóság és a vállalkozásokat, beruházásokat érintő témák a gazdasági-adózási közbeszéd részeként jelentek meg.",
-      "elso_nap": "2026-09-13",
-      "utolso_nap": "2026-10-11",
-      "napok_szama": 12,
-      "eletut": "visszatero",
-      "mozgas": "erosodo",
-      "idovonal": [
-        {
-          "nap": "2026-09-13",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-25",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-26",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-27",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-09-28",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-10-01",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-06",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-10-07",
-          "jelen": true,
-          "ossz_volumen": 20000
-        },
-        {
-          "nap": "2026-10-08",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-10-09",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-10",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-10-11",
-          "jelen": true,
-          "ossz_volumen": 4000
-        }
-      ]
-    },
-    {
-      "nev": "Palackvisszaváltás és hulladék",
-      "kifejezesek": [
-        "palackvisszaváltási rendszer",
-        "hulladék",
-        "fogyasztóvédelem"
-      ],
-      "szakpolitika": "gazdasag_foglalkoztatas",
-      "osszefoglalo": "A palackvisszaváltási rendszer, a hulladékkezelés és a fogyasztóvédelem a környezeti és fogyasztói szabályozás témáit fedik le.",
-      "elso_nap": "2026-10-06",
-      "utolso_nap": "2026-10-08",
-      "napok_szama": 3,
-      "eletut": "ujonnan_megfigyelt",
-      "mozgas": "lecsengo",
-      "idovonal": [
-        {
-          "nap": "2026-10-06",
-          "jelen": true,
-          "ossz_volumen": 12000
-        },
-        {
-          "nap": "2026-10-07",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-08",
-          "jelen": true,
-          "ossz_volumen": 2000
         }
       ]
     },
@@ -858,25 +552,19 @@
         "orbán viktor",
         "kormány",
         "kormányzat",
-        "magyarország kormánya",
         "miniszter",
+        "magyarország kormánya",
         "magyarország",
-        "orbán áron",
         "hatvanpuszta"
       ],
       "szakpolitika": "kozelet_kozigazgatas",
-      "osszefoglalo": "Orbán Viktor és a kormány, illetve a kormányzati szereplők iránti érdeklődés végig magas és erősödő volt, kiemelkedő csúcsokkal az időszak végén.",
-      "elso_nap": "2026-09-13",
+      "osszefoglalo": "A miniszterelnök és a kormány munkája végig a figyelem középpontjában állt; Orbán Viktor neve visszatérően, a hónap végére erősödő volumennel szerepelt.",
+      "elso_nap": "2026-09-14",
       "utolso_nap": "2026-10-12",
-      "napok_szama": 21,
+      "napok_szama": 19,
       "eletut": "visszatero",
       "mozgas": "erosodo",
       "idovonal": [
-        {
-          "nap": "2026-09-13",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
         {
           "nap": "2026-09-14",
           "jelen": true,
@@ -928,14 +616,9 @@
           "ossz_volumen": 7000
         },
         {
-          "nap": "2026-10-01",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
           "nap": "2026-10-02",
           "jelen": true,
-          "ossz_volumen": 10000
+          "ossz_volumen": 5000
         },
         {
           "nap": "2026-10-03",
@@ -980,31 +663,24 @@
       ]
     },
     {
-      "nev": "Magyar Péter és az ellenzék",
+      "nev": "Magyar Péter és az ellenzéki politika",
       "kifejezesek": [
         "magyar péter",
         "magyar péter kossuth rádió",
-        "hadházy ákos",
-        "fodor gábor",
-        "vona gábor"
+        "párt"
       ],
       "szakpolitika": "kozelet_kozigazgatas",
-      "osszefoglalo": "Magyar Péter és más ellenzéki szereplők köré szerveződő keresések, köztük Magyar Péter kiugró volumenű megjelenése az időszak végén.",
+      "osszefoglalo": "Magyar Péter és pártja körüli érdeklődés több hullámban jelentkezett, október második hetében kiugró keresési volumennel.",
       "elso_nap": "2026-09-14",
-      "utolso_nap": "2026-10-11",
-      "napok_szama": 10,
+      "utolso_nap": "2026-10-13",
+      "napok_szama": 6,
       "eletut": "visszatero",
       "mozgas": "erosodo",
       "idovonal": [
         {
           "nap": "2026-09-14",
           "jelen": true,
-          "ossz_volumen": 4000
-        },
-        {
-          "nap": "2026-09-15",
-          "jelen": true,
-          "ossz_volumen": 2000
+          "ossz_volumen": 12000
         },
         {
           "nap": "2026-09-18",
@@ -1012,24 +688,9 @@
           "ossz_volumen": 2000
         },
         {
-          "nap": "2026-09-24",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-09-25",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
           "nap": "2026-09-29",
           "jelen": true,
           "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-07",
-          "jelen": true,
-          "ossz_volumen": 5000
         },
         {
           "nap": "2026-10-09",
@@ -1039,228 +700,107 @@
         {
           "nap": "2026-10-10",
           "jelen": true,
-          "ossz_volumen": 22000
+          "ossz_volumen": 20000
         },
         {
-          "nap": "2026-10-11",
+          "nap": "2026-10-13",
           "jelen": true,
-          "ossz_volumen": 2000
+          "ossz_volumen": 20000
         }
       ]
     },
     {
-      "nev": "Vitézy Dávid",
+      "nev": "Rendőrségi nyomozások, ügyészség és korrupció",
       "kifejezesek": [
-        "vitézy dávid"
-      ],
-      "szakpolitika": "kozelet_kozigazgatas",
-      "osszefoglalo": "Vitézy Dávid visszatérő közéleti szereplőként többször felkapott volt, az időszak végén erősödő érdeklődéssel.",
-      "elso_nap": "2026-09-13",
-      "utolso_nap": "2026-10-04",
-      "napok_szama": 6,
-      "eletut": "visszatero",
-      "mozgas": "erosodo",
-      "idovonal": [
-        {
-          "nap": "2026-09-13",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-14",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-18",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-19",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-03",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-04",
-          "jelen": true,
-          "ossz_volumen": 5000
-        }
-      ]
-    },
-    {
-      "nev": "Korrupció és vagyonvisszaszerzés",
-      "kifejezesek": [
+        "rendőrség",
+        "magyar rendőrség",
+        "razzia",
         "korrupció",
-        "nemzeti vagyonvisszaszerzési és vagyonvédelmi hivatal",
-        "integritás hatóság",
-        "transparency international",
-        "költségvetési csalás",
-        "lopás",
-        "csalás",
-        "szuverenitásvédelmi hivatal",
-        "alapjogokért központ",
-        "századvég alapítvány",
-        "nézőpont intézet"
-      ],
-      "szakpolitika": "kozelet_kozigazgatas",
-      "osszefoglalo": "A korrupció, a vagyonvisszaszerzés és a kapcsolódó hatóságok, intézetek körüli keresések a közélet átláthatóságának témáját érintik.",
-      "elso_nap": "2026-09-13",
-      "utolso_nap": "2026-10-11",
-      "napok_szama": 14,
-      "eletut": "visszatero",
-      "mozgas": "lecsengo",
-      "idovonal": [
-        {
-          "nap": "2026-09-13",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-09-14",
-          "jelen": true,
-          "ossz_volumen": 12000
-        },
-        {
-          "nap": "2026-09-17",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-09-18",
-          "jelen": true,
-          "ossz_volumen": 18000
-        },
-        {
-          "nap": "2026-09-19",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-24",
-          "jelen": true,
-          "ossz_volumen": 4000
-        },
-        {
-          "nap": "2026-09-25",
-          "jelen": true,
-          "ossz_volumen": 4000
-        },
-        {
-          "nap": "2026-09-27",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-28",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-09-29",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-30",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-10-02",
-          "jelen": true,
-          "ossz_volumen": 7000
-        },
-        {
-          "nap": "2026-10-03",
-          "jelen": true,
-          "ossz_volumen": 4000
-        },
-        {
-          "nap": "2026-10-11",
-          "jelen": true,
-          "ossz_volumen": 5000
-        }
-      ]
-    },
-    {
-      "nev": "Ügyészség és nyomozások",
-      "kifejezesek": [
         "központi nyomozó főügyészség",
         "főügyész",
         "legfőbb ügyész",
         "ügyész",
         "polt péter",
-        "mentelmi jog",
-        "schadl györgy",
-        "bayer construct zrt",
-        "jellinek dániel",
-        "razzia",
+        "országos rendőr főkapitányság",
+        "belügyminisztérium",
+        "rendőri intézkedés",
         "fejes péter ügyész",
-        "kéri lászló"
+        "költségvetési csalás",
+        "integritás hatóság",
+        "transparency international"
       ],
       "szakpolitika": "kozelet_kozigazgatas",
-      "osszefoglalo": "Az ügyészség, a nyomozó főügyészség, valamint konkrét ügyekhez köthető szereplők és razziák a jogi-igazságügyi hírek köré csoportosultak.",
-      "elso_nap": "2026-09-15",
-      "utolso_nap": "2026-10-12",
-      "napok_szama": 14,
+      "osszefoglalo": "A rendőrségi akciók, razziák, a nyomozó főügyészség és a korrupciós ügyek iránti érdeklődés végigkísérte a hónapot, több szereplő és intézmény nevével együtt.",
+      "elso_nap": "2026-09-14",
+      "utolso_nap": "2026-10-13",
+      "napok_szama": 18,
       "eletut": "visszatero",
-      "mozgas": "lecsengo",
+      "mozgas": "stabil",
       "idovonal": [
+        {
+          "nap": "2026-09-14",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
         {
           "nap": "2026-09-15",
           "jelen": true,
-          "ossz_volumen": 20000
+          "ossz_volumen": 5000
         },
         {
           "nap": "2026-09-16",
           "jelen": true,
-          "ossz_volumen": 40000
+          "ossz_volumen": 20000
         },
         {
           "nap": "2026-09-17",
           "jelen": true,
-          "ossz_volumen": 5000
+          "ossz_volumen": 15000
         },
         {
           "nap": "2026-09-18",
           "jelen": true,
-          "ossz_volumen": 5000
+          "ossz_volumen": 23000
         },
         {
           "nap": "2026-09-22",
           "jelen": true,
-          "ossz_volumen": 3000
+          "ossz_volumen": 1000
         },
         {
           "nap": "2026-09-23",
           "jelen": true,
-          "ossz_volumen": 3000
+          "ossz_volumen": 1000
         },
         {
-          "nap": "2026-09-25",
-          "jelen": true,
-          "ossz_volumen": 12000
-        },
-        {
-          "nap": "2026-09-26",
-          "jelen": true,
-          "ossz_volumen": 13000
-        },
-        {
-          "nap": "2026-09-28",
+          "nap": "2026-09-24",
           "jelen": true,
           "ossz_volumen": 2000
         },
         {
+          "nap": "2026-09-25",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-26",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-27",
+          "jelen": true,
+          "ossz_volumen": 1000
+        },
+        {
+          "nap": "2026-09-28",
+          "jelen": true,
+          "ossz_volumen": 12000
+        },
+        {
           "nap": "2026-09-29",
           "jelen": true,
-          "ossz_volumen": 5000
+          "ossz_volumen": 17000
         },
         {
           "nap": "2026-09-30",
@@ -1275,37 +815,37 @@
         {
           "nap": "2026-10-03",
           "jelen": true,
-          "ossz_volumen": 9000
+          "ossz_volumen": 6000
         },
         {
           "nap": "2026-10-12",
+          "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-10-13",
           "jelen": true,
           "ossz_volumen": 10000
         }
       ]
     },
     {
-      "nev": "Rendőrség és közbiztonság",
+      "nev": "Nemzeti vagyonvisszaszerzés és Jellinek Dániel",
       "kifejezesek": [
-        "rendőrség",
-        "magyar rendőrség",
-        "országos rendőr főkapitányság",
-        "belügyminisztérium",
-        "pintér sándor",
-        "rendőri intézkedés",
-        "kaprinyák tibor",
-        "országos mentőszolgálat",
-        "tűz",
-        "robbanás",
-        "kézigránát"
+        "nemzeti vagyonvisszaszerzési és vagyonvédelmi hivatal",
+        "jellinek dániel",
+        "tiborcz istván",
+        "mészáros lőrinc",
+        "csányi sándor",
+        "hernádi zsolt"
       ],
       "szakpolitika": "kozelet_kozigazgatas",
-      "osszefoglalo": "A rendőrség, a belügyi vezetés és konkrét rendőri intézkedések, balesetek, tűzesetek a közbiztonsági hírek köré szerveződtek.",
+      "osszefoglalo": "A vagyonvisszaszerzési hivatal és a kormányközeli üzletemberek nevei – köztük Jellinek Dániel, Tiborcz István és Mészáros Lőrinc – a közvagyon és gazdasági befolyás körüli vitákhoz kapcsolódtak.",
       "elso_nap": "2026-09-14",
-      "utolso_nap": "2026-10-07",
-      "napok_szama": 13,
+      "utolso_nap": "2026-10-13",
+      "napok_szama": 10,
       "eletut": "visszatero",
-      "mozgas": "erosodo",
+      "mozgas": "lecsengo",
       "idovonal": [
         {
           "nap": "2026-09-14",
@@ -1315,7 +855,12 @@
         {
           "nap": "2026-09-15",
           "jelen": true,
-          "ossz_volumen": 5000
+          "ossz_volumen": 22000
+        },
+        {
+          "nap": "2026-09-16",
+          "jelen": true,
+          "ossz_volumen": 20000
         },
         {
           "nap": "2026-09-18",
@@ -1323,273 +868,59 @@
           "ossz_volumen": 2000
         },
         {
-          "nap": "2026-09-23",
+          "nap": "2026-09-19",
           "jelen": true,
           "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-24",
-          "jelen": true,
-          "ossz_volumen": 11000
         },
         {
           "nap": "2026-09-25",
           "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-26",
-          "jelen": true,
-          "ossz_volumen": 3000
+          "ossz_volumen": 5000
         },
         {
           "nap": "2026-09-27",
           "jelen": true,
-          "ossz_volumen": 1000
-        },
-        {
-          "nap": "2026-09-28",
-          "jelen": true,
-          "ossz_volumen": 10000
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-09-29",
           "jelen": true,
-          "ossz_volumen": 12000
-        },
-        {
-          "nap": "2026-09-30",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-06",
-          "jelen": true,
           "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-10-07",
-          "jelen": true,
-          "ossz_volumen": 10000
-        }
-      ]
-    },
-    {
-      "nev": "Közlekedési balesetek",
-      "kifejezesek": [
-        "ütközés",
-        "gázolás",
-        "jármű",
-        "autó",
-        "használtautó",
-        "forgalmi rendszám",
-        "kiskunfélegyháza baleset",
-        "m80-as autóút",
-        "margit híd"
-      ],
-      "szakpolitika": "kozelet_kozigazgatas",
-      "osszefoglalo": "Járműbalesetek, ütközések és gázolások, valamint közlekedési helyszínek körüli keresések a baleseti hírek témáját fedik le.",
-      "elso_nap": "2026-09-19",
-      "utolso_nap": "2026-10-12",
-      "napok_szama": 11,
-      "eletut": "visszatero",
-      "mozgas": "erosodo",
-      "idovonal": [
-        {
-          "nap": "2026-09-19",
-          "jelen": true,
-          "ossz_volumen": 1000
-        },
-        {
-          "nap": "2026-09-20",
-          "jelen": true,
-          "ossz_volumen": 100
-        },
-        {
-          "nap": "2026-09-21",
-          "jelen": true,
-          "ossz_volumen": 100
-        },
-        {
-          "nap": "2026-09-27",
-          "jelen": true,
-          "ossz_volumen": 7000
-        },
-        {
-          "nap": "2026-09-28",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-10-02",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-10-03",
-          "jelen": true,
-          "ossz_volumen": 12000
-        },
-        {
-          "nap": "2026-10-04",
-          "jelen": true,
-          "ossz_volumen": 4000
-        },
-        {
-          "nap": "2026-10-05",
-          "jelen": true,
-          "ossz_volumen": 4000
-        },
-        {
-          "nap": "2026-10-06",
-          "jelen": true,
-          "ossz_volumen": 5000
         },
         {
           "nap": "2026-10-12",
           "jelen": true,
           "ossz_volumen": 2000
-        }
-      ]
-    },
-    {
-      "nev": "Hankó Balázs és a felsőoktatás",
-      "kifejezesek": [
-        "hankó balázs",
-        "hanko balazs"
-      ],
-      "szakpolitika": "kozelet_kozigazgatas",
-      "osszefoglalo": "Hankó Balázs minisztert érintő keresések erősödtek, kiemelkedő volumennel szeptember végén.",
-      "elso_nap": "2026-09-13",
-      "utolso_nap": "2026-09-29",
-      "napok_szama": 6,
-      "eletut": "visszatero",
-      "mozgas": "erosodo",
-      "idovonal": [
-        {
-          "nap": "2026-09-13",
-          "jelen": true,
-          "ossz_volumen": 2000
         },
         {
-          "nap": "2026-09-14",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-26",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-09-27",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-09-28",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-09-29",
-          "jelen": true,
-          "ossz_volumen": 20000
-        }
-      ]
-    },
-    {
-      "nev": "Oktatás és pedagógusok",
-      "kifejezesek": [
-        "pedagógus",
-        "nemzeti pedagógus kar",
-        "civil közoktatási platform",
-        "óvoda",
-        "gimnázium",
-        "klebelsberg központ",
-        "végzős diák"
-      ],
-      "szakpolitika": "oktataspolitika",
-      "osszefoglalo": "A pedagógusok, a köznevelés szereplői és intézményei, valamint a diákokat érintő témák az oktatáspolitikai közbeszéd részeként jelentek meg.",
-      "elso_nap": "2026-09-17",
-      "utolso_nap": "2026-10-08",
-      "napok_szama": 8,
-      "eletut": "visszatero",
-      "mozgas": "erosodo",
-      "idovonal": [
-        {
-          "nap": "2026-09-17",
-          "jelen": true,
-          "ossz_volumen": 1000
-        },
-        {
-          "nap": "2026-09-18",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-27",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-28",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-03",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-06",
+          "nap": "2026-10-13",
           "jelen": true,
           "ossz_volumen": 4000
-        },
-        {
-          "nap": "2026-10-07",
-          "jelen": true,
-          "ossz_volumen": 4000
-        },
-        {
-          "nap": "2026-10-08",
-          "jelen": true,
-          "ossz_volumen": 10000
         }
       ]
     },
     {
-      "nev": "Vasút, repülés és közlekedési infrastruktúra",
+      "nev": "Infláció, gazdaság és forint",
       "kifejezesek": [
-        "máv",
-        "vasút",
-        "nagysebességű vasút",
-        "autópálya",
-        "repülőtér",
-        "budapest liszt ferenc nemzetközi repülőtér",
-        "budapest-déli",
-        "villamos",
-        "vonat",
-        "144 es busz",
-        "repülőgép",
-        "flydubai",
-        "kényszerleszállás",
-        "koncesszió"
+        "infláció",
+        "gazdaság",
+        "élelmiszer",
+        "forint",
+        "magyar forint",
+        "euró",
+        "pénz",
+        "világgazdaság",
+        "brüsszel",
+        "európa"
       ],
       "szakpolitika": "gazdasag_foglalkoztatas",
-      "osszefoglalo": "A MÁV, a vasútfejlesztés, az autópályák és a repülőtér körüli keresések a közlekedési infrastruktúra témáit fedik le.",
-      "elso_nap": "2026-09-13",
-      "utolso_nap": "2026-10-11",
-      "napok_szama": 14,
+      "osszefoglalo": "Az infláció, az élelmiszerárak, a forint árfolyama és az általános gazdasági helyzet iránti érdeklődés végig jelen volt a vizsgált időszakban.",
+      "elso_nap": "2026-09-16",
+      "utolso_nap": "2026-10-13",
+      "napok_szama": 16,
       "eletut": "visszatero",
-      "mozgas": "lecsengo",
+      "mozgas": "erosodo",
       "idovonal": [
-        {
-          "nap": "2026-09-13",
-          "jelen": true,
-          "ossz_volumen": 4000
-        },
         {
           "nap": "2026-09-16",
           "jelen": true,
@@ -1598,12 +929,17 @@
         {
           "nap": "2026-09-17",
           "jelen": true,
-          "ossz_volumen": 6000
+          "ossz_volumen": 7000
+        },
+        {
+          "nap": "2026-09-22",
+          "jelen": true,
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-09-23",
           "jelen": true,
-          "ossz_volumen": 5000
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-09-24",
@@ -1611,14 +947,201 @@
           "ossz_volumen": 2000
         },
         {
+          "nap": "2026-09-27",
+          "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-09-28",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-29",
+          "jelen": true,
+          "ossz_volumen": 7000
+        },
+        {
+          "nap": "2026-09-30",
+          "jelen": true,
+          "ossz_volumen": 7000
+        },
+        {
+          "nap": "2026-10-01",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-02",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-03",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-07",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-10-10",
+          "jelen": true,
+          "ossz_volumen": 7000
+        },
+        {
+          "nap": "2026-10-11",
+          "jelen": true,
+          "ossz_volumen": 25000
+        },
+        {
+          "nap": "2026-10-13",
+          "jelen": true,
+          "ossz_volumen": 5000
+        }
+      ]
+    },
+    {
+      "nev": "Bankok és banki szolgáltatások",
+      "kifejezesek": [
+        "bank",
+        "k&h",
+        "otp bank nyrt.",
+        "mbh bank",
+        "gránit bank",
+        "bankautomata",
+        "bankszámla",
+        "bankkártya",
+        "revolut"
+      ],
+      "szakpolitika": "gazdasag_foglalkoztatas",
+      "osszefoglalo": "A hazai bankok és a banki szolgáltatások – bankszámla, bankkártya, automaták – iránti keresések a pénzügyi szektort érintő lakossági érdeklődést tükrözik.",
+      "elso_nap": "2026-09-14",
+      "utolso_nap": "2026-10-13",
+      "napok_szama": 12,
+      "eletut": "visszatero",
+      "mozgas": "lecsengo",
+      "idovonal": [
+        {
+          "nap": "2026-09-14",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-15",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-24",
+          "jelen": true,
+          "ossz_volumen": 25000
+        },
+        {
+          "nap": "2026-09-25",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-09-28",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
           "nap": "2026-09-29",
           "jelen": true,
           "ossz_volumen": 10000
         },
         {
-          "nap": "2026-10-01",
+          "nap": "2026-09-30",
           "jelen": true,
-          "ossz_volumen": 7000
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-10-02",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-10-03",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-10-08",
+          "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-10-09",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-13",
+          "jelen": true,
+          "ossz_volumen": 12000
+        }
+      ]
+    },
+    {
+      "nev": "Hankó Balázs és az oktatáspolitika",
+      "kifejezesek": [
+        "hankó balázs",
+        "hanko balazs",
+        "óvoda",
+        "pedagógus",
+        "nemzeti pedagógus kar",
+        "civil közoktatási platform",
+        "klebelsberg központ",
+        "gimnázium",
+        "lannert judit",
+        "varga bajusz veronika"
+      ],
+      "szakpolitika": "oktataspolitika",
+      "osszefoglalo": "Hankó Balázs kultúráért és innovációért felelős miniszter neve több napon át erősödő érdeklődést váltott ki, az oktatást és a pedagógusokat érintő témákkal együtt.",
+      "elso_nap": "2026-09-14",
+      "utolso_nap": "2026-10-13",
+      "napok_szama": 13,
+      "eletut": "visszatero",
+      "mozgas": "stabil",
+      "idovonal": [
+        {
+          "nap": "2026-09-14",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-17",
+          "jelen": true,
+          "ossz_volumen": 1000
+        },
+        {
+          "nap": "2026-09-18",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-26",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-09-27",
+          "jelen": true,
+          "ossz_volumen": 12000
+        },
+        {
+          "nap": "2026-09-28",
+          "jelen": true,
+          "ossz_volumen": 12000
+        },
+        {
+          "nap": "2026-09-29",
+          "jelen": true,
+          "ossz_volumen": 22000
         },
         {
           "nap": "2026-10-02",
@@ -1631,176 +1154,73 @@
           "ossz_volumen": 2000
         },
         {
-          "nap": "2026-10-04",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-05",
-          "jelen": true,
-          "ossz_volumen": 9000
-        },
-        {
           "nap": "2026-10-06",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-08",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-10-11",
-          "jelen": true,
-          "ossz_volumen": 2000
-        }
-      ]
-    },
-    {
-      "nev": "Nyugdíjas és idősügyi juttatások",
-      "kifejezesek": [
-        "idősek",
-        "folyósítás",
-        "pénz"
-      ],
-      "szakpolitika": "szocialpolitika",
-      "osszefoglalo": "Az időseknek szóló juttatások, a folyósítás és a pénzhez kapcsolódó keresések a szociális ellátás témájához köthetők, erősödő érdeklődéssel az időszak végén.",
-      "elso_nap": "2026-09-28",
-      "utolso_nap": "2026-10-11",
-      "napok_szama": 7,
-      "eletut": "visszatero",
-      "mozgas": "erosodo",
-      "idovonal": [
-        {
-          "nap": "2026-09-28",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-29",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-30",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-10-01",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-10-06",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-10-10",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-10-11",
-          "jelen": true,
-          "ossz_volumen": 20000
-        }
-      ]
-    },
-    {
-      "nev": "Oroszország, Ukrajna és a nemzetközi politika",
-      "kifejezesek": [
-        "oroszország",
-        "oroszok",
-        "ukrajna",
-        "ukránok",
-        "kijev",
-        "moszkva",
-        "irán",
-        "észak korea",
-        "románia",
-        "krakkó",
-        "lengyelország",
-        "egyesült államok",
-        "donald trump",
-        "guy verhofstadt",
-        "kaja kallas",
-        "európai unió",
-        "európai parlament",
-        "európai uniós jog",
-        "brüsszel",
-        "franciaország",
-        "svájc",
-        "ausztria",
-        "kanada",
-        "egyesült királyság",
-        "ceuta",
-        "alternatíva németországért"
-      ],
-      "szakpolitika": "kozelet_kozigazgatas",
-      "osszefoglalo": "A nemzetközi politika szereplői és helyszínei – köztük Oroszország, Ukrajna, az EU intézményei és vezető politikusok – a külpolitikai hírek köré csoportosultak.",
-      "elso_nap": "2026-09-13",
-      "utolso_nap": "2026-10-12",
-      "napok_szama": 20,
-      "eletut": "visszatero",
-      "mozgas": "erosodo",
-      "idovonal": [
-        {
-          "nap": "2026-09-13",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-09-15",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-17",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-18",
           "jelen": true,
           "ossz_volumen": 4000
         },
         {
-          "nap": "2026-09-19",
+          "nap": "2026-10-07",
           "jelen": true,
-          "ossz_volumen": 200
+          "ossz_volumen": 4000
         },
         {
-          "nap": "2026-09-25",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-09-26",
-          "jelen": true,
-          "ossz_volumen": 20000
-        },
-        {
-          "nap": "2026-09-27",
+          "nap": "2026-10-12",
           "jelen": true,
           "ossz_volumen": 5000
         },
         {
+          "nap": "2026-10-13",
+          "jelen": true,
+          "ossz_volumen": 5000
+        }
+      ]
+    },
+    {
+      "nev": "Oroszország–Ukrajna háború és külpolitika",
+      "kifejezesek": [
+        "oroszország",
+        "oroszok",
+        "ukrajna",
+        "moszkva",
+        "kijev",
+        "ukránok",
+        "irán",
+        "donald trump",
+        "egyesült államok",
+        "guy verhofstadt",
+        "kaja kallas",
+        "európai unió",
+        "az európai unió tanácsa",
+        "európai parlament",
+        "európai uniós jog"
+      ],
+      "szakpolitika": "kozelet_kozigazgatas",
+      "osszefoglalo": "A háborús és nagypolitikai hírek – Oroszország, Ukrajna, az EU és az Egyesült Államok szereplői – folyamatosan jelen voltak a keresésekben.",
+      "elso_nap": "2026-09-18",
+      "utolso_nap": "2026-10-13",
+      "napok_szama": 14,
+      "eletut": "visszatero",
+      "mozgas": "stabil",
+      "idovonal": [
+        {
+          "nap": "2026-09-18",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
           "nap": "2026-09-28",
           "jelen": true,
-          "ossz_volumen": 12000
+          "ossz_volumen": 7000
         },
         {
           "nap": "2026-09-29",
           "jelen": true,
-          "ossz_volumen": 19000
+          "ossz_volumen": 14000
         },
         {
           "nap": "2026-09-30",
           "jelen": true,
-          "ossz_volumen": 25000
+          "ossz_volumen": 5000
         },
         {
           "nap": "2026-10-01",
@@ -1820,12 +1240,12 @@
         {
           "nap": "2026-10-04",
           "jelen": true,
-          "ossz_volumen": 18000
+          "ossz_volumen": 16000
         },
         {
           "nap": "2026-10-05",
           "jelen": true,
-          "ossz_volumen": 16000
+          "ossz_volumen": 11000
         },
         {
           "nap": "2026-10-06",
@@ -1844,303 +1264,83 @@
         },
         {
           "nap": "2026-10-12",
+          "jelen": true,
+          "ossz_volumen": 4000
+        },
+        {
+          "nap": "2026-10-13",
           "jelen": true,
           "ossz_volumen": 20000
         }
       ]
     },
     {
-      "nev": "Egészségügy és járványok",
+      "nev": "Fásy Ádám és a szórakoztatóipar szereplői",
       "kifejezesek": [
-        "kórház",
-        "országos onkológiai intézet",
-        "endometriózis",
-        "cukorbetegség",
-        "majomhimlő",
-        "járvány",
-        "biztosítás",
-        "sanofi",
-        "pfizer",
-        "biontech",
-        "medikémia",
-        "karácsony gergely"
+        "fásy ádám",
+        "deák bill gyula",
+        "nagy feró",
+        "presser gábor",
+        "bródy jános",
+        "bochkor gábor",
+        "marsi anikó",
+        "várkonyi andrea",
+        "stohl luca",
+        "till attila",
+        "szabó zsófia"
       ],
-      "szakpolitika": "egeszsegpolitika",
-      "osszefoglalo": "A kórházak, betegségek, járványok és gyógyszergyártók körüli keresések az egészségügyi közbeszéd részeként jelentek meg.",
-      "elso_nap": "2026-09-13",
-      "utolso_nap": "2026-10-12",
-      "napok_szama": 14,
+      "szakpolitika": "egyeb",
+      "osszefoglalo": "Ismert hazai előadók, zenészek és médiaszemélyiségek nevei – köztük Fásy Ádám és Deák Bill Gyula – külön-külön csúcsokat produkáltak a szórakoztató tartalmak iránti érdeklődésben.",
+      "elso_nap": "2026-09-14",
+      "utolso_nap": "2026-10-09",
+      "napok_szama": 16,
       "eletut": "visszatero",
-      "mozgas": "stabil",
+      "mozgas": "lecsengo",
       "idovonal": [
         {
-          "nap": "2026-09-13",
+          "nap": "2026-09-14",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-09-16",
           "jelen": true,
           "ossz_volumen": 10000
         },
         {
-          "nap": "2026-09-15",
-          "jelen": true,
-          "ossz_volumen": 1000
-        },
-        {
-          "nap": "2026-09-16",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
           "nap": "2026-09-17",
           "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-09-23",
-          "jelen": true,
-          "ossz_volumen": 3000
-        },
-        {
-          "nap": "2026-09-24",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-10-01",
-          "jelen": true,
-          "ossz_volumen": 12000
-        },
-        {
-          "nap": "2026-10-02",
-          "jelen": true,
-          "ossz_volumen": 12000
-        },
-        {
-          "nap": "2026-10-04",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-10-05",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-10-06",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-10-07",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-08",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-12",
-          "jelen": true,
-          "ossz_volumen": 2000
-        }
-      ]
-    },
-    {
-      "nev": "Fidesz és politikai közbeszéd",
-      "kifejezesek": [
-        "fidesz",
-        "párt",
-        "kubatov gábor",
-        "kocsis máté",
-        "kövér lászló",
-        "bayer zsolt",
-        "bayer show",
-        "rákay philip",
-        "bencsik andrás",
-        "mária schmidt",
-        "terror háza",
-        "békemenet",
-        "toroczkai lászló",
-        "novák előd",
-        "deák dániel",
-        "tiborcz istván",
-        "mészáros lőrinc",
-        "panyi miklós",
-        "digitális polgári kör",
-        "várhegyi attila"
-      ],
-      "szakpolitika": "kozelet_kozigazgatas",
-      "osszefoglalo": "A Fidesz, a kormánypárti médiaszereplők és a politikai közbeszéd ismert alakjai köré szerveződő keresések széles köre.",
-      "elso_nap": "2026-09-13",
-      "utolso_nap": "2026-10-12",
-      "napok_szama": 22,
-      "eletut": "visszatero",
-      "mozgas": "stabil",
-      "idovonal": [
-        {
-          "nap": "2026-09-13",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-09-14",
-          "jelen": true,
-          "ossz_volumen": 12000
-        },
-        {
-          "nap": "2026-09-15",
-          "jelen": true,
-          "ossz_volumen": 4000
-        },
-        {
-          "nap": "2026-09-16",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-09-17",
-          "jelen": true,
-          "ossz_volumen": 2000
+          "ossz_volumen": 60000
         },
         {
           "nap": "2026-09-18",
           "jelen": true,
-          "ossz_volumen": 2000
+          "ossz_volumen": 50000
         },
         {
-          "nap": "2026-09-19",
-          "jelen": true,
-          "ossz_volumen": 10500
-        },
-        {
-          "nap": "2026-09-22",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-23",
-          "jelen": true,
-          "ossz_volumen": 1000
-        },
-        {
-          "nap": "2026-09-25",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-09-26",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-09-27",
-          "jelen": true,
-          "ossz_volumen": 12000
-        },
-        {
-          "nap": "2026-09-28",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-29",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-09-30",
-          "jelen": true,
-          "ossz_volumen": 12000
-        },
-        {
-          "nap": "2026-10-02",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-03",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-04",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-09",
-          "jelen": true,
-          "ossz_volumen": 6000
-        },
-        {
-          "nap": "2026-10-10",
-          "jelen": true,
-          "ossz_volumen": 8000
-        },
-        {
-          "nap": "2026-10-11",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-10-12",
-          "jelen": true,
-          "ossz_volumen": 2000
-        }
-      ]
-    },
-    {
-      "nev": "Választások és közjogi intézmények",
-      "kifejezesek": [
-        "időközi választás",
-        "alkotmánybíróság",
-        "kúria",
-        "országgyűlés",
-        "országház",
-        "állami számvevőszék",
-        "nemzeti adatvédelmi és információszabadság hatóság",
-        "polgármester",
-        "zugló polgármestere",
-        "őrsi gergely",
-        "jelölt",
-        "nagykövet",
-        "diplomata útlevél",
-        "2027",
-        "2026",
-        "magyar helsinki bizottság"
-      ],
-      "szakpolitika": "kozelet_kozigazgatas",
-      "osszefoglalo": "A választások, a bíróságok, az Országgyűlés és egyéb közjogi intézmények körüli keresések a demokratikus intézményrendszer témáit fedik le.",
-      "elso_nap": "2026-09-14",
-      "utolso_nap": "2026-10-12",
-      "napok_szama": 15,
-      "eletut": "visszatero",
-      "mozgas": "erosodo",
-      "idovonal": [
-        {
-          "nap": "2026-09-14",
+          "nap": "2026-09-24",
           "jelen": true,
           "ossz_volumen": 7000
         },
         {
-          "nap": "2026-09-15",
+          "nap": "2026-09-25",
           "jelen": true,
-          "ossz_volumen": 1000
+          "ossz_volumen": 11000
         },
         {
-          "nap": "2026-09-22",
+          "nap": "2026-09-26",
           "jelen": true,
-          "ossz_volumen": 1500
+          "ossz_volumen": 4000
         },
         {
-          "nap": "2026-09-23",
+          "nap": "2026-09-29",
           "jelen": true,
           "ossz_volumen": 5000
         },
         {
           "nap": "2026-09-30",
           "jelen": true,
-          "ossz_volumen": 5000
+          "ossz_volumen": 7000
         },
         {
           "nap": "2026-10-01",
@@ -2148,6 +1348,111 @@
           "ossz_volumen": 2000
         },
         {
+          "nap": "2026-10-03",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-05",
+          "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-10-06",
+          "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-10-07",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-08",
+          "jelen": true,
+          "ossz_volumen": 7000
+        },
+        {
+          "nap": "2026-10-09",
+          "jelen": true,
+          "ossz_volumen": 2000
+        }
+      ]
+    },
+    {
+      "nev": "Valóságshow-k és tehetségkutatók",
+      "kifejezesek": [
+        "celeb vagyok... ments ki innen!",
+        "celeb vagyok ments ki innen 2026",
+        "celeb vagyok ments ki innen",
+        "sztárban sztár 2026",
+        "sztárban sztár",
+        "sztárban sztár kiesője",
+        "x faktor",
+        "nagy enikő x faktor",
+        "the voice",
+        "farm vip 2026",
+        "álarcos énekes 2026",
+        "házasság első látásra",
+        "heti hetes",
+        "vv renátó",
+        "renátó",
+        "mankind ákos"
+      ],
+      "szakpolitika": "egyeb",
+      "osszefoglalo": "A televíziós valóságshow-k és tehetségkutató műsorok – a Celeb vagyok, a Sztárban sztár, az X-Faktor és társaik – rendszeresen felbukkantak a felkapott keresések között.",
+      "elso_nap": "2026-09-14",
+      "utolso_nap": "2026-10-13",
+      "napok_szama": 18,
+      "eletut": "visszatero",
+      "mozgas": "lecsengo",
+      "idovonal": [
+        {
+          "nap": "2026-09-14",
+          "jelen": true,
+          "ossz_volumen": 15000
+        },
+        {
+          "nap": "2026-09-15",
+          "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-09-17",
+          "jelen": true,
+          "ossz_volumen": 6000
+        },
+        {
+          "nap": "2026-09-20",
+          "jelen": true,
+          "ossz_volumen": 300
+        },
+        {
+          "nap": "2026-09-21",
+          "jelen": true,
+          "ossz_volumen": 600
+        },
+        {
+          "nap": "2026-09-24",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-25",
+          "jelen": true,
+          "ossz_volumen": 22000
+        },
+        {
+          "nap": "2026-09-29",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-09-30",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
           "nap": "2026-10-02",
           "jelen": true,
           "ossz_volumen": 2000
@@ -2155,27 +1460,22 @@
         {
           "nap": "2026-10-03",
           "jelen": true,
-          "ossz_volumen": 25000
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-10-04",
           "jelen": true,
-          "ossz_volumen": 25000
+          "ossz_volumen": 2000
         },
         {
-          "nap": "2026-10-06",
+          "nap": "2026-10-05",
           "jelen": true,
           "ossz_volumen": 7000
         },
         {
-          "nap": "2026-10-07",
+          "nap": "2026-10-06",
           "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-10-08",
-          "jelen": true,
-          "ossz_volumen": 15000
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-10-09",
@@ -2183,88 +1483,24 @@
           "ossz_volumen": 5000
         },
         {
-          "nap": "2026-10-11",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-12",
-          "jelen": true,
-          "ossz_volumen": 15000
-        }
-      ]
-    },
-    {
-      "nev": "Halálbüntetés és jogi viták",
-      "kifejezesek": [
-        "halálbüntetés",
-        "öröklés",
-        "christa pike",
-        "aileen wuornos",
-        "diego maradona",
-        "szálasi ferenc",
-        "augusztus 20",
-        "október 6",
-        "tűzijáték",
-        "sajtóközlemény"
-      ],
-      "szakpolitika": "kozelet_kozigazgatas",
-      "osszefoglalo": "A halálbüntetés, öröklési és egyéb jogi-történeti témák, valamint nemzeti emléknapok körüli keresések vegyes jogi-közéleti csoportot alkotnak.",
-      "elso_nap": "2026-09-19",
-      "utolso_nap": "2026-10-12",
-      "napok_szama": 9,
-      "eletut": "visszatero",
-      "mozgas": "erosodo",
-      "idovonal": [
-        {
-          "nap": "2026-09-19",
-          "jelen": true,
-          "ossz_volumen": 200
-        },
-        {
-          "nap": "2026-09-30",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-06",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-07",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-08",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-09",
-          "jelen": true,
-          "ossz_volumen": 4000
-        },
-        {
           "nap": "2026-10-10",
           "jelen": true,
-          "ossz_volumen": 3000
-        },
-        {
-          "nap": "2026-10-11",
-          "jelen": true,
-          "ossz_volumen": 2000
+          "ossz_volumen": 6000
         },
         {
           "nap": "2026-10-12",
           "jelen": true,
-          "ossz_volumen": 2000
+          "ossz_volumen": 12000
+        },
+        {
+          "nap": "2026-10-13",
+          "jelen": true,
+          "ossz_volumen": 10000
         }
       ]
     },
     {
-      "nev": "Magyar labdarúgó-válogatott és vb-selejtezők",
+      "nev": "Magyar labdarúgó-válogatott a vb-selejtezőkön",
       "kifejezesek": [
         "magyar labdarúgó-válogatott",
         "magyar labdarúgó válogatott",
@@ -2273,24 +1509,42 @@
         "magyarország–ukrajna",
         "magyar ukrán meccs",
         "ukrajna–magyarország",
-        "ukraine vs hungary",
         "ukrajna magyarország",
+        "ukraine vs hungary",
         "magyarország georgia",
         "ukrajna–észak-írország",
-        "észak-írország–grúzia",
+        "ukrán labdarúgó-válogatott",
         "marco rossi",
         "szövetségi kapitány",
-        "ukrán labdarúgó-válogatott",
-        "grúz labdarúgó-válogatott"
+        "szoboszlai dominik",
+        "szoboszlai gól",
+        "kerkez milos",
+        "gulácsi péter",
+        "dzsudzsák balázs"
       ],
       "szakpolitika": "egyeb",
-      "osszefoglalo": "A magyar válogatott világbajnoki selejtezői, köztük az Észak-Írország és Ukrajna elleni mérkőzések kiemelkedően magas volumenű sportkeresések voltak.",
-      "elso_nap": "2026-09-24",
+      "osszefoglalo": "A magyar válogatott vb-selejtező mérkőzései – különösen az észak-ír és ukrán rangadók – kiemelkedő keresési csúcsokat hoztak, a játékosok és a szövetségi kapitány nevével együtt.",
+      "elso_nap": "2026-09-16",
       "utolso_nap": "2026-10-10",
-      "napok_szama": 14,
-      "eletut": "folyamatosan_jelenlevo",
-      "mozgas": "lecsengo",
+      "napok_szama": 17,
+      "eletut": "visszatero",
+      "mozgas": "stabil",
       "idovonal": [
+        {
+          "nap": "2026-09-16",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-17",
+          "jelen": true,
+          "ossz_volumen": 1000
+        },
+        {
+          "nap": "2026-09-18",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
         {
           "nap": "2026-09-24",
           "jelen": true,
@@ -2304,12 +1558,12 @@
         {
           "nap": "2026-09-26",
           "jelen": true,
-          "ossz_volumen": 53000
+          "ossz_volumen": 72000
         },
         {
           "nap": "2026-09-27",
           "jelen": true,
-          "ossz_volumen": 6000
+          "ossz_volumen": 5000
         },
         {
           "nap": "2026-09-28",
@@ -2334,7 +1588,7 @@
         {
           "nap": "2026-10-03",
           "jelen": true,
-          "ossz_volumen": 12000
+          "ossz_volumen": 32000
         },
         {
           "nap": "2026-10-05",
@@ -2344,7 +1598,7 @@
         {
           "nap": "2026-10-06",
           "jelen": true,
-          "ossz_volumen": 53000
+          "ossz_volumen": 51000
         },
         {
           "nap": "2026-10-07",
@@ -2354,7 +1608,7 @@
         {
           "nap": "2026-10-09",
           "jelen": true,
-          "ossz_volumen": 2000
+          "ossz_volumen": 4000
         },
         {
           "nap": "2026-10-10",
@@ -2364,53 +1618,183 @@
       ]
     },
     {
-      "nev": "Nemzetközi labdarúgás és bajnokságok",
+      "nev": "Nemzetközi labdarúgás és rangadók",
       "kifejezesek": [
-        "nemzetek ligája",
-        "premier league",
-        "bundesliga",
-        "nb1",
-        "magyar első osztályú labdarúgó-bajnokság",
+        "real madrid",
+        "barcelona",
+        "barcelona–getafe",
+        "barcelona–racing",
+        "levante–barcelona",
+        "liverpool",
+        "liverpool fc",
         "liverpool–tottenham",
-        "liverpool–fulham",
         "liverpool–manchester city",
         "liverpool fc vs manchester city tabella",
-        "man utd–manchester city",
         "man utd–brighton",
+        "man utd–manchester city",
         "man utd–tottenham",
         "manchester city–norwich",
-        "levante–barcelona",
-        "elversberg–bayern münchen",
-        "bayern münchen–union berlin",
-        "augsburg–bayern münchen",
-        "elche–real madrid",
-        "real madrid–rayo",
-        "real madrid vs rayo vallecano",
-        "real madrid–villarreal",
+        "atlético madrid–osasuna",
         "real sociedad–atlético madrid",
         "real sociedad–bournemouth",
-        "atlético madrid–osasuna",
         "alavés–atlético madrid",
-        "barcelona–racing",
-        "barcelona–getafe",
+        "atlético madrid–man utd",
+        "real madrid–villarreal",
         "villarreal–betis",
         "rayo–espanyol",
         "celtic–ftc",
+        "arsenal fc",
+        "arsenal–leeds",
+        "chelsea",
+        "chelsea–bournemouth",
+        "bayern münchen",
+        "bayern münchen–union berlin",
+        "elversberg–bayern münchen",
+        "augsburg–bayern münchen",
+        "brest–psg",
+        "leeds–newcastle",
+        "galatasaray–kasimpasa",
+        "galatasaray–barcelona",
+        "al nassr–fk neftchi",
+        "inter miami–cruz azul",
         "ftc–dvsc",
         "eto–pafc",
         "honvéd–újpest",
         "pafc–honvéd",
         "zalaegerszeg–nyíregyháza",
-        "galatasaray–kasimpasa",
-        "nd gorica",
-        "brest–psg",
-        "chelsea–hull city",
-        "chelsea–bournemouth",
-        "sunderland–arsenal",
-        "arsenal–leeds",
-        "leeds–newcastle",
+        "premier league",
+        "nb1",
+        "bundesliga",
+        "nemzetek ligája",
+        "magyar első osztályú labdarúgó-bajnokság",
+        "ferencvárosi tc",
         "győri audi eto kc",
-        "inter miami–cruz azul",
+        "coventry city fc vs newcastle united tabella",
+        "hans-dieter flick",
+        "andoni iraola",
+        "florian wirtz",
+        "kylian mbappé",
+        "lionel messi",
+        "messi",
+        "dani olmo",
+        "jarell quansah",
+        "rio ngumoha",
+        "vini",
+        "daniel arzani"
+      ],
+      "szakpolitika": "egyeb",
+      "osszefoglalo": "A nemzetközi és hazai bajnokságok rangadói, kupameccsek és sztárjátékosok nevei nagy számban és nagy volumenben jelentek meg a felkapott sportkeresésekben.",
+      "elso_nap": "2026-09-14",
+      "utolso_nap": "2026-10-13",
+      "napok_szama": 20,
+      "eletut": "visszatero",
+      "mozgas": "erosodo",
+      "idovonal": [
+        {
+          "nap": "2026-09-14",
+          "jelen": true,
+          "ossz_volumen": 29000
+        },
+        {
+          "nap": "2026-09-15",
+          "jelen": true,
+          "ossz_volumen": 12000
+        },
+        {
+          "nap": "2026-09-16",
+          "jelen": true,
+          "ossz_volumen": 16000
+        },
+        {
+          "nap": "2026-09-17",
+          "jelen": true,
+          "ossz_volumen": 31000
+        },
+        {
+          "nap": "2026-09-18",
+          "jelen": true,
+          "ossz_volumen": 39000
+        },
+        {
+          "nap": "2026-09-19",
+          "jelen": true,
+          "ossz_volumen": 6600
+        },
+        {
+          "nap": "2026-09-20",
+          "jelen": true,
+          "ossz_volumen": 500
+        },
+        {
+          "nap": "2026-09-21",
+          "jelen": true,
+          "ossz_volumen": 600
+        },
+        {
+          "nap": "2026-09-23",
+          "jelen": true,
+          "ossz_volumen": 3000
+        },
+        {
+          "nap": "2026-09-24",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-25",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-27",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-06",
+          "jelen": true,
+          "ossz_volumen": 20000
+        },
+        {
+          "nap": "2026-10-07",
+          "jelen": true,
+          "ossz_volumen": 4000
+        },
+        {
+          "nap": "2026-10-08",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-09",
+          "jelen": true,
+          "ossz_volumen": 6000
+        },
+        {
+          "nap": "2026-10-10",
+          "jelen": true,
+          "ossz_volumen": 43000
+        },
+        {
+          "nap": "2026-10-11",
+          "jelen": true,
+          "ossz_volumen": 82000
+        },
+        {
+          "nap": "2026-10-12",
+          "jelen": true,
+          "ossz_volumen": 41000
+        },
+        {
+          "nap": "2026-10-13",
+          "jelen": true,
+          "ossz_volumen": 10000
+        }
+      ]
+    },
+    {
+      "nev": "Nemzetek Ligája és válogatott mérkőzések",
+      "kifejezesek": [
         "anglia–spanyolország",
         "anglia–csehország",
         "csehország–anglia",
@@ -2425,96 +1809,45 @@
         "franciaország–belgium",
         "franciaország–olaszország",
         "törökország–franciaország",
-        "németország–görögország",
         "hollandia–németország",
+        "németország–görögország",
         "ausztrália–brazília",
         "india–brazília",
         "argentína–bolívia",
         "argentína–burkina faso",
-        "anglia"
+        "észak-írország–grúzia",
+        "grúz labdarúgó-válogatott",
+        "nd gorica",
+        "anglia",
+        "svájc"
       ],
       "szakpolitika": "egyeb",
-      "osszefoglalo": "Nemzetközi és hazai labdarúgó-mérkőzések, bajnokságok és válogatott meccsek széles köre, amelyek a sportszurkolói érdeklődést tükrözik.",
-      "elso_nap": "2026-09-13",
-      "utolso_nap": "2026-10-12",
-      "napok_szama": 28,
+      "osszefoglalo": "A nemzeti válogatottak Nemzetek Ligája-, selejtező- és barátságos mérkőzései önálló keresési hullámokat generáltak a vizsgált hónapban.",
+      "elso_nap": "2026-09-25",
+      "utolso_nap": "2026-10-07",
+      "napok_szama": 13,
       "eletut": "folyamatosan_jelenlevo",
-      "mozgas": "erosodo",
+      "mozgas": "lecsengo",
       "idovonal": [
-        {
-          "nap": "2026-09-13",
-          "jelen": true,
-          "ossz_volumen": 48000
-        },
-        {
-          "nap": "2026-09-14",
-          "jelen": true,
-          "ossz_volumen": 24000
-        },
-        {
-          "nap": "2026-09-15",
-          "jelen": true,
-          "ossz_volumen": 8000
-        },
-        {
-          "nap": "2026-09-16",
-          "jelen": true,
-          "ossz_volumen": 19000
-        },
-        {
-          "nap": "2026-09-17",
-          "jelen": true,
-          "ossz_volumen": 28000
-        },
-        {
-          "nap": "2026-09-18",
-          "jelen": true,
-          "ossz_volumen": 29000
-        },
-        {
-          "nap": "2026-09-19",
-          "jelen": true,
-          "ossz_volumen": 4200
-        },
-        {
-          "nap": "2026-09-20",
-          "jelen": true,
-          "ossz_volumen": 300
-        },
-        {
-          "nap": "2026-09-21",
-          "jelen": true,
-          "ossz_volumen": 400
-        },
-        {
-          "nap": "2026-09-23",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-24",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
         {
           "nap": "2026-09-25",
           "jelen": true,
-          "ossz_volumen": 6000
+          "ossz_volumen": 4000
         },
         {
           "nap": "2026-09-26",
           "jelen": true,
-          "ossz_volumen": 6000
+          "ossz_volumen": 7000
         },
         {
           "nap": "2026-09-27",
           "jelen": true,
-          "ossz_volumen": 16000
+          "ossz_volumen": 20000
         },
         {
           "nap": "2026-09-28",
           "jelen": true,
-          "ossz_volumen": 13000
+          "ossz_volumen": 18000
         },
         {
           "nap": "2026-09-29",
@@ -2554,190 +1887,55 @@
         {
           "nap": "2026-10-06",
           "jelen": true,
-          "ossz_volumen": 26000
+          "ossz_volumen": 8000
         },
         {
           "nap": "2026-10-07",
           "jelen": true,
           "ossz_volumen": 7000
-        },
-        {
-          "nap": "2026-10-09",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-10",
-          "jelen": true,
-          "ossz_volumen": 40000
-        },
-        {
-          "nap": "2026-10-11",
-          "jelen": true,
-          "ossz_volumen": 76000
-        },
-        {
-          "nap": "2026-10-12",
-          "jelen": true,
-          "ossz_volumen": 39000
         }
       ]
     },
     {
-      "nev": "Sportolók és egyéb sportok",
+      "nev": "Forma–1 és motorsport",
       "kifejezesek": [
-        "szoboszlai dominik",
-        "szoboszlai gól",
-        "florian wirtz",
-        "kerkez milos",
-        "gulácsi péter",
-        "milák kristóf",
-        "ekler luca",
-        "ónodi henrietta",
-        "grózer györgy",
-        "dzsudzsák balázs",
-        "rybakina",
-        "zverev",
-        "lionel messi",
-        "messi",
-        "kylian mbappé",
-        "dani olmo",
-        "charles leclerc",
-        "andoni iraola",
-        "hans-dieter flick",
-        "jarell quansah",
-        "rio ngumoha",
-        "vini",
-        "daniel arzani",
-        "romain lagarde",
-        "george nield gillett",
-        "joanna wietrzyk",
-        "fermín lópez",
-        "papacsek réka",
-        "novenyi norbert jr",
-        "pintér dániel",
-        "vitális milán",
         "f1",
         "forma 1",
-        "formula 1 spanyol nagydíj",
-        "formula 1 magyar nagydíj",
         "formula–1 szingapúri nagydíj",
+        "formula 1 magyar nagydíj",
+        "charles leclerc",
         "motogp-világbajnokság",
-        "hold",
-        "arsenal fc",
-        "bayern münchen",
-        "barcelona",
-        "liverpool",
-        "liverpool fc",
-        "ferencvárosi tc",
-        "chelsea",
-        "real madrid",
-        "m4 élő",
-        "m4 sport",
-        "m4 sport online",
-        "teams",
-        "nso",
-        "tippmix",
-        "sportfogadás",
-        "fogadás",
-        "swimming",
-        "fishing",
-        "horgászat",
-        "sports",
-        "sport",
-        "eredmenyek",
-        "eredmények",
-        "magyar olimpiai bizottság"
+        "zverev"
       ],
       "szakpolitika": "egyeb",
-      "osszefoglalo": "Sportolók, Forma-1 és egyéb sportesemények, valamint sportmédia és fogadás körüli keresések széles, vegyes csoportja.",
-      "elso_nap": "2026-09-13",
+      "osszefoglalo": "A Forma–1 futamai és egyéb motorsport-események, valamint a kapcsolódó versenyzők rendszeresen trendeltek.",
+      "elso_nap": "2026-09-14",
       "utolso_nap": "2026-10-12",
-      "napok_szama": 25,
+      "napok_szama": 9,
       "eletut": "visszatero",
-      "mozgas": "erosodo",
+      "mozgas": "stabil",
       "idovonal": [
-        {
-          "nap": "2026-09-13",
-          "jelen": true,
-          "ossz_volumen": 16000
-        },
         {
           "nap": "2026-09-14",
           "jelen": true,
-          "ossz_volumen": 23000
-        },
-        {
-          "nap": "2026-09-15",
-          "jelen": true,
-          "ossz_volumen": 22000
-        },
-        {
-          "nap": "2026-09-16",
-          "jelen": true,
-          "ossz_volumen": 4000
-        },
-        {
-          "nap": "2026-09-17",
-          "jelen": true,
-          "ossz_volumen": 4000
-        },
-        {
-          "nap": "2026-09-18",
-          "jelen": true,
-          "ossz_volumen": 14000
-        },
-        {
-          "nap": "2026-09-19",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-09-20",
-          "jelen": true,
-          "ossz_volumen": 500
-        },
-        {
-          "nap": "2026-09-21",
-          "jelen": true,
-          "ossz_volumen": 500
-        },
-        {
-          "nap": "2026-09-22",
-          "jelen": true,
-          "ossz_volumen": 900
+          "ossz_volumen": 12000
         },
         {
           "nap": "2026-09-23",
           "jelen": true,
-          "ossz_volumen": 5000
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-09-24",
           "jelen": true,
-          "ossz_volumen": 4000
-        },
-        {
-          "nap": "2026-09-25",
-          "jelen": true,
-          "ossz_volumen": 4000
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-09-26",
-          "jelen": true,
-          "ossz_volumen": 46000
-        },
-        {
-          "nap": "2026-09-27",
           "jelen": true,
           "ossz_volumen": 1000
         },
         {
-          "nap": "2026-10-03",
-          "jelen": true,
-          "ossz_volumen": 20000
-        },
-        {
           "nap": "2026-10-04",
           "jelen": true,
           "ossz_volumen": 5000
@@ -2745,367 +1943,320 @@
         {
           "nap": "2026-10-05",
           "jelen": true,
-          "ossz_volumen": 13000
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-10-06",
           "jelen": true,
-          "ossz_volumen": 6000
-        },
-        {
-          "nap": "2026-10-07",
-          "jelen": true,
-          "ossz_volumen": 4000
-        },
-        {
-          "nap": "2026-10-08",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-09",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-10-10",
-          "jelen": true,
-          "ossz_volumen": 8000
+          "ossz_volumen": 5000
         },
         {
           "nap": "2026-10-11",
           "jelen": true,
-          "ossz_volumen": 10000
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-10-12",
           "jelen": true,
-          "ossz_volumen": 9000
+          "ossz_volumen": 7000
         }
       ]
     },
     {
-      "nev": "Szórakozás, celebek és valóságshow-k",
+      "nev": "Vitézy Dávid és a budapesti közlekedés",
       "kifejezesek": [
-        "celeb vagyok ments ki innen",
-        "celeb vagyok... ments ki innen!",
-        "celeb vagyok ments ki innen 2026",
-        "sztárban sztár 2026",
-        "sztárban sztár",
-        "sztárban sztár kiesője",
-        "x faktor",
-        "nagy enikő x faktor",
-        "the voice",
-        "farm vip 2026",
-        "álarcos énekes 2026",
-        "házasság első látásra",
-        "furcsa pár",
-        "heti hetes",
-        "ridikül",
-        "fásy ádám",
-        "deák bill gyula",
-        "presser gábor",
-        "nagy feró",
-        "bródy jános",
-        "németh kristóf",
-        "ókovács szilveszter",
-        "várkonyi andrea",
-        "marsi anikó",
-        "bochkor gábor",
-        "till attila",
-        "stohl luca",
-        "szabó zsófia",
-        "kecsmár alexandra",
-        "gulyás virág",
-        "bruce willis",
-        "hayden panettiere",
-        "cindy crawford",
-        "cindy crawford lánya",
-        "kaia gerber",
-        "presley gerber",
-        "angelina jolie",
-        "josh hartnett",
-        "zach galifianakis",
-        "jennifer hudson",
-        "david hasselhoff",
-        "alan ritchson",
-        "reacher",
-        "esther rantzen",
-        "eva marie saint",
-        "anne carson",
-        "susan dell",
-        "emmy 2026",
-        "harry & meghan",
-        "charles spencer",
-        "lady gaga gyereke",
-        "tóth gabi",
-        "palvin barbara",
-        "bálint antónia",
-        "péter szabó szilvia",
-        "varga edit",
-        "kiss ramóna",
-        "járai máté",
-        "mankind ákos",
-        "dr mátyás",
-        "ádám szofi",
-        "pintér dezső",
-        "kovács kristóf",
-        "molnár áron",
-        "sándor mária",
-        "mérő vera",
-        "gryllus dorka",
-        "kautzky armand",
-        "szirtes tamás",
-        "balásy gyula",
-        "hegedűs zsolt",
-        "paksi endre",
-        "byealex barátnője",
-        "vásárhelyi jános",
-        "kapitány istván",
-        "kármán andrás",
-        "hernádi zsolt",
-        "csányi sándor",
-        "ll junior",
-        "bohár dániel",
-        "székely gábor",
-        "pósfai gábor",
-        "hajdu jános",
-        "dr brachinger tamás",
-        "lannert judit",
-        "osztie zoltán",
-        "bús balázs",
-        "sapkás piréz",
-        "sapkas pirez",
-        "a tilosban parkoló"
+        "vitézy dávid",
+        "máv",
+        "budapest-déli",
+        "budapest liszt ferenc nemzetközi repülőtér",
+        "repülőtér",
+        "margit híd",
+        "m0",
+        "autópálya",
+        "m80-as autóút",
+        "144 es busz",
+        "vonat",
+        "nagysebességű vasút",
+        "vasút"
       ],
-      "szakpolitika": "egyeb",
-      "osszefoglalo": "Hazai és nemzetközi valóságshow-k, tévéműsorok, zenészek és hírességek körüli keresések széles szórakoztatóipari csoportja.",
-      "elso_nap": "2026-09-13",
-      "utolso_nap": "2026-10-12",
-      "napok_szama": 30,
-      "eletut": "folyamatosan_jelenlevo",
-      "mozgas": "stabil",
+      "szakpolitika": "kozelet_kozigazgatas",
+      "osszefoglalo": "Vitézy Dávid neve és a fővárosi, illetve országos közlekedési témák – vasút, repülőtér, utak – visszatérően foglalkoztatták a keresőket.",
+      "elso_nap": "2026-09-14",
+      "utolso_nap": "2026-10-13",
+      "napok_szama": 17,
+      "eletut": "visszatero",
+      "mozgas": "erosodo",
       "idovonal": [
-        {
-          "nap": "2026-09-13",
-          "jelen": true,
-          "ossz_volumen": 52000
-        },
         {
           "nap": "2026-09-14",
           "jelen": true,
-          "ossz_volumen": 22000
-        },
-        {
-          "nap": "2026-09-15",
-          "jelen": true,
-          "ossz_volumen": 9000
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-09-16",
           "jelen": true,
-          "ossz_volumen": 12000
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-09-17",
           "jelen": true,
-          "ossz_volumen": 64000
+          "ossz_volumen": 4000
         },
         {
           "nap": "2026-09-18",
           "jelen": true,
-          "ossz_volumen": 50000
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-09-19",
           "jelen": true,
-          "ossz_volumen": 2400
-        },
-        {
-          "nap": "2026-09-20",
-          "jelen": true,
-          "ossz_volumen": 300
-        },
-        {
-          "nap": "2026-09-21",
-          "jelen": true,
-          "ossz_volumen": 6800
-        },
-        {
-          "nap": "2026-09-22",
-          "jelen": true,
-          "ossz_volumen": 2600
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-09-23",
           "jelen": true,
-          "ossz_volumen": 12000
+          "ossz_volumen": 5000
         },
         {
           "nap": "2026-09-24",
           "jelen": true,
-          "ossz_volumen": 9000
-        },
-        {
-          "nap": "2026-09-25",
-          "jelen": true,
-          "ossz_volumen": 40000
-        },
-        {
-          "nap": "2026-09-26",
-          "jelen": true,
-          "ossz_volumen": 5000
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-09-27",
           "jelen": true,
-          "ossz_volumen": 3000
-        },
-        {
-          "nap": "2026-09-28",
-          "jelen": true,
-          "ossz_volumen": 33000
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-09-29",
           "jelen": true,
-          "ossz_volumen": 47000
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-10-03",
+          "jelen": true,
+          "ossz_volumen": 4000
+        },
+        {
+          "nap": "2026-10-04",
+          "jelen": true,
+          "ossz_volumen": 7000
+        },
+        {
+          "nap": "2026-10-05",
+          "jelen": true,
+          "ossz_volumen": 6000
+        },
+        {
+          "nap": "2026-10-06",
+          "jelen": true,
+          "ossz_volumen": 1000
+        },
+        {
+          "nap": "2026-10-08",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-10-11",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-12",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-13",
+          "jelen": true,
+          "ossz_volumen": 2000
+        }
+      ]
+    },
+    {
+      "nev": "Karácsony Gergely és a budapesti közélet",
+      "kifejezesek": [
+        "karácsony gergely",
+        "őrsi gergely",
+        "zugló polgármestere",
+        "polgármester"
+      ],
+      "szakpolitika": "kozelet_kozigazgatas",
+      "osszefoglalo": "A főpolgármester és budapesti önkormányzati szereplők körüli érdeklődés a helyi közélethez kapcsolódott.",
+      "elso_nap": "2026-09-14",
+      "utolso_nap": "2026-10-11",
+      "napok_szama": 4,
+      "eletut": "visszatero",
+      "mozgas": "erosodo",
+      "idovonal": [
+        {
+          "nap": "2026-09-14",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-05",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-10-06",
+          "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-10-11",
+          "jelen": true,
+          "ossz_volumen": 2000
+        }
+      ]
+    },
+    {
+      "nev": "Fidesz és kormánypárti politika",
+      "kifejezesek": [
+        "fidesz",
+        "toroczkai lászló",
+        "kocsis máté",
+        "bayer zsolt",
+        "bayer show",
+        "bencsik andrás",
+        "rákay philip",
+        "deák dániel",
+        "mária schmidt",
+        "századvég alapítvány",
+        "alapjogokért központ",
+        "nézőpont intézet",
+        "békemenet",
+        "digitális polgári kör"
+      ],
+      "szakpolitika": "kozelet_kozigazgatas",
+      "osszefoglalo": "A Fidesz, a kormányközeli véleményvezérek és think tankek, valamint politikai eseményeik rendszeresen szerepeltek a felkapott keresések között.",
+      "elso_nap": "2026-09-14",
+      "utolso_nap": "2026-10-13",
+      "napok_szama": 19,
+      "eletut": "visszatero",
+      "mozgas": "erosodo",
+      "idovonal": [
+        {
+          "nap": "2026-09-14",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-17",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-18",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-19",
+          "jelen": true,
+          "ossz_volumen": 500
+        },
+        {
+          "nap": "2026-09-22",
+          "jelen": true,
+          "ossz_volumen": 1500
+        },
+        {
+          "nap": "2026-09-23",
+          "jelen": true,
+          "ossz_volumen": 1000
+        },
+        {
+          "nap": "2026-09-24",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-25",
+          "jelen": true,
+          "ossz_volumen": 12000
+        },
+        {
+          "nap": "2026-09-26",
+          "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-09-27",
+          "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-09-28",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-29",
+          "jelen": true,
+          "ossz_volumen": 10000
         },
         {
           "nap": "2026-09-30",
           "jelen": true,
-          "ossz_volumen": 19000
-        },
-        {
-          "nap": "2026-10-01",
-          "jelen": true,
-          "ossz_volumen": 14000
+          "ossz_volumen": 12000
         },
         {
           "nap": "2026-10-02",
           "jelen": true,
-          "ossz_volumen": 17000
+          "ossz_volumen": 7000
         },
         {
           "nap": "2026-10-03",
           "jelen": true,
-          "ossz_volumen": 4000
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-10-04",
           "jelen": true,
-          "ossz_volumen": 12000
-        },
-        {
-          "nap": "2026-10-05",
-          "jelen": true,
-          "ossz_volumen": 22000
-        },
-        {
-          "nap": "2026-10-06",
-          "jelen": true,
-          "ossz_volumen": 14000
-        },
-        {
-          "nap": "2026-10-07",
-          "jelen": true,
-          "ossz_volumen": 8000
-        },
-        {
-          "nap": "2026-10-08",
-          "jelen": true,
-          "ossz_volumen": 23000
-        },
-        {
-          "nap": "2026-10-09",
-          "jelen": true,
-          "ossz_volumen": 31000
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-10-10",
           "jelen": true,
-          "ossz_volumen": 20000
+          "ossz_volumen": 6000
         },
         {
           "nap": "2026-10-11",
           "jelen": true,
-          "ossz_volumen": 4000
+          "ossz_volumen": 5000
         },
         {
-          "nap": "2026-10-12",
+          "nap": "2026-10-13",
           "jelen": true,
-          "ossz_volumen": 47000
+          "ossz_volumen": 22000
         }
       ]
     },
     {
-      "nev": "Médiumok és hírportálok",
+      "nev": "Ellenzéki és civil politikai szereplők",
       "kifejezesek": [
-        "index.hu",
-        "24.hu",
-        "hvg",
-        "telex.hu",
-        "telex",
-        "index",
-        "24",
-        "origo",
-        "magyar nemzet",
-        "beol.hu",
-        "economx",
-        "444.hu",
-        "pénzcentrum.hu",
-        "infostart",
-        "forbes",
-        "rtl",
-        "rtl híradó",
-        "új szó",
-        "hír",
-        "hírek",
-        "cikk",
-        "interjú",
-        "facebook",
-        "google",
-        "gemini",
-        "ai",
-        "mesterséges intelligencia",
-        "android",
-        "ios 27",
-        "samsung",
-        "hacker",
-        "számítógép",
-        "spotify",
-        "online radio",
-        "tv műsor",
-        "movies",
-        "concerts",
-        "classroom",
-        "schools",
-        "artisjus",
-        "cinema city",
-        "szerencsejáték zrt.",
-        "startlap",
-        "world space week 2026",
-        "a 2026-os világűr hete",
-        "bill gates",
-        "karl deisseroth",
-        "nutriversum",
-        "étrend kiegészítő",
-        "wow forever",
-        "gta vi"
+        "hadházy ákos",
+        "fekete győr andrás",
+        "fekete-győr andrás",
+        "fodor gábor",
+        "vona gábor",
+        "novák előd",
+        "kövér lászló",
+        "magyar helsinki bizottság",
+        "róna péter",
+        "bod péter ákos"
       ],
-      "szakpolitika": "egyeb",
-      "osszefoglalo": "Hírportálok, technológiai cégek, mesterséges intelligencia és egyéb média- és digitális szolgáltatások körüli keresések vegyes csoportja.",
-      "elso_nap": "2026-09-13",
-      "utolso_nap": "2026-10-12",
-      "napok_szama": 28,
-      "eletut": "folyamatosan_jelenlevo",
-      "mozgas": "erosodo",
+      "szakpolitika": "kozelet_kozigazgatas",
+      "osszefoglalo": "Ellenzéki politikusok és civil közéleti szereplők nevei külön-külön keresési hullámokat hoztak a hónap során.",
+      "elso_nap": "2026-09-14",
+      "utolso_nap": "2026-10-11",
+      "napok_szama": 13,
+      "eletut": "visszatero",
+      "mozgas": "stabil",
       "idovonal": [
-        {
-          "nap": "2026-09-13",
-          "jelen": true,
-          "ossz_volumen": 8000
-        },
         {
           "nap": "2026-09-14",
           "jelen": true,
@@ -3114,52 +2265,17 @@
         {
           "nap": "2026-09-15",
           "jelen": true,
-          "ossz_volumen": 16000
-        },
-        {
-          "nap": "2026-09-16",
-          "jelen": true,
-          "ossz_volumen": 6000
-        },
-        {
-          "nap": "2026-09-17",
-          "jelen": true,
-          "ossz_volumen": 3000
-        },
-        {
-          "nap": "2026-09-18",
-          "jelen": true,
-          "ossz_volumen": 6000
-        },
-        {
-          "nap": "2026-09-19",
-          "jelen": true,
-          "ossz_volumen": 7600
-        },
-        {
-          "nap": "2026-09-20",
-          "jelen": true,
-          "ossz_volumen": 400
-        },
-        {
-          "nap": "2026-09-21",
-          "jelen": true,
-          "ossz_volumen": 3400
-        },
-        {
-          "nap": "2026-09-22",
-          "jelen": true,
-          "ossz_volumen": 1200
+          "ossz_volumen": 7000
         },
         {
           "nap": "2026-09-23",
           "jelen": true,
-          "ossz_volumen": 6000
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-09-24",
           "jelen": true,
-          "ossz_volumen": 5000
+          "ossz_volumen": 10000
         },
         {
           "nap": "2026-09-25",
@@ -3167,19 +2283,88 @@
           "ossz_volumen": 5000
         },
         {
-          "nap": "2026-09-26",
+          "nap": "2026-09-30",
           "jelen": true,
-          "ossz_volumen": 8000
+          "ossz_volumen": 10000
         },
         {
-          "nap": "2026-09-27",
+          "nap": "2026-10-01",
           "jelen": true,
-          "ossz_volumen": 5000
+          "ossz_volumen": 10000
         },
         {
-          "nap": "2026-09-28",
+          "nap": "2026-10-06",
           "jelen": true,
           "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-07",
+          "jelen": true,
+          "ossz_volumen": 12000
+        },
+        {
+          "nap": "2026-10-08",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-09",
+          "jelen": true,
+          "ossz_volumen": 4000
+        },
+        {
+          "nap": "2026-10-10",
+          "jelen": true,
+          "ossz_volumen": 4000
+        },
+        {
+          "nap": "2026-10-11",
+          "jelen": true,
+          "ossz_volumen": 2000
+        }
+      ]
+    },
+    {
+      "nev": "Rogán Antal és a Szuverenitásvédelmi Hivatal",
+      "kifejezesek": [
+        "rogán antal",
+        "szuverenitásvédelmi hivatal",
+        "nemzeti adatvédelmi és információszabadság hatóság",
+        "panyi miklós",
+        "diplomata útlevél"
+      ],
+      "szakpolitika": "kozelet_kozigazgatas",
+      "osszefoglalo": "Rogán Antal és a hozzá kapcsolódó intézmények, valamint adatvédelmi és útlevél-ügyek a kormányzati hatalomgyakorlás körüli vitákhoz kötődtek.",
+      "elso_nap": "2026-09-18",
+      "utolso_nap": "2026-10-13",
+      "napok_szama": 11,
+      "eletut": "visszatero",
+      "mozgas": "erosodo",
+      "idovonal": [
+        {
+          "nap": "2026-09-18",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-19",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-22",
+          "jelen": true,
+          "ossz_volumen": 500
+        },
+        {
+          "nap": "2026-09-23",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-24",
+          "jelen": true,
+          "ossz_volumen": 5000
         },
         {
           "nap": "2026-09-29",
@@ -3189,94 +2374,124 @@
         {
           "nap": "2026-09-30",
           "jelen": true,
-          "ossz_volumen": 4000
-        },
-        {
-          "nap": "2026-10-01",
-          "jelen": true,
-          "ossz_volumen": 4000
-        },
-        {
-          "nap": "2026-10-03",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-10-04",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-10-05",
-          "jelen": true,
-          "ossz_volumen": 17000
-        },
-        {
-          "nap": "2026-10-06",
-          "jelen": true,
-          "ossz_volumen": 3000
-        },
-        {
-          "nap": "2026-10-07",
-          "jelen": true,
           "ossz_volumen": 5000
         },
         {
           "nap": "2026-10-08",
           "jelen": true,
-          "ossz_volumen": 60000
+          "ossz_volumen": 5000
         },
         {
-          "nap": "2026-10-10",
+          "nap": "2026-10-09",
           "jelen": true,
-          "ossz_volumen": 6000
-        },
-        {
-          "nap": "2026-10-11",
-          "jelen": true,
-          "ossz_volumen": 12000
+          "ossz_volumen": 5000
         },
         {
           "nap": "2026-10-12",
           "jelen": true,
-          "ossz_volumen": 6000
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-10-13",
+          "jelen": true,
+          "ossz_volumen": 5000
         }
       ]
     },
     {
-      "nev": "Gazdaságpolitika és pénzügyi vezetők",
+      "nev": "Havasi Bertalan és a baka András-ügy",
       "kifejezesek": [
-        "gazdaság",
-        "világgazdaság",
-        "európa",
+        "havasi bertalan",
+        "baka andrás",
+        "hajdu jános",
+        "kaprinyák tibor"
+      ],
+      "szakpolitika": "kozelet_kozigazgatas",
+      "osszefoglalo": "Havasi Bertalan és kapcsolódó szereplők nevei több napon át visszatérően szerepeltek a közéleti keresések között.",
+      "elso_nap": "2026-09-18",
+      "utolso_nap": "2026-10-09",
+      "napok_szama": 10,
+      "eletut": "visszatero",
+      "mozgas": "erosodo",
+      "idovonal": [
+        {
+          "nap": "2026-09-18",
+          "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-09-24",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-09-27",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-09-28",
+          "jelen": true,
+          "ossz_volumen": 7000
+        },
+        {
+          "nap": "2026-09-30",
+          "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-10-01",
+          "jelen": true,
+          "ossz_volumen": 30000
+        },
+        {
+          "nap": "2026-10-02",
+          "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-10-06",
+          "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-10-07",
+          "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-10-09",
+          "jelen": true,
+          "ossz_volumen": 2000
+        }
+      ]
+    },
+    {
+      "nev": "Nagy Márton és a gazdaságpolitika",
+      "kifejezesek": [
         "nagy márton",
         "varga mihály",
         "matolcsy györgy",
         "matolcsy ádám",
         "bod péter ákos",
-        "róna péter",
-        "hont andrás",
-        "amerikai űrhaderő",
-        "ola källenius",
-        "áder jános",
-        "áder orsolya",
-        "szijjártó péter",
-        "bóka jános",
-        "orban anita"
+        "beruházás",
+        "gyár",
+        "vállalkozás",
+        "kata adózás",
+        "adóhatóság",
+        "pénzügyminisztérium",
+        "magyar államkincstár",
+        "állami számvevőszék",
+        "nemzetközi valutaalap"
       ],
       "szakpolitika": "gazdasag_foglalkoztatas",
-      "osszefoglalo": "A gazdaság és világgazdaság helyzete, valamint a gazdaságpolitika és pénzügyek ismert szereplői köré szerveződő keresések.",
-      "elso_nap": "2026-09-13",
-      "utolso_nap": "2026-10-12",
-      "napok_szama": 24,
-      "eletut": "folyamatosan_jelenlevo",
-      "mozgas": "lecsengo",
+      "osszefoglalo": "A gazdaságpolitika kulcsszereplői és intézményei – beruházások, adózás, vállalkozások – a gazdasági döntéshozatal iránti érdeklődést tükrözik.",
+      "elso_nap": "2026-09-14",
+      "utolso_nap": "2026-10-13",
+      "napok_szama": 14,
+      "eletut": "visszatero",
+      "mozgas": "stabil",
       "idovonal": [
-        {
-          "nap": "2026-09-13",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
         {
           "nap": "2026-09-14",
           "jelen": true,
@@ -3285,27 +2500,12 @@
         {
           "nap": "2026-09-15",
           "jelen": true,
-          "ossz_volumen": 9000
-        },
-        {
-          "nap": "2026-09-16",
-          "jelen": true,
-          "ossz_volumen": 5000
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-09-17",
           "jelen": true,
-          "ossz_volumen": 6000
-        },
-        {
-          "nap": "2026-09-18",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-19",
-          "jelen": true,
-          "ossz_volumen": 2000
+          "ossz_volumen": 5000
         },
         {
           "nap": "2026-09-22",
@@ -3313,19 +2513,9 @@
           "ossz_volumen": 500
         },
         {
-          "nap": "2026-09-23",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-24",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
           "nap": "2026-09-27",
           "jelen": true,
-          "ossz_volumen": 17000
+          "ossz_volumen": 7000
         },
         {
           "nap": "2026-09-28",
@@ -3333,14 +2523,9 @@
           "ossz_volumen": 17000
         },
         {
-          "nap": "2026-09-30",
-          "jelen": true,
-          "ossz_volumen": 9000
-        },
-        {
           "nap": "2026-10-01",
           "jelen": true,
-          "ossz_volumen": 2000
+          "ossz_volumen": 14000
         },
         {
           "nap": "2026-10-02",
@@ -3355,12 +2540,94 @@
         {
           "nap": "2026-10-05",
           "jelen": true,
-          "ossz_volumen": 2000
+          "ossz_volumen": 1000
         },
         {
           "nap": "2026-10-06",
           "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-10-07",
+          "jelen": true,
+          "ossz_volumen": 22000
+        },
+        {
+          "nap": "2026-10-08",
+          "jelen": true,
+          "ossz_volumen": 12000
+        },
+        {
+          "nap": "2026-10-13",
+          "jelen": true,
           "ossz_volumen": 2000
+        }
+      ]
+    },
+    {
+      "nev": "Egészségügy és kórházak",
+      "kifejezesek": [
+        "kórház",
+        "országos onkológiai intézet",
+        "országos mentőszolgálat",
+        "takács péter",
+        "endometriózis",
+        "járvány",
+        "majomhimlő",
+        "fertőzés",
+        "cukorbetegség",
+        "biontech",
+        "pfizer",
+        "sanofi",
+        "medikémia"
+      ],
+      "szakpolitika": "egeszsegpolitika",
+      "osszefoglalo": "A kórházak, az egészségügyi intézmények és vezetőik, valamint betegségek és gyógyszergyártók az egészségpolitika iránti folyamatos érdeklődést mutatják.",
+      "elso_nap": "2026-09-15",
+      "utolso_nap": "2026-10-13",
+      "napok_szama": 12,
+      "eletut": "visszatero",
+      "mozgas": "lecsengo",
+      "idovonal": [
+        {
+          "nap": "2026-09-15",
+          "jelen": true,
+          "ossz_volumen": 1000
+        },
+        {
+          "nap": "2026-09-16",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-17",
+          "jelen": true,
+          "ossz_volumen": 15000
+        },
+        {
+          "nap": "2026-09-23",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-09-24",
+          "jelen": true,
+          "ossz_volumen": 7000
+        },
+        {
+          "nap": "2026-10-01",
+          "jelen": true,
+          "ossz_volumen": 12000
+        },
+        {
+          "nap": "2026-10-02",
+          "jelen": true,
+          "ossz_volumen": 12000
+        },
+        {
+          "nap": "2026-10-04",
+          "jelen": true,
+          "ossz_volumen": 5000
         },
         {
           "nap": "2026-10-07",
@@ -3373,79 +2640,34 @@
           "ossz_volumen": 2000
         },
         {
-          "nap": "2026-10-09",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-10",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-11",
-          "jelen": true,
-          "ossz_volumen": 7000
-        },
-        {
           "nap": "2026-10-12",
           "jelen": true,
           "ossz_volumen": 2000
-        }
-      ]
-    },
-    {
-      "nev": "Lakhatás és ingatlan",
-      "kifejezesek": [
-        "lakás",
-        "szálloda"
-      ],
-      "szakpolitika": "lakhatas",
-      "osszefoglalo": "A lakás és a szállás iránti keresések az otthonteremtés és lakhatás témakörét érintik, egy-egy napos felbukkanással.",
-      "elso_nap": "2026-09-15",
-      "utolso_nap": "2026-09-15",
-      "napok_szama": 1,
-      "eletut": "egyeb",
-      "mozgas": "nem_megallapithato",
-      "idovonal": [
+        },
         {
-          "nap": "2026-09-15",
+          "nap": "2026-10-13",
           "jelen": true,
-          "ossz_volumen": 3000
+          "ossz_volumen": 7000
         }
       ]
     },
     {
-      "nev": "Belpolitikai és jogi szereplők",
+      "nev": "Bíróságok és jogállamiság",
       "kifejezesek": [
-        "havasi bertalan",
-        "ruff bálint",
-        "ruszin-szendi romulusz",
-        "ruszin szendi romulusz",
-        "seszták miklós",
-        "windisch lászló",
-        "baka andrás",
+        "alkotmánybíróság",
+        "kúria",
+        "mentelmi jog",
+        "halálbüntetés",
         "halmai gábor",
-        "witzmann mihály",
-        "fekete győr andrás",
-        "fekete-győr andrás",
-        "takács péter",
-        "varga bajusz veronika",
-        "kátai németh vilmos",
-        "tarjányi péter",
         "bárándy péter",
-        "dömsödi gábor",
-        "dr ötvös károly",
-        "pénzügyminisztérium",
-        "államtitkár",
-        "magyar államkincstár",
-        "kormányrendelet"
+        "időközi választás",
+        "magyar nemzet"
       ],
       "szakpolitika": "kozelet_kozigazgatas",
-      "osszefoglalo": "Kormányzati és jogi tisztségviselők, valamint belpolitikai szereplők köré szerveződő, visszatérő közéleti keresések.",
+      "osszefoglalo": "A bíróságok, az alkotmányossági és mentelmi kérdések, valamint a halálbüntetés vitája a jogállamiságot érintő keresések közé tartoztak.",
       "elso_nap": "2026-09-14",
-      "utolso_nap": "2026-10-12",
-      "napok_szama": 20,
+      "utolso_nap": "2026-10-08",
+      "napok_szama": 11,
       "eletut": "visszatero",
       "mozgas": "erosodo",
       "idovonal": [
@@ -3457,228 +2679,27 @@
         {
           "nap": "2026-09-15",
           "jelen": true,
-          "ossz_volumen": 7000
-        },
-        {
-          "nap": "2026-09-16",
-          "jelen": true,
           "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-17",
-          "jelen": true,
-          "ossz_volumen": 12000
-        },
-        {
-          "nap": "2026-09-18",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-09-19",
-          "jelen": true,
-          "ossz_volumen": 500
-        },
-        {
-          "nap": "2026-09-23",
-          "jelen": true,
-          "ossz_volumen": 4000
-        },
-        {
-          "nap": "2026-09-24",
-          "jelen": true,
-          "ossz_volumen": 7000
-        },
-        {
-          "nap": "2026-09-27",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-09-28",
-          "jelen": true,
-          "ossz_volumen": 27000
-        },
-        {
-          "nap": "2026-09-29",
-          "jelen": true,
-          "ossz_volumen": 32000
-        },
-        {
-          "nap": "2026-09-30",
-          "jelen": true,
-          "ossz_volumen": 20000
-        },
-        {
-          "nap": "2026-10-01",
-          "jelen": true,
-          "ossz_volumen": 50000
-        },
-        {
-          "nap": "2026-10-02",
-          "jelen": true,
-          "ossz_volumen": 17000
-        },
-        {
-          "nap": "2026-10-05",
-          "jelen": true,
-          "ossz_volumen": 3000
-        },
-        {
-          "nap": "2026-10-06",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-08",
-          "jelen": true,
-          "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-10-09",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-10-10",
-          "jelen": true,
-          "ossz_volumen": 6000
-        },
-        {
-          "nap": "2026-10-12",
-          "jelen": true,
-          "ossz_volumen": 6000
-        }
-      ]
-    },
-    {
-      "nev": "Természet, állatok és érdekességek",
-      "kifejezesek": [
-        "zöld anakonda",
-        "anakonda",
-        "keresztes vipera",
-        "ormányos medve",
-        "medvetámadás",
-        "kullancsok",
-        "gombák",
-        "királydinnye",
-        "virág",
-        "fenntarthatóság",
-        "talajvíz",
-        "víz",
-        "fakitermelés",
-        "tűzifa",
-        "emlékérme",
-        "földrengések magyarországon",
-        "kárpátok",
-        "mofetta",
-        "zagyva",
-        "zala",
-        "sümeg",
-        "keszthely",
-        "tihany",
-        "debrecen",
-        "pásztó",
-        "szlovénia",
-        "brač",
-        "jáva-tenger",
-        "sződliget utca",
-        "botaniq budai klub",
-        "december 24 munkaszüneti nap",
-        "december 24 munkaszüneti nap 2026",
-        "október",
-        "csillagjegy",
-        "gyógyfürdő",
-        "vőlegény",
-        "házasság",
-        "gyász",
-        "halál",
-        "katasztrófa",
-        "ötöslottó nyerőszámok",
-        "ötöslottó nyerőszámai",
-        "devergo",
-        "rusvai miklós",
-        "palanyi nora",
-        "palányi nóra",
-        "csillagkapu"
-      ],
-      "szakpolitika": "egyeb",
-      "osszefoglalo": "Természeti jelenségek, állatok, helyszínek és egyéb hétköznapi érdeklődésre számot tartó, egymáshoz lazán kapcsolódó keresések gyűjtőcsoportja.",
-      "elso_nap": "2026-09-13",
-      "utolso_nap": "2026-10-12",
-      "napok_szama": 23,
-      "eletut": "folyamatosan_jelenlevo",
-      "mozgas": "erosodo",
-      "idovonal": [
-        {
-          "nap": "2026-09-13",
-          "jelen": true,
-          "ossz_volumen": 21000
-        },
-        {
-          "nap": "2026-09-14",
-          "jelen": true,
-          "ossz_volumen": 15000
-        },
-        {
-          "nap": "2026-09-15",
-          "jelen": true,
-          "ossz_volumen": 10000
-        },
-        {
-          "nap": "2026-09-16",
-          "jelen": true,
-          "ossz_volumen": 21000
-        },
-        {
-          "nap": "2026-09-17",
-          "jelen": true,
-          "ossz_volumen": 6000
-        },
-        {
-          "nap": "2026-09-19",
-          "jelen": true,
-          "ossz_volumen": 4500
         },
         {
           "nap": "2026-09-20",
           "jelen": true,
-          "ossz_volumen": 500
+          "ossz_volumen": 100
         },
         {
           "nap": "2026-09-22",
           "jelen": true,
-          "ossz_volumen": 500
+          "ossz_volumen": 3000
         },
         {
-          "nap": "2026-09-24",
+          "nap": "2026-09-23",
           "jelen": true,
-          "ossz_volumen": 7000
+          "ossz_volumen": 3000
         },
         {
-          "nap": "2026-09-26",
+          "nap": "2026-09-30",
           "jelen": true,
           "ossz_volumen": 5000
-        },
-        {
-          "nap": "2026-09-27",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-09-28",
-          "jelen": true,
-          "ossz_volumen": 4000
-        },
-        {
-          "nap": "2026-09-29",
-          "jelen": true,
-          "ossz_volumen": 2000
-        },
-        {
-          "nap": "2026-10-01",
-          "jelen": true,
-          "ossz_volumen": 10000
         },
         {
           "nap": "2026-10-02",
@@ -3688,40 +2709,595 @@
         {
           "nap": "2026-10-03",
           "jelen": true,
-          "ossz_volumen": 7000
+          "ossz_volumen": 5000
         },
         {
           "nap": "2026-10-04",
           "jelen": true,
-          "ossz_volumen": 19000
+          "ossz_volumen": 5000
         },
         {
           "nap": "2026-10-07",
           "jelen": true,
-          "ossz_volumen": 11000
+          "ossz_volumen": 2000
         },
         {
           "nap": "2026-10-08",
           "jelen": true,
-          "ossz_volumen": 14000
-        },
+          "ossz_volumen": 2000
+        }
+      ]
+    },
+    {
+      "nev": "Mesterséges intelligencia és technológia",
+      "kifejezesek": [
+        "mesterséges intelligencia",
+        "ai",
+        "gemini",
+        "google",
+        "android",
+        "ios 27",
+        "samsung",
+        "5g",
+        "hacker",
+        "teams",
+        "spotify",
+        "facebook"
+      ],
+      "szakpolitika": "egyeb",
+      "osszefoglalo": "A mesterséges intelligencia, valamint a nagy tech-cégek és szoftverek iránti érdeklődés a digitális témák állandó jelenlétét mutatja.",
+      "elso_nap": "2026-09-15",
+      "utolso_nap": "2026-10-12",
+      "napok_szama": 15,
+      "eletut": "visszatero",
+      "mozgas": "erosodo",
+      "idovonal": [
         {
-          "nap": "2026-10-09",
-          "jelen": true,
-          "ossz_volumen": 7000
-        },
-        {
-          "nap": "2026-10-10",
+          "nap": "2026-09-15",
           "jelen": true,
           "ossz_volumen": 3000
         },
         {
+          "nap": "2026-09-16",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-17",
+          "jelen": true,
+          "ossz_volumen": 3000
+        },
+        {
+          "nap": "2026-09-18",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-19",
+          "jelen": true,
+          "ossz_volumen": 1000
+        },
+        {
+          "nap": "2026-09-20",
+          "jelen": true,
+          "ossz_volumen": 100
+        },
+        {
+          "nap": "2026-09-21",
+          "jelen": true,
+          "ossz_volumen": 800
+        },
+        {
+          "nap": "2026-09-22",
+          "jelen": true,
+          "ossz_volumen": 1500
+        },
+        {
+          "nap": "2026-09-23",
+          "jelen": true,
+          "ossz_volumen": 1000
+        },
+        {
+          "nap": "2026-09-25",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-09-26",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-10-01",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-10",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
           "nap": "2026-10-11",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-12",
+          "jelen": true,
+          "ossz_volumen": 2000
+        }
+      ]
+    },
+    {
+      "nev": "Hírportálok és média",
+      "kifejezesek": [
+        "index.hu",
+        "index",
+        "24.hu",
+        "24",
+        "telex.hu",
+        "telex",
+        "hvg",
+        "444.hu",
+        "origo",
+        "infostart",
+        "economx",
+        "pénzcentrum.hu",
+        "beol.hu",
+        "startlap",
+        "forbes",
+        "rtl",
+        "rtl+",
+        "rtl híradó",
+        "m1",
+        "m4 sport",
+        "m4 sport online",
+        "m4 élő",
+        "m5",
+        "rtl híradó",
+        "magyar államkincstár"
+      ],
+      "szakpolitika": "kozelet_kozigazgatas",
+      "osszefoglalo": "A magyar hírportálok és médiacsatornák neve önálló keresésekként gyakran felbukkant a vizsgált időszakban.",
+      "elso_nap": "2026-09-14",
+      "utolso_nap": "2026-10-13",
+      "napok_szama": 24,
+      "eletut": "folyamatosan_jelenlevo",
+      "mozgas": "erosodo",
+      "idovonal": [
+        {
+          "nap": "2026-09-14",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-15",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-16",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-18",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-19",
+          "jelen": true,
+          "ossz_volumen": 4600
+        },
+        {
+          "nap": "2026-09-21",
+          "jelen": true,
+          "ossz_volumen": 400
+        },
+        {
+          "nap": "2026-09-23",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-09-24",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-09-25",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-26",
           "jelen": true,
           "ossz_volumen": 26000
         },
         {
+          "nap": "2026-09-27",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-09-28",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-30",
+          "jelen": true,
+          "ossz_volumen": 4000
+        },
+        {
+          "nap": "2026-10-01",
+          "jelen": true,
+          "ossz_volumen": 12000
+        },
+        {
+          "nap": "2026-10-02",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-03",
+          "jelen": true,
+          "ossz_volumen": 15000
+        },
+        {
+          "nap": "2026-10-04",
+          "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-10-05",
+          "jelen": true,
+          "ossz_volumen": 18000
+        },
+        {
+          "nap": "2026-10-06",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-10-08",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-10-09",
+          "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-10-11",
+          "jelen": true,
+          "ossz_volumen": 7000
+        },
+        {
           "nap": "2026-10-12",
+          "jelen": true,
+          "ossz_volumen": 4000
+        },
+        {
+          "nap": "2026-10-13",
+          "jelen": true,
+          "ossz_volumen": 4000
+        }
+      ]
+    },
+    {
+      "nev": "Lakhatás és lakásárak",
+      "kifejezesek": [
+        "lakás",
+        "szálloda",
+        "használtautó"
+      ],
+      "szakpolitika": "lakhatas",
+      "osszefoglalo": "A lakhatással és nagyobb beszerzésekkel kapcsolatos néhány keresés a lakossági megélhetési kérdésekhez kötődött.",
+      "elso_nap": "2026-09-15",
+      "utolso_nap": "2026-09-19",
+      "napok_szama": 2,
+      "eletut": "visszatero",
+      "mozgas": "lecsengo",
+      "idovonal": [
+        {
+          "nap": "2026-09-15",
+          "jelen": true,
+          "ossz_volumen": 3000
+        },
+        {
+          "nap": "2026-09-19",
+          "jelen": true,
+          "ossz_volumen": 1000
+        }
+      ]
+    },
+    {
+      "nev": "Hulladékgazdálkodás és palackvisszaváltás",
+      "kifejezesek": [
+        "hulladék",
+        "palackvisszaváltási rendszer",
+        "koncesszió",
+        "fogyasztóvédelem",
+        "forgalmi rendszám"
+      ],
+      "szakpolitika": "gazdasag_foglalkoztatas",
+      "osszefoglalo": "A hulladékkezelés, a palackvisszaváltási rendszer és a fogyasztóvédelmi kérdések a mindennapi szolgáltatásokat érintő érdeklődést jelzik.",
+      "elso_nap": "2026-10-01",
+      "utolso_nap": "2026-10-08",
+      "napok_szama": 5,
+      "eletut": "visszatero",
+      "mozgas": "erosodo",
+      "idovonal": [
+        {
+          "nap": "2026-10-01",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-10-02",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-10-06",
+          "jelen": true,
+          "ossz_volumen": 17000
+        },
+        {
+          "nap": "2026-10-07",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-08",
+          "jelen": true,
+          "ossz_volumen": 2000
+        }
+      ]
+    },
+    {
+      "nev": "Bűncselekmények, balesetek és közbiztonság",
+      "kifejezesek": [
+        "lopás",
+        "csalás",
+        "ütközés",
+        "gázolás",
+        "robbanás",
+        "tűz",
+        "kézigránát",
+        "medvetámadás",
+        "katasztrófa",
+        "kiskunfélegyháza baleset",
+        "kényszerleszállás",
+        "flydubai",
+        "repülőgép",
+        "hegedűs zsolt"
+      ],
+      "szakpolitika": "kozelet_kozigazgatas",
+      "osszefoglalo": "Bűnügyek, balesetek, tűzesetek és egyéb rendkívüli események a közbiztonsággal kapcsolatos keresési hullámokat hoztak.",
+      "elso_nap": "2026-09-14",
+      "utolso_nap": "2026-10-12",
+      "napok_szama": 19,
+      "eletut": "folyamatosan_jelenlevo",
+      "mozgas": "stabil",
+      "idovonal": [
+        {
+          "nap": "2026-09-14",
+          "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-09-17",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-20",
+          "jelen": true,
+          "ossz_volumen": 100
+        },
+        {
+          "nap": "2026-09-21",
+          "jelen": true,
+          "ossz_volumen": 100
+        },
+        {
+          "nap": "2026-09-24",
+          "jelen": true,
+          "ossz_volumen": 7000
+        },
+        {
+          "nap": "2026-09-25",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-26",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-27",
+          "jelen": true,
+          "ossz_volumen": 7000
+        },
+        {
+          "nap": "2026-09-28",
+          "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-09-30",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-01",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-04",
+          "jelen": true,
+          "ossz_volumen": 4000
+        },
+        {
+          "nap": "2026-10-05",
+          "jelen": true,
+          "ossz_volumen": 7000
+        },
+        {
+          "nap": "2026-10-06",
+          "jelen": true,
+          "ossz_volumen": 1000
+        },
+        {
+          "nap": "2026-10-08",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-10-09",
+          "jelen": true,
+          "ossz_volumen": 12000
+        },
+        {
+          "nap": "2026-10-10",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-11",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-10-12",
+          "jelen": true,
+          "ossz_volumen": 10000
+        }
+      ]
+    },
+    {
+      "nev": "Nemzetközi hírességek és celebek",
+      "kifejezesek": [
+        "hayden panettiere",
+        "harry & meghan",
+        "bruce willis",
+        "angelina jolie",
+        "cindy crawford",
+        "cindy crawford lánya",
+        "kaia gerber",
+        "presley gerber",
+        "david hasselhoff",
+        "jennifer hudson",
+        "josh hartnett",
+        "zach galifianakis",
+        "esther rantzen",
+        "charles spencer",
+        "breaking bad",
+        "rj mitte",
+        "eva marie saint",
+        "susan dell",
+        "bill gates",
+        "anne carson",
+        "krasznahorkai lászló",
+        "emmy 2026"
+      ],
+      "szakpolitika": "egyeb",
+      "osszefoglalo": "Nemzetközi sztárok, filmes és irodalmi hírességek nevei – haláleset, díjátadó vagy magánéleti hír kapcsán – külön-külön trendeltek.",
+      "elso_nap": "2026-09-15",
+      "utolso_nap": "2026-10-13",
+      "napok_szama": 17,
+      "eletut": "visszatero",
+      "mozgas": "erosodo",
+      "idovonal": [
+        {
+          "nap": "2026-09-15",
+          "jelen": true,
+          "ossz_volumen": 9000
+        },
+        {
+          "nap": "2026-09-16",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-19",
+          "jelen": true,
+          "ossz_volumen": 700
+        },
+        {
+          "nap": "2026-09-21",
+          "jelen": true,
+          "ossz_volumen": 6200
+        },
+        {
+          "nap": "2026-09-22",
+          "jelen": true,
+          "ossz_volumen": 600
+        },
+        {
+          "nap": "2026-09-23",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-09-25",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-26",
+          "jelen": true,
+          "ossz_volumen": 1000
+        },
+        {
+          "nap": "2026-09-28",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-09-30",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-10-01",
+          "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-10-02",
+          "jelen": true,
+          "ossz_volumen": 5000
+        },
+        {
+          "nap": "2026-10-04",
+          "jelen": true,
+          "ossz_volumen": 10000
+        },
+        {
+          "nap": "2026-10-08",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-09",
+          "jelen": true,
+          "ossz_volumen": 6000
+        },
+        {
+          "nap": "2026-10-10",
+          "jelen": true,
+          "ossz_volumen": 2000
+        },
+        {
+          "nap": "2026-10-13",
           "jelen": true,
           "ossz_volumen": 22000
         }
@@ -3729,11 +3305,11 @@
     }
   ],
   "ablak": {
-    "kezdet": "2026-09-13",
-    "veg": "2026-10-12",
+    "kezdet": "2026-09-14",
+    "veg": "2026-10-13",
     "nap": 30
   },
-  "keszult": "2026-10-12T19:07:41.481001+00:00",
-  "szamitva_utc": "2026-10-12T19:07:41.481001+00:00",
+  "keszult": "2026-10-13T19:07:38.356886+00:00",
+  "szamitva_utc": "2026-10-13T19:07:38.356886+00:00",
   "modell": "claude-opus-4-8"
 }
