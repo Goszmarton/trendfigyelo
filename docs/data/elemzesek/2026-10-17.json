@@ -1,105 +1,166 @@
 {
-"frissitve": "2026-10-17T07:08:33+00:00",
+"frissitve": "2026-10-17T19:07:44+00:00",
 "modell": "claude-opus-4-8",
 "nap": "2026-10-17",
-"mode": "reggel",
+"mode": "este",
 "valtozas": {
 "diff": {
-"irany_valtok": [],
-"mozgok": [
+"irany_valtok": [
 {
 "szo": "akciós újság",
-"valtozas": 0.0
-},
-{
-"szo": "albérlet",
-"valtozas": 0.0
-},
-{
-"szo": "benzin",
-"valtozas": 0.0
+"elozo": "stagnal",
+"mai": "novekszik"
 },
 {
 "szo": "betegség",
-"valtozas": 0.0
+"elozo": "novekszik",
+"mai": "stagnal"
 },
 {
-"szo": "csőd",
-"valtozas": 0.0
+"szo": "fizetés",
+"elozo": "csokken",
+"mai": "stagnal"
+},
+{
+"szo": "hitel",
+"elozo": "novekszik",
+"mai": "stagnal"
+},
+{
+"szo": "kormányablak",
+"elozo": "novekszik",
+"mai": "stagnal"
+},
+{
+"szo": "kórház",
+"elozo": "novekszik",
+"mai": "stagnal"
+},
+{
+"szo": "napelem",
+"elozo": "stagnal",
+"mai": "csokken"
+},
+{
+"szo": "nyaralás",
+"elozo": "stagnal",
+"mai": "csokken"
+},
+{
+"szo": "pedagógus",
+"elozo": "novekszik",
+"mai": "stagnal"
+},
+{
+"szo": "állás",
+"elozo": "novekszik",
+"mai": "csokken"
+}
+],
+"mozgok": [
+{
+"szo": "kormányablak",
+"valtozas": -6.132
+},
+{
+"szo": "kórház",
+"valtozas": -3.935
+},
+{
+"szo": "állás",
+"valtozas": -3.926
+},
+{
+"szo": "benzin",
+"valtozas": -2.387
+},
+{
+"szo": "hitel",
+"valtozas": -2.017
 }
 ],
 "felkapott_uj": [
+"betis–barcelona",
+"brentford–liverpool",
 "csecsemő",
-"digitális polgári kör",
-"egészségügy",
+"európai unió",
+"iskola",
 "kuna károly",
+"kátai-németh vilmos",
+"liverpool fc",
+"magyarország",
+"manchester city–ipswich",
 "minimálbér emelés 2027",
-"mtk–vasas",
-"mészáros beatrix",
-"oktatási miniszter",
-"politico europe",
-"pósfai gábor",
-"szivek norbert",
+"politikus",
+"risztov éva",
 "varga bajusz veronika",
-"willi orbán",
 "óraátállítás 2026"
 ],
 "felkapott_eltunt": [
+"edző",
 "első hó",
+"failoni donatella",
 "ftc vs viktoria plzen tabella",
+"gyermek",
 "gyurcsány ferenc",
 "hegedűs zsolt",
+"megafon központ",
+"mária schmidt",
+"tarlós istván",
 "tesla",
 "tesla roadster",
+"varga edit",
+"világegyetem",
 "víz",
+"völner pál",
 "énekes"
 ],
 "van_elozo": true
 },
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A mai napon több követett kereséssel is irányváltás történt. Az akciós újság a korábbi nyugalmi állapotból emelkedő pályára váltott, ugyanakkor mai 31-es értéke még így is elmarad a szokásos 41 körüli szintjétől. Ezzel szemben a napelem és a nyaralás egyaránt csökkenő irányba fordult, az állás pedig a korábbi élénkülés után szintén lefelé indult.\n\nA nap legnagyobb elmozdulása a kormányablaknál látszik, amely érdemben visszaesett, és mai 7-es értéke feltűnően alacsony a megszokott 42 körüli szintjéhez képest. Hasonlóan lefelé mozdult a kórház és az állás is, míg a benzin és a hitel szintén a csökkenő mozgók között van.\n\nFontos árnyalat, hogy a benzin a napon belüli visszalépés ellenére összességében a szokásosnál jóval magasabb szinten jár: mai 46-os értéke szinte a saját korábbi csúcsát súrolja, és a hét egészében is emelkedő pályát mutatott. A betegség, a fizetés, a hitel, a kormányablak, a kórház és a pedagógus mind a korábbi mozgásból nyugodtabb, stagnáló állapotba csúszott át."
 },
 "kulcsszavak": {
 "szamok": [
 {
 "szo": "akciós újság",
-"irany": "stagnal",
-"meredekseg": 0.587,
+"irany": "novekszik",
+"meredekseg": 1.381,
 "ervenyes": true,
-"mai_ertek": 35,
-"csucs": 100.0,
-"atlag": 54.83
+"mai_ertek": 31,
+"csucs": 66.0,
+"atlag": 41.3
 },
 {
 "szo": "albérlet",
 "irany": "stagnal",
-"meredekseg": 0.3,
+"meredekseg": 0.089,
 "ervenyes": true,
-"mai_ertek": 76,
-"csucs": 84.0,
-"atlag": 58.11
+"mai_ertek": 24,
+"csucs": 100.0,
+"atlag": 44.95
 },
 {
 "szo": "benzin",
 "irany": "novekszik",
-"meredekseg": 3.926,
+"meredekseg": 1.539,
 "ervenyes": true,
-"mai_ertek": 34,
-"csucs": 100.0,
-"atlag": 37.25
+"mai_ertek": 46,
+"csucs": 47.0,
+"atlag": 30.3
 },
 {
 "szo": "betegség",
-"irany": "novekszik",
-"meredekseg": 1.478,
+"irany": "stagnal",
+"meredekseg": -0.385,
 "ervenyes": true,
-"mai_ertek": 47,
-"csucs": 71.0,
-"atlag": 48.45
+"mai_ertek": 16,
+"csucs": 29.0,
+"atlag": 22.22
 },
 {
 "szo": "csőd",
 "irany": "stagnal",
-"meredekseg": 0.0,
+"meredekseg": 0.155,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -108,16 +169,16 @@
 {
 "szo": "eladó lakás",
 "irany": "stagnal",
-"meredekseg": 0.103,
+"meredekseg": -0.335,
 "ervenyes": true,
-"mai_ertek": 56,
-"csucs": 100.0,
-"atlag": 57.74
+"mai_ertek": 53,
+"csucs": 81.0,
+"atlag": 62.44
 },
 {
 "szo": "fizetés",
-"irany": "csokken",
-"meredekseg": -1.284,
+"irany": "stagnal",
+"meredekseg": 0.087,
 "ervenyes": true,
 "mai_ertek": 35,
 "csucs": null,
@@ -125,26 +186,26 @@
 },
 {
 "szo": "hitel",
-"irany": "novekszik",
-"meredekseg": 2.58,
+"irany": "stagnal",
+"meredekseg": 0.563,
 "ervenyes": true,
-"mai_ertek": 35,
-"csucs": 79.0,
-"atlag": 59.95
+"mai_ertek": 28,
+"csucs": 67.0,
+"atlag": 46.05
 },
 {
 "szo": "háziorvos",
 "irany": "novekszik",
-"meredekseg": 2.864,
+"meredekseg": 1.565,
 "ervenyes": true,
-"mai_ertek": 52,
+"mai_ertek": 14,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "infláció",
 "irany": "stagnal",
-"meredekseg": 0.262,
+"meredekseg": 0.24,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -153,34 +214,34 @@
 {
 "szo": "iskola",
 "irany": "novekszik",
-"meredekseg": 3.583,
+"meredekseg": 1.748,
 "ervenyes": true,
-"mai_ertek": 62,
+"mai_ertek": 49,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kormány",
 "irany": "novekszik",
-"meredekseg": 1.344,
+"meredekseg": 1.163,
 "ervenyes": true,
-"mai_ertek": 38,
+"mai_ertek": 29,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kormányablak",
-"irany": "novekszik",
-"meredekseg": 5.421,
+"irany": "stagnal",
+"meredekseg": -0.711,
 "ervenyes": true,
-"mai_ertek": 12,
-"csucs": 76.0,
-"atlag": 49.74
+"mai_ertek": 7,
+"csucs": 80.0,
+"atlag": 42.53
 },
 {
 "szo": "korrupció",
 "irany": "stagnal",
-"meredekseg": 0.099,
+"meredekseg": 0.402,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -188,19 +249,19 @@
 },
 {
 "szo": "kórház",
-"irany": "novekszik",
-"meredekseg": 3.853,
+"irany": "stagnal",
+"meredekseg": -0.082,
 "ervenyes": true,
 "mai_ertek": 19,
 "csucs": 83.0,
-"atlag": 48.27
+"atlag": 43.32
 },
 {
 "szo": "kölcsön",
 "irany": "stagnal",
-"meredekseg": 0.635,
+"meredekseg": 0.658,
 "ervenyes": true,
-"mai_ertek": 28,
+"mai_ertek": 0,
 "csucs": null,
 "atlag": null
 },
@@ -216,43 +277,43 @@
 {
 "szo": "műtét",
 "irany": "stagnal",
-"meredekseg": 0.897,
+"meredekseg": 0.691,
 "ervenyes": true,
-"mai_ertek": 45,
+"mai_ertek": 37,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "napelem",
-"irany": "stagnal",
-"meredekseg": -0.184,
+"irany": "csokken",
+"meredekseg": -2.072,
 "ervenyes": true,
-"mai_ertek": 15,
-"csucs": 23.0,
-"atlag": 17.82
+"mai_ertek": 16,
+"csucs": 28.0,
+"atlag": 18.69
 },
 {
 "szo": "nyaralás",
-"irany": "stagnal",
-"meredekseg": -0.41,
+"irany": "csokken",
+"meredekseg": -1.119,
 "ervenyes": true,
-"mai_ertek": 18,
-"csucs": 33.0,
-"atlag": 21.42
+"mai_ertek": 27,
+"csucs": 47.0,
+"atlag": 26.5
 },
 {
 "szo": "nyugdíj",
 "irany": "novekszik",
-"meredekseg": 2.451,
+"meredekseg": 1.076,
 "ervenyes": true,
-"mai_ertek": 31,
-"csucs": 81.0,
-"atlag": 52.58
+"mai_ertek": 8,
+"csucs": 100.0,
+"atlag": 54.54
 },
 {
 "szo": "pedagógus",
-"irany": "novekszik",
-"meredekseg": 1.27,
+"irany": "stagnal",
+"meredekseg": -0.037,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -261,7 +322,7 @@
 {
 "szo": "rezsi",
 "irany": "stagnal",
-"meredekseg": -0.513,
+"meredekseg": -0.501,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -270,18 +331,18 @@
 {
 "szo": "segély",
 "irany": "novekszik",
-"meredekseg": 2.133,
+"meredekseg": 1.033,
 "ervenyes": true,
-"mai_ertek": 82,
+"mai_ertek": 0,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "sürgősségi",
 "irany": "stagnal",
-"meredekseg": -0.182,
+"meredekseg": 0.967,
 "ervenyes": true,
-"mai_ertek": 18,
+"mai_ertek": 0,
 "csucs": null,
 "atlag": null
 },
@@ -291,13 +352,13 @@
 "meredekseg": null,
 "ervenyes": false,
 "mai_ertek": null,
-"csucs": null,
-"atlag": null
+"csucs": 29.0,
+"atlag": 20.73
 },
 {
 "szo": "várólista",
 "irany": "stagnal",
-"meredekseg": -0.108,
+"meredekseg": -0.038,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -305,27 +366,125 @@
 },
 {
 "szo": "állás",
-"irany": "novekszik",
-"meredekseg": 2.691,
+"irany": "csokken",
+"meredekseg": -1.235,
 "ervenyes": true,
-"mai_ertek": 44,
-"csucs": 79.0,
-"atlag": 60.62
+"mai_ertek": 36,
+"csucs": 74.0,
+"atlag": 57.04
 }
 ],
 "napi": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A megélhetéshez kötődő keresések vegyes képet mutatnak. A benzin kiemelkedik, mert a szokásosnál jóval élénkebb, a saját csúcsa közelében jár. Az eladó lakás 53-as szintje enyhén a megszokott 62 körüli átlaga alatt marad, az albérlet pedig a maga 24-es értékével csendesebb a szokásosnál. A hitel és a kölcsön visszafogott, utóbbi ma nem mutat mérhető keresést.\n\nAz egészségügy felől a kórház, a betegség és a háziorvos egyaránt a megszokott szintjük alatt mozog, a műtét közepes tartományban van, a sürgősségi és a várólista pedig ma nem ad kimutatható jelet. A nyugdíj feltűnően alacsonyan, 8-on áll, miközben szokásos átlaga 54 körül van – ez jelentős elmaradás a megszokottól.\n\nA politikai és közéleti szavak közül a kormány enyhén élénkült, a kormányablak viszont a mélyben jár. Az infláció, a korrupció, a csőd, a munkanélküliség, a segély és a pedagógus ma nem mutat mérhető értéket, vagyis ezek a megszokott csendes szintjükön vannak. Az iskola a 49-es értékkel az élénkebb követett szavak közé tartozik."
 }
 },
 "felkapott": {
 "top": [
 {
-"kifejezes": "pósfai gábor",
+"kifejezes": "óraátállítás 2026",
+"volumen": "20000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "brentford–liverpool",
+"volumen": "20000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "politikus",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Politics"
+],
+"hirek": []
+},
+{
+"kifejezes": "kuna károly",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "betis–barcelona",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "minimálbér emelés 2027",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "iskola",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "liverpool fc",
+"volumen": "10000",
+"novekedes_pct": "300",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "csecsemő",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
-"Law and Government",
-"Politics"
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "európai unió",
+"volumen": "5000",
+"novekedes_pct": "600",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "risztov éva",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "manchester city–ipswich",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
 ],
 "hirek": []
 },
@@ -339,25 +498,7 @@
 "hirek": []
 },
 {
-"kifejezes": "failoni donatella",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "mária schmidt",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "völner pál",
+"kifejezes": "kátai-németh vilmos",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
@@ -366,191 +507,12 @@
 "hirek": []
 },
 {
-"kifejezes": "világegyetem",
+"kifejezes": "magyarország",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "gyermek",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "egészségügy",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Health",
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "tarlós istván",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Politics",
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "oktatási miniszter",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Jobs and Education"
-],
-"hirek": []
-},
-{
-"kifejezes": "mészáros beatrix",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "minimálbér emelés 2027",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": [
-{
-"hir_cim": "Visszavennének a minimálbér-emelésből a munkáltatók, a cégeknek nincs elég pénzük",
-"hir_forras": "RTL.hu",
-"hir_url": "https://rtl.hu/hirado/2026/10/16/visszavennenek-a-minimalber-emelesbol-a-munkaltatok-a-cegeknek-nincs-eleg-penzuk",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRf9YLwF2m_tpTrJA-fxSKo5cxpT_8OEUyVO0HgWhvZ6aSyJg669894ecPD5cQ",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "A tervezett 14 helyett kevesebb mint 6 százalékos béremelést adnának a munkáltatók jövőre",
-"hir_forras": "Index.hu",
-"hir_url": "https://index.hu/gazdasag/2026/10/17/minimalber-emeles-munkaltatok-fizetes-gazdasagi-teljesitmeny-inflacio/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0ew62VB5u54Vgo-T2dZm0y3lGv0Zkb5LregKT4j0b0-ryz9Tsdh5ITmeIJMY",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Minimálbér 2027: megvan a pontos szám, mennyivel emelnék a fizetéseket jövőre, óriási csalódás lehet a dolgozóknak",
-"hir_forras": "Világgazdaság",
-"hir_url": "https://www.vg.hu/vilaggazdasag-magyar-gazdasag/2026/10/minimalber-emeles-2027-14-szazalek-munkaadok-tisza",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRZ2Rxko0K_MBK_nfi6202nbR2YBuwaFNOpFkZe47_VoU74BTuX6bJ7GmB5E2o",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "kuna károly",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "óraátállítás 2026",
-"volumen": "2000",
-"novekedes_pct": "600",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "csecsemő",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "politico europe",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "mtk–vasas",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "edző",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "willi orbán",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "szivek norbert",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "megafon központ",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
-},
-{
-"kifejezes": "digitális polgári kör",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "varga edit",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
+"Law and Government",
+"Politics"
 ],
 "hirek": []
 }
@@ -794,12 +756,110 @@
 ],
 "este_top": [
 {
-"kifejezes": "pósfai gábor",
+"kifejezes": "óraátállítás 2026",
+"volumen": "20000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "brentford–liverpool",
+"volumen": "20000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "politikus",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Politics"
+],
+"hirek": []
+},
+{
+"kifejezes": "kuna károly",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "betis–barcelona",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "minimálbér emelés 2027",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Business and Finance"
+],
+"hirek": []
+},
+{
+"kifejezes": "iskola",
+"volumen": "10000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "liverpool fc",
+"volumen": "10000",
+"novekedes_pct": "300",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "csecsemő",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
-"Law and Government",
-"Politics"
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "európai unió",
+"volumen": "5000",
+"novekedes_pct": "600",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "risztov éva",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
+],
+"hirek": []
+},
+{
+"kifejezes": "manchester city–ipswich",
+"volumen": "5000",
+"novekedes_pct": "1000",
+"temak": [
+"Sports"
 ],
 "hirek": []
 },
@@ -813,25 +873,7 @@
 "hirek": []
 },
 {
-"kifejezes": "failoni donatella",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "mária schmidt",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "völner pál",
+"kifejezes": "kátai-németh vilmos",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
@@ -840,208 +882,36 @@
 "hirek": []
 },
 {
-"kifejezes": "világegyetem",
+"kifejezes": "magyarország",
 "volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "gyermek",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "egészségügy",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Health",
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "tarlós istván",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Politics",
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "oktatási miniszter",
-"volumen": "5000",
-"novekedes_pct": "1000",
-"temak": [
-"Jobs and Education"
-],
-"hirek": []
-},
-{
-"kifejezes": "mészáros beatrix",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "minimálbér emelés 2027",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": [
-{
-"hir_cim": "Visszavennének a minimálbér-emelésből a munkáltatók, a cégeknek nincs elég pénzük",
-"hir_forras": "RTL.hu",
-"hir_url": "https://rtl.hu/hirado/2026/10/16/visszavennenek-a-minimalber-emelesbol-a-munkaltatok-a-cegeknek-nincs-eleg-penzuk",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRf9YLwF2m_tpTrJA-fxSKo5cxpT_8OEUyVO0HgWhvZ6aSyJg669894ecPD5cQ",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "A tervezett 14 helyett kevesebb mint 6 százalékos béremelést adnának a munkáltatók jövőre",
-"hir_forras": "Index.hu",
-"hir_url": "https://index.hu/gazdasag/2026/10/17/minimalber-emeles-munkaltatok-fizetes-gazdasagi-teljesitmeny-inflacio/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0ew62VB5u54Vgo-T2dZm0y3lGv0Zkb5LregKT4j0b0-ryz9Tsdh5ITmeIJMY",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Minimálbér 2027: megvan a pontos szám, mennyivel emelnék a fizetéseket jövőre, óriási csalódás lehet a dolgozóknak",
-"hir_forras": "Világgazdaság",
-"hir_url": "https://www.vg.hu/vilaggazdasag-magyar-gazdasag/2026/10/minimalber-emeles-2027-14-szazalek-munkaadok-tisza",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRZ2Rxko0K_MBK_nfi6202nbR2YBuwaFNOpFkZe47_VoU74BTuX6bJ7GmB5E2o",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "kuna károly",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
-],
-"hirek": []
-},
-{
-"kifejezes": "óraátállítás 2026",
-"volumen": "2000",
-"novekedes_pct": "600",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "csecsemő",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "politico europe",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "mtk–vasas",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "edző",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "willi orbán",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "szivek norbert",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "megafon központ",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Business and Finance"
-],
-"hirek": []
-},
-{
-"kifejezes": "digitális polgári kör",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
-"kifejezes": "varga edit",
-"volumen": "2000",
-"novekedes_pct": "1000",
-"temak": [
-"Entertainment"
+"Law and Government",
+"Politics"
 ],
 "hirek": []
 }
 ],
 "reggel_este_diff": {
-"uj_estere": [],
-"eltunt_estere": [],
-"megmaradt": [
-"csecsemő",
+"uj_estere": [
+"betis–barcelona",
+"brentford–liverpool",
+"európai unió",
+"iskola",
+"kátai-németh vilmos",
+"liverpool fc",
+"magyarország",
+"manchester city–ipswich",
+"politikus",
+"risztov éva"
+],
+"eltunt_estere": [
 "digitális polgári kör",
 "edző",
 "egészségügy",
 "failoni donatella",
 "gyermek",
-"kuna károly",
 "megafon központ",
-"minimálbér emelés 2027",
 "mtk–vasas",
 "mária schmidt",
 "mészáros beatrix",
@@ -1050,67 +920,36 @@
 "pósfai gábor",
 "szivek norbert",
 "tarlós istván",
-"varga bajusz veronika",
 "varga edit",
 "világegyetem",
 "völner pál",
-"willi orbán",
+"willi orbán"
+],
+"megmaradt": [
+"csecsemő",
+"kuna károly",
+"minimálbér emelés 2027",
+"varga bajusz veronika",
 "óraátállítás 2026"
 ]
 },
 "reggel": {
-"szoveg": "Ma reggel a magyar Google-keresésben feltűnően sok közéleti és nevekhez köthető kifejezés pörög együtt. A legnagyobb érdeklődés olyan személynevek köré rendeződik, mint Pósfai Gábor, Varga Bajusz Veronika, Failoni Donatella, Mária Schmidt, Völner Pál és Tarlós István, ezek mellett pedig az oktatási miniszter és az egészségügy kifejezésekre is sokan kerestek rá. Ezekhez a szavakhoz most nem érkezett konkrét hír, így csak annyit lehet biztosan mondani, hogy ma reggel felkapottá váltak – a keresések pontos hátterét ezekből a számokból nem lehet megállapítani.\n\nValamivel kisebb, de szintén érzékelhető érdeklődés övezi többek között Mészáros Beatrix, Kuna Károly, Szivek Norbert, Varga Edit és Willi Orbán nevét, valamint a digitális polgári kör és a Megafon központ kifejezéseket. A sport iránti figyelmet jelzi, hogy az MTK–Vasas mérkőzés és általában az edző szó is felkerült a reggel keresettebb témák közé. Az évszakhoz illeszkedően sokan keresnek rá az óraátállítás 2026 kifejezésre is.\n\nEgyedül a minimálbér emelés 2027 kifejezéshez tartozik most konkrét hírháttér: több lap, köztük az RTL.hu, az Index.hu és a Világgazdaság is arról számolt be, hogy a munkáltatók a korábban tervezettnél jóval szerényebb béremelést tartanának reálisnak jövőre, arra hivatkozva, hogy a cégeknek nincs elég pénzük. Ez feltehetően magyarázza, miért nőtt meg reggel az érdeklődés e téma iránt, bár a keresések pontos indítéka természetesen innen sem olvasható ki teljes bizonyossággal.\n\nÖsszességében a mai reggeli kép inkább a közélet, a nevek és néhány hétköznapi gyakorlati kérdés – munka, bérek, óraátállítás, sport – körül mozog. A nap további alakulását, az esti képet ez az elemzés nem érinti, azzal a mai esti futás foglalkozik majd."
+"szoveg": "A reggeli pillanatképben jellemzően nevek és közéleti témák pörögtek: felbukkant Pósfai Gábor, Varga Bajusz Veronika, Mária Schmidt, Völner Pál és Tarlós István, mellettük az egészségügy, az oktatási miniszter és a világegyetem is. A konkrét hírrel is alátámasztott téma a minimálbér-emelés 2027 volt, amelyről több lap – az RTL, az Index és a Világgazdaság – is arról számolt be, hogy a munkáltatók a tervezettnél kisebb emelést tartanának reálisnak. A többi reggeli felkapott szóhoz nem érkezett háttérinformáció, így azok okáról az adat önmagában nem mond semmit."
 },
 "este": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "Estére a hangsúly a sport és a tágabb közélet felé tolódott: a legnagyobb volumenű témák között volt az óraátállítás 2026 és a Brentford–Liverpool mérkőzés, mellettük a politikus, Kuna Károly, a Betis–Barcelona, az iskola és a Liverpool FC. Szintén feltűnt az európai unió, Risztov Éva, a Manchester City–Ipswich és Magyarország. A minimálbér-emelés 2027 estére is kitartott, immár magasabb volumennel. Ezekhez a szavakhoz – a minimálbér témáján túl – nem társult konkrét hír, így hátterük feltáratlan marad."
 },
 "teljes_nap": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A nap íve jól mutatja, hogyan váltott a figyelem: reggel inkább nevek és belpolitikai szereplők domináltak, estére viszont ezek jó része – például Pósfai Gábor, Mária Schmidt, Völner Pál, Tarlós István és az oktatási miniszter – kihullott, helyükre a sportesemények és néhány szélesebb közéleti téma lépett. Végig kitartott néhány szó: a csecsemő, Kuna Károly, a minimálbér-emelés 2027, Varga Bajusz Veronika és az óraátállítás 2026 reggel és este egyaránt jelen volt. Újként este jelent meg a Brentford–Liverpool, a Betis–Barcelona, az iskola, az európai unió és Magyarország."
 },
 "het": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A hét egészét nézve nincs igazán tartósan visszatérő téma: a felsorolt kifejezések szinte mindegyike csak egyetlen napon bukkant fel. Egyedül az irán szerepelt két külön napon, a többi – a sportmeccsektől a politikai neveken át a megélhetési témákig – egy-egy napra koncentrálódott. Ez azt jelzi, hogy a napi figyelem gyorsan cserélődik, és ritkán ragad meg egy témánál több napon át."
 },
 "het_valos": {
 "napok": 7,
 "visszateroek": [
 {
-"kifejezes": "edző",
-"napok_szama": 2
-},
-{
-"kifejezes": "failoni donatella",
-"napok_szama": 2
-},
-{
-"kifejezes": "gyermek",
-"napok_szama": 2
-},
-{
 "kifejezes": "irán",
-"napok_szama": 2
-},
-{
-"kifejezes": "megafon központ",
-"napok_szama": 2
-},
-{
-"kifejezes": "mária schmidt",
-"napok_szama": 2
-},
-{
-"kifejezes": "tarlós istván",
-"napok_szama": 2
-},
-{
-"kifejezes": "varga edit",
-"napok_szama": 2
-},
-{
-"kifejezes": "világegyetem",
-"napok_szama": 2
-},
-{
-"kifejezes": "völner pál",
 "napok_szama": 2
 },
 {
@@ -1166,7 +1005,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "betis–barcelona",
+"napok_szama": 1
+},
+{
 "kifejezes": "biontech",
+"napok_szama": 1
+},
+{
+"kifejezes": "brentford–liverpool",
 "napok_szama": 1
 },
 {
@@ -1202,15 +1049,11 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "digitális polgári kör",
-"napok_szama": 1
-},
-{
 "kifejezes": "dr ötvös károly",
 "napok_szama": 1
 },
 {
-"kifejezes": "egészségügy",
+"kifejezes": "edző",
 "napok_szama": 1
 },
 {
@@ -1234,11 +1077,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "európai unió",
+"napok_szama": 1
+},
+{
 "kifejezes": "facebook",
 "napok_szama": 1
 },
 {
 "kifejezes": "fagy",
+"napok_szama": 1
+},
+{
+"kifejezes": "failoni donatella",
 "napok_szama": 1
 },
 {
@@ -1295,6 +1146,10 @@
 },
 {
 "kifejezes": "gurzó mária",
+"napok_szama": 1
+},
+{
+"kifejezes": "gyermek",
 "napok_szama": 1
 },
 {
@@ -1358,6 +1213,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "iskola",
+"napok_szama": 1
+},
+{
 "kifejezes": "jarell quansah",
 "napok_szama": 1
 },
@@ -1379,6 +1238,10 @@
 },
 {
 "kifejezes": "kuna károly",
+"napok_szama": 1
+},
+{
+"kifejezes": "kátai-németh vilmos",
 "napok_szama": 1
 },
 {
@@ -1410,6 +1273,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "liverpool fc",
+"napok_szama": 1
+},
+{
 "kifejezes": "liverpool fc vs manchester city tabella",
 "napok_szama": 1
 },
@@ -1430,7 +1297,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "magyarország",
+"napok_szama": 1
+},
+{
+"kifejezes": "manchester city–ipswich",
+"napok_szama": 1
+},
+{
 "kifejezes": "manchester city–psg",
+"napok_szama": 1
+},
+{
+"kifejezes": "megafon központ",
 "napok_szama": 1
 },
 {
@@ -1442,15 +1321,11 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "mtk–vasas",
+"kifejezes": "mária schmidt",
 "napok_szama": 1
 },
 {
 "kifejezes": "mártha imre",
-"napok_szama": 1
-},
-{
-"kifejezes": "mészáros beatrix",
 "napok_szama": 1
 },
 {
@@ -1471,10 +1346,6 @@
 },
 {
 "kifejezes": "németh balázs",
-"napok_szama": 1
-},
-{
-"kifejezes": "oktatási miniszter",
 "napok_szama": 1
 },
 {
@@ -1502,7 +1373,7 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "politico europe",
+"kifejezes": "politikus",
 "napok_szama": 1
 },
 {
@@ -1514,15 +1385,15 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "pósfai gábor",
-"napok_szama": 1
-},
-{
 "kifejezes": "rb salzburg–milan",
 "napok_szama": 1
 },
 {
 "kifejezes": "real madrid",
+"napok_szama": 1
+},
+{
+"kifejezes": "risztov éva",
 "napok_szama": 1
 },
 {
@@ -1566,7 +1437,7 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "szivek norbert",
+"kifejezes": "tarlós istván",
 "napok_szama": 1
 },
 {
@@ -1618,7 +1489,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "varga edit",
+"napok_szama": 1
+},
+{
 "kifejezes": "viking fk vs bayern münchen tabella",
+"napok_szama": 1
+},
+{
+"kifejezes": "világegyetem",
 "napok_szama": 1
 },
 {
@@ -1630,7 +1509,7 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "willi orbán",
+"kifejezes": "völner pál",
 "napok_szama": 1
 },
 {
@@ -1655,5 +1534,156 @@
 }
 ]
 }
+},
+"youtube": {
+"szamok": [
+{
+"szo": "szorongás",
+"domen": "egeszseg",
+"irany": "novekszik",
+"meredekseg": 0.024,
+"ervenyes": true,
+"mai_ertek": 36,
+"csucs": 100,
+"atlag": 19.9
+},
+{
+"szo": "edzés",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.04,
+"ervenyes": true,
+"mai_ertek": 50,
+"csucs": 100,
+"atlag": 66.0
+},
+{
+"szo": "meditáció",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.048,
+"ervenyes": true,
+"mai_ertek": 80,
+"csucs": 100,
+"atlag": 81.8
+},
+{
+"szo": "befektetés",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.047,
+"ervenyes": true,
+"mai_ertek": 61,
+"csucs": 100,
+"atlag": 30.4
+},
+{
+"szo": "bitcoin",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.05,
+"ervenyes": true,
+"mai_ertek": 54,
+"csucs": 100,
+"atlag": 46.7
+},
+{
+"szo": "hírek",
+"domen": "kozelet",
+"irany": "stagnal",
+"meredekseg": -0.007,
+"ervenyes": true,
+"mai_ertek": 51,
+"csucs": 100,
+"atlag": 57.4
+},
+{
+"szo": "magyar péter",
+"domen": "kozelet",
+"irany": "stagnal",
+"meredekseg": 0.008,
+"ervenyes": true,
+"mai_ertek": 7,
+"csucs": 100,
+"atlag": 15.3
+},
+{
+"szo": "recept",
+"domen": "haztartas",
+"irany": "csokken",
+"meredekseg": -0.053,
+"ervenyes": true,
+"mai_ertek": 41,
+"csucs": 100,
+"atlag": 46.9
+},
+{
+"szo": "mese",
+"domen": "csalad",
+"irany": "stagnal",
+"meredekseg": -0.013,
+"ervenyes": true,
+"mai_ertek": 98,
+"csucs": 100,
+"atlag": 90.2
+},
+{
+"szo": "nyaralás",
+"domen": "szabadido",
+"irany": "novekszik",
+"meredekseg": 0.045,
+"ervenyes": true,
+"mai_ertek": 22,
+"csucs": 100,
+"atlag": 48.2
+},
+{
+"szo": "tanulás",
+"domen": "tanulas",
+"irany": "csokken",
+"meredekseg": -0.043,
+"ervenyes": true,
+"mai_ertek": 77,
+"csucs": 100,
+"atlag": 77.3
+},
+{
+"szo": "klíma",
+"domen": "otthon",
+"irany": "novekszik",
+"meredekseg": 0.064,
+"ervenyes": true,
+"mai_ertek": 10,
+"csucs": 100,
+"atlag": 16.7
+}
+],
+"napi": {
+"szoveg": "A magyarországi YouTube-keresésekben a videós figyelem néhány területen eltér a szokásostól. A szorongás a maga 36-os mai értékével a megszokott 20 körüli szintje fölött jár, és a hét során látványosan, alacsony bázisról emelkedett. A befektetés szintén a szokásosnál élénkebb, bár a hét egészében inkább csökkent. Ezzel szemben a nyaralás feltűnően visszafogott: mai 22-es értéke bőven elmarad a megszokott 48 körüli szintjétől. A mese nagyon magasan, szinte a saját maximumán áll, a meditáció és a tanulás a megszokott szintjén mozog. A magyar péter és a klíma a saját átlaga alatt van. Mivel ezek a szavak külön-külön skálán mozognak, egymáshoz nem mérhetők."
+},
+"teljes_kep": {
+"szoveg": "A heti képben a szorongás emelkedése a legszembetűnőbb, miközben a pénzügyi és hírfogyasztási témák – a bitcoin, a hírek és a befektetés – mind lefelé mozdultak. Az edzés és a nyaralás szintén csökkent. A gyerekeknek szóló mese, a tanulás és a meditáció enyhén erősödött vagy stabil maradt, a magyar péter és a klíma pedig alig mozdult. Összességében a tartalmas, hosszabb távú figyelem a nyugalmat, tanulást és meséket kereső irányba billent, miközben a gyors hír- és pénzügyi érdeklődés inkább mérséklődött."
+}
+},
+"predikcio": {
+"szoveg": "A rövid távú előrejelzés mind a 28 követett keresésnél stagnálást valószínűsít a következő napra, vagyis érdemi emelkedés vagy visszaesés egyiknél sem rajzolódik ki. Fontos, hogy ez pusztán a közelmúlt trendjének matematikai folytatása, nem eseményjóslat, és a valóság ettől eltérhet. A legtöbb jelzés megbízhatósága alacsony, így ezeket óvatosan kell kezelni. Viszonylag stabilabbnak a napelem körüli előrejelzés tűnik, mellette a pedagógus kapott valamivel magasabb megbízhatósági értéket, a munkanélküliség és a rezsi pedig szintén a megbízhatóbb, de még így is mérsékelt bizonyosságú csoportba esik. Összességében a kép a következő napra nyugodt, változás nélküli."
+},
+"tldr": {
+"van_tldr": true,
+"fo_valtozasok": [
+"A kormányablak keresése a mai nap legnagyobb mozgója, érdemben visszaesett és mai 7-es szintje messze elmarad a szokásos 42 körüli átlagától.",
+"A benzin iránti érdeklődés a megszokott 30 körüli szintjéhez képest feltűnően élénk, a mai 46 szinte a korábbi csúcsot súrolja.",
+"A minimálbér-emelés 2027 egész nap felkapott maradt, estére a legmagasabb volumenű témák közé került."
+],
+"kiemelt_ugyek": [
+"A minimálbér-emelés 2027 reggel és este is a napi trendek között volt, hátterében a tervezettnél kisebb emelést firtató híradások állnak.",
+"A benzin keresése a szokásosnál jóval magasabban, a saját csúcsa közelében jár, miközben a hét során emelkedő pályát mutatott.",
+"A nyugdíj mai 8-as értéke erősen elmarad a megszokott 54 körüli szintjétől, és a héten belül is jelentősen csökkent.",
+"Az állás keresése csökkenő irányba fordult, és mai 36-os szintje a szokásos 57 körüli átlag alatt van.",
+"Az iskola szó egész nap felkapott volt, és a rendszeresen követett keresések között is élénkülő pályán mozog."
+],
+"visszatero_temak": "A héten belül szinte minden felkapott kifejezés egyetlen napon tűnt fel, egyedül az irán szerepelt két napon; a sporttalálkozók, a politikai nevek és a megélhetési témák rendre újabb és újabb formában jelentkeztek.",
+"intenzivebb_keresesbe": "A minimálbér-emelés 2027 megfontolásra érdemes a rendszeresen követett szavak közé, mert több napon át kitartott és konkrét híranyag is kötődik hozzá. Az óraátállítás 2026 szintén tartósan jelen volt, bár ez vélhetően szezonális érdeklődés.",
+"informaciohiany": "A legtöbb felkapott szóhoz – például a politikus, a magyarország vagy a nevek sorához – nem érkezett hír, így ezek hátteréről az adat önmagában nem árul el semmit; ezeket érdemes külön megnézni."
 }
 }
