@@ -1,101 +1,168 @@
 {
-"frissitve": "2026-10-22T07:08:17+00:00",
+"frissitve": "2026-10-22T19:09:43+00:00",
 "modell": "claude-opus-4-8",
 "nap": "2026-10-22",
-"mode": "reggel",
+"mode": "este",
 "valtozas": {
 "diff": {
-"irany_valtok": [],
-"mozgok": [
+"irany_valtok": [
 {
 "szo": "akciós újság",
-"valtozas": 0.0
+"elozo": "stagnal",
+"mai": "novekszik"
 },
 {
 "szo": "albérlet",
-"valtozas": 0.0
+"elozo": "stagnal",
+"mai": "csokken"
 },
 {
 "szo": "benzin",
-"valtozas": 0.0
+"elozo": "novekszik",
+"mai": "stagnal"
 },
 {
-"szo": "betegség",
-"valtozas": 0.0
+"szo": "iskola",
+"elozo": "csokken",
+"mai": "stagnal"
 },
 {
-"szo": "csőd",
-"valtozas": 0.0
+"szo": "kormány",
+"elozo": "stagnal",
+"mai": "csokken"
+},
+{
+"szo": "kölcsön",
+"elozo": "csokken",
+"mai": "stagnal"
+},
+{
+"szo": "műtét",
+"elozo": "csokken",
+"mai": "stagnal"
+}
+],
+"mozgok": [
+{
+"szo": "kormány",
+"valtozas": -2.867
+},
+{
+"szo": "akciós újság",
+"valtozas": 2.402
+},
+{
+"szo": "kormányablak",
+"valtozas": 2.271
+},
+{
+"szo": "napelem",
+"valtozas": 1.835
+},
+{
+"szo": "pedagógus",
+"valtozas": 1.548
 }
 ],
 "felkapott_uj": [
+"audi hungaria zrt.",
 "bayern münchen vs arsenal tabella",
-"holnapi időjárás",
+"biztonsági rés",
+"cápák között",
+"euró",
+"fc barcelona",
+"fradi meccs",
+"ftc",
+"fókusz",
+"hajdú bihar",
+"hír",
 "időjárás",
-"real madrid vs rb leipzig tabella"
+"kötelezettségszegési eljárás",
+"matolcsy györgyöt",
+"nyugdíj",
+"orvos",
+"real madrid vs rb leipzig tabella",
+"robbanás hajdúhadház",
+"rtl",
+"sebestyén balázs",
+"televízió",
+"világgazdaság",
+"virus",
+"vírus"
 ],
 "felkapott_eltunt": [
+"bayern münchen–arsenal",
+"blikk",
 "botykapeterd",
+"como–man utd",
+"családi pótlék",
 "dwayne johnson",
 "ebola",
 "gázolaj",
 "hacker",
 "liverpool fc vs villarreal tabella",
 "losc–galatasaray",
+"magyar labdarúgó-szövetség",
 "magyar nemzeti bank (mnb)",
 "manchester city vs aek tabella",
+"matolcsy",
 "muzsika tv",
+"napelem",
+"patkány",
 "police",
+"police.hu",
 "psg vs fc barcelona tabella",
+"real madrid–lipcse",
 "sandra bullock",
-"szél"
+"szél",
+"telex"
 ],
 "van_elozo": true
 },
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A követett szavak között ma több irányváltás is látszik. Az akciós újság a korábbi egy helyben állásból emelkedésbe fordult, az albérlet viszont csökkenésbe váltott. A benzin, az iskola, a kölcsön és a műtét a korábbi mozgásból nyugalmi, stagnáló állapotba csúszott, a kormány pedig a korábbi egyenletességből határozott lefelé tartásba fordult.\n\nA nap legnagyobb elmozdulásai közül a kormány mutatja a legerősebb lefelé mozgást, míg az akciós újság, a kormányablak, a napelem és a pedagógus a legjelentősebb felfelé irányuló lendületet adja. Ezek a mozgások azonban az adott szavak saját mércéjén belül értendők, és több szó – köztük a kormányablak, a kórház, a napelem és az akciós újság – az emelkedés ellenére is a saját szokásos szintje alatt marad."
 },
 "kulcsszavak": {
 "szamok": [
 {
 "szo": "akciós újság",
-"irany": "stagnal",
-"meredekseg": -0.896,
+"irany": "novekszik",
+"meredekseg": 1.506,
 "ervenyes": true,
-"mai_ertek": 47,
-"csucs": 58.0,
-"atlag": 41.83
+"mai_ertek": 25,
+"csucs": 62.0,
+"atlag": 47.48
 },
 {
 "szo": "albérlet",
-"irany": "stagnal",
-"meredekseg": 0.245,
+"irany": "csokken",
+"meredekseg": -1.251,
 "ervenyes": true,
-"mai_ertek": 67,
+"mai_ertek": 48,
 "csucs": 71.0,
-"atlag": 59.5
+"atlag": 43.94
 },
 {
 "szo": "benzin",
-"irany": "novekszik",
-"meredekseg": 1.123,
+"irany": "stagnal",
+"meredekseg": 0.29,
 "ervenyes": true,
-"mai_ertek": 14,
-"csucs": 81.0,
-"atlag": 36.0
+"mai_ertek": 18,
+"csucs": 37.0,
+"atlag": 20.12
 },
 {
 "szo": "betegség",
 "irany": "stagnal",
-"meredekseg": 0.819,
+"meredekseg": 0.965,
 "ervenyes": true,
-"mai_ertek": 28,
-"csucs": 49.0,
-"atlag": 34.42
+"mai_ertek": 46,
+"csucs": 82.0,
+"atlag": 53.05
 },
 {
 "szo": "csőd",
 "irany": "stagnal",
-"meredekseg": 0.016,
+"meredekseg": 0.131,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -104,79 +171,79 @@
 {
 "szo": "eladó lakás",
 "irany": "novekszik",
-"meredekseg": 1.11,
+"meredekseg": 1.148,
 "ervenyes": true,
-"mai_ertek": 44,
-"csucs": 78.0,
-"atlag": 51.75
+"mai_ertek": 54,
+"csucs": 60.0,
+"atlag": 47.74
 },
 {
 "szo": "fizetés",
 "irany": "novekszik",
-"meredekseg": 1.63,
+"meredekseg": 1.405,
 "ervenyes": true,
-"mai_ertek": 58,
+"mai_ertek": 8,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "hitel",
 "irany": "novekszik",
-"meredekseg": 4.287,
+"meredekseg": 3.684,
 "ervenyes": true,
-"mai_ertek": 32,
-"csucs": 91.0,
-"atlag": 55.86
+"mai_ertek": 30,
+"csucs": 53.0,
+"atlag": 42.14
 },
 {
 "szo": "háziorvos",
 "irany": "stagnal",
-"meredekseg": -0.066,
+"meredekseg": 0.855,
 "ervenyes": true,
-"mai_ertek": 81,
+"mai_ertek": 58,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "infláció",
 "irany": "stagnal",
-"meredekseg": -0.242,
+"meredekseg": 0.872,
 "ervenyes": true,
-"mai_ertek": 31,
+"mai_ertek": 0,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "iskola",
-"irany": "csokken",
-"meredekseg": -1.202,
+"irany": "stagnal",
+"meredekseg": -0.834,
 "ervenyes": true,
-"mai_ertek": 63,
+"mai_ertek": 50,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kormány",
-"irany": "stagnal",
-"meredekseg": 0.676,
+"irany": "csokken",
+"meredekseg": -2.191,
 "ervenyes": true,
-"mai_ertek": 38,
+"mai_ertek": 30,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "kormányablak",
 "irany": "novekszik",
-"meredekseg": 2.889,
+"meredekseg": 5.16,
 "ervenyes": true,
-"mai_ertek": 35,
-"csucs": 92.0,
-"atlag": 57.84
+"mai_ertek": 33,
+"csucs": 86.0,
+"atlag": 56.26
 },
 {
 "szo": "korrupció",
 "irany": "stagnal",
-"meredekseg": -0.165,
+"meredekseg": 0.38,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -185,18 +252,18 @@
 {
 "szo": "kórház",
 "irany": "novekszik",
-"meredekseg": 1.566,
+"meredekseg": 3.008,
 "ervenyes": true,
-"mai_ertek": 25,
-"csucs": 100.0,
-"atlag": 54.09
+"mai_ertek": 26,
+"csucs": 87.0,
+"atlag": 50.55
 },
 {
 "szo": "kölcsön",
-"irany": "csokken",
-"meredekseg": -1.568,
+"irany": "stagnal",
+"meredekseg": -0.355,
 "ervenyes": true,
-"mai_ertek": 36,
+"mai_ertek": 50,
 "csucs": null,
 "atlag": null
 },
@@ -211,46 +278,46 @@
 },
 {
 "szo": "műtét",
-"irany": "csokken",
-"meredekseg": -1.344,
+"irany": "stagnal",
+"meredekseg": -0.169,
 "ervenyes": true,
-"mai_ertek": 36,
+"mai_ertek": 41,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "napelem",
 "irany": "novekszik",
-"meredekseg": 2.317,
+"meredekseg": 4.152,
 "ervenyes": true,
-"mai_ertek": 56,
-"csucs": 21.0,
-"atlag": 13.18
+"mai_ertek": 14,
+"csucs": 100.0,
+"atlag": 37.95
 },
 {
 "szo": "nyaralás",
 "irany": "stagnal",
-"meredekseg": 0.741,
+"meredekseg": 0.924,
 "ervenyes": true,
-"mai_ertek": 32,
-"csucs": 65.0,
-"atlag": 43.8
+"mai_ertek": 78,
+"csucs": 75.0,
+"atlag": 60.22
 },
 {
 "szo": "nyugdíj",
 "irany": "csokken",
-"meredekseg": -3.997,
+"meredekseg": -3.584,
 "ervenyes": true,
-"mai_ertek": 9,
-"csucs": 48.0,
-"atlag": 30.33
+"mai_ertek": 13,
+"csucs": 30.0,
+"atlag": 18.96
 },
 {
 "szo": "pedagógus",
 "irany": "novekszik",
-"meredekseg": 1.907,
+"meredekseg": 3.455,
 "ervenyes": true,
-"mai_ertek": 20,
+"mai_ertek": 9,
 "csucs": null,
 "atlag": null
 },
@@ -266,18 +333,18 @@
 {
 "szo": "segély",
 "irany": "stagnal",
-"meredekseg": 0.295,
+"meredekseg": 0.948,
 "ervenyes": true,
-"mai_ertek": 75,
+"mai_ertek": 0,
 "csucs": null,
 "atlag": null
 },
 {
 "szo": "sürgősségi",
 "irany": "stagnal",
-"meredekseg": -0.443,
+"meredekseg": -0.842,
 "ervenyes": true,
-"mai_ertek": 13,
+"mai_ertek": 41,
 "csucs": null,
 "atlag": null
 },
@@ -287,13 +354,13 @@
 "meredekseg": null,
 "ervenyes": false,
 "mai_ertek": null,
-"csucs": 48.0,
-"atlag": 26.0
+"csucs": 27.0,
+"atlag": 18.41
 },
 {
 "szo": "várólista",
 "irany": "stagnal",
-"meredekseg": 0.691,
+"meredekseg": -0.291,
 "ervenyes": true,
 "mai_ertek": 0,
 "csucs": null,
@@ -302,28 +369,19 @@
 {
 "szo": "állás",
 "irany": "novekszik",
-"meredekseg": 1.556,
+"meredekseg": 2.097,
 "ervenyes": true,
-"mai_ertek": 57,
-"csucs": 100.0,
-"atlag": 66.75
+"mai_ertek": 51,
+"csucs": 85.0,
+"atlag": 67.12
 }
 ],
 "napi": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A megélhetési és lakhatási témák vegyes képet adnak: az eladó lakás ma a szokásos szintje felett, 54-es értéken áll és emelkedik, az albérlet 48-on inkább lefelé mozdul, a hitel pedig a megszokott 42 körüli átlagánál alacsonyabban, 30-on áll, miközben a meredeksége felfelé mutat. A fizetés és a pedagógus nagyon alacsony, 8 és 9 körüli szinten van, a napelem szintén a szokásos alatt, 14-en.\n\nAz egészségügyi szavak többsége a mérsékelt sávban mozog: a háziorvos 58-on a nap egyik erősebb egészségügyi keresése, a betegség 46-on a saját átlaga alatt, a kórház 26-on jóval a megszokott 50 körüli szintje alatt, de emelkedő lendülettel. A műtét és a sürgősségi egyaránt 41 körül, nyugalmi állapotban van.\n\nAz állás 51-en a szokásos 67 körüli szintjétől elmarad, a nyaralás viszont 78-on a megszokott 60 feletti átlagánál élénkebb. A nyugdíj 13-on a saját alacsony sávjában is lejjebb került. Több szó – a csőd, az infláció, a korrupció, a munkanélküliség, a rezsi, a segély és a várólista – ma gyakorlatilag nullán áll, érdemi keresés nélkül. A kormányablak 33-on a megszokott 56 körüli szintjénél jóval alacsonyabb, bár ma a legmeredekebben emelkedők közé tartozik."
 }
 },
 "felkapott": {
 "top": [
-{
-"kifejezes": "matolcsy",
-"volumen": "50000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
 {
 "kifejezes": "időjárás",
 "volumen": "50000",
@@ -331,45 +389,21 @@
 "temak": [
 "Other"
 ],
-"hirek": [
-{
-"hir_cim": "Megérkezett a drasztikus fordulat, viharos széllökések és csapadékzóna tarolják le az országot",
-"hir_forras": "Index.hu",
-"hir_url": "https://index.hu/belfold/2026/10/22/idojaras-elorejelzes-szel-figyelmeztetes-veszelyjelzes-eso-csapadek-csutortok/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQda_hcwPcF8SS1LrfnWLMkuE7efbGiDZTA3aWH93eAthrFXKvjEN-_pNCTYIE",
-"hir_kivonat": ""
+"hirek": []
 },
 {
-"hir_cim": "Ma barátságtalan időnk lesz, de úgy tűnik, a nemzeti ünnepet nem mossa el az eső",
-"hir_forras": "24.hu",
-"hir_url": "https://24.hu/belfold/2026/10/22/idojaras-elorejelzes-csutortok-pentek/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRcCZOJA5LCAOAbrKfNqYACTsG_J5Ak25shvmy5rbf9gpe7g7wKOnkTX-49EGU",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Időjárás: itt lehet a fordulat, órákon belül jön az országos eső – mutatjuk, hol várható a legtöbb csapadék",
-"hir_forras": "Világgazdaság",
-"hir_url": "https://www.vg.hu/vilaggazdasag-magyar-gazdasag/2026/10/eso-idojaras-fordulat-elorejelzes",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyFU5_LcwyYnegKrpDAg4WJUACBq7jWngAibnHOX7cQdx1QJgNBadYgY9S66A",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "holnapi időjárás",
-"volumen": "20000",
-"novekedes_pct": "75",
+"kifejezes": "nyugdíj",
+"volumen": "10000",
+"novekedes_pct": "400",
 "temak": [
-"Climate"
+"Business and Finance",
+"Law and Government"
 ],
 "hirek": []
 },
 {
-"kifejezes": "real madrid–lipcse",
-"volumen": "10000",
+"kifejezes": "ftc",
+"volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
 "Sports"
@@ -377,27 +411,9 @@
 "hirek": []
 },
 {
-"kifejezes": "családi pótlék",
-"volumen": "10000",
-"novekedes_pct": "700",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "como–man utd",
-"volumen": "10000",
+"kifejezes": "euró",
+"volumen": "5000",
 "novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "blikk",
-"volumen": "10000",
-"novekedes_pct": "200",
 "temak": [
 "Other"
 ],
@@ -422,8 +438,8 @@
 "hirek": []
 },
 {
-"kifejezes": "police.hu",
-"volumen": "5000",
+"kifejezes": "robbanás hajdúhadház",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Other"
@@ -431,17 +447,117 @@
 "hirek": []
 },
 {
-"kifejezes": "bayern münchen–arsenal",
-"volumen": "5000",
+"kifejezes": "virus",
+"volumen": "2000",
 "novekedes_pct": "1000",
+"temak": [
+"Health"
+],
+"hirek": []
+},
+{
+"kifejezes": "orvos",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "fókusz",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "fradi meccs",
+"volumen": "2000",
+"novekedes_pct": "900",
 "temak": [
 "Sports"
 ],
 "hirek": []
 },
 {
-"kifejezes": "napelem",
-"volumen": "5000",
+"kifejezes": "vírus",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Health"
+],
+"hirek": []
+},
+{
+"kifejezes": "biztonsági rés",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "kötelezettségszegési eljárás",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "világgazdaság",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "rtl",
+"volumen": "2000",
+"novekedes_pct": "900",
+"temak": [
+"Sports",
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "cápák között",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "televízió",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "hír",
+"volumen": "2000",
+"novekedes_pct": "700",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "audi hungaria zrt.",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Business and Finance"
@@ -449,17 +565,26 @@
 "hirek": []
 },
 {
-"kifejezes": "magyar labdarúgó-szövetség",
-"volumen": "5000",
-"novekedes_pct": "1000",
+"kifejezes": "fc barcelona",
+"volumen": "2000",
+"novekedes_pct": "200",
 "temak": [
 "Sports"
 ],
 "hirek": []
 },
 {
-"kifejezes": "patkány",
-"volumen": "5000",
+"kifejezes": "hajdú bihar",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Climate"
+],
+"hirek": []
+},
+{
+"kifejezes": "sebestyén balázs",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Other"
@@ -467,11 +592,11 @@
 "hirek": []
 },
 {
-"kifejezes": "telex",
-"volumen": "5000",
-"novekedes_pct": "75",
+"kifejezes": "matolcsy györgyöt",
+"volumen": "2000",
+"novekedes_pct": "1000",
 "temak": [
-"Health"
+"Law and Government"
 ],
 "hirek": []
 }
@@ -640,60 +765,27 @@
 ],
 "este_top": [
 {
-"kifejezes": "matolcsy",
-"volumen": "50000",
-"novekedes_pct": "1000",
-"temak": [
-"Law and Government"
-],
-"hirek": []
-},
-{
 "kifejezes": "időjárás",
 "volumen": "50000",
 "novekedes_pct": "75",
 "temak": [
 "Other"
 ],
-"hirek": [
-{
-"hir_cim": "Megérkezett a drasztikus fordulat, viharos széllökések és csapadékzóna tarolják le az országot",
-"hir_forras": "Index.hu",
-"hir_url": "https://index.hu/belfold/2026/10/22/idojaras-elorejelzes-szel-figyelmeztetes-veszelyjelzes-eso-csapadek-csutortok/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQda_hcwPcF8SS1LrfnWLMkuE7efbGiDZTA3aWH93eAthrFXKvjEN-_pNCTYIE",
-"hir_kivonat": ""
+"hirek": []
 },
 {
-"hir_cim": "Ma barátságtalan időnk lesz, de úgy tűnik, a nemzeti ünnepet nem mossa el az eső",
-"hir_forras": "24.hu",
-"hir_url": "https://24.hu/belfold/2026/10/22/idojaras-elorejelzes-csutortok-pentek/",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRcCZOJA5LCAOAbrKfNqYACTsG_J5Ak25shvmy5rbf9gpe7g7wKOnkTX-49EGU",
-"hir_kivonat": ""
-},
-{
-"hir_cim": "Időjárás: itt lehet a fordulat, órákon belül jön az országos eső – mutatjuk, hol várható a legtöbb csapadék",
-"hir_forras": "Világgazdaság",
-"hir_url": "https://www.vg.hu/vilaggazdasag-magyar-gazdasag/2026/10/eso-idojaras-fordulat-elorejelzes",
-"hir_ido_utc": "",
-"hir_kep": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyFU5_LcwyYnegKrpDAg4WJUACBq7jWngAibnHOX7cQdx1QJgNBadYgY9S66A",
-"hir_kivonat": ""
-}
-]
-},
-{
-"kifejezes": "holnapi időjárás",
-"volumen": "20000",
-"novekedes_pct": "75",
+"kifejezes": "nyugdíj",
+"volumen": "10000",
+"novekedes_pct": "400",
 "temak": [
-"Climate"
+"Business and Finance",
+"Law and Government"
 ],
 "hirek": []
 },
 {
-"kifejezes": "real madrid–lipcse",
-"volumen": "10000",
+"kifejezes": "ftc",
+"volumen": "5000",
 "novekedes_pct": "1000",
 "temak": [
 "Sports"
@@ -701,27 +793,9 @@
 "hirek": []
 },
 {
-"kifejezes": "családi pótlék",
-"volumen": "10000",
-"novekedes_pct": "700",
-"temak": [
-"Other"
-],
-"hirek": []
-},
-{
-"kifejezes": "como–man utd",
-"volumen": "10000",
+"kifejezes": "euró",
+"volumen": "5000",
 "novekedes_pct": "1000",
-"temak": [
-"Sports"
-],
-"hirek": []
-},
-{
-"kifejezes": "blikk",
-"volumen": "10000",
-"novekedes_pct": "200",
 "temak": [
 "Other"
 ],
@@ -746,8 +820,8 @@
 "hirek": []
 },
 {
-"kifejezes": "police.hu",
-"volumen": "5000",
+"kifejezes": "robbanás hajdúhadház",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Other"
@@ -755,17 +829,117 @@
 "hirek": []
 },
 {
-"kifejezes": "bayern münchen–arsenal",
-"volumen": "5000",
+"kifejezes": "virus",
+"volumen": "2000",
 "novekedes_pct": "1000",
+"temak": [
+"Health"
+],
+"hirek": []
+},
+{
+"kifejezes": "orvos",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "fókusz",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "fradi meccs",
+"volumen": "2000",
+"novekedes_pct": "900",
 "temak": [
 "Sports"
 ],
 "hirek": []
 },
 {
-"kifejezes": "napelem",
-"volumen": "5000",
+"kifejezes": "vírus",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Health"
+],
+"hirek": []
+},
+{
+"kifejezes": "biztonsági rés",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "kötelezettségszegési eljárás",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Law and Government"
+],
+"hirek": []
+},
+{
+"kifejezes": "világgazdaság",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "rtl",
+"volumen": "2000",
+"novekedes_pct": "900",
+"temak": [
+"Sports",
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "cápák között",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Other"
+],
+"hirek": []
+},
+{
+"kifejezes": "televízió",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "hír",
+"volumen": "2000",
+"novekedes_pct": "700",
+"temak": [
+"Entertainment"
+],
+"hirek": []
+},
+{
+"kifejezes": "audi hungaria zrt.",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Business and Finance"
@@ -773,17 +947,26 @@
 "hirek": []
 },
 {
-"kifejezes": "magyar labdarúgó-szövetség",
-"volumen": "5000",
-"novekedes_pct": "1000",
+"kifejezes": "fc barcelona",
+"volumen": "2000",
+"novekedes_pct": "200",
 "temak": [
 "Sports"
 ],
 "hirek": []
 },
 {
-"kifejezes": "patkány",
-"volumen": "5000",
+"kifejezes": "hajdú bihar",
+"volumen": "2000",
+"novekedes_pct": "1000",
+"temak": [
+"Climate"
+],
+"hirek": []
+},
+{
+"kifejezes": "sebestyén balázs",
+"volumen": "2000",
 "novekedes_pct": "1000",
 "temak": [
 "Other"
@@ -791,69 +974,76 @@
 "hirek": []
 },
 {
-"kifejezes": "telex",
-"volumen": "5000",
-"novekedes_pct": "75",
+"kifejezes": "matolcsy györgyöt",
+"volumen": "2000",
+"novekedes_pct": "1000",
 "temak": [
-"Health"
+"Law and Government"
 ],
 "hirek": []
 }
 ],
 "reggel_este_diff": {
-"uj_estere": [],
-"eltunt_estere": [],
-"megmaradt": [
-"bayern münchen vs arsenal tabella",
+"uj_estere": [
+"audi hungaria zrt.",
+"biztonsági rés",
+"cápák között",
+"euró",
+"fc barcelona",
+"fradi meccs",
+"ftc",
+"fókusz",
+"hajdú bihar",
+"hír",
+"kötelezettségszegési eljárás",
+"matolcsy györgyöt",
+"nyugdíj",
+"orvos",
+"robbanás hajdúhadház",
+"rtl",
+"sebestyén balázs",
+"televízió",
+"világgazdaság",
+"virus",
+"vírus"
+],
+"eltunt_estere": [
 "bayern münchen–arsenal",
 "blikk",
 "como–man utd",
 "családi pótlék",
 "holnapi időjárás",
-"időjárás",
 "magyar labdarúgó-szövetség",
 "matolcsy",
 "napelem",
 "patkány",
 "police.hu",
-"real madrid vs rb leipzig tabella",
 "real madrid–lipcse",
 "telex"
+],
+"megmaradt": [
+"bayern münchen vs arsenal tabella",
+"időjárás",
+"real madrid vs rb leipzig tabella"
 ]
 },
 "reggel": {
-"szoveg": "Ma reggel a magyar Google-keresésben két téma emelkedik ki a legnagyobb keresési mennyiséggel: a „matolcsy"
+"szoveg": "A reggeli pillanatképben két téma dominált a legnagyobb volumennel: a matolcsy név és az időjárás. Az időjáráshoz több hír is kapcsolódott, az Index, a 24.hu és a Világgazdaság egyaránt drasztikus fordulatról, viharos széllökésekről és közelgő országos esőről írt, miközben jelezték, hogy a nemzeti ünnepet várhatóan nem mossa el a csapadék. A matolcsy felkapottsághoz nem érkezett háttérhír.\n\nReggel erősen keresték még a holnapi időjárást, a Real Madrid–Lipcse és a Como–Manchester United mérkőzéseket, a családi pótlékot, a Blikket, a napelemet, a patkányt és a telexet. Ezek közül a sporttémák és az időjárás a várható napi menetrendhez köthetők, de a legtöbbhöz nem tartozott konkrét hír."
 },
 "este": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "Estére az időjárás maradt a legnagyobb keresés, mögötte viszont új súlypontok jelentek meg. A nyugdíj feltűnően, mintegy négyszeres napon belüli emelkedéssel került fel a listára, háttérhír nélkül. Megjelent az euró, az FTC, a Fradi meccs, és több nemzetközi mérkőzés keresése is.\n\nAz esti képben feltűnt a robbanás Hajdúhadház, a Hajdú-Bihar téma, a vírus mindkét írásmódban, az orvos, a biztonsági rés, a kötelezettségszegési eljárás, a világgazdaság, valamint televíziós és szórakoztató témák, mint a Fókusz, az RTL, a Cápák között és Sebestyén Balázs. A matolcsy györgyöt és az Audi Hungaria is bekerült. Ezekhez a szavakhoz nem érkezett háttérhír, így az okuk nyitott kérdés."
 },
 "teljes_nap": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A nap íve jól mutatja a figyelem átrendeződését. Az időjárás és a két nemzetközi mérkőzés tabellájának keresése reggel és este is kitartott, ezek adták a nap állandó vonalát. Reggelről estére halványult el a matolcsy önálló keresése, a Blikk, a Como–Manchester United, a családi pótlék, a holnapi időjárás, a napelem, a patkány, a police.hu, a Real Madrid–Lipcse és a Telex.\n\nEstére lett új súlypont a nyugdíj, az euró, az FTC és a Fradi meccs, a robbanás Hajdúhadház, a vírus, az orvos, a világgazdaság, több televíziós téma és a matolcsy györgyöt forma. A kép így reggel inkább az időjárás és a sport köré szerveződött, estére pedig a megélhetési, egészségügyi és szórakoztató témák irányába tolódott."
 },
 "het": {
-"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
+"szoveg": "A héten több napon át visszatérő téma a családi pótlék, a házasság, a Magyarország kifejezés és a Telex volt, ezek jelzik a tartósabb érdeklődés gócpontjait. A felkapott listán nagyon sok egyszer feltűnő keresés szerepelt – sportmérkőzések, időjárási jelenségek, közéleti nevek és szórakoztató műsorok –, ami inkább a napi hírfolyam gyors váltakozását mutatja, mint tartós témákat."
 },
 "het_valos": {
 "napok": 7,
 "visszateroek": [
 {
 "kifejezes": "családi pótlék",
-"napok_szama": 3
-},
-{
-"kifejezes": "telex",
-"napok_szama": 3
-},
-{
-"kifejezes": "bayern münchen–arsenal",
-"napok_szama": 2
-},
-{
-"kifejezes": "blikk",
-"napok_szama": 2
-},
-{
-"kifejezes": "como–man utd",
 "napok_szama": 2
 },
 {
@@ -861,31 +1051,11 @@
 "napok_szama": 2
 },
 {
-"kifejezes": "magyar labdarúgó-szövetség",
-"napok_szama": 2
-},
-{
 "kifejezes": "magyarország",
 "napok_szama": 2
 },
 {
-"kifejezes": "matolcsy",
-"napok_szama": 2
-},
-{
-"kifejezes": "napelem",
-"napok_szama": 2
-},
-{
-"kifejezes": "patkány",
-"napok_szama": 2
-},
-{
-"kifejezes": "police.hu",
-"napok_szama": 2
-},
-{
-"kifejezes": "real madrid–lipcse",
+"kifejezes": "telex",
 "napok_szama": 2
 },
 {
@@ -905,6 +1075,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "audi hungaria zrt.",
+"napok_szama": 1
+},
+{
 "kifejezes": "autógyártás",
 "napok_szama": 1
 },
@@ -921,6 +1095,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "bayern münchen–arsenal",
+"napok_szama": 1
+},
+{
 "kifejezes": "benzin",
 "napok_szama": 1
 },
@@ -934,6 +1112,14 @@
 },
 {
 "kifejezes": "betis–barcelona",
+"napok_szama": 1
+},
+{
+"kifejezes": "biztonsági rés",
+"napok_szama": 1
+},
+{
+"kifejezes": "blikk",
 "napok_szama": 1
 },
 {
@@ -961,11 +1147,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "como–man utd",
+"napok_szama": 1
+},
+{
 "kifejezes": "csecsemő",
 "napok_szama": 1
 },
 {
 "kifejezes": "cukor",
+"napok_szama": 1
+},
+{
+"kifejezes": "cápák között",
 "napok_szama": 1
 },
 {
@@ -997,6 +1191,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "euró",
+"napok_szama": 1
+},
+{
 "kifejezes": "európai unió",
 "napok_szama": 1
 },
@@ -1009,7 +1207,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "fc barcelona",
+"napok_szama": 1
+},
+{
 "kifejezes": "ferencz orsolya",
+"napok_szama": 1
+},
+{
+"kifejezes": "fradi meccs",
 "napok_szama": 1
 },
 {
@@ -1017,7 +1223,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "ftc",
+"napok_szama": 1
+},
+{
 "kifejezes": "ftc vs viktoria plzen tabella",
+"napok_szama": 1
+},
+{
+"kifejezes": "fókusz",
 "napok_szama": 1
 },
 {
@@ -1045,11 +1259,11 @@
 "napok_szama": 1
 },
 {
-"kifejezes": "hegedűs zsolt",
+"kifejezes": "hajdú bihar",
 "napok_szama": 1
 },
 {
-"kifejezes": "holnapi időjárás",
+"kifejezes": "hegedűs zsolt",
 "napok_szama": 1
 },
 {
@@ -1066,6 +1280,10 @@
 },
 {
 "kifejezes": "háztartás",
+"napok_szama": 1
+},
+{
+"kifejezes": "hír",
 "napok_szama": 1
 },
 {
@@ -1090,6 +1308,10 @@
 },
 {
 "kifejezes": "kátai-németh vilmos",
+"napok_szama": 1
+},
+{
+"kifejezes": "kötelezettségszegési eljárás",
 "napok_szama": 1
 },
 {
@@ -1121,6 +1343,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "magyar labdarúgó-szövetség",
+"napok_szama": 1
+},
+{
 "kifejezes": "magyar nemzeti bank (mnb)",
 "napok_szama": 1
 },
@@ -1134,6 +1360,14 @@
 },
 {
 "kifejezes": "manchester city–ipswich",
+"napok_szama": 1
+},
+{
+"kifejezes": "matolcsy",
+"napok_szama": 1
+},
+{
+"kifejezes": "matolcsy györgyöt",
 "napok_szama": 1
 },
 {
@@ -1161,11 +1395,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "napelem",
+"napok_szama": 1
+},
+{
 "kifejezes": "nemzetközi valutaalap",
 "napok_szama": 1
 },
 {
 "kifejezes": "nottingham forest–arsenal",
+"napok_szama": 1
+},
+{
+"kifejezes": "nyugdíj",
 "napok_szama": 1
 },
 {
@@ -1181,7 +1423,15 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "orvos",
+"napok_szama": 1
+},
+{
 "kifejezes": "palvin barbara",
+"napok_szama": 1
+},
+{
+"kifejezes": "patkány",
 "napok_szama": 1
 },
 {
@@ -1190,6 +1440,10 @@
 },
 {
 "kifejezes": "police",
+"napok_szama": 1
+},
+{
+"kifejezes": "police.hu",
 "napok_szama": 1
 },
 {
@@ -1213,6 +1467,10 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "real madrid–lipcse",
+"napok_szama": 1
+},
+{
 "kifejezes": "real madrid–sevilla",
 "napok_szama": 1
 },
@@ -1229,11 +1487,23 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "robbanás hajdúhadház",
+"napok_szama": 1
+},
+{
+"kifejezes": "rtl",
+"napok_szama": 1
+},
+{
 "kifejezes": "sahara ray",
 "napok_szama": 1
 },
 {
 "kifejezes": "sandra bullock",
+"napok_szama": 1
+},
+{
+"kifejezes": "sebestyén balázs",
 "napok_szama": 1
 },
 {
@@ -1270,6 +1540,10 @@
 },
 {
 "kifejezes": "tarr zoltán",
+"napok_szama": 1
+},
+{
+"kifejezes": "televízió",
 "napok_szama": 1
 },
 {
@@ -1321,7 +1595,19 @@
 "napok_szama": 1
 },
 {
+"kifejezes": "világgazdaság",
+"napok_szama": 1
+},
+{
+"kifejezes": "virus",
+"napok_szama": 1
+},
+{
 "kifejezes": "váci út",
+"napok_szama": 1
+},
+{
+"kifejezes": "vírus",
 "napok_szama": 1
 },
 {
@@ -1358,5 +1644,156 @@
 }
 ]
 }
+},
+"youtube": {
+"szamok": [
+{
+"szo": "szorongás",
+"domen": "egeszseg",
+"irany": "novekszik",
+"meredekseg": 0.025,
+"ervenyes": true,
+"mai_ertek": 79,
+"csucs": 100,
+"atlag": 30.5
+},
+{
+"szo": "edzés",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.048,
+"ervenyes": true,
+"mai_ertek": 54,
+"csucs": 100,
+"atlag": 66.7
+},
+{
+"szo": "meditáció",
+"domen": "egeszseg",
+"irany": "csokken",
+"meredekseg": -0.046,
+"ervenyes": true,
+"mai_ertek": 81,
+"csucs": 100,
+"atlag": 82.0
+},
+{
+"szo": "befektetés",
+"domen": "penzugy",
+"irany": "stagnal",
+"meredekseg": -0.006,
+"ervenyes": true,
+"mai_ertek": 37,
+"csucs": 100,
+"atlag": 22.4
+},
+{
+"szo": "bitcoin",
+"domen": "penzugy",
+"irany": "csokken",
+"meredekseg": -0.028,
+"ervenyes": true,
+"mai_ertek": 50,
+"csucs": 100,
+"atlag": 46.3
+},
+{
+"szo": "hírek",
+"domen": "kozelet",
+"irany": "stagnal",
+"meredekseg": -0.014,
+"ervenyes": true,
+"mai_ertek": 48,
+"csucs": 100,
+"atlag": 56.1
+},
+{
+"szo": "magyar péter",
+"domen": "kozelet",
+"irany": "stagnal",
+"meredekseg": 0.002,
+"ervenyes": true,
+"mai_ertek": 7,
+"csucs": 100,
+"atlag": 15.5
+},
+{
+"szo": "recept",
+"domen": "haztartas",
+"irany": "csokken",
+"meredekseg": -0.051,
+"ervenyes": true,
+"mai_ertek": 49,
+"csucs": 100,
+"atlag": 46.9
+},
+{
+"szo": "mese",
+"domen": "csalad",
+"irany": "stagnal",
+"meredekseg": -0.013,
+"ervenyes": true,
+"mai_ertek": 89,
+"csucs": 100,
+"atlag": 86.2
+},
+{
+"szo": "nyaralás",
+"domen": "szabadido",
+"irany": "novekszik",
+"meredekseg": 0.047,
+"ervenyes": true,
+"mai_ertek": 26,
+"csucs": 100,
+"atlag": 49.5
+},
+{
+"szo": "tanulás",
+"domen": "tanulas",
+"irany": "csokken",
+"meredekseg": -0.059,
+"ervenyes": true,
+"mai_ertek": 76,
+"csucs": 100,
+"atlag": 72.9
+},
+{
+"szo": "klíma",
+"domen": "otthon",
+"irany": "novekszik",
+"meredekseg": 0.054,
+"ervenyes": true,
+"mai_ertek": 12,
+"csucs": 100,
+"atlag": 16.8
+}
+],
+"napi": {
+"szoveg": "A magyarországi YouTube-keresésekben a szorongás ma feltűnően élénk, 79-es értéke jóval a saját 30 körüli szokásos szintje felett áll. A meditáció 81-en, a mese 89-en és a tanulás 76-on szintén magas, ezek nagyjából a saját megszokott szintjükön mozognak. Az edzés 54-en a saját 67 körüli átlaga alatt van.\n\nA nyaralás 26-on a szokásos 50 körüli szintjénél csendesebb, a klíma 12-n szintén a megszokott alatt. A pénzügyi témák közül a befektetés 37-en a saját 22 körüli átlaga felett, a bitcoin 50-en nagyjából a szokásos szintjén áll. A hírek 48-on és a magyar péter 7-en a megszokottnál halványabb érdeklődést mutat."
+},
+"teljes_kep": {
+"szoveg": "A heti mozgásban a legnagyobb elmozdulás a befektetésé, amely a kiinduló 100-ról 37-re esett vissza, és a szorongásé, amely 21-ről 79-re ugrott – ez utóbbi a hét egyik legszembetűnőbb élénkülése. A nyaralás és a klíma enyhén emelkedett, a recept és a tanulás kis mértékben feljebb került.\n\nA bitcoin a hét során 67-ről 50-re mérséklődött, a meditáció kissé lejjebb csúszott, a hírek, a mese és a magyar péter pedig gyakorlatilag változatlan maradt. Ezek az értékek mind a saját külön skálájukon értendők, egymással nem összemérhetők."
+}
+},
+"predikcio": {
+"szoveg": "A rövid távú előrejelzés a követett szavak mindegyikénél egy helyben állást, stagnálást vetít előre a következő napra – egyetlen szónál sem jelez a matematikai folytatás érdemi emelkedést vagy csökkenést. Ez a közelmúlt trendjének kivetítése, nem eseményjóslat, így a valóság ettől eltérhet.\n\nA legtöbb becslés megbízhatósága alacsony, sok esetben gyakorlatilag nulla, ami óvatosságra int. A viszonylag magasabb megbízhatóságú jelzések is – a napelem és a pedagógus esetében – stagnálást mutatnak, csak kisebb bizonytalansági sávval. Összességében a kép nyugalmat sugall, de a felkapott kereséseknél látott hirtelen mozgások mutatják, hogy a valós események ezt felülírhatják."
+},
+"tldr": {
+"van_tldr": true,
+"fo_valtozasok": [
+"A nyugdíj iránti keresés estére a napi felkapottak közé ugrott, nagyjából négyszeres napon belüli élénküléssel, miközben a rendszeresen követett \"nyugdíj\" szó a hét során a kiinduló 34 körüli szintről 6 közelébe esett.",
+"A kormányhoz kötődő keresés mutatja a legnagyobb lefelé fordulást a követett szavak közül, a kormányablak és a kórház viszont a nap egyik legmeredekebb emelkedőjét adja, bár mindkettő a saját szokásos szintje alatt áll.",
+"Az időjárás egész napon át vezette a felkapott kereséseket, viharos szélről és országos esőről szóló hírekkel a háttérben."
+],
+"kiemelt_ugyek": [
+"Az időjárás reggel és este is a legnagyobb volumenű felkapott keresés maradt, több hírportál is drasztikus fordulatról, viharos széllökésekről és országos esőről írt.",
+"A nyugdíj csak estére került fel a napi listára, a követett \"nyugdíj\" szó ugyanakkor a megszokott szintje alá csökkent – a felkapott élénküléshez nem érkezett háttérhír.",
+"A matolcsy név reggel az egyik legerősebb felkapott volt, estére \"matolcsy györgyöt\" formában tért vissza, hír nélkül.",
+"A sporttémák egész nap jelen voltak, a Real Madrid–Lipcse és a Bayern–Arsenal találkozók keresései a reggeli és esti pillanatképben is szerepeltek.",
+"A hajdúhadházi robbanás és a Hajdú-Bihar megyéhez kapcsolódó keresések estére kerültek elő, konkrét háttérhír nélkül."
+],
+"visszatero_temak": "A héten több napon át vissza-visszatért a családi pótlék, a házasság, a Magyarország kifejezés és a Telex, ezek jelzik a tartósabb érdeklődés irányait.",
+"intenzivebb_keresesbe": "Érdemes lehet figyelni a hajdúhadházi robbanás és a Hajdú-Bihar téma keresését, mert hirtelen, estére jelentek meg, és helyi eseményre utalhatnak – bár ezt az adat önmagában nem támasztja alá. A nyugdíj mint felkapott szó szintén indokolhat alaposabb követést, mivel feltűnően megugrott.",
+"informaciohiany": "Több erős felkapott szóhoz – matolcsy, nyugdíj, robbanás hajdúhadház, euró – nem érkezett háttérhír, így a hirtelen emelkedés oka nyitott kérdés marad."
 }
 }
