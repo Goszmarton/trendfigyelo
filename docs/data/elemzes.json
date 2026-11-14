@@ -1,127 +1,87 @@
 {
-"frissitve": "2026-11-13T20:08:01+00:00",
+"frissitve": "2026-11-14T08:05:07+00:00",
 "modell": "claude-opus-4-8",
-"nap": "2026-11-13",
-"mode": "este",
+"nap": "2026-11-14",
+"mode": "reggel",
 "valtozas": {
 "diff": {
 "irany_valtok": [
 {
-"szo": "benzin",
-"elozo": "novekszik",
-"mai": "stagnal"
-},
-{
-"szo": "infláció",
-"elozo": "novekszik",
-"mai": "stagnal"
-},
-{
-"szo": "kormány",
-"elozo": "stagnal",
-"mai": "novekszik"
-},
-{
-"szo": "kórház",
-"elozo": "stagnal",
-"mai": "novekszik"
-},
-{
-"szo": "műtét",
-"elozo": "stagnal",
-"mai": "novekszik"
-},
-{
-"szo": "napelem",
-"elozo": "novekszik",
-"mai": "stagnal"
-},
-{
-"szo": "nyaralás",
+"szo": "akciós újság",
 "elozo": "stagnal",
 "mai": "csokken"
 },
 {
 "szo": "nyugdíj",
-"elozo": "novekszik",
-"mai": "stagnal"
-},
-{
-"szo": "pedagógus",
-"elozo": "novekszik",
-"mai": "stagnal"
-},
-{
-"szo": "sürgősségi",
-"elozo": "novekszik",
-"mai": "stagnal"
+"elozo": "stagnal",
+"mai": "csokken"
 }
 ],
 "mozgok": [
 {
+"szo": "kormányablak",
+"valtozas": -2.141
+},
+{
 "szo": "kórház",
-"valtozas": 3.068
+"valtozas": -1.534
 },
 {
-"szo": "infláció",
-"valtozas": -2.615
+"szo": "nyaralás",
+"valtozas": -1.511
 },
 {
-"szo": "nyugdíj",
-"valtozas": -2.461
+"szo": "eladó lakás",
+"valtozas": -1.375
 },
 {
-"szo": "kormány",
-"valtozas": 1.345
-},
-{
-"szo": "napelem",
-"valtozas": -1.282
+"szo": "hitel",
+"valtozas": -1.241
 }
 ],
 "felkapott_uj": [],
 "felkapott_eltunt": [],
 "van_elozo": true
 },
-"szoveg": "A mai kép legnagyobb elmozdulása az egészségügy felé mutat. A kórház a korábbi stagnálásból növekvő irányba váltott, és ez bizonyult a legnagyobb mozgásnak a mezőnyben. Hasonlóan növekvő pályára állt a műtét és a sürgősségi helyett épp fordítva: a sürgősségi a korábbi növekedésből stagnálásba lassult. A kórház mai értéke 24, ami a saját 44 körüli átlaga alatt marad, tehát az irányváltás fontosabb, mint a jelenlegi szint.\n\nAz infláció és a nyugdíj a másik irányba mozdult: mindkettő érezhetően visszaesett, az infláció a növekedésből stagnálásba, a nyugdíj szintén lelassult, és mindkettő gyakorlatilag nullára csökkent mára. A napelem a korábbi növekedésből stagnálásba fordult, a benzin pedig szintén lecsengett a növekvő szakasz után.\n\nA kormány a stagnálásból növekedésbe váltott, 55-ös mai értékkel. A nyaralás a korábbi stagnálás után csökkenő irányba fordult, miközben az értéke 79-en még mindig magasan áll – ez a nyárvégi lecsengés természetes jele lehet, bár ezt az adat önmagában nem igazolja."
+"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
 },
 "kulcsszavak": {
 "szamok": [
 {
 "szo": "akciós újság",
-"irany": "stagnal",
-"meredekseg": -0.197,
+"irany": "csokken",
+"meredekseg": -1.366,
 "ervenyes": true,
-"mai_ertek": 38,
-"csucs": 89.0,
-"atlag": 57.43
+"mai_ertek": 37,
+"csucs": 51.0,
+"atlag": 37.91
 },
 {
 "szo": "albérlet",
 "irany": "stagnal",
-"meredekseg": -0.2,
+"meredekseg": -0.404,
 "ervenyes": true,
-"mai_ertek": 52,
-"csucs": 54.0,
-"atlag": 41.53
+"mai_ertek": 0,
+"csucs": 65.0,
+"atlag": 45.61
 },
 {
 "szo": "benzin",
 "irany": "stagnal",
-"meredekseg": 0.529,
+"meredekseg": -0.579,
 "ervenyes": true,
-"mai_ertek": 17,
-"csucs": 97.0,
-"atlag": 36.54
+"mai_ertek": 14,
+"csucs": 57.0,
+"atlag": 26.0
 },
 {
 "szo": "betegség",
 "irany": "novekszik",
-"meredekseg": 1.61,
+"meredekseg": 1.79,
 "ervenyes": true,
-"mai_ertek": 25,
-"csucs": 40.0,
-"atlag": 27.2
+"mai_ertek": 0,
+"csucs": 72.0,
+"atlag": 28.42
 },
 {
 "szo": "csőd",
@@ -135,11 +95,11 @@
 {
 "szo": "eladó lakás",
 "irany": "stagnal",
-"meredekseg": 0.865,
+"meredekseg": -0.51,
 "ervenyes": true,
-"mai_ertek": 81,
-"csucs": 100.0,
-"atlag": 66.63
+"mai_ertek": 98,
+"csucs": 63.0,
+"atlag": 44.15
 },
 {
 "szo": "fizetés",
@@ -153,11 +113,11 @@
 {
 "szo": "hitel",
 "irany": "novekszik",
-"meredekseg": 2.261,
+"meredekseg": 1.02,
 "ervenyes": true,
-"mai_ertek": 28,
-"csucs": 67.0,
-"atlag": 49.44
+"mai_ertek": 0,
+"csucs": 69.0,
+"atlag": 48.42
 },
 {
 "szo": "háziorvos",
@@ -198,11 +158,11 @@
 {
 "szo": "kormányablak",
 "irany": "novekszik",
-"meredekseg": 5.526,
+"meredekseg": 3.385,
 "ervenyes": true,
-"mai_ertek": 10,
-"csucs": 91.0,
-"atlag": 54.89
+"mai_ertek": 0,
+"csucs": 74.0,
+"atlag": 38.83
 },
 {
 "szo": "korrupció",
@@ -216,11 +176,11 @@
 {
 "szo": "kórház",
 "irany": "novekszik",
-"meredekseg": 3.399,
+"meredekseg": 1.865,
 "ervenyes": true,
-"mai_ertek": 24,
-"csucs": 83.0,
-"atlag": 44.52
+"mai_ertek": 0,
+"csucs": 65.0,
+"atlag": 37.9
 },
 {
 "szo": "kölcsön",
@@ -252,29 +212,29 @@
 {
 "szo": "napelem",
 "irany": "stagnal",
-"meredekseg": 0.009,
+"meredekseg": 0.418,
 "ervenyes": true,
-"mai_ertek": 33,
-"csucs": 53.0,
-"atlag": 30.41
+"mai_ertek": 0,
+"csucs": 81.0,
+"atlag": 47.33
 },
 {
 "szo": "nyaralás",
 "irany": "csokken",
-"meredekseg": -1.049,
+"meredekseg": -2.56,
 "ervenyes": true,
-"mai_ertek": 79,
-"csucs": 68.0,
-"atlag": 52.36
+"mai_ertek": 0,
+"csucs": 60.0,
+"atlag": 46.0
 },
 {
 "szo": "nyugdíj",
-"irany": "stagnal",
-"meredekseg": -0.473,
+"irany": "csokken",
+"meredekseg": -1.488,
 "ervenyes": true,
 "mai_ertek": 4,
-"csucs": 49.0,
-"atlag": 19.46
+"csucs": 39.0,
+"atlag": 11.96
 },
 {
 "szo": "pedagógus",
@@ -318,8 +278,8 @@
 "meredekseg": null,
 "ervenyes": false,
 "mai_ertek": null,
-"csucs": null,
-"atlag": null
+"csucs": 65.0,
+"atlag": 65.0
 },
 {
 "szo": "várólista",
@@ -333,15 +293,15 @@
 {
 "szo": "állás",
 "irany": "novekszik",
-"meredekseg": 2.365,
+"meredekseg": 1.353,
 "ervenyes": true,
-"mai_ertek": 53,
+"mai_ertek": 49,
 "csucs": 79.0,
-"atlag": 62.83
+"atlag": 54.79
 }
 ],
 "napi": {
-"szoveg": "A megélhetési és ingatlan témák közül az eladó lakás emelkedik ki: 81-es mai értéke jóval a saját 67 körüli átlaga fölött van, ami a szokásosnál élénkebb érdeklődésre utal. Az állás is a megszokott sávjában, 53-on mozog, az albérlet pedig 52-vel az átlaga fölött áll.\n\nAz egészségügyi szavak jellemzően a saját szintjük alatt vagy körül vannak: a kórház 24-en, a műtét 35-ön, a betegség 25-ön, a háziorvos mindössze 9-en áll, ami a halványabb jelenlétet mutatja. A várólista és a sürgősségi ma nullán van.\n\nA pénzügyi és megélhetési szavak visszafogottak: a benzin 17-tel jóval a 37 körüli átlaga alatt, a hitel 28-on szintén a szokásos szintje alatt, a kölcsön 43-on, a fizetés 26-on áll. Az infláció, a rezsi, a munkanélküliség, a segély és a korrupció ma nullán van, a nyugdíj pedig 4-en, mélyen a szokásos szintje alatt.\n\nA kormányzati és oktatási szavak vegyes képet adnak: a kormány 55-ön a megszokottnál élénkebb, a kormányablak viszont 10-en jóval a 55 körüli átlaga alatt, az iskola 39-en, a pedagógus 13-on mozog. A napelem 33-on a saját átlaga körül áll, a nyaralás 79-en kiemelkedően magasan, a saját 52 körüli átlaga fölött."
+"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
 }
 },
 "felkapott": {
@@ -354,16 +314,16 @@
 "megmaradt": []
 },
 "reggel": {
-"szoveg": "Ma nem volt reggeli gyűjtés, ezért a reggeli kép nem elemezhető."
+"szoveg": "Ma reggel a figyelt kifejezések közül több hétköznapi, megélhetéshez kötődő téma mutat emelkedő érdeklődést. Az iskola iránti keresés láthatóan erősödik, és hasonlóan felfelé mozdul a kórház, a háziorvos, a műtét, valamint a kormányablak és a kölcsön is – ezek együtt egy olyan reggeli képet rajzolnak ki, amelyben az egészségügy, az ügyintézés és a pénzügyek foglalkoztatják az embereket. A fizetés, a hitel, a segély és az állás szintén a növekvő csoportba tartozik, ami óvatosan értelmezve a hónap eleji, pénzzel kapcsolatos ügyintézésre utalhat, de konkrét hír hiányában ezt csak feltételezésként lehet megfogalmazni.\n\nEzzel szemben néhány téma visszafelé mozog: az akciós újság és a nyugdíj iránti kereslet csökkenő irányba fordult, a nyaralás pedig érezhetően visszaesett, ami a szezonnak megfelelő, természetes mozgás lehet. Stagnáló szinten maradt többek között a benzin, az albérlet, az infláció, a rezsi és a munkanélküliség, vagyis ezek körül most nem látszik hirtelen felfutás.\n\nFontos jelezni, hogy ma reggelről nem áll rendelkezésre külön kiemelt, pillanatnyilag felkapott lista, így most elsősorban a figyelt kifejezések irányait tudjuk bemutatni. A konkrét, egy-egy eseményhez köthető témák alakulását a mai esti elemzés fogja pontosabban megmutatni."
 },
 "este": {
-"szoveg": "Esti pillanatkép sem áll rendelkezésre a mai napról, így az esti órák felkapott kereséseit sem tudjuk megmutatni."
+"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
 },
 "teljes_nap": {
-"szoveg": "Reggeli pillanatkép híján a nap íve (a reggeltől estig tartó elmozdulás) nem rajzolható."
+"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
 },
 "het": {
-"szoveg": "A hét egészét nézve több téma is visszatért napokon át. A sport erősen jelen volt: Szoboszlai Dominik, a Fenerbahce–Liverpool és az AEK–Real Madrid mérkőzés is két-két napon felkapott volt. Az időjárás szintén visszatérő téma volt az első hó és a holnapi időjárás keresésekkel. A közéletből Matolcsy György, Nógrádi György és Patyi András neve bukkant fel ismétlődően, a kiskereskedelemből pedig a Tesco. Ezekhez a szavakhoz a bemenetben nem tartozik hír, így a hátterüket nem tudjuk megmagyarázni – csak annyi biztos, hogy több napon át foglalkoztatták a keresőket."
+"szoveg": "Ez a rész az esti futáskor (21:00) frissül."
 },
 "het_valos": {
 "napok": 7,
@@ -942,156 +902,5 @@
 }
 ]
 }
-},
-"youtube": {
-"szamok": [
-{
-"szo": "szorongás",
-"domen": "egeszseg",
-"irany": "stagnal",
-"meredekseg": 0.003,
-"ervenyes": true,
-"mai_ertek": 50,
-"csucs": 100,
-"atlag": 25.8
-},
-{
-"szo": "edzés",
-"domen": "egeszseg",
-"irany": "csokken",
-"meredekseg": -0.057,
-"ervenyes": true,
-"mai_ertek": 59,
-"csucs": 100,
-"atlag": 66.2
-},
-{
-"szo": "meditáció",
-"domen": "egeszseg",
-"irany": "csokken",
-"meredekseg": -0.047,
-"ervenyes": true,
-"mai_ertek": 88,
-"csucs": 100,
-"atlag": 80.7
-},
-{
-"szo": "befektetés",
-"domen": "penzugy",
-"irany": "stagnal",
-"meredekseg": -0.011,
-"ervenyes": true,
-"mai_ertek": 43,
-"csucs": 100,
-"atlag": 28.1
-},
-{
-"szo": "bitcoin",
-"domen": "penzugy",
-"irany": "stagnal",
-"meredekseg": -0.016,
-"ervenyes": true,
-"mai_ertek": 50,
-"csucs": 100,
-"atlag": 48.7
-},
-{
-"szo": "hírek",
-"domen": "kozelet",
-"irany": "stagnal",
-"meredekseg": -0.007,
-"ervenyes": true,
-"mai_ertek": 74,
-"csucs": 100,
-"atlag": 56.9
-},
-{
-"szo": "magyar péter",
-"domen": "kozelet",
-"irany": "stagnal",
-"meredekseg": -0.01,
-"ervenyes": true,
-"mai_ertek": 10,
-"csucs": 100,
-"atlag": 16.1
-},
-{
-"szo": "recept",
-"domen": "haztartas",
-"irany": "csokken",
-"meredekseg": -0.041,
-"ervenyes": true,
-"mai_ertek": 53,
-"csucs": 100,
-"atlag": 46.5
-},
-{
-"szo": "mese",
-"domen": "csalad",
-"irany": "stagnal",
-"meredekseg": 0.004,
-"ervenyes": true,
-"mai_ertek": 96,
-"csucs": 98,
-"atlag": 85.1
-},
-{
-"szo": "nyaralás",
-"domen": "szabadido",
-"irany": "stagnal",
-"meredekseg": -0.01,
-"ervenyes": true,
-"mai_ertek": 20,
-"csucs": 100,
-"atlag": 48.6
-},
-{
-"szo": "tanulás",
-"domen": "tanulas",
-"irany": "csokken",
-"meredekseg": -0.04,
-"ervenyes": true,
-"mai_ertek": 73,
-"csucs": 100,
-"atlag": 75.9
-},
-{
-"szo": "klíma",
-"domen": "otthon",
-"irany": "novekszik",
-"meredekseg": 0.044,
-"ervenyes": true,
-"mai_ertek": 9,
-"csucs": 100,
-"atlag": 17.1
-}
-],
-"napi": {
-"szoveg": "A videós keresések közül a nyugalmat és a figyelmet kereső tartalmak állnak kiemelkedően magasan: a mese 96-on, a meditáció 88-on van, mindkettő jóval a saját átlaga fölött. A hírek 74-en szintén a megszokottnál élénkebb szinten áll, a tanulás 73-on a saját átlaga körül mozog.\n\nA középmezőnyben az edzés 59-en, a recept 53-on, a bitcoin és a szorongás egyaránt 50-en, a befektetés 43-on helyezkedik el – a befektetés és a szorongás a saját átlaga fölött jár. Alacsonyabban van a nyaralás 20-on, ami a saját 49 körüli átlaga alatt a szezon végi lanyhulást tükrözheti, a magyar péter 10-en és a klíma 9-en szintén a szokásos szintjük alatt. Fontos, hogy ezek a videós szavak külön-külön saját skálán mozognak, így nem mérhetők össze egymással."
-},
-"teljes_kep": {
-"szoveg": "A hét során a befektetés mutatta a legnagyobb emelkedést a saját pályáján, 11-ről 43-ra kúszva, és a hírek is érezhetően erősödött 48-ról 74-re. A meditáció szintén feljebb lépett 70-ről 88-ra, a nyaralás pedig 8-ról 20-ra emelkedett a maga szerény szintjén.\n\nA másik oldalon a bitcoin esett vissza a leginkább, 62-ről 50-re, a szorongás pedig 59-ről 50-re csökkent. A recept, a tanulás, az edzés, a mese és a klíma gyakorlatilag változatlan maradt a hét alatt. Mindez az egyes szavak saját mozgását tükrözi, nem egymáshoz viszonyított rangsort."
-}
-},
-"predikcio": {
-"szoveg": "A rövid távú előrejelzések szinte kivétel nélkül stagnálást mutatnak: mind a 28 követett szó iránya oldalazó, egyetlen határozott emelkedő vagy csökkenő jelzés sincs közöttük. Ez a közelmúlt trendjének matematikai folytatása, nem eseményjóslat, így a valóság ettől eltérhet.\n\nA legtöbb előrejelzés bizonytalansága magas vagy a megbízhatósága alacsony, ezért óvatosan kell kezelni őket. Viszonylag stabilabbnak tűnik a napelem és a pedagógus kimenete, ahol a megbízhatóság a többinél magasabb és a bizonytalansági sáv szűkebb – ezek a leginkább kiszámítható stagnálók. A várólista, az albérlet, az eladó lakás és a kórház körüli előrejelzések ezzel szemben tágabb sávúak, így náluk nagyobb a tévedés esélye."
-},
-"tldr": {
-"van_tldr": true,
-"fo_valtozasok": [
-"A kórház iránti érdeklődés lendült a legnagyobbat, a korábbi stagnálásból növekvő pályára váltva – ez a nap egyik legmarkánsabb elmozdulása.",
-"Az infláció és a nyugdíj keresése érdemben visszaesett, mindkettő gyakorlatilag a nullára csökkent mára.",
-"A nyaralás ma is magasan, 79-es szinten áll, de a korábbi stabil képhez képest immár csökkenő irányba fordult."
-],
-"kiemelt_ugyek": [
-"Az egészségügy több szava egyszerre mozdul felfelé: a kórház, a műtét és a sürgősségi is növekvő vagy elmozduló jelzést adott, bár a mai értékeik mérsékeltek.",
-"Az eladó lakás 81-es mai értéke jóval a saját 67 körüli átlaga fölött van, ami élénk ingatlanérdeklődésre utal.",
-"A kormány keresése a stagnálásból növekvésbe fordult, 55-ös mai értékkel a mezőny felső részén.",
-"A benzin és az infláció egyaránt lassult, mindkettő a megszokott szintje alá, szinte nullára esett mára.",
-"A nyaralás a nyár végi lecsengés jeleként csökkenő irányba váltott, miközben az értéke még mindig magas."
-],
-"visszatero_temak": "A héten több napon át vissza-visszatértek sportesemények (Szoboszlai Dominik, Fenerbahce–Liverpool, AEK–Real Madrid), időjárási témák (első hó, holnapi időjárás) és közéleti nevek (Matolcsy György, Nógrádi György, Patyi András), valamint a Tesco mint kiskereskedelmi keresés.",
-"intenzivebb_keresesbe": "A több napon át visszatérő időjárási keresések (első hó, holnapi időjárás) és a kiskereskedelmi Tesco érdemesek lehetnek a rendszeresen követett szavak közé vételre, mert tartósan jelen vannak – ezt azonban óvatosan kezeljük, mert hír nem támasztja alá a hátterüket.",
-"informaciohiany": "A felkapott nevek (például Korniss Péter, Szabó Gyula, Patyi András) mögött nincs a bemenetben hír, így nem tudjuk, mi hajtja a keresésüket – ezek külön vizsgálatot érdemelnének."
 }
 }
