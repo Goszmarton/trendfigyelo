@@ -23,7 +23,7 @@ def test_trigger_napi_trendgyujtes_es_dispatch():
 def test_generalo_lepes_anthropic_kulccsal():
     wf = _wf()
     steps = wf["jobs"]["havi"]["steps"]
-    szoveg = yaml.safe_dump(steps, allow_unicode=True)
+    szoveg = yaml.safe_dump(steps, allow_unicode=True, width=10**6)
     assert "ANTHROPIC_API_KEY" in szoveg
     assert "python -m trendfigyelo.havi_orzo" in szoveg
     assert "havi.py" in szoveg

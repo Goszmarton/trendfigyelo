@@ -39,6 +39,12 @@ jobs:
           NEV="${{ github.event.workflow_run.name }}"
           if [ "$NEV" = "Reggeli felkapott-gyűjtés" ]; then MODE=reggel; else MODE=este; fi
           echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+          # SZÜNETELTETÉS (docs/data/ai_szunet.json) — a kézi indítást is blokkolja; feloldás: a fájlban false
+          if [ "$(python -m trendfigyelo.ai_szunet napi docs/data)" = "true" ]; then
+            echo "A napi AI-elemzés SZÜNETEL (docs/data/ai_szunet.json) — nincs generálás."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "Kézi (workflow_dispatch) futás — az őr nem aktív, elemzünk."
             echo "skip=false" >> "$GITHUB_OUTPUT"

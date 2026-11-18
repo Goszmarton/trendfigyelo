@@ -593,3 +593,8 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 .radar-idosav { display: inline-block; margin-top: .4rem; padding: .25rem .7rem; border-radius: 999px;
   background: #eef2f7; color: #334; font-size: .82rem; }
 .radar-idosav:empty { display: none; }
+
+/* AI-elemzések szüneteltetése: jelzősáv a lap fejléce alatt (docs/js/ai_szunet.js) */
+.ai-szunet-sav { background: #fff8e1; border: 1px solid #f0c36d; border-left: 4px solid #e0a100;
+  border-radius: 6px; padding: .75rem 1.1rem; margin: 0 0 1.5rem; color: #4a3b00; box-sizing: border-box; }
+.ai-szunet-sav strong { color: #7a5600; margin-right: .25rem; }

@@ -44,6 +44,12 @@ jobs:
           KEZI_INPUT: ${{ github.event.inputs.honap }}   # env-en át (nem szöveg-interpoláció a bash-be)
         run: |
           KEZI="$KEZI_INPUT"
+          # SZÜNETELTETÉS (docs/data/ai_szunet.json) — a kézi indítást is blokkolja; feloldás: a fájlban false
+          if [ "$(python -m trendfigyelo.ai_szunet havi docs/data)" = "true" ]; then
+            echo "A havi elemzés SZÜNETEL (docs/data/ai_szunet.json) — nincs generálás."
+            echo "honap=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           if [ -n "$KEZI" ]; then
             echo "Kézi (workflow_dispatch) felülbírálás: $KEZI"
             echo "honap=$KEZI" >> "$GITHUB_OUTPUT"

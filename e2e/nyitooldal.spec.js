@@ -1,5 +1,10 @@
 const { test, expect } = require("@playwright/test");
 
+// ezek a tesztek a NEM szüneteltetett állapotot nézik (a szünet-sávot az ai-szunet.spec.js fedi le)
+test.beforeEach(async ({ page }) => {
+  await page.route("**/data/ai_szunet.json", (r) => r.fulfill({ json: { szunetel: {} } }));
+});
+
 test("nyitóoldal: nav aktív = Áttekintő, 3 kártya + Infó-belépő, helyes linkek", async ({ page }) => {
   await page.goto("/index.html");
   await expect(page.locator('#fomenu a[aria-current="page"]')).toHaveText("Áttekintő");

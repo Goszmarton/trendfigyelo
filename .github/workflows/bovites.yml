@@ -42,6 +42,12 @@ jobs:
           KEZI_INPUT: ${{ github.event.inputs.veg_nap }}
         run: |
           KEZI="$KEZI_INPUT"
+          # SZÜNETELTETÉS (docs/data/ai_szunet.json) — a kézi indítást is blokkolja; feloldás: a fájlban false
+          if [ "$(python -m trendfigyelo.ai_szunet ugyek docs/data)" = "true" ]; then
+            echo "Az ügy-elemzés SZÜNETEL (docs/data/ai_szunet.json) — nincs generálás, nincs API-hívás."
+            echo "veg_nap=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           if [ -n "$KEZI" ]; then
             echo "Kézi felülbírálás: $KEZI"
             echo "veg_nap=$KEZI" >> "$GITHUB_OUTPUT"
