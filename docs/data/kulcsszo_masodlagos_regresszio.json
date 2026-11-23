@@ -1,5 +1,5 @@
 {
-  "szamitva_utc": "2026-11-22T20:00:36+00:00",
+  "szamitva_utc": "2026-11-23T00:59:38+00:00",
   "meredekseg_egyseg": "relatív pont / nap",
   "elmozdulas_kuszob": 7.0,
   "megjegyzes": "Az R² autokorrelált órás soron számolt — MÁSODLAGOS; az elsődleges a meredekség és az irány (spec 4.1). Az r2_masodlagos_autokorrelacio ezt jelzi. A se_meredekseg (OLS standard hiba) UGYANEZEN autokorreláció miatt szintén MÁSODLAGOS és torzított (lefelé) — a se_masodlagos_autokorrelacio jelzi; a felület NEM írja ki konfidencia-sávként.",
@@ -9141,7 +9141,7 @@
       }
     },
     "kórház": {
-      "racs": "nap",
+      "racs": "het",
       "aktiv": true,
       "domen": "egeszsegugy",
       "tipus": "szintmero",
@@ -9818,251 +9818,251 @@
         },
         "1_ev": {
           "ervenyes": true,
-          "meredekseg_nap": -0.008,
-          "se_meredekseg": 0.0125,
+          "meredekseg_nap": -0.006,
+          "se_meredekseg": 0.013,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
-          "r2": 0.008,
+          "r2": 0.005,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2025-11-16T00:00:00+00:00",
-          "ablak_veg_utc": "2026-11-15T00:00:00+00:00",
+          "ablak_kezdet_utc": "2025-11-23T00:00:00+00:00",
+          "ablak_veg_utc": "2026-11-22T00:00:00+00:00",
           "pontok_hasznalt": 52,
           "pontok_nem_nulla": 52,
           "pontok_kihagyva_reszleges": 1,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2025-11-16T00:00:00+00:00",
-              "ertek": 78.8599419448476
+              "idopont_utc": "2025-11-23T00:00:00+00:00",
+              "ertek": 81.77068214804065
             },
             {
-              "idopont_utc": "2026-11-08T00:00:00+00:00",
-              "ertek": 76.10159651669086
+              "idopont_utc": "2026-11-15T00:00:00+00:00",
+              "ertek": 79.53701015965169
             }
           ],
-          "mai_ertek": 74,
-          "mai_reziduum": -2.1,
-          "reziduum_szokasos": 4.32,
+          "mai_ertek": 84,
+          "mai_reziduum": 4.46,
+          "reziduum_szokasos": 4.74,
           "illeszkedes": "illeszkedik",
           "nemlin": {
             "van_struktura": false,
             "gorbe": [
               {
-                "idopont_utc": "2025-11-16T00:00:00+00:00",
-                "ertek": 74.5
-              },
-              {
                 "idopont_utc": "2025-11-23T00:00:00+00:00",
-                "ertek": 75.0
+                "ertek": 77.1
               },
               {
                 "idopont_utc": "2025-11-30T00:00:00+00:00",
-                "ertek": 75.6
+                "ertek": 77.8
               },
               {
                 "idopont_utc": "2025-12-07T00:00:00+00:00",
-                "ertek": 76.1
+                "ertek": 78.5
               },
               {
                 "idopont_utc": "2025-12-14T00:00:00+00:00",
-                "ertek": 76.6
-              },
-              {
-                "idopont_utc": "2025-12-21T00:00:00+00:00",
-                "ertek": 77.1
-              },
-              {
-                "idopont_utc": "2025-12-28T00:00:00+00:00",
-                "ertek": 77.6
-              },
-              {
-                "idopont_utc": "2026-01-04T00:00:00+00:00",
-                "ertek": 78.0
-              },
-              {
-                "idopont_utc": "2026-01-11T00:00:00+00:00",
-                "ertek": 78.3
-              },
-              {
-                "idopont_utc": "2026-01-18T00:00:00+00:00",
-                "ertek": 78.7
-              },
-              {
-                "idopont_utc": "2026-01-25T00:00:00+00:00",
-                "ertek": 79.0
-              },
-              {
-                "idopont_utc": "2026-02-01T00:00:00+00:00",
-                "ertek": 79.4
-              },
-              {
-                "idopont_utc": "2026-02-08T00:00:00+00:00",
-                "ertek": 80.0
-              },
-              {
-                "idopont_utc": "2026-02-15T00:00:00+00:00",
-                "ertek": 80.3
-              },
-              {
-                "idopont_utc": "2026-02-22T00:00:00+00:00",
-                "ertek": 80.4
-              },
-              {
-                "idopont_utc": "2026-03-01T00:00:00+00:00",
-                "ertek": 80.5
-              },
-              {
-                "idopont_utc": "2026-03-08T00:00:00+00:00",
-                "ertek": 80.4
-              },
-              {
-                "idopont_utc": "2026-03-15T00:00:00+00:00",
-                "ertek": 80.1
-              },
-              {
-                "idopont_utc": "2026-03-22T00:00:00+00:00",
-                "ertek": 79.7
-              },
-              {
-                "idopont_utc": "2026-03-29T00:00:00+00:00",
                 "ertek": 79.1
               },
               {
+                "idopont_utc": "2025-12-21T00:00:00+00:00",
+                "ertek": 79.7
+              },
+              {
+                "idopont_utc": "2025-12-28T00:00:00+00:00",
+                "ertek": 80.3
+              },
+              {
+                "idopont_utc": "2026-01-04T00:00:00+00:00",
+                "ertek": 80.8
+              },
+              {
+                "idopont_utc": "2026-01-11T00:00:00+00:00",
+                "ertek": 81.2
+              },
+              {
+                "idopont_utc": "2026-01-18T00:00:00+00:00",
+                "ertek": 81.7
+              },
+              {
+                "idopont_utc": "2026-01-25T00:00:00+00:00",
+                "ertek": 82.1
+              },
+              {
+                "idopont_utc": "2026-02-01T00:00:00+00:00",
+                "ertek": 82.5
+              },
+              {
+                "idopont_utc": "2026-02-08T00:00:00+00:00",
+                "ertek": 83.0
+              },
+              {
+                "idopont_utc": "2026-02-15T00:00:00+00:00",
+                "ertek": 83.7
+              },
+              {
+                "idopont_utc": "2026-02-22T00:00:00+00:00",
+                "ertek": 83.9
+              },
+              {
+                "idopont_utc": "2026-03-01T00:00:00+00:00",
+                "ertek": 84.0
+              },
+              {
+                "idopont_utc": "2026-03-08T00:00:00+00:00",
+                "ertek": 83.9
+              },
+              {
+                "idopont_utc": "2026-03-15T00:00:00+00:00",
+                "ertek": 83.6
+              },
+              {
+                "idopont_utc": "2026-03-22T00:00:00+00:00",
+                "ertek": 83.1
+              },
+              {
+                "idopont_utc": "2026-03-29T00:00:00+00:00",
+                "ertek": 82.5
+              },
+              {
                 "idopont_utc": "2026-04-05T00:00:00+00:00",
-                "ertek": 78.7
+                "ertek": 82.0
               },
               {
                 "idopont_utc": "2026-04-12T00:00:00+00:00",
-                "ertek": 78.2
+                "ertek": 81.5
               },
               {
                 "idopont_utc": "2026-04-19T00:00:00+00:00",
-                "ertek": 77.9
+                "ertek": 81.0
               },
               {
                 "idopont_utc": "2026-04-26T00:00:00+00:00",
-                "ertek": 77.6
+                "ertek": 80.7
               },
               {
                 "idopont_utc": "2026-05-03T00:00:00+00:00",
-                "ertek": 77.5
+                "ertek": 80.5
               },
               {
                 "idopont_utc": "2026-05-10T00:00:00+00:00",
-                "ertek": 77.4
+                "ertek": 80.3
               },
               {
                 "idopont_utc": "2026-05-17T00:00:00+00:00",
-                "ertek": 77.4
+                "ertek": 80.2
               },
               {
                 "idopont_utc": "2026-05-24T00:00:00+00:00",
-                "ertek": 77.4
+                "ertek": 80.2
               },
               {
                 "idopont_utc": "2026-05-31T00:00:00+00:00",
-                "ertek": 77.4
+                "ertek": 80.1
               },
               {
                 "idopont_utc": "2026-06-07T00:00:00+00:00",
-                "ertek": 77.3
+                "ertek": 80.1
               },
               {
                 "idopont_utc": "2026-06-14T00:00:00+00:00",
-                "ertek": 77.2
+                "ertek": 80.0
               },
               {
                 "idopont_utc": "2026-06-21T00:00:00+00:00",
-                "ertek": 77.1
+                "ertek": 79.8
               },
               {
                 "idopont_utc": "2026-06-28T00:00:00+00:00",
-                "ertek": 76.9
+                "ertek": 79.6
               },
               {
                 "idopont_utc": "2026-07-05T00:00:00+00:00",
-                "ertek": 76.7
+                "ertek": 79.5
               },
               {
                 "idopont_utc": "2026-07-12T00:00:00+00:00",
-                "ertek": 76.6
+                "ertek": 79.4
               },
               {
                 "idopont_utc": "2026-07-19T00:00:00+00:00",
-                "ertek": 76.5
+                "ertek": 79.4
               },
               {
                 "idopont_utc": "2026-07-26T00:00:00+00:00",
-                "ertek": 76.5
+                "ertek": 79.4
               },
               {
                 "idopont_utc": "2026-08-02T00:00:00+00:00",
-                "ertek": 76.5
+                "ertek": 79.4
               },
               {
                 "idopont_utc": "2026-08-09T00:00:00+00:00",
-                "ertek": 76.4
+                "ertek": 79.4
               },
               {
                 "idopont_utc": "2026-08-16T00:00:00+00:00",
-                "ertek": 76.3
+                "ertek": 79.3
               },
               {
                 "idopont_utc": "2026-08-23T00:00:00+00:00",
-                "ertek": 76.2
+                "ertek": 79.2
               },
               {
                 "idopont_utc": "2026-08-30T00:00:00+00:00",
-                "ertek": 76.2
+                "ertek": 79.2
               },
               {
                 "idopont_utc": "2026-09-06T00:00:00+00:00",
-                "ertek": 76.1
+                "ertek": 79.3
               },
               {
                 "idopont_utc": "2026-09-13T00:00:00+00:00",
-                "ertek": 76.0
+                "ertek": 79.4
               },
               {
                 "idopont_utc": "2026-09-20T00:00:00+00:00",
-                "ertek": 76.0
+                "ertek": 79.5
               },
               {
                 "idopont_utc": "2026-09-27T00:00:00+00:00",
-                "ertek": 76.0
+                "ertek": 79.6
               },
               {
                 "idopont_utc": "2026-10-04T00:00:00+00:00",
-                "ertek": 76.1
+                "ertek": 79.8
               },
               {
                 "idopont_utc": "2026-10-11T00:00:00+00:00",
-                "ertek": 76.1
+                "ertek": 80.0
               },
               {
                 "idopont_utc": "2026-10-18T00:00:00+00:00",
-                "ertek": 76.1
+                "ertek": 80.2
               },
               {
                 "idopont_utc": "2026-10-25T00:00:00+00:00",
-                "ertek": 76.2
+                "ertek": 80.4
               },
               {
                 "idopont_utc": "2026-11-01T00:00:00+00:00",
-                "ertek": 76.2
+                "ertek": 80.6
               },
               {
                 "idopont_utc": "2026-11-08T00:00:00+00:00",
-                "ertek": 76.3
+                "ertek": 80.8
+              },
+              {
+                "idopont_utc": "2026-11-15T00:00:00+00:00",
+                "ertek": 80.9
               }
             ],
-            "cv_r2": -0.081,
-            "lin_cv_r2": -0.074,
+            "cv_r2": -0.088,
+            "lin_cv_r2": -0.078,
             "span": 0.5,
             "eff_df": 4.2,
             "irany": "novekszik",
             "fordulopontok": 4,
-            "rezidualis_szoras": 9.1
+            "rezidualis_szoras": 9.4
           },
           "racs": "het"
         }
@@ -10071,23 +10071,23 @@
         "1_nap": {
           "pont": [
             {
-              "idopont_utc": "2026-11-15T00:00:00+00:00",
-              "ertek": 77.0
+              "idopont_utc": "2026-11-22T00:00:00+00:00",
+              "ertek": 81.5
             }
           ],
           "also": [
             {
-              "idopont_utc": "2026-11-15T00:00:00+00:00",
-              "ertek": 65.6
+              "idopont_utc": "2026-11-22T00:00:00+00:00",
+              "ertek": 70.2
             }
           ],
           "felso": [
             {
-              "idopont_utc": "2026-11-15T00:00:00+00:00",
-              "ertek": 88.3
+              "idopont_utc": "2026-11-22T00:00:00+00:00",
+              "ertek": 92.8
             }
           ],
-          "rmse_veg": 8.9,
+          "rmse_veg": 8.8,
           "modszer": "damped-LOESS",
           "megbizhatosag": 0.82,
           "figyelmeztetes": false
@@ -10095,23 +10095,23 @@
         "1_het": {
           "pont": [
             {
-              "idopont_utc": "2026-11-15T00:00:00+00:00",
-              "ertek": 77.0
+              "idopont_utc": "2026-11-22T00:00:00+00:00",
+              "ertek": 81.5
             }
           ],
           "also": [
             {
-              "idopont_utc": "2026-11-15T00:00:00+00:00",
-              "ertek": 65.6
+              "idopont_utc": "2026-11-22T00:00:00+00:00",
+              "ertek": 70.2
             }
           ],
           "felso": [
             {
-              "idopont_utc": "2026-11-15T00:00:00+00:00",
-              "ertek": 88.3
+              "idopont_utc": "2026-11-22T00:00:00+00:00",
+              "ertek": 92.8
             }
           ],
-          "rmse_veg": 8.9,
+          "rmse_veg": 8.8,
           "modszer": "damped-LOESS",
           "megbizhatosag": 0.82,
           "figyelmeztetes": false
@@ -10119,227 +10119,227 @@
         "1_ho": {
           "pont": [
             {
-              "idopont_utc": "2026-11-15T00:00:00+00:00",
-              "ertek": 77.0
-            },
-            {
               "idopont_utc": "2026-11-22T00:00:00+00:00",
-              "ertek": 76.9
+              "ertek": 81.5
             },
             {
               "idopont_utc": "2026-11-29T00:00:00+00:00",
-              "ertek": 76.9
+              "ertek": 81.5
             },
             {
               "idopont_utc": "2026-12-06T00:00:00+00:00",
-              "ertek": 76.8
+              "ertek": 81.6
+            },
+            {
+              "idopont_utc": "2026-12-13T00:00:00+00:00",
+              "ertek": 81.6
             }
           ],
           "also": [
             {
-              "idopont_utc": "2026-11-15T00:00:00+00:00",
-              "ertek": 65.6
-            },
-            {
               "idopont_utc": "2026-11-22T00:00:00+00:00",
-              "ertek": 64.8
+              "ertek": 70.2
             },
             {
               "idopont_utc": "2026-11-29T00:00:00+00:00",
-              "ertek": 63.1
+              "ertek": 69.2
             },
             {
               "idopont_utc": "2026-12-06T00:00:00+00:00",
-              "ertek": 63.1
+              "ertek": 69.3
+            },
+            {
+              "idopont_utc": "2026-12-13T00:00:00+00:00",
+              "ertek": 69.3
             }
           ],
           "felso": [
             {
-              "idopont_utc": "2026-11-15T00:00:00+00:00",
-              "ertek": 88.3
-            },
-            {
               "idopont_utc": "2026-11-22T00:00:00+00:00",
-              "ertek": 89.1
+              "ertek": 92.8
             },
             {
               "idopont_utc": "2026-11-29T00:00:00+00:00",
-              "ertek": 90.6
+              "ertek": 93.8
             },
             {
               "idopont_utc": "2026-12-06T00:00:00+00:00",
-              "ertek": 90.6
+              "ertek": 93.8
+            },
+            {
+              "idopont_utc": "2026-12-13T00:00:00+00:00",
+              "ertek": 93.9
             }
           ],
-          "rmse_veg": 10.7,
+          "rmse_veg": 9.6,
           "modszer": "damped-LOESS",
-          "megbizhatosag": 0.79,
+          "megbizhatosag": 0.81,
           "figyelmeztetes": false
         },
         "3_ho": {
           "pont": [
             {
-              "idopont_utc": "2026-11-15T00:00:00+00:00",
-              "ertek": 77.0
-            },
-            {
               "idopont_utc": "2026-11-22T00:00:00+00:00",
-              "ertek": 76.9
+              "ertek": 81.5
             },
             {
               "idopont_utc": "2026-11-29T00:00:00+00:00",
-              "ertek": 76.9
+              "ertek": 81.5
             },
             {
               "idopont_utc": "2026-12-06T00:00:00+00:00",
-              "ertek": 76.8
+              "ertek": 81.6
             },
             {
               "idopont_utc": "2026-12-13T00:00:00+00:00",
-              "ertek": 76.8
+              "ertek": 81.6
             },
             {
               "idopont_utc": "2026-12-20T00:00:00+00:00",
-              "ertek": 76.7
+              "ertek": 81.6
             },
             {
               "idopont_utc": "2026-12-27T00:00:00+00:00",
-              "ertek": 76.7
+              "ertek": 81.6
             },
             {
               "idopont_utc": "2027-01-03T00:00:00+00:00",
-              "ertek": 76.7
+              "ertek": 81.6
             },
             {
               "idopont_utc": "2027-01-10T00:00:00+00:00",
-              "ertek": 76.6
+              "ertek": 81.6
             },
             {
               "idopont_utc": "2027-01-17T00:00:00+00:00",
-              "ertek": 76.6
+              "ertek": 81.6
             },
             {
               "idopont_utc": "2027-01-24T00:00:00+00:00",
-              "ertek": 76.6
+              "ertek": 81.6
             },
             {
               "idopont_utc": "2027-01-31T00:00:00+00:00",
-              "ertek": 76.5
+              "ertek": 81.6
             },
             {
               "idopont_utc": "2027-02-07T00:00:00+00:00",
-              "ertek": 76.5
+              "ertek": 81.6
+            },
+            {
+              "idopont_utc": "2027-02-14T00:00:00+00:00",
+              "ertek": 81.6
             }
           ],
           "also": [
             {
-              "idopont_utc": "2026-11-15T00:00:00+00:00",
-              "ertek": 65.6
-            },
-            {
               "idopont_utc": "2026-11-22T00:00:00+00:00",
-              "ertek": 64.8
+              "ertek": 70.2
             },
             {
               "idopont_utc": "2026-11-29T00:00:00+00:00",
-              "ertek": 63.1
+              "ertek": 69.2
             },
             {
               "idopont_utc": "2026-12-06T00:00:00+00:00",
-              "ertek": 63.1
+              "ertek": 69.3
             },
             {
               "idopont_utc": "2026-12-13T00:00:00+00:00",
-              "ertek": 63.0
+              "ertek": 69.3
             },
             {
               "idopont_utc": "2026-12-20T00:00:00+00:00",
-              "ertek": 63.0
+              "ertek": 69.3
             },
             {
               "idopont_utc": "2026-12-27T00:00:00+00:00",
-              "ertek": 62.9
+              "ertek": 69.3
             },
             {
               "idopont_utc": "2027-01-03T00:00:00+00:00",
-              "ertek": 62.9
+              "ertek": 69.3
             },
             {
               "idopont_utc": "2027-01-10T00:00:00+00:00",
-              "ertek": 62.9
+              "ertek": 69.3
             },
             {
               "idopont_utc": "2027-01-17T00:00:00+00:00",
-              "ertek": 62.8
+              "ertek": 69.3
             },
             {
               "idopont_utc": "2027-01-24T00:00:00+00:00",
-              "ertek": 62.8
+              "ertek": 69.3
             },
             {
               "idopont_utc": "2027-01-31T00:00:00+00:00",
-              "ertek": 62.6
+              "ertek": 67.6
             },
             {
               "idopont_utc": "2027-02-07T00:00:00+00:00",
-              "ertek": 62.6
+              "ertek": 67.6
+            },
+            {
+              "idopont_utc": "2027-02-14T00:00:00+00:00",
+              "ertek": 67.6
             }
           ],
           "felso": [
             {
-              "idopont_utc": "2026-11-15T00:00:00+00:00",
-              "ertek": 88.3
-            },
-            {
               "idopont_utc": "2026-11-22T00:00:00+00:00",
-              "ertek": 89.1
+              "ertek": 92.8
             },
             {
               "idopont_utc": "2026-11-29T00:00:00+00:00",
-              "ertek": 90.6
+              "ertek": 93.8
             },
             {
               "idopont_utc": "2026-12-06T00:00:00+00:00",
-              "ertek": 90.6
+              "ertek": 93.8
             },
             {
               "idopont_utc": "2026-12-13T00:00:00+00:00",
-              "ertek": 90.5
+              "ertek": 93.9
             },
             {
               "idopont_utc": "2026-12-20T00:00:00+00:00",
-              "ertek": 90.5
+              "ertek": 93.9
             },
             {
               "idopont_utc": "2026-12-27T00:00:00+00:00",
-              "ertek": 90.4
+              "ertek": 93.9
             },
             {
               "idopont_utc": "2027-01-03T00:00:00+00:00",
-              "ertek": 90.4
+              "ertek": 93.9
             },
             {
               "idopont_utc": "2027-01-10T00:00:00+00:00",
-              "ertek": 90.4
+              "ertek": 93.9
             },
             {
               "idopont_utc": "2027-01-17T00:00:00+00:00",
-              "ertek": 90.3
+              "ertek": 93.9
             },
             {
               "idopont_utc": "2027-01-24T00:00:00+00:00",
-              "ertek": 90.3
+              "ertek": 93.9
             },
             {
               "idopont_utc": "2027-01-31T00:00:00+00:00",
-              "ertek": 90.5
+              "ertek": 95.7
             },
             {
               "idopont_utc": "2027-02-07T00:00:00+00:00",
-              "ertek": 90.4
+              "ertek": 95.7
+            },
+            {
+              "idopont_utc": "2027-02-14T00:00:00+00:00",
+              "ertek": 95.7
             }
           ],
-          "rmse_veg": 10.9,
+          "rmse_veg": 11.0,
           "modszer": "damped-LOESS",
           "megbizhatosag": 0.78,
           "figyelmeztetes": true
@@ -10347,390 +10347,386 @@
         "1_ev": {
           "pont": [
             {
-              "idopont_utc": "2026-11-15T00:00:00+00:00",
-              "ertek": 77.0
-            },
-            {
               "idopont_utc": "2026-11-22T00:00:00+00:00",
-              "ertek": 76.9
+              "ertek": 81.5
             },
             {
               "idopont_utc": "2026-11-29T00:00:00+00:00",
-              "ertek": 76.9
+              "ertek": 81.5
             },
             {
               "idopont_utc": "2026-12-06T00:00:00+00:00",
-              "ertek": 76.8
+              "ertek": 81.6
             },
             {
               "idopont_utc": "2026-12-13T00:00:00+00:00",
-              "ertek": 76.8
+              "ertek": 81.6
             },
             {
               "idopont_utc": "2026-12-20T00:00:00+00:00",
-              "ertek": 76.7
+              "ertek": 81.6
             },
             {
               "idopont_utc": "2026-12-27T00:00:00+00:00",
-              "ertek": 76.7
+              "ertek": 81.6
             },
             {
               "idopont_utc": "2027-01-03T00:00:00+00:00",
-              "ertek": 76.7
+              "ertek": 81.6
             },
             {
               "idopont_utc": "2027-01-10T00:00:00+00:00",
-              "ertek": 76.6
+              "ertek": 81.6
             },
             {
               "idopont_utc": "2027-01-17T00:00:00+00:00",
-              "ertek": 76.6
+              "ertek": 81.6
             },
             {
               "idopont_utc": "2027-01-24T00:00:00+00:00",
-              "ertek": 76.6
+              "ertek": 81.6
             },
             {
               "idopont_utc": "2027-01-31T00:00:00+00:00",
-              "ertek": 76.5
+              "ertek": 81.6
             },
             {
               "idopont_utc": "2027-02-07T00:00:00+00:00",
-              "ertek": 76.5
+              "ertek": 81.6
             },
             {
               "idopont_utc": "2027-02-14T00:00:00+00:00",
-              "ertek": 76.5
+              "ertek": 81.6
             },
             {
               "idopont_utc": "2027-02-21T00:00:00+00:00",
-              "ertek": 76.4
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-02-28T00:00:00+00:00",
-              "ertek": 76.4
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-03-07T00:00:00+00:00",
-              "ertek": 76.4
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-03-14T00:00:00+00:00",
-              "ertek": 76.4
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-03-21T00:00:00+00:00",
-              "ertek": 76.3
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-03-28T00:00:00+00:00",
-              "ertek": 76.3
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-04-04T00:00:00+00:00",
-              "ertek": 76.3
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-04-11T00:00:00+00:00",
-              "ertek": 76.3
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-04-18T00:00:00+00:00",
-              "ertek": 76.3
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-04-25T00:00:00+00:00",
-              "ertek": 76.3
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-05-02T00:00:00+00:00",
-              "ertek": 76.2
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-05-09T00:00:00+00:00",
-              "ertek": 76.2
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-05-16T00:00:00+00:00",
-              "ertek": 76.2
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-05-23T00:00:00+00:00",
-              "ertek": 76.2
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-05-30T00:00:00+00:00",
-              "ertek": 76.2
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-06-06T00:00:00+00:00",
-              "ertek": 76.2
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-06-13T00:00:00+00:00",
-              "ertek": 76.2
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-06-20T00:00:00+00:00",
-              "ertek": 76.1
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-06-27T00:00:00+00:00",
-              "ertek": 76.1
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-07-04T00:00:00+00:00",
-              "ertek": 76.1
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-07-11T00:00:00+00:00",
-              "ertek": 76.1
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-07-18T00:00:00+00:00",
-              "ertek": 76.1
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-07-25T00:00:00+00:00",
-              "ertek": 76.1
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-08-01T00:00:00+00:00",
-              "ertek": 76.1
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-08-08T00:00:00+00:00",
-              "ertek": 76.1
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-08-15T00:00:00+00:00",
-              "ertek": 76.1
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-08-22T00:00:00+00:00",
-              "ertek": 76.1
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-08-29T00:00:00+00:00",
-              "ertek": 76.1
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-09-05T00:00:00+00:00",
-              "ertek": 76.1
+              "ertek": 81.7
             },
             {
               "idopont_utc": "2027-09-12T00:00:00+00:00",
-              "ertek": 76.1
+              "ertek": 81.8
             },
             {
               "idopont_utc": "2027-09-19T00:00:00+00:00",
-              "ertek": 76.0
+              "ertek": 81.8
             },
             {
               "idopont_utc": "2027-09-26T00:00:00+00:00",
-              "ertek": 76.0
+              "ertek": 81.8
             },
             {
               "idopont_utc": "2027-10-03T00:00:00+00:00",
-              "ertek": 76.0
+              "ertek": 81.8
             },
             {
               "idopont_utc": "2027-10-10T00:00:00+00:00",
-              "ertek": 76.0
+              "ertek": 81.8
             },
             {
               "idopont_utc": "2027-10-17T00:00:00+00:00",
-              "ertek": 76.0
+              "ertek": 81.8
             },
             {
               "idopont_utc": "2027-10-24T00:00:00+00:00",
-              "ertek": 76.0
+              "ertek": 81.8
             },
             {
               "idopont_utc": "2027-10-31T00:00:00+00:00",
-              "ertek": 76.0
+              "ertek": 81.8
             },
             {
               "idopont_utc": "2027-11-07T00:00:00+00:00",
-              "ertek": 76.0
+              "ertek": 81.8
+            },
+            {
+              "idopont_utc": "2027-11-14T00:00:00+00:00",
+              "ertek": 81.8
             }
           ],
           "also": [
             {
-              "idopont_utc": "2026-11-15T00:00:00+00:00",
-              "ertek": 65.6
-            },
-            {
               "idopont_utc": "2026-11-22T00:00:00+00:00",
-              "ertek": 64.8
+              "ertek": 70.2
             },
             {
               "idopont_utc": "2026-11-29T00:00:00+00:00",
-              "ertek": 63.1
+              "ertek": 69.2
             },
             {
               "idopont_utc": "2026-12-06T00:00:00+00:00",
-              "ertek": 63.1
+              "ertek": 69.3
             },
             {
               "idopont_utc": "2026-12-13T00:00:00+00:00",
-              "ertek": 63.0
+              "ertek": 69.3
             },
             {
               "idopont_utc": "2026-12-20T00:00:00+00:00",
-              "ertek": 63.0
+              "ertek": 69.3
             },
             {
               "idopont_utc": "2026-12-27T00:00:00+00:00",
-              "ertek": 62.9
+              "ertek": 69.3
             },
             {
               "idopont_utc": "2027-01-03T00:00:00+00:00",
-              "ertek": 62.9
+              "ertek": 69.3
             },
             {
               "idopont_utc": "2027-01-10T00:00:00+00:00",
-              "ertek": 62.9
+              "ertek": 69.3
             },
             {
               "idopont_utc": "2027-01-17T00:00:00+00:00",
-              "ertek": 62.8
+              "ertek": 69.3
             },
             {
               "idopont_utc": "2027-01-24T00:00:00+00:00",
-              "ertek": 62.8
+              "ertek": 69.3
             },
             {
               "idopont_utc": "2027-01-31T00:00:00+00:00",
-              "ertek": 62.6
+              "ertek": 67.6
             },
             {
               "idopont_utc": "2027-02-07T00:00:00+00:00",
-              "ertek": 62.6
+              "ertek": 67.6
             },
             {
               "idopont_utc": "2027-02-14T00:00:00+00:00",
-              "ertek": 62.5
+              "ertek": 67.6
             },
             {
               "idopont_utc": "2027-02-21T00:00:00+00:00",
-              "ertek": 61.5
+              "ertek": 67.6
             },
             {
               "idopont_utc": "2027-02-28T00:00:00+00:00",
-              "ertek": 28.8
+              "ertek": 67.6
             },
             {
               "idopont_utc": "2027-03-07T00:00:00+00:00",
-              "ertek": 27.3
+              "ertek": 32.1
             },
             {
               "idopont_utc": "2027-03-14T00:00:00+00:00",
-              "ertek": 25.9
+              "ertek": 30.6
             },
             {
               "idopont_utc": "2027-03-21T00:00:00+00:00",
-              "ertek": 24.5
+              "ertek": 29.1
             },
             {
               "idopont_utc": "2027-03-28T00:00:00+00:00",
-              "ertek": 23.1
+              "ertek": 27.6
             },
             {
               "idopont_utc": "2027-04-04T00:00:00+00:00",
-              "ertek": 21.8
+              "ertek": 26.2
             },
             {
               "idopont_utc": "2027-04-11T00:00:00+00:00",
-              "ertek": 20.5
+              "ertek": 24.9
             },
             {
               "idopont_utc": "2027-04-18T00:00:00+00:00",
-              "ertek": 19.2
+              "ertek": 23.5
             },
             {
               "idopont_utc": "2027-04-25T00:00:00+00:00",
-              "ertek": 18.0
+              "ertek": 22.2
             },
             {
               "idopont_utc": "2027-05-02T00:00:00+00:00",
-              "ertek": 16.8
+              "ertek": 21.0
             },
             {
               "idopont_utc": "2027-05-09T00:00:00+00:00",
-              "ertek": 15.6
+              "ertek": 19.7
             },
             {
               "idopont_utc": "2027-05-16T00:00:00+00:00",
-              "ertek": 14.4
+              "ertek": 18.5
             },
             {
               "idopont_utc": "2027-05-23T00:00:00+00:00",
-              "ertek": 13.2
+              "ertek": 17.3
             },
             {
               "idopont_utc": "2027-05-30T00:00:00+00:00",
-              "ertek": 12.1
+              "ertek": 16.1
             },
             {
               "idopont_utc": "2027-06-06T00:00:00+00:00",
-              "ertek": 11.0
+              "ertek": 15.0
             },
             {
               "idopont_utc": "2027-06-13T00:00:00+00:00",
-              "ertek": 9.9
+              "ertek": 13.8
             },
             {
               "idopont_utc": "2027-06-20T00:00:00+00:00",
-              "ertek": 8.9
+              "ertek": 12.7
             },
             {
               "idopont_utc": "2027-06-27T00:00:00+00:00",
-              "ertek": 7.8
+              "ertek": 11.6
             },
             {
               "idopont_utc": "2027-07-04T00:00:00+00:00",
-              "ertek": 6.8
+              "ertek": 10.5
             },
             {
               "idopont_utc": "2027-07-11T00:00:00+00:00",
-              "ertek": 5.7
+              "ertek": 9.4
             },
             {
               "idopont_utc": "2027-07-18T00:00:00+00:00",
-              "ertek": 4.7
+              "ertek": 8.4
             },
             {
               "idopont_utc": "2027-07-25T00:00:00+00:00",
-              "ertek": 3.7
+              "ertek": 7.4
             },
             {
               "idopont_utc": "2027-08-01T00:00:00+00:00",
-              "ertek": 2.8
+              "ertek": 6.3
             },
             {
               "idopont_utc": "2027-08-08T00:00:00+00:00",
-              "ertek": 1.8
+              "ertek": 5.3
             },
             {
               "idopont_utc": "2027-08-15T00:00:00+00:00",
-              "ertek": 0.8
+              "ertek": 4.3
             },
             {
               "idopont_utc": "2027-08-22T00:00:00+00:00",
-              "ertek": 0.0
+              "ertek": 3.3
             },
             {
               "idopont_utc": "2027-08-29T00:00:00+00:00",
-              "ertek": 0.0
+              "ertek": 2.4
             },
             {
               "idopont_utc": "2027-09-05T00:00:00+00:00",
-              "ertek": 0.0
+              "ertek": 1.4
             },
             {
               "idopont_utc": "2027-09-12T00:00:00+00:00",
-              "ertek": 0.0
+              "ertek": 0.5
             },
             {
               "idopont_utc": "2027-09-19T00:00:00+00:00",
@@ -10762,73 +10758,73 @@
             },
             {
               "idopont_utc": "2027-11-07T00:00:00+00:00",
+              "ertek": 0.0
+            },
+            {
+              "idopont_utc": "2027-11-14T00:00:00+00:00",
               "ertek": 0.0
             }
           ],
           "felso": [
             {
-              "idopont_utc": "2026-11-15T00:00:00+00:00",
-              "ertek": 88.3
-            },
-            {
               "idopont_utc": "2026-11-22T00:00:00+00:00",
-              "ertek": 89.1
+              "ertek": 92.8
             },
             {
               "idopont_utc": "2026-11-29T00:00:00+00:00",
-              "ertek": 90.6
+              "ertek": 93.8
             },
             {
               "idopont_utc": "2026-12-06T00:00:00+00:00",
-              "ertek": 90.6
+              "ertek": 93.8
             },
             {
               "idopont_utc": "2026-12-13T00:00:00+00:00",
-              "ertek": 90.5
+              "ertek": 93.9
             },
             {
               "idopont_utc": "2026-12-20T00:00:00+00:00",
-              "ertek": 90.5
+              "ertek": 93.9
             },
             {
               "idopont_utc": "2026-12-27T00:00:00+00:00",
-              "ertek": 90.4
+              "ertek": 93.9
             },
             {
               "idopont_utc": "2027-01-03T00:00:00+00:00",
-              "ertek": 90.4
+              "ertek": 93.9
             },
             {
               "idopont_utc": "2027-01-10T00:00:00+00:00",
-              "ertek": 90.4
+              "ertek": 93.9
             },
             {
               "idopont_utc": "2027-01-17T00:00:00+00:00",
-              "ertek": 90.3
+              "ertek": 93.9
             },
             {
               "idopont_utc": "2027-01-24T00:00:00+00:00",
-              "ertek": 90.3
+              "ertek": 93.9
             },
             {
               "idopont_utc": "2027-01-31T00:00:00+00:00",
-              "ertek": 90.5
+              "ertek": 95.7
             },
             {
               "idopont_utc": "2027-02-07T00:00:00+00:00",
-              "ertek": 90.4
+              "ertek": 95.7
             },
             {
               "idopont_utc": "2027-02-14T00:00:00+00:00",
-              "ertek": 90.4
+              "ertek": 95.7
             },
             {
               "idopont_utc": "2027-02-21T00:00:00+00:00",
-              "ertek": 91.4
+              "ertek": 95.7
             },
             {
               "idopont_utc": "2027-02-28T00:00:00+00:00",
-              "ertek": 100.0
+              "ertek": 95.7
             },
             {
               "idopont_utc": "2027-03-07T00:00:00+00:00",
@@ -10973,9 +10969,13 @@
             {
               "idopont_utc": "2027-11-07T00:00:00+00:00",
               "ertek": 100.0
+            },
+            {
+              "idopont_utc": "2027-11-14T00:00:00+00:00",
+              "ertek": 100.0
             }
           ],
-          "rmse_veg": 67.0,
+          "rmse_veg": 69.8,
           "modszer": "damped-LOESS",
           "megbizhatosag": 0.0,
           "figyelmeztetes": true
@@ -10998,70 +10998,212 @@
         },
         "2_het": {
           "ervenyes": true,
-          "meredekseg_nap": -0.136,
-          "se_meredekseg": 0.5903,
+          "meredekseg_nap": -1.314,
+          "se_meredekseg": 0.4775,
           "se_masodlagos_autokorrelacio": true,
-          "irany": "stagnal",
-          "r2": 0.004,
+          "irany": "csokken",
+          "r2": 0.387,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-11-04T00:00:00+00:00",
-          "ablak_veg_utc": "2026-11-18T00:00:00+00:00",
+          "ablak_kezdet_utc": "2026-11-09T00:00:00+00:00",
+          "ablak_veg_utc": "2026-11-23T00:00:00+00:00",
           "pontok_hasznalt": 14,
           "pontok_nem_nulla": 14,
           "pontok_kihagyva_reszleges": 1,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-11-04T00:00:00+00:00",
-              "ertek": 59.31428571428572
+              "idopont_utc": "2026-11-09T00:00:00+00:00",
+              "ertek": 61.971428571428575
             },
             {
-              "idopont_utc": "2026-11-17T00:00:00+00:00",
-              "ertek": 57.542857142857144
+              "idopont_utc": "2026-11-22T00:00:00+00:00",
+              "ertek": 44.885714285714286
             }
           ],
-          "mai_ertek": 59,
-          "mai_reziduum": 1.46,
-          "reziduum_szokasos": 5.2,
+          "mai_ertek": 40,
+          "mai_reziduum": -4.89,
+          "reziduum_szokasos": 5.44,
           "illeszkedes": "illeszkedik",
           "nemlin": {
             "van_struktura": true,
             "gorbe": [
               {
-                "idopont_utc": "2026-11-04T00:00:00+00:00",
-                "ertek": 63.5
-              },
-              {
-                "idopont_utc": "2026-11-05T00:00:00+00:00",
-                "ertek": 61.2
-              },
-              {
-                "idopont_utc": "2026-11-06T00:00:00+00:00",
-                "ertek": 58.1
-              },
-              {
-                "idopont_utc": "2026-11-07T00:00:00+00:00",
-                "ertek": 50.9
-              },
-              {
-                "idopont_utc": "2026-11-08T00:00:00+00:00",
-                "ertek": 48.6
-              },
-              {
                 "idopont_utc": "2026-11-09T00:00:00+00:00",
-                "ertek": 55.7
+                "ertek": 54.3
               },
               {
                 "idopont_utc": "2026-11-10T00:00:00+00:00",
-                "ertek": 67.1
+                "ertek": 61.0
               },
               {
                 "idopont_utc": "2026-11-11T00:00:00+00:00",
-                "ertek": 70.8
+                "ertek": 66.1
               },
               {
                 "idopont_utc": "2026-11-12T00:00:00+00:00",
-                "ertek": 64.9
+                "ertek": 61.1
+              },
+              {
+                "idopont_utc": "2026-11-13T00:00:00+00:00",
+                "ertek": 52.7
+              },
+              {
+                "idopont_utc": "2026-11-14T00:00:00+00:00",
+                "ertek": 49.0
+              },
+              {
+                "idopont_utc": "2026-11-15T00:00:00+00:00",
+                "ertek": 50.1
+              },
+              {
+                "idopont_utc": "2026-11-16T00:00:00+00:00",
+                "ertek": 55.1
+              },
+              {
+                "idopont_utc": "2026-11-17T00:00:00+00:00",
+                "ertek": 56.4
+              },
+              {
+                "idopont_utc": "2026-11-18T00:00:00+00:00",
+                "ertek": 55.7
+              },
+              {
+                "idopont_utc": "2026-11-19T00:00:00+00:00",
+                "ertek": 52.9
+              },
+              {
+                "idopont_utc": "2026-11-20T00:00:00+00:00",
+                "ertek": 48.4
+              },
+              {
+                "idopont_utc": "2026-11-21T00:00:00+00:00",
+                "ertek": 43.2
+              },
+              {
+                "idopont_utc": "2026-11-22T00:00:00+00:00",
+                "ertek": 38.2
+              }
+            ],
+            "cv_r2": 0.387,
+            "lin_cv_r2": 0.023,
+            "span": 0.3,
+            "eff_df": 6.5,
+            "irany": "csokken",
+            "fordulopontok": 3,
+            "rezidualis_szoras": 3.0
+          },
+          "racs": "nap"
+        },
+        "1_ho": {
+          "ervenyes": true,
+          "meredekseg_nap": -0.56,
+          "se_meredekseg": 0.2179,
+          "se_masodlagos_autokorrelacio": true,
+          "irany": "csokken",
+          "r2": 0.191,
+          "r2_masodlagos_autokorrelacio": true,
+          "ablak_kezdet_utc": "2026-10-24T00:00:00+00:00",
+          "ablak_veg_utc": "2026-11-23T00:00:00+00:00",
+          "pontok_hasznalt": 30,
+          "pontok_nem_nulla": 30,
+          "pontok_kihagyva_reszleges": 1,
+          "pontok_hianyzo": 0,
+          "illesztes_vonal": [
+            {
+              "idopont_utc": "2026-10-24T00:00:00+00:00",
+              "ertek": 63.89247311827957
+            },
+            {
+              "idopont_utc": "2026-11-22T00:00:00+00:00",
+              "ertek": 47.64086021505376
+            }
+          ],
+          "mai_ertek": 40,
+          "mai_reziduum": -7.64,
+          "reziduum_szokasos": 7.4,
+          "illeszkedes": "illeszkedik",
+          "nemlin": {
+            "van_struktura": false,
+            "gorbe": [
+              {
+                "idopont_utc": "2026-10-24T00:00:00+00:00",
+                "ertek": 68.4
+              },
+              {
+                "idopont_utc": "2026-10-25T00:00:00+00:00",
+                "ertek": 67.2
+              },
+              {
+                "idopont_utc": "2026-10-26T00:00:00+00:00",
+                "ertek": 66.0
+              },
+              {
+                "idopont_utc": "2026-10-27T00:00:00+00:00",
+                "ertek": 64.8
+              },
+              {
+                "idopont_utc": "2026-10-28T00:00:00+00:00",
+                "ertek": 62.8
+              },
+              {
+                "idopont_utc": "2026-10-29T00:00:00+00:00",
+                "ertek": 59.1
+              },
+              {
+                "idopont_utc": "2026-10-30T00:00:00+00:00",
+                "ertek": 56.6
+              },
+              {
+                "idopont_utc": "2026-10-31T00:00:00+00:00",
+                "ertek": 54.8
+              },
+              {
+                "idopont_utc": "2026-11-01T00:00:00+00:00",
+                "ertek": 53.9
+              },
+              {
+                "idopont_utc": "2026-11-02T00:00:00+00:00",
+                "ertek": 55.7
+              },
+              {
+                "idopont_utc": "2026-11-03T00:00:00+00:00",
+                "ertek": 59.2
+              },
+              {
+                "idopont_utc": "2026-11-04T00:00:00+00:00",
+                "ertek": 59.1
+              },
+              {
+                "idopont_utc": "2026-11-05T00:00:00+00:00",
+                "ertek": 56.0
+              },
+              {
+                "idopont_utc": "2026-11-06T00:00:00+00:00",
+                "ertek": 52.7
+              },
+              {
+                "idopont_utc": "2026-11-07T00:00:00+00:00",
+                "ertek": 49.6
+              },
+              {
+                "idopont_utc": "2026-11-08T00:00:00+00:00",
+                "ertek": 49.3
+              },
+              {
+                "idopont_utc": "2026-11-09T00:00:00+00:00",
+                "ertek": 53.5
+              },
+              {
+                "idopont_utc": "2026-11-10T00:00:00+00:00",
+                "ertek": 57.8
+              },
+              {
+                "idopont_utc": "2026-11-11T00:00:00+00:00",
+                "ertek": 59.7
+              },
+              {
+                "idopont_utc": "2026-11-12T00:00:00+00:00",
+                "ertek": 58.6
               },
               {
                 "idopont_utc": "2026-11-13T00:00:00+00:00",
@@ -11069,592 +11211,450 @@
               },
               {
                 "idopont_utc": "2026-11-14T00:00:00+00:00",
-                "ertek": 52.0
+                "ertek": 53.1
               },
               {
                 "idopont_utc": "2026-11-15T00:00:00+00:00",
-                "ertek": 53.9
+                "ertek": 52.5
               },
               {
                 "idopont_utc": "2026-11-16T00:00:00+00:00",
-                "ertek": 57.0
+                "ertek": 53.3
               },
               {
                 "idopont_utc": "2026-11-17T00:00:00+00:00",
-                "ertek": 59.8
+                "ertek": 54.4
+              },
+              {
+                "idopont_utc": "2026-11-18T00:00:00+00:00",
+                "ertek": 54.0
+              },
+              {
+                "idopont_utc": "2026-11-19T00:00:00+00:00",
+                "ertek": 50.6
+              },
+              {
+                "idopont_utc": "2026-11-20T00:00:00+00:00",
+                "ertek": 47.3
+              },
+              {
+                "idopont_utc": "2026-11-21T00:00:00+00:00",
+                "ertek": 43.8
+              },
+              {
+                "idopont_utc": "2026-11-22T00:00:00+00:00",
+                "ertek": 40.0
               }
             ],
-            "cv_r2": 0.565,
-            "lin_cv_r2": -0.305,
-            "span": 0.3,
-            "eff_df": 6.5,
-            "irany": "csokken",
-            "fordulopontok": 3,
-            "rezidualis_szoras": 2.7
-          },
-          "racs": "nap"
-        },
-        "1_ho": {
-          "ervenyes": true,
-          "meredekseg_nap": -0.126,
-          "se_meredekseg": 0.1639,
-          "se_masodlagos_autokorrelacio": true,
-          "irany": "stagnal",
-          "r2": 0.021,
-          "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-10-19T00:00:00+00:00",
-          "ablak_veg_utc": "2026-11-18T00:00:00+00:00",
-          "pontok_hasznalt": 30,
-          "pontok_nem_nulla": 30,
-          "pontok_kihagyva_reszleges": 1,
-          "pontok_hianyzo": 0,
-          "illesztes_vonal": [
-            {
-              "idopont_utc": "2026-10-19T00:00:00+00:00",
-              "ertek": 61.19569892473118
-            },
-            {
-              "idopont_utc": "2026-11-17T00:00:00+00:00",
-              "ertek": 57.53763440860215
-            }
-          ],
-          "mai_ertek": 59,
-          "mai_reziduum": 1.46,
-          "reziduum_szokasos": 4.49,
-          "illeszkedes": "illeszkedik",
-          "nemlin": {
-            "van_struktura": false,
-            "gorbe": [
-              {
-                "idopont_utc": "2026-10-19T00:00:00+00:00",
-                "ertek": 55.2
-              },
-              {
-                "idopont_utc": "2026-10-20T00:00:00+00:00",
-                "ertek": 56.7
-              },
-              {
-                "idopont_utc": "2026-10-21T00:00:00+00:00",
-                "ertek": 58.3
-              },
-              {
-                "idopont_utc": "2026-10-22T00:00:00+00:00",
-                "ertek": 60.0
-              },
-              {
-                "idopont_utc": "2026-10-23T00:00:00+00:00",
-                "ertek": 62.3
-              },
-              {
-                "idopont_utc": "2026-10-24T00:00:00+00:00",
-                "ertek": 63.3
-              },
-              {
-                "idopont_utc": "2026-10-25T00:00:00+00:00",
-                "ertek": 64.0
-              },
-              {
-                "idopont_utc": "2026-10-26T00:00:00+00:00",
-                "ertek": 65.0
-              },
-              {
-                "idopont_utc": "2026-10-27T00:00:00+00:00",
-                "ertek": 65.1
-              },
-              {
-                "idopont_utc": "2026-10-28T00:00:00+00:00",
-                "ertek": 64.1
-              },
-              {
-                "idopont_utc": "2026-10-29T00:00:00+00:00",
-                "ertek": 62.3
-              },
-              {
-                "idopont_utc": "2026-10-30T00:00:00+00:00",
-                "ertek": 60.3
-              },
-              {
-                "idopont_utc": "2026-10-31T00:00:00+00:00",
-                "ertek": 58.4
-              },
-              {
-                "idopont_utc": "2026-11-01T00:00:00+00:00",
-                "ertek": 56.6
-              },
-              {
-                "idopont_utc": "2026-11-02T00:00:00+00:00",
-                "ertek": 56.3
-              },
-              {
-                "idopont_utc": "2026-11-03T00:00:00+00:00",
-                "ertek": 58.1
-              },
-              {
-                "idopont_utc": "2026-11-04T00:00:00+00:00",
-                "ertek": 58.9
-              },
-              {
-                "idopont_utc": "2026-11-05T00:00:00+00:00",
-                "ertek": 57.7
-              },
-              {
-                "idopont_utc": "2026-11-06T00:00:00+00:00",
-                "ertek": 56.0
-              },
-              {
-                "idopont_utc": "2026-11-07T00:00:00+00:00",
-                "ertek": 54.7
-              },
-              {
-                "idopont_utc": "2026-11-08T00:00:00+00:00",
-                "ertek": 55.4
-              },
-              {
-                "idopont_utc": "2026-11-09T00:00:00+00:00",
-                "ertek": 58.5
-              },
-              {
-                "idopont_utc": "2026-11-10T00:00:00+00:00",
-                "ertek": 61.9
-              },
-              {
-                "idopont_utc": "2026-11-11T00:00:00+00:00",
-                "ertek": 63.6
-              },
-              {
-                "idopont_utc": "2026-11-12T00:00:00+00:00",
-                "ertek": 62.4
-              },
-              {
-                "idopont_utc": "2026-11-13T00:00:00+00:00",
-                "ertek": 59.2
-              },
-              {
-                "idopont_utc": "2026-11-14T00:00:00+00:00",
-                "ertek": 57.8
-              },
-              {
-                "idopont_utc": "2026-11-15T00:00:00+00:00",
-                "ertek": 56.5
-              },
-              {
-                "idopont_utc": "2026-11-16T00:00:00+00:00",
-                "ertek": 55.7
-              },
-              {
-                "idopont_utc": "2026-11-17T00:00:00+00:00",
-                "ertek": 55.3
-              }
-            ],
-            "cv_r2": -0.133,
-            "lin_cv_r2": -0.06,
+            "cv_r2": 0.138,
+            "lin_cv_r2": 0.103,
             "span": 0.3,
             "eff_df": 7.1,
-            "irany": "hullamzik",
-            "fordulopontok": 5,
-            "rezidualis_szoras": 6.1
+            "irany": "csokken",
+            "fordulopontok": 6,
+            "rezidualis_szoras": 8.0
           },
           "racs": "nap"
         },
         "3_ho": {
           "ervenyes": true,
-          "meredekseg_nap": 0.012,
-          "se_meredekseg": 0.0624,
+          "meredekseg_nap": 0.033,
+          "se_meredekseg": 0.0548,
           "se_masodlagos_autokorrelacio": true,
           "irany": "stagnal",
-          "r2": 0.0,
+          "r2": 0.004,
           "r2_masodlagos_autokorrelacio": true,
-          "ablak_kezdet_utc": "2026-08-20T00:00:00+00:00",
-          "ablak_veg_utc": "2026-11-18T00:00:00+00:00",
+          "ablak_kezdet_utc": "2026-08-25T00:00:00+00:00",
+          "ablak_veg_utc": "2026-11-23T00:00:00+00:00",
           "pontok_hasznalt": 90,
           "pontok_nem_nulla": 87,
           "pontok_kihagyva_reszleges": 1,
           "pontok_hianyzo": 0,
           "illesztes_vonal": [
             {
-              "idopont_utc": "2026-08-20T00:00:00+00:00",
-              "ertek": 57.81196581196581
+              "idopont_utc": "2026-08-25T00:00:00+00:00",
+              "ertek": 52.19023199023199
             },
             {
-              "idopont_utc": "2026-11-17T00:00:00+00:00",
-              "ertek": 58.8991452991453
+              "idopont_utc": "2026-11-22T00:00:00+00:00",
+              "ertek": 55.16532356532357
             }
           ],
-          "mai_ertek": 59,
-          "mai_reziduum": 0.1,
-          "reziduum_szokasos": 6.76,
-          "illeszkedes": "illeszkedik",
+          "mai_ertek": 40,
+          "mai_reziduum": -15.17,
+          "reziduum_szokasos": 6.2,
+          "illeszkedes": "alatta",
           "nemlin": {
             "van_struktura": false,
             "gorbe": [
               {
-                "idopont_utc": "2026-08-20T00:00:00+00:00",
-                "ertek": 59.8
-              },
-              {
-                "idopont_utc": "2026-08-21T00:00:00+00:00",
-                "ertek": 59.6
-              },
-              {
-                "idopont_utc": "2026-08-22T00:00:00+00:00",
-                "ertek": 59.5
-              },
-              {
-                "idopont_utc": "2026-08-23T00:00:00+00:00",
-                "ertek": 59.4
-              },
-              {
-                "idopont_utc": "2026-08-24T00:00:00+00:00",
-                "ertek": 59.3
-              },
-              {
                 "idopont_utc": "2026-08-25T00:00:00+00:00",
-                "ertek": 59.1
+                "ertek": 53.0
               },
               {
                 "idopont_utc": "2026-08-26T00:00:00+00:00",
-                "ertek": 59.0
+                "ertek": 52.9
               },
               {
                 "idopont_utc": "2026-08-27T00:00:00+00:00",
-                "ertek": 58.9
+                "ertek": 52.8
               },
               {
                 "idopont_utc": "2026-08-28T00:00:00+00:00",
-                "ertek": 58.8
+                "ertek": 52.8
               },
               {
                 "idopont_utc": "2026-08-29T00:00:00+00:00",
-                "ertek": 58.7
+                "ertek": 52.7
               },
               {
                 "idopont_utc": "2026-08-30T00:00:00+00:00",
-                "ertek": 58.6
+                "ertek": 52.6
               },
               {
                 "idopont_utc": "2026-08-31T00:00:00+00:00",
-                "ertek": 58.5
+                "ertek": 52.6
               },
               {
                 "idopont_utc": "2026-09-01T00:00:00+00:00",
-                "ertek": 58.4
+                "ertek": 52.5
               },
               {
                 "idopont_utc": "2026-09-02T00:00:00+00:00",
-                "ertek": 58.3
+                "ertek": 52.5
               },
               {
                 "idopont_utc": "2026-09-03T00:00:00+00:00",
-                "ertek": 58.2
+                "ertek": 52.4
               },
               {
                 "idopont_utc": "2026-09-04T00:00:00+00:00",
-                "ertek": 58.1
+                "ertek": 52.4
               },
               {
                 "idopont_utc": "2026-09-05T00:00:00+00:00",
-                "ertek": 58.0
+                "ertek": 52.3
               },
               {
                 "idopont_utc": "2026-09-06T00:00:00+00:00",
-                "ertek": 58.0
+                "ertek": 52.3
               },
               {
                 "idopont_utc": "2026-09-07T00:00:00+00:00",
-                "ertek": 57.9
+                "ertek": 52.2
               },
               {
                 "idopont_utc": "2026-09-08T00:00:00+00:00",
-                "ertek": 57.8
+                "ertek": 52.2
               },
               {
                 "idopont_utc": "2026-09-09T00:00:00+00:00",
-                "ertek": 57.8
+                "ertek": 52.2
               },
               {
                 "idopont_utc": "2026-09-10T00:00:00+00:00",
-                "ertek": 57.7
+                "ertek": 52.2
               },
               {
                 "idopont_utc": "2026-09-11T00:00:00+00:00",
-                "ertek": 57.6
+                "ertek": 52.2
               },
               {
                 "idopont_utc": "2026-09-12T00:00:00+00:00",
-                "ertek": 57.6
+                "ertek": 52.2
               },
               {
                 "idopont_utc": "2026-09-13T00:00:00+00:00",
-                "ertek": 57.5
+                "ertek": 52.1
               },
               {
                 "idopont_utc": "2026-09-14T00:00:00+00:00",
-                "ertek": 57.5
+                "ertek": 52.1
               },
               {
                 "idopont_utc": "2026-09-15T00:00:00+00:00",
-                "ertek": 57.4
+                "ertek": 52.1
               },
               {
                 "idopont_utc": "2026-09-16T00:00:00+00:00",
-                "ertek": 57.4
+                "ertek": 52.2
               },
               {
                 "idopont_utc": "2026-09-17T00:00:00+00:00",
-                "ertek": 57.3
+                "ertek": 52.2
               },
               {
                 "idopont_utc": "2026-09-18T00:00:00+00:00",
-                "ertek": 57.2
+                "ertek": 52.2
               },
               {
                 "idopont_utc": "2026-09-19T00:00:00+00:00",
-                "ertek": 57.2
+                "ertek": 52.2
               },
               {
                 "idopont_utc": "2026-09-20T00:00:00+00:00",
-                "ertek": 57.1
+                "ertek": 52.2
               },
               {
                 "idopont_utc": "2026-09-21T00:00:00+00:00",
-                "ertek": 57.1
+                "ertek": 52.2
               },
               {
                 "idopont_utc": "2026-09-22T00:00:00+00:00",
-                "ertek": 57.1
+                "ertek": 52.1
               },
               {
                 "idopont_utc": "2026-09-23T00:00:00+00:00",
-                "ertek": 57.1
+                "ertek": 52.1
               },
               {
                 "idopont_utc": "2026-09-24T00:00:00+00:00",
-                "ertek": 57.1
+                "ertek": 52.0
               },
               {
                 "idopont_utc": "2026-09-25T00:00:00+00:00",
-                "ertek": 57.1
+                "ertek": 52.0
               },
               {
                 "idopont_utc": "2026-09-26T00:00:00+00:00",
-                "ertek": 57.1
+                "ertek": 52.0
               },
               {
                 "idopont_utc": "2026-09-27T00:00:00+00:00",
-                "ertek": 57.1
+                "ertek": 52.0
               },
               {
                 "idopont_utc": "2026-09-28T00:00:00+00:00",
-                "ertek": 57.1
+                "ertek": 52.1
               },
               {
                 "idopont_utc": "2026-09-29T00:00:00+00:00",
-                "ertek": 57.2
+                "ertek": 52.2
               },
               {
                 "idopont_utc": "2026-09-30T00:00:00+00:00",
-                "ertek": 57.2
+                "ertek": 52.3
               },
               {
                 "idopont_utc": "2026-10-01T00:00:00+00:00",
-                "ertek": 57.3
+                "ertek": 52.4
               },
               {
                 "idopont_utc": "2026-10-02T00:00:00+00:00",
-                "ertek": 57.4
+                "ertek": 52.6
               },
               {
                 "idopont_utc": "2026-10-03T00:00:00+00:00",
-                "ertek": 57.6
+                "ertek": 52.7
               },
               {
                 "idopont_utc": "2026-10-04T00:00:00+00:00",
-                "ertek": 57.7
+                "ertek": 52.9
               },
               {
                 "idopont_utc": "2026-10-05T00:00:00+00:00",
-                "ertek": 57.9
+                "ertek": 53.2
               },
               {
                 "idopont_utc": "2026-10-06T00:00:00+00:00",
-                "ertek": 58.1
+                "ertek": 53.4
               },
               {
                 "idopont_utc": "2026-10-07T00:00:00+00:00",
-                "ertek": 58.2
+                "ertek": 53.6
               },
               {
                 "idopont_utc": "2026-10-08T00:00:00+00:00",
-                "ertek": 58.4
+                "ertek": 53.9
               },
               {
                 "idopont_utc": "2026-10-09T00:00:00+00:00",
-                "ertek": 58.6
+                "ertek": 54.2
               },
               {
                 "idopont_utc": "2026-10-10T00:00:00+00:00",
-                "ertek": 58.8
+                "ertek": 54.5
               },
               {
                 "idopont_utc": "2026-10-11T00:00:00+00:00",
-                "ertek": 59.0
+                "ertek": 54.7
               },
               {
                 "idopont_utc": "2026-10-12T00:00:00+00:00",
-                "ertek": 59.2
+                "ertek": 55.0
               },
               {
                 "idopont_utc": "2026-10-13T00:00:00+00:00",
-                "ertek": 59.3
+                "ertek": 55.3
               },
               {
                 "idopont_utc": "2026-10-14T00:00:00+00:00",
-                "ertek": 59.4
+                "ertek": 55.5
               },
               {
                 "idopont_utc": "2026-10-15T00:00:00+00:00",
-                "ertek": 59.5
+                "ertek": 55.7
               },
               {
                 "idopont_utc": "2026-10-16T00:00:00+00:00",
-                "ertek": 59.6
+                "ertek": 55.9
               },
               {
                 "idopont_utc": "2026-10-17T00:00:00+00:00",
-                "ertek": 59.7
+                "ertek": 56.1
               },
               {
                 "idopont_utc": "2026-10-18T00:00:00+00:00",
-                "ertek": 59.6
+                "ertek": 56.2
               },
               {
                 "idopont_utc": "2026-10-19T00:00:00+00:00",
-                "ertek": 59.6
+                "ertek": 56.3
               },
               {
                 "idopont_utc": "2026-10-20T00:00:00+00:00",
-                "ertek": 59.5
+                "ertek": 56.3
               },
               {
                 "idopont_utc": "2026-10-21T00:00:00+00:00",
-                "ertek": 59.5
+                "ertek": 56.3
               },
               {
                 "idopont_utc": "2026-10-22T00:00:00+00:00",
-                "ertek": 59.4
+                "ertek": 56.3
               },
               {
                 "idopont_utc": "2026-10-23T00:00:00+00:00",
-                "ertek": 59.4
+                "ertek": 56.3
               },
               {
                 "idopont_utc": "2026-10-24T00:00:00+00:00",
-                "ertek": 59.3
+                "ertek": 56.2
               },
               {
                 "idopont_utc": "2026-10-25T00:00:00+00:00",
-                "ertek": 59.3
+                "ertek": 56.1
               },
               {
                 "idopont_utc": "2026-10-26T00:00:00+00:00",
-                "ertek": 59.2
+                "ertek": 56.0
               },
               {
                 "idopont_utc": "2026-10-27T00:00:00+00:00",
-                "ertek": 59.2
+                "ertek": 55.9
               },
               {
                 "idopont_utc": "2026-10-28T00:00:00+00:00",
-                "ertek": 59.1
+                "ertek": 55.8
               },
               {
                 "idopont_utc": "2026-10-29T00:00:00+00:00",
-                "ertek": 59.1
+                "ertek": 55.6
               },
               {
                 "idopont_utc": "2026-10-30T00:00:00+00:00",
-                "ertek": 59.1
+                "ertek": 55.5
               },
               {
                 "idopont_utc": "2026-10-31T00:00:00+00:00",
-                "ertek": 59.0
+                "ertek": 55.4
               },
               {
                 "idopont_utc": "2026-11-01T00:00:00+00:00",
-                "ertek": 59.0
+                "ertek": 55.3
               },
               {
                 "idopont_utc": "2026-11-02T00:00:00+00:00",
-                "ertek": 58.9
+                "ertek": 55.1
               },
               {
                 "idopont_utc": "2026-11-03T00:00:00+00:00",
-                "ertek": 58.9
+                "ertek": 55.0
               },
               {
                 "idopont_utc": "2026-11-04T00:00:00+00:00",
-                "ertek": 58.8
+                "ertek": 54.9
               },
               {
                 "idopont_utc": "2026-11-05T00:00:00+00:00",
-                "ertek": 58.8
+                "ertek": 54.7
               },
               {
                 "idopont_utc": "2026-11-06T00:00:00+00:00",
-                "ertek": 58.8
+                "ertek": 54.6
               },
               {
                 "idopont_utc": "2026-11-07T00:00:00+00:00",
-                "ertek": 58.7
+                "ertek": 54.4
               },
               {
                 "idopont_utc": "2026-11-08T00:00:00+00:00",
-                "ertek": 58.7
+                "ertek": 54.3
               },
               {
                 "idopont_utc": "2026-11-09T00:00:00+00:00",
-                "ertek": 58.6
+                "ertek": 54.2
               },
               {
                 "idopont_utc": "2026-11-10T00:00:00+00:00",
-                "ertek": 58.6
+                "ertek": 54.0
               },
               {
                 "idopont_utc": "2026-11-11T00:00:00+00:00",
-                "ertek": 58.5
+                "ertek": 53.9
               },
               {
                 "idopont_utc": "2026-11-12T00:00:00+00:00",
-                "ertek": 58.5
+                "ertek": 53.7
               },
               {
                 "idopont_utc": "2026-11-13T00:00:00+00:00",
-                "ertek": 58.4
+                "ertek": 53.5
               },
               {
                 "idopont_utc": "2026-11-14T00:00:00+00:00",
-                "ertek": 58.4
+                "ertek": 53.4
               },
               {
                 "idopont_utc": "2026-11-15T00:00:00+00:00",
-                "ertek": 58.3
+                "ertek": 53.2
               },
               {
                 "idopont_utc": "2026-11-16T00:00:00+00:00",
-                "ertek": 58.3
+                "ertek": 53.1
               },
               {
                 "idopont_utc": "2026-11-17T00:00:00+00:00",
-                "ertek": 58.3
+                "ertek": 52.9
+              },
+              {
+                "idopont_utc": "2026-11-18T00:00:00+00:00",
+                "ertek": 52.7
+              },
+              {
+                "idopont_utc": "2026-11-19T00:00:00+00:00",
+                "ertek": 52.5
+              },
+              {
+                "idopont_utc": "2026-11-20T00:00:00+00:00",
+                "ertek": 52.4
+              },
+              {
+                "idopont_utc": "2026-11-21T00:00:00+00:00",
+                "ertek": 52.2
+              },
+              {
+                "idopont_utc": "2026-11-22T00:00:00+00:00",
+                "ertek": 52.0
               }
             ],
-            "cv_r2": -0.073,
-            "lin_cv_r2": -0.057,
+            "cv_r2": -0.009,
+            "lin_cv_r2": -0.015,
             "span": 0.7,
             "eff_df": 3.2,
-            "irany": "csokken",
+            "irany": "hullamzik",
             "fordulopontok": 4,
-            "rezidualis_szoras": 15.2
+            "rezidualis_szoras": 13.2
           },
           "racs": "nap"
         },
