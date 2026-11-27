@@ -172,7 +172,7 @@ def _nap_szegmensek(adat) -> dict:
     return szeg
 
 
-def napi_ir(docs_data, nap_iso, top_trendek, szegmens="este", frissitve_iso=None) -> Path:
+def napi_ir(docs_data, nap_iso, top_trendek, szegmens="este", frissitve_iso=None, forras=None) -> Path:
     napok_mappa = Path(docs_data) / "napok"
     fajl = napok_mappa / f"{nap_iso}.json"
     meglevo = {}
@@ -183,6 +183,8 @@ def napi_ir(docs_data, nap_iso, top_trendek, szegmens="este", frissitve_iso=None
             meglevo = {}
     szeg = _nap_szegmensek(meglevo)
     szeg[szegmens] = {"trendek": top_trendek, "frissitve": frissitve_iso}
+    if forras:                       # pl. "rss" = RSS-tartalék (az API-ág üres volt) — csak ha nem a szokásos
+        szeg[szegmens]["forras"] = forras
     ki = {"nap": nap_iso}
     for s in ("reggel", "este"):
         if s in szeg:

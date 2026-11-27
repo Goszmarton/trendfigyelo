@@ -611,6 +611,21 @@ test("N+2. napi: kék-vonalas gyűjtés-info a cím alatt + beszédes blokk-fejl
   await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="este"] .trend-szegmens-cim')).toHaveText("Esti lekérdezés · 21:00");
 });
 
+test("napi: RSS-tartalék szegmens (forras: rss) → a blokk címe jelzi a rövidített listát, a másik szegmens változatlan", async ({ page }) => {
+  const IDX = { napok: ["2026-11-27"] };
+  await page.route(/kategoriak\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ napok: [] }) }));
+  await page.route(/legfrissebb\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({ top_trendek: [], kulcsszavak: {}, kulcsszo_osszesites: [] }) }));
+  await page.route(/napok\/index\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify(IDX) }));
+  await page.route(/napok\/2026-11-27\.json/, r => r.fulfill({ contentType: "application/json", body: JSON.stringify({
+    nap: "2026-11-27",
+    reggel: { trendek: [trend("föld", "1000", [])], frissitve: "2026-11-27T08:00:00+00:00", forras: "rss" },
+    este: { trendek: [trend("esti-szo", "9000", ["Politics"])], frissitve: "2026-11-27T19:00:00+00:00" },
+  }) }));
+  await page.goto("/trendek.html");
+  await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="reggel"] .trend-szegmens-cim')).toHaveText("Reggeli lekérdezés · 9:00 · rövidített lista (Google RSS)");
+  await expect(page.locator('#trend-blokk .trend-szegmens[data-szegmens="este"] .trend-szegmens-cim')).toHaveText("Esti lekérdezés · 21:00");
+});
+
 // ── #1 Napi felkapott — 3-gombos szegmens-váltó (Napi összesen / Reggeli / Esti), alap osszesen (a mostani stackelt nézet) ──
 function napi_ket_szegmens(page, nap) {
   return Promise.all([

@@ -1,6 +1,7 @@
 """Felkapott keresések ág: trending_now API + RSS → a meglévő 3 CSV (változatlan séma)."""
 
 from pathlib import Path
+from types import SimpleNamespace
 
 from . import seged
 
@@ -11,6 +12,32 @@ def volumen_szam(t) -> int:
         return int(getattr(t, "volume", 0) or 0)
     except (ValueError, TypeError):
         return 0
+
+
+def rss_volumen_szam(v) -> int:
+    """Az RSS közelítő forgalma („500+", „20 000+", „2K+") egész ALSÓ becslésként; hibás/hiányzó → 0."""
+    if isinstance(v, (int, float)):
+        return int(v)
+    s = str(v or "").strip().upper().replace("+", "")
+    for sz in (" ", "\u00a0", "\u202f", ",", "."):
+        s = s.replace(sz, "")
+    szorzo = 1
+    if s.endswith("K"):
+        szorzo, s = 1000, s[:-1]
+    elif s.endswith("M"):
+        szorzo, s = 1000000, s[:-1]
+    return int(s) * szorzo if s.isdigit() else 0
+
+
+def rss_tartalek(rss_trendek) -> list:
+    """RSS-TARTALÉK (2026-11-05 óta a trending_now API-végpont [7]-es hibát ad): az RSS-trendek
+    API-kompatibilis alakban — EGÉSZ volumen (a rangsor és a downstream `int(volumen)` miatt), üres
+    topics/növekedés. A hírek (news) megmaradnak → a top_trend_struktura ugyanúgy párosít."""
+    return [SimpleNamespace(keyword=getattr(t, "keyword", ""),
+                            volume=rss_volumen_szam(getattr(t, "volume", None)),
+                            volume_growth_pct=None, topics=[], topic_names=[],
+                            news=getattr(t, "news", None) or [])
+            for t in (rss_trendek or [])]
 
 
 def api_trend_dict(t, sorszam: int) -> dict:

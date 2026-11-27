@@ -1036,14 +1036,18 @@ def test_futtat_folytonossag_siker_naploz(tmp_path):
 def test_futtat_folytonossag_serult_index_naplo_keszul(tmp_path):
     """C1: sérült index.json ('{') → a folytonosság-blokk NEM viszi el az EGÉSZ futás naplóját.
     A hat ág + folytonossag;hiba;0;JSONDecodeError kiíródik, a kód változatlan (0, mert van adat).
-    (Nincs api-trend → top_trendek üres → napi_ir kimarad → a sérült index a blokkig él.)"""
+    (Nincs felkapott-lista → top_trendek üres → napi_ir kimarad → a sérült index a blokkig él.
+    Az RSS-tartalék óta az RSS-trend IS napfájlt írna → ebben a tesztben az RSS is üres.)"""
+    class _NincsFelkapottKliens(KulcsszoAdatKliens):
+        def hivas(self, ag, fn, *a, **k):
+            return [] if ag == "felkapott_rss" else super().hivas(ag, fn, *a, **k)
     cfg = _config([KulcsszoTetel("a", "megelhetes", "szintmero")])
     docs_data = tmp_path / "docs" / "data"
     napok_mappa = docs_data / "napok"
     napok_mappa.mkdir(parents=True, exist_ok=True)
     (napok_mappa / "index.json").write_text("{", encoding="utf-8")   # sérült JSON
     most = datetime(2021, 1, 2, 12, 0, tzinfo=timezone.utc)
-    kod = futtato.futtat(cfg, KulcsszoAdatKliens(), tmp_path / "adatok", docs_data, most=most)
+    kod = futtato.futtat(cfg, _NincsFelkapottKliens(), tmp_path / "adatok", docs_data, most=most)
     sorok = {s["ag"]: s for s in _naplo_soronkent(tmp_path / "adatok")}
     assert kod == 0                                                  # a futás NEM szállt el
     assert {"felkapott_api", "felkapott_rss", "kulcsszo", "idosor",

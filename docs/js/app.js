@@ -1735,10 +1735,13 @@ function trend_szegmensek_nap(nap) {
     if (napi === undefined) return null;   // még nincs betöltve
     if (napi && (napi.reggel || napi.este)) {
       const ki = [];
+      // forras === "rss": RSS-tartalék (2026-11-05 óta a Google teljes felkapott-listája nem érhető el) →
+      // rövidebb lista, közelítő volumennel; a címben jelezzük
+      const rss = (sz) => (sz.forras === "rss" ? " · rövidített lista (Google RSS)" : "");
       if (napi.reggel && Array.isArray(napi.reggel.trendek))
-        ki.push({ szegmens: "reggel", cimke: "Reggeli lekérdezés · 9:00", trendek: napi.reggel.trendek });
+        ki.push({ szegmens: "reggel", cimke: "Reggeli lekérdezés · 9:00" + rss(napi.reggel), trendek: napi.reggel.trendek });
       if (napi.este && Array.isArray(napi.este.trendek))
-        ki.push({ szegmens: "este", cimke: "Esti lekérdezés · 21:00", trendek: napi.este.trendek });
+        ki.push({ szegmens: "este", cimke: "Esti lekérdezés · 21:00" + rss(napi.este), trendek: napi.este.trendek });
       return ki;
     }
     if (napi && Array.isArray(napi.trendek))

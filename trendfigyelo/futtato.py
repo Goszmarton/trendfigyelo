@@ -230,6 +230,15 @@ def rekesz_kifejezesek(api_trendek, config) -> tuple:
     return kerendo, len(farok) - len(kerendo)
 
 
+def rangsor_forras(api_trendek, rss_trendek) -> tuple:
+    """A rangsor/megjelenítés forrása: az API-lista; ha az ÜRES (hiba vagy semmi), az RSS-TARTALÉK.
+    Visszaad: (forras_trendek, rss_tartalek_aktiv)."""
+    if api_trendek:
+        return api_trendek, False
+    tartalek = felkapott.rss_tartalek(rss_trendek)
+    return tartalek, bool(tartalek)
+
+
 def top_trend_struktura(api_trendek, trend_idosorok, rss_trendek, config) -> list:
     """A legnagyobb volumenű trendek strukturált listája: idősor + hírek párosítva.
 
@@ -356,6 +365,7 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None, mode="este"
                           lambda: felkapott.gyujt_api(kliens, config)) or []
         rss_trendek = _ag(bejegyzesek, kliens, "felkapott_rss",
                           lambda: felkapott.gyujt_rss(kliens, config)) or []
+        rang_trendek, _ = rangsor_forras(api_trendek, rss_trendek)
         # a kulcsszo-ág az idosor ELŐTT fut: block-napon az idosor az olcsóbb veszteség
         # (a kulcsszó-adat a 24-órás horgony-nélküli mérés, az idosor a top-trend sparkline)
         oras_szavak = _oras_szavak(config, mode)
@@ -367,7 +377,7 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None, mode="este"
             kulcsszo_pontok, kulcsszo_napi_pontok, kulcsszo_nyers = [], {}, {}
         # a KÖZÖS rangsor kifejezéslistája (a megjelenítéssel azonos forrás → prefix-invariáns);
         # az idősor-ág belül vág trend_idosor_max-ra, a hívásköltség NEM nő
-        top_kifejezesek = [getattr(t, "keyword", "") for t in rangsorolt_trendek(api_trendek)]
+        top_kifejezesek = [getattr(t, "keyword", "") for t in rangsorolt_trendek(rang_trendek)]
         trend_idosorok = _ag(bejegyzesek, kliens, "idosor",
                             lambda: idosorok.gyujt(kliens, config, top_kifejezesek)) or []
         # másodlagos (nap/het) ág — LEGUTOLSÓ, pótolható; csendes feladás (saját try/except,
@@ -378,7 +388,7 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None, mode="este"
         # rekesz-idősor ág — LEGUTOLSÓ (GORBE-B, forward-only): a holtverseny-rekesz
         # trendjei is kapjanak sparkline-t; másodrendű, csendes feladás (nem block-stop/exit).
         # A pontokat a trend_idosorok-hoz fűzzük → a top_trend_struktura idosor_map-je fedi őket.
-        trend_idosorok = trend_idosorok + _rekesz_idosor_ag(bejegyzesek, kliens, config, api_trendek)
+        trend_idosorok = trend_idosorok + _rekesz_idosor_ag(bejegyzesek, kliens, config, rang_trendek)
     except (AgFeladva, PlafonTullepve) as e:
         # KÖZÖS MENTŐ-ÚT: a block-stop (429) ÉS a plafon-túllépés (L4) is a blokk ELŐTT lemért
         # szavakat MENTI (a kivételre akasztott e.reszleges-ből; a másodlagos ág per-szavas írása
@@ -404,7 +414,11 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None, mode="este"
     kulcsszavak.csv_ir(adatok_mappa, idobelyeg, letoltve, config.geo, kulcsszo_pontok)
 
     # ---------- JSON-export ----------
-    top_trendek = top_trend_struktura(api_trendek, trend_idosorok, rss_trendek, config)
+    rang_trendek, rss_tartalek_aktiv = rangsor_forras(api_trendek, rss_trendek)
+    if rss_tartalek_aktiv:
+        print(f"FIGYELEM: a felkapott_api ág üres/hibás → RSS-tartalék: a napi felkapott-lista "
+              f"{len(rang_trendek)} RSS-kifejezésből készül (közelítő, alsó-becslés volumen).")
+    top_trendek = top_trend_struktura(rang_trendek, trend_idosorok, rss_trendek, config)
     # legfrissebb: az EGYETLEN feltétel nélküli kanonikus felülíró (a tortenet/napi/nyers guardolt).
     # Két guard-réteg, a diszkriminátor az ÁG-STÁTUSZ (NEM a darabszám — a legit csökkenés siker ágon
     # nem nullázza a blokkot, tehát nem fagyaszt; LEGFRISSEBB-RESZLEGES):
@@ -446,7 +460,8 @@ def futtat(config, kliens, adatok_mappa, docs_data_mappa, most=None, mode="este"
     if top_trendek:
         json_export.napi_ir(docs_data_mappa, nap_iso, top_trendek,
                             szegmens=("reggel" if csak_felkapott else "este"),
-                            frissitve_iso=letoltve)
+                            frissitve_iso=letoltve,
+                            forras=("rss" if rss_tartalek_aktiv else None))
     # nyers órás sorozat — MINDKÉT mód a SAJÁT órás részhalmazát írja PER-SZÓ upserttel (a másik mód
     # szavai érintetlenek: ir_gordulo/frissit_lanc read-modify-write). Üres sorozat NE írjon fájlt.
     if kulcsszo_nyers:
