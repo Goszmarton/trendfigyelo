@@ -43,7 +43,7 @@ def test_guard_a_pip_install_elott_es_pip_install_gate_elt():
 
 def test_commit_csak_havi_nlp_es_rebase():
     wf = _wf()
-    szoveg = yaml.safe_dump(wf["jobs"]["havi"]["steps"], allow_unicode=True)
+    szoveg = yaml.safe_dump(wf["jobs"]["havi"]["steps"], allow_unicode=True, width=10**6)
     # PONTOSAN a havi_nlp mappát stage-eli (nem véletlenül a napok/elemzesek/trend adatot)
     assert "git add docs/data/havi_nlp" in szoveg
     assert "git pull --rebase" in szoveg

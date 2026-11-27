@@ -75,6 +75,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git pull --rebase --autostash || true   # párhuzamos main-push ellen (nem-fast-forward push elkerülése)
+          # ÜTKÖZÉS-ŐR: a pull 0-val tér vissza akkor is, ha az autostash-pop ütközött (konfliktusjelölők
+          # a fájlban) — ilyenkor TILOS commitolni (2026-11-26: sérült kulcsszo_nyers.json). Hibával állunk meg;
+          # a backup-futás később tisztán újragyűjt.
+          if [ -n "$(git ls-files -u)" ]; then
+            echo "::error::git pull ütközés egy párhuzamos pusholt futással — NEM commitolunk (konfliktusjelölők)."
+            git status --short
+            exit 1
+          fi
           git add docs/data adatok/naplo.csv
           if git diff --staged --quiet; then
             echo "Nincs változás — nincs commit."
