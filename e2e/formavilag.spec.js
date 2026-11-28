@@ -92,6 +92,27 @@ test("360px: #fomenu rejtett, menügomb katt -> látható, aria-expanded=true", 
   await expect(g).toHaveAttribute("aria-expanded", "true");
 });
 
+test("360px: nyitott fiók -> háttérre koppintás zár", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 700 });
+  await page.goto("/trendek.html");
+  await page.locator("#keret-menugomb").click();
+  await expect(page.locator("#fomenu")).toBeVisible();
+  await page.mouse.click(340, 400);
+  await expect(page.locator("#fomenu")).toBeHidden();
+  await expect(page.locator("#keret-menugomb")).toHaveAttribute("aria-expanded", "false");
+});
+
+test("360px: nyitott fiók -> a gomb újra kattintva zár (a gomb nincs letakarva)", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 700 });
+  await page.goto("/trendek.html");
+  const g = page.locator("#keret-menugomb");
+  await g.click();
+  await expect(page.locator("#fomenu")).toBeVisible();
+  await g.click();
+  await expect(page.locator("#fomenu")).toBeHidden();
+  await expect(g).toHaveAttribute("aria-expanded", "false");
+});
+
 test("360px: document.scrollWidth <= 360 mind a 10 oldalon", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 700 });
   for (const o of OLDALAK) {

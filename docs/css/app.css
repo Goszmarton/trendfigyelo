@@ -171,8 +171,12 @@ body.keret { max-width: none; margin: 0; padding: 0; display: grid; grid-templat
 @media (max-width: 900px) {
   body.keret { display: block; }
   .keret-oldalsav { display: none; }
-  body.keret-menu-nyitva .keret-oldalsav { display: block; position: fixed; z-index: 50; top: 0; left: 0; bottom: 0;
+  /* a felső sáv (és benne a gomb) a fiók FÖLÖTT marad: a gomb nyitott állapotban is elérhető */
+  .keret-felso { position: sticky; top: 0; z-index: 60; background: var(--hatter); padding: var(--ter-2) 0; }
+  body.keret-menu-nyitva .keret-oldalsav { display: block; position: fixed; z-index: 50; top: 56px; left: 0; bottom: 0;
     width: min(280px, 85vw); height: auto; }
+  .keret-fatyol { display: none; }
+  body.keret-menu-nyitva .keret-fatyol { display: block; position: fixed; z-index: 40; inset: 0; background: rgba(0, 0, 0, .4); }
   .keret-fo { padding: var(--ter-3) var(--ter-4) var(--ter-7); }
   .keret-menugomb { display: inline-flex; }
 }

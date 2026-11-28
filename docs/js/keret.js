@@ -2,6 +2,10 @@
 function keret_menu_init() {
   var gomb = document.getElementById("keret-menugomb");
   if (!gomb) return;
+  var fatyol = document.createElement("div");
+  fatyol.className = "keret-fatyol";
+  fatyol.addEventListener("click", function () { allit(false); });
+  document.body.appendChild(fatyol);
   function allit(nyitva) {
     gomb.setAttribute("aria-expanded", nyitva ? "true" : "false");
     document.body.classList.toggle("keret-menu-nyitva", nyitva);
