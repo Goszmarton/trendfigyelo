@@ -184,3 +184,23 @@ def test_css_szinek_csak_tokenbol():
     ertekek = re.findall(r"(?<![\w-])[a-z-]+\s*:\s*([^;{}]+)(?=[;}])", kod)
     hibas = [e.strip() for e in ertekek if re.search(r"#[0-9a-fA-F]{3,8}\b|\brgba?\(|\bhsla?\(", e)]
     assert not hibas, hibas
+
+
+def test_szinek_js_tartalek_egyezik_a_root_tokenekkel():
+    """M6: a szinek.js SZIN_TARTALEK és a GRAFIKON_RACS_SZIN nem sodródhat el az app.css :root-tól."""
+    js = (DOCS / "js" / "szinek.js").read_text(encoding="utf-8")
+    m = re.search(r"const SZIN_TARTALEK = \{(.*?)\n\};", js, re.S)
+    assert m, "nincs SZIN_TARTALEK"
+    tartalek = {k: (a or b) for k, a, b in re.findall(r'"([\w-]+)":\s*(?:"([^"]*)"|\'([^\']*)\')', m.group(1))}
+    assert len(tartalek) > 20
+    root = {
+        k.strip(): re.sub(r"\s+", " ", v.strip()).lower()
+        for k, v in re.findall(r"(--[\w-]+)\s*:\s*([^;]+);", _root_blokk())
+    }
+    for nev, ertek in tartalek.items():
+        assert "--" + nev in root, f"nincs token: --{nev}"
+        assert re.sub(r"\s+", " ", ertek).lower() == root["--" + nev], f"{nev}: {ertek} != {root['--' + nev]}"
+    assert "GRAFIKON_RACS_SZIN" not in js, "a rácsszín ne legyen külön literál"
+    racs = re.search(r'Chart\.defaults\.borderColor\s*=\s*szin\("([\w-]+)"', js)
+    assert racs, "a rácsszínnek tokenből kell jönnie"
+    assert ("--" + racs.group(1)) in root

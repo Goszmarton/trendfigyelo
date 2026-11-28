@@ -407,3 +407,75 @@ test("kapcsolodo: a szűrő-gombok chip-stílusúak, a kapcsolódó chipek/kárt
   expect(c).toEqual(["999px", "rgb(226, 229, 227)"]);
   expect(await page.locator(".bovites-kapcs-kartya").first().evaluate(function (e) { return getComputedStyle(e).borderTopLeftRadius; })).toBe("12px");
 });
+
+// ---- Végső review javítások: fiók (I4/I5), Leaflet-rétegezés (I1) ----
+test("390px: a fiók a felső sáv ALATT kezdődik, a logó teljesen látszik (I4)", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 800 });
+  await page.goto("/trendek.html");
+  await page.locator("#keret-menugomb").click();
+  await expect(page.locator("#fomenu")).toBeVisible();
+  const m = await page.evaluate(function () {
+    const felso = document.getElementById("keret-felso").getBoundingClientRect();
+    const fiok = document.querySelector(".keret-oldalsav").getBoundingClientRect();
+    const logo = document.querySelector(".keret-logo").getBoundingClientRect();
+    return { felsoAlja: felso.bottom, fiokTeteje: fiok.top, logoTeteje: logo.top };
+  });
+  expect(m.fiokTeteje).toBeGreaterThanOrEqual(m.felsoAlja - 1);
+  expect(m.logoTeteje).toBeGreaterThanOrEqual(m.felsoAlja - 1);
+});
+
+test("390px: a fiók megnyitásakor a fókusz az első menülinkre kerül (I5)", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 800 });
+  await page.goto("/trendek.html");
+  await page.locator("#keret-menugomb").click();
+  const elso = await page.evaluate(function () {
+    return document.activeElement === document.querySelector("#fomenu a");
+  });
+  expect(elso).toBe(true);
+});
+
+test("390px havi: a Leaflet-térkép nem fedi a felső sávot és a fiókot (I1)", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 800 });
+  await page.route("**/data/havi_nlp/index.json", r => r.fulfill({ json: { honapok: ["2026-09"], legutolso: "2026-09" } }));
+  await page.route("**/data/havi_nlp/2026-09.json", r => r.fulfill({ json: {
+    honap: "2026-09", modell: "m", korpusz: { egyedi_szo: 3, napok: 2 }, lemmak: [],
+    ner: { orszagok: [{ nev: "Németország", szavak: ["a"], volumen: 100 }, { nev: "Magyarország", szavak: ["b"], volumen: 900 }],
+           telepulesek: [], szemelyek: [] },
+    klaszterek: [{ cimke: "Bűnügy", szavak: ["csalás"], ertelmezes: "leírás", uralkodo_temak: [], volumen: 500 }],
+    osszegzes: "A hónap keresései…" } }));
+  await page.goto("/havi.html");
+  await expect(page.locator("#havi-vilag-terkep.leaflet-container")).toHaveCount(1);
+  const atfed = await page.evaluate(function () {
+    document.body.style.paddingBottom = "1500px";   // a rövid mock-oldal is görgethető legyen a térképen túl
+    const r = document.getElementById("havi-vilag-terkep").getBoundingClientRect();
+    window.scrollBy(0, r.top - 20);
+    const t = document.getElementById("havi-vilag-terkep").getBoundingClientRect();
+    const b = document.getElementById("keret-felso").getBoundingClientRect();
+    return t.top < b.bottom && t.bottom > b.bottom;   // a térkép valóban a felső sáv alá csúszott
+  });
+  expect(atfed).toBe(true);
+  // a felső sáv teljes területén (nem csak a gombon) a sáv elemei a legfelsők, nem a térkép
+  const sav = await page.evaluate(function () {
+    const b = document.getElementById("keret-felso").getBoundingClientRect();
+    const rossz = [];
+    for (let x = b.left + 4; x < b.right - 2; x += 24) {
+      for (let y = b.top + 4; y < b.bottom - 2; y += 12) {
+        const e = document.elementFromPoint(x, y);
+        if (!e || !e.closest("#keret-felso")) rossz.push(x + "," + Math.round(y) + ":" + (e && e.tagName));
+      }
+    }
+    return rossz;
+  });
+  expect(sav).toEqual([]);
+  await page.locator("#keret-menugomb").click();
+  const fiok = await page.evaluate(function () {
+    const f = document.querySelector(".keret-oldalsav").getBoundingClientRect();
+    const rossz = [];
+    for (let y = f.top + 6; y < f.bottom; y += 40) {
+      const e = document.elementFromPoint(40, y);
+      if (!e || !e.closest(".keret-oldalsav")) rossz.push(Math.round(y) + ":" + (e && e.tagName));
+    }
+    return rossz;
+  });
+  expect(fiok).toEqual([]);
+});

@@ -6,10 +6,22 @@ function keret_menu_init() {
   fatyol.className = "keret-fatyol";
   fatyol.addEventListener("click", function () { allit(false); });
   document.body.appendChild(fatyol);
+  // a fiók a (sticky) felső sáv ALATT kezdődik: a sáv alsó széle (mobilon 2 sorba törhet, görgetéskor a tetejére tapad) CSS-változóba kerül
+  function sav_magassag() {
+    var felso = document.getElementById("keret-felso");
+    if (felso) document.documentElement.style.setProperty("--keret-felso-h", Math.ceil(felso.getBoundingClientRect().bottom) + "px");
+  }
   function allit(nyitva) {
+    if (nyitva) sav_magassag();
     gomb.setAttribute("aria-expanded", nyitva ? "true" : "false");
     document.body.classList.toggle("keret-menu-nyitva", nyitva);
+    if (nyitva) {
+      var elso = document.querySelector("#fomenu a");
+      if (elso) elso.focus();
+    }
   }
+  window.addEventListener("resize", sav_magassag);
+  window.addEventListener("scroll", function () { if (document.body.classList.contains("keret-menu-nyitva")) sav_magassag(); }, { passive: true });
   gomb.addEventListener("click", function () {
     allit(gomb.getAttribute("aria-expanded") !== "true");
   });

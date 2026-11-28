@@ -94,7 +94,7 @@ function bov_idovonal(sor, elso, utolso) {
     const c = bel("span", "bovites-nap" + (jelen ? " jelen" : ""));
     if (jelen) {
       const t = maxVol > 0 ? jelenMap[nap] / maxVol : 1;
-      c.style.backgroundColor = szin_atlatszo("akcentus", (0.35 + 0.65 * t).toFixed(2));
+      c.style.backgroundColor = szin_atlatszo("tema-1", (0.35 + 0.65 * t).toFixed(2));
     }
     c.title = nap + (jelen ? " – jelen, összvolumen: " + jelenMap[nap] : " – nincs jelen");
     sav.appendChild(c);

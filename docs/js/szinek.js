@@ -13,10 +13,9 @@ const SZIN_TARTALEK = {
   "tema-5": "#56B4E9", "tema-6": "#D55E00", "tema-7": "#F0E442", "tema-8": "#4D4D4D",
   "graf-ml": "#8e44ad", "graf-elorejelzes": "#16a085", "graf-elorejelzes-sav": "rgba(22, 160, 133, 0.15)",
   "graf-trend": "#cc3333", "graf-szint": "#e69138", "graf-sav": "rgba(120, 120, 120, 0.14)",
-  "graf-jelolo": "#8a8a8a",
+  "graf-jelolo": "#8a8a8a", "graf-racs": "#EEF0EE",
   "betu": '"Inter", system-ui, "Segoe UI", sans-serif',
 };
-const GRAFIKON_RACS_SZIN = "#EEF0EE";   // Chart.js alap rácsszín (nincs hozzá külön token)
 
 // a token értéke (pl. "google" → "#3B6FD8"), ahogy a CSS-ben szerepel, trimmelve; hiányában a tartalék.
 function szin(nev, tartalek) {
@@ -61,7 +60,7 @@ function grafikon_alap() {
   if (typeof Chart === "undefined" || !Chart.defaults) return;
   Chart.defaults.font.family = szin("betu");
   Chart.defaults.color = szin("szoveg-2");
-  Chart.defaults.borderColor = GRAFIKON_RACS_SZIN;
+  Chart.defaults.borderColor = szin("graf-racs");   // Chart.js alap rácsszín
   Chart.defaults.elements.line.borderWidth = 1.5;
   Chart.defaults.plugins.tooltip.backgroundColor = szin("szoveg");
 }
