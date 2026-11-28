@@ -102,3 +102,15 @@ def test_mukodo_api_eseten_nincs_forras_jeloles_SZANDEKOS_ZOLD(tmp_path):
     szeg = json.loads(napfajl.read_text(encoding="utf-8"))["este"]
     assert "forras" not in szeg
     assert [t["kifejezes"] for t in szeg["trendek"]] == ["infláció"]
+
+
+def test_masik_szegmens_irasa_megorzi_a_forras_jelolest(tmp_path):
+    """Élő eset (11-27): a reggeli RSS-szegmens `forras` jelölését az esti napi_ir eldobta."""
+    from trendfigyelo import json_export
+    json_export.napi_ir(tmp_path, "2026-11-27", [{"kifejezes": "föld"}], szegmens="reggel",
+                        frissitve_iso="2026-11-27T09:42:00+00:00", forras="rss")
+    json_export.napi_ir(tmp_path, "2026-11-27", [{"kifejezes": "m1"}], szegmens="este",
+                        frissitve_iso="2026-11-27T20:00:00+00:00")
+    d = json.loads((tmp_path / "napok" / "2026-11-27.json").read_text(encoding="utf-8"))
+    assert d["reggel"]["forras"] == "rss"
+    assert "forras" not in d["este"]

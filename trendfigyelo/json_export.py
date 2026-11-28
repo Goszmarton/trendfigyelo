@@ -167,6 +167,8 @@ def _nap_szegmensek(adat) -> dict:
         v = adat.get(s)
         if isinstance(v, dict) and isinstance(v.get("trendek"), list):
             szeg[s] = {"trendek": v["trendek"], "frissitve": v.get("frissitve")}
+            if v.get("forras"):          # pl. RSS-tartalék jelölés — a másik szegmens írásakor is megmarad
+                szeg[s]["forras"] = v["forras"]
     if not szeg and isinstance(adat.get("trendek"), list):
         szeg["este"] = {"trendek": adat["trendek"], "frissitve": adat.get("frissitve")}
     return szeg
