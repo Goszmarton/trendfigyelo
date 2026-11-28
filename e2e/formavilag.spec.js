@@ -152,11 +152,32 @@ test("keret_ido_szoveg és keret_pill: tiszta függvények", async ({ page }) =>
       keret_pill([t(30)], new Date("2026-11-28T20:00:00Z")), keret_pill([t(50)], new Date("2026-11-28T20:00:00Z")),
       keret_pill(["2026-11-28T08:00:00Z", null], new Date("2026-11-28T20:00:00Z"))];
   });
-  expect(r.slice(0, 5)).toEqual(["ma 21:00", "tegnap 21:00", "nov. 25. 21:00", "–", "–"]);
+  expect(r.slice(0, 5)).toEqual(["2026. 11. 28. 21:00", "2026. 11. 27. 21:00", "2026. 11. 25. 21:00", "–", "–"]);
   expect(r[5]).toEqual({ allapot: "ok", szoveg: "Gyűjtés rendben" });
   expect(r[6].allapot).toBe("figy");
   expect(r[7]).toEqual({ allapot: "hiba", szoveg: "Gyűjtés hiba" });
   expect(r[8]).toBeNull();
+});
+
+test("keret_ido_szoveg/keret_pill_datum: DST és budapesti éjfél, régi ÉÉÉÉ. HH. NN. formátum", async ({ page }) => {
+  await page.goto("/trendek.html");
+  const r = await page.evaluate(function () {
+    return [keret_ido_szoveg("2026-07-15T19:00:00Z"), keret_ido_szoveg("2026-11-27T23:30:00Z"),
+      keret_ido_szoveg("2026-07-15T22:00:00Z"), keret_ido_szoveg("2026-03-29T00:30:00Z"),
+      keret_pill_datum(["2026-11-27T21:00:00Z", "2026-11-26T22:30:00Z"]), keret_pill_datum(["2026-11-27T21:00:00Z", null]),
+      keret_ota_szoveg("2026-11-18"), keret_ota_szoveg("hibás")];
+  });
+  expect(r).toEqual(["2026. 07. 15. 21:00", "2026. 11. 28. 00:30", "2026. 07. 16. 00:00", "2026. 03. 29. 01:30",
+    "2026. 11. 26.", "", "2026. 11. 18. óta", ""]);
+});
+
+test("trendek: a pill dátuma a legrégebbi utolsó gyűjtés napja (nem a mai nap)", async ({ page }) => {
+  await page.route("**/data/legfrissebb.json*", (r) => r.fulfill({ json: { frissitve: friss(2), top_trendek: [], trend_idosorok: [], kulcsszavak: {}, kulcsszo_osszesites: [] } }));
+  await page.route("**/data/youtube_regresszio.json*", (r) => r.fulfill({ json: { szamitva_utc: friss(30), kulcsszavak: {} } }));
+  await page.goto("/trendek.html");
+  const elvart = await page.evaluate(function () { return keret_pill_datum([new Date(Date.now() - 2 * 3600000).toISOString()]); });
+  await expect(page.locator("header.fejlec-doboz > .keret-pill .keret-pill-datum").first()).toHaveText(elvart);
+  await expect(page.locator("header.fejlec-doboz > .keret-pill .keret-pill-datum").first()).toHaveText(/^\d{4}\. \d\d\. \d\d\.$/);
 });
 
 function friss(h) { return new Date(Date.now() - h * 3600000).toISOString(); }
@@ -169,7 +190,7 @@ test("trendek: pill = Gyűjtés rendben, a header első gyereke, gyűjtési idő
   await expect(pill).toContainText("Gyűjtés rendben");
   await expect(pill).toHaveClass(/keret-pill--ok/);
   expect(await page.evaluate(function () { return document.querySelector("header.fejlec-doboz").firstElementChild.classList.contains("keret-pill"); })).toBe(true);
-  await expect(page.locator("#keret-felso")).toContainText(/Google: (ma|tegnap) \d\d:\d\d/);
+  await expect(page.locator("#keret-felso")).toContainText(/Google: \d{4}\. \d\d\. \d\d\. \d\d:\d\d/);
   await expect(page.locator("#keret-felso")).toContainText("Statisztikák / Google");
 });
 

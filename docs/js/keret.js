@@ -31,10 +31,6 @@ function keret_menu_init() {
 }
 
 /* ---- Felső sáv: breadcrumb, gyűjtési idők, állapot-pill, menü-badge-ek ---- */
-const KERET_HONAP_ROV = ["jan.", "feb.", "márc.", "ápr.", "máj.", "jún.", "júl.", "aug.", "szept.", "okt.", "nov.", "dec."];
-const KERET_HONAP_HOSSZU = ["január", "február", "március", "április", "május", "június", "július",
-  "augusztus", "szeptember", "október", "november", "december"];
-
 // Budapest-idő részei egy Date-ből.
 function keret_bp_reszek(d) {
   const f = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Budapest", year: "numeric", month: "2-digit",
@@ -44,17 +40,28 @@ function keret_bp_reszek(d) {
   return { ev: Number(o.year), ho: Number(o.month), nap: Number(o.day), ora: o.hour, perc: o.minute };
 }
 
+// Régi, számszerű forma: „ÉÉÉÉ. HH. NN. ÓÓ:PP" (Budapest-idő); a `most` paraméter API-stabilitás miatt marad.
 function keret_ido_szoveg(iso, most) {
   if (!iso) return "–";
   const d = new Date(iso);
   if (isNaN(d.getTime())) return "–";
-  const a = keret_bp_reszek(d), b = keret_bp_reszek(most);
-  const napszam = function (r) { return Date.UTC(r.ev, r.ho - 1, r.nap) / 86400000; };
-  const kulonbseg = napszam(b) - napszam(a);
-  const ido = a.ora + ":" + a.perc;
-  if (kulonbseg === 0) return "ma " + ido;
-  if (kulonbseg === 1) return "tegnap " + ido;
-  return KERET_HONAP_ROV[a.ho - 1] + " " + a.nap + ". " + ido;
+  const a = keret_bp_reszek(d);
+  return keret_nap_szoveg(a) + " " + a.ora + ":" + a.perc;
+}
+
+function keret_nap_szoveg(r) {
+  return r.ev + ". " + String(r.ho).padStart(2, "0") + ". " + String(r.nap).padStart(2, "0") + ".";
+}
+
+// A pill állapotához mért (legrégebbi) utolsó gyűjtés napja; hiányzó/hibás -> "".
+function keret_pill_datum(iso_lista) {
+  let regi = null;
+  for (let i = 0; i < iso_lista.length; i++) {
+    const t = iso_lista[i] ? new Date(iso_lista[i]).getTime() : NaN;
+    if (isNaN(t)) return "";
+    if (regi === null || t < regi) regi = t;
+  }
+  return regi === null ? "" : keret_nap_szoveg(keret_bp_reszek(new Date(regi)));
 }
 
 function keret_pill(iso_lista, most) {
@@ -105,14 +112,9 @@ function keret_idok(felso, google_iso, youtube_iso, most) {
   felso.appendChild(dob);
 }
 
-function keret_ma_szoveg(most) {
-  const r = keret_bp_reszek(most);
-  return r.ev + ". " + KERET_HONAP_HOSSZU[r.ho - 1] + " " + r.nap + ".";
-}
-
 function keret_ota_szoveg(ota) {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(ota || "");
-  return m ? m[1] + ". " + KERET_HONAP_HOSSZU[Number(m[2]) - 1] + " " + Number(m[3]) + ". óta" : "";
+  return m ? m[1] + ". " + m[2] + ". " + m[3] + ". óta" : "";
 }
 
 // Állapot-pill: pötty + felirat + dátum (szöveg vagy meglévő elem), a fejléc ELSŐ gyereke.
@@ -145,18 +147,17 @@ async function keret_init() {
 
   const szunetel = function (t) { return !!(szunet && szunet.szunetel && szunet.szunetel[t] === true); };
   const ota = szunet && keret_ota_szoveg(szunet.ota);
-  const ma = keret_ma_szoveg(most);
-  let p = null;
-  if (oldal === "google") p = keret_pill([g_iso], most);
-  else if (oldal === "youtube") p = keret_pill([y_iso], most);
-  else if (oldal === "attekinto") p = keret_pill([g_iso, y_iso], most);
-  if (p) keret_pill_beszur(p, ma);
+  let p = null, lista = [];
+  if (oldal === "google") p = keret_pill([g_iso], most), lista = [g_iso];
+  else if (oldal === "youtube") p = keret_pill([y_iso], most), lista = [y_iso];
+  else if (oldal === "attekinto") p = keret_pill([g_iso, y_iso], most), lista = [g_iso, y_iso];
+  if (p) keret_pill_beszur(p, keret_pill_datum(lista));
   if ((oldal === "napi" || oldal === "heti" || oldal === "havi") && szunetel(oldal)) {
-    keret_pill_beszur({ allapot: "figy", szoveg: "Szünetel" }, ota || ma);
+    keret_pill_beszur({ allapot: "figy", szoveg: "Szünetel" }, ota || "");
   }
   if (oldal === "ugyek" && szunetel("ugyek")) {
     // a Radar-idősáv elem maga költözik a pillbe (a szövegét később ugyanebbe a node-ba írja a bovites.js)
-    keret_pill_beszur({ allapot: "figy", szoveg: "Szünetel" }, radar || ota || ma);
+    keret_pill_beszur({ allapot: "figy", szoveg: "Szünetel" }, radar || ota || "");
     if (radar) { radar.classList.remove("keret-pill", "keret-pill--semleges"); radar.classList.add("keret-pill-datum"); }
   }
 
@@ -171,7 +172,7 @@ async function keret_init() {
 }
 
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { keret_ido_szoveg, keret_pill };
+  module.exports = { keret_ido_szoveg, keret_pill, keret_pill_datum, keret_ota_szoveg };
 } else {
   keret_menu_init();
   keret_init();

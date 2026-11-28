@@ -12,7 +12,7 @@ const SZIN_TARTALEK = {
   "tema-1": "#0072B2", "tema-2": "#E69F00", "tema-3": "#009E73", "tema-4": "#CC79A7",
   "tema-5": "#56B4E9", "tema-6": "#D55E00", "tema-7": "#F0E442", "tema-8": "#4D4D4D",
   "graf-ml": "#8e44ad", "graf-elorejelzes": "#16a085", "graf-elorejelzes-sav": "rgba(22, 160, 133, 0.15)",
-  "graf-trend": "#cc3333", "graf-szint": "#e69138", "graf-sav": "rgba(120, 120, 120, 0.14)",
+  "graf-trend": "#9b1c1c", "graf-szint": "#e69138", "graf-sav": "rgba(120, 120, 120, 0.14)",
   "graf-jelolo": "#8a8a8a", "graf-racs": "#EEF0EE",
   "betu": '"Inter", system-ui, "Segoe UI", sans-serif',
 };
