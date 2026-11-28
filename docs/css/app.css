@@ -346,6 +346,8 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 @media (max-width: 900px) { #kulcsszo-blokk .domen-csoport, #youtube-blokk .domen-csoport { grid-template-columns: 1fr; } }
 #kulcsszo-blokk .domen-fejlec,
 #youtube-blokk .domen-fejlec { grid-column: 1 / -1; font-size: 1rem; margin: .5rem 0 0; }
+/* Task 2: témaszín-pötty a domén-csoportcím előtt (a szín inline --potty változóból) */
+.ui-tema-potty { display: inline-block; width: .6em; height: .6em; border-radius: 50%; background: var(--potty, var(--semleges)); margin-right: .45em; vertical-align: baseline; }
 #kulcsszo-blokk .kulcsszo-chart,
 #youtube-blokk .kulcsszo-chart { border: 1px solid #d0d0d0; border-radius: 4px; padding: .5rem;
   box-shadow: 0 1px 2px rgba(0,0,0,.06); }

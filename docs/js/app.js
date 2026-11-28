@@ -102,14 +102,14 @@ const ATTR = {
 };
 // ADATFORRÁS-MARKER: kapcsolóval BE/KI (alapból KI). A jelölt vonal SZÜRKE (meta, nem adat — a kék adattól/
 // piros trendtől/narancs szinttől elüt); a markerre húzva EGYETLEN tooltip mondja meg, mikortól van saját adat.
-const ELO_MARKER_SZIN = "#8a8a8a";
+const ELO_MARKER_SZIN = szin("graf-jelolo");
 const ADATFORRAS_GOMB_BE = "Mikortól gyűjtjük az adatokat? – bekapcsolva";
 const ADATFORRAS_GOMB_KI = "Mikortól gyűjtjük az adatokat?";
 const ADATFORRAS_INFO = "Bekapcsolva minden charton egy szürke függőleges vonal jelzi, mikortól gyűjtjük mi az adott szó adatát. A vonaltól balra a Google saját visszamenőleges becslése látható (nem általunk mért adat).";
 // ML-TREND (Task 5/6): kapcsolóval BE/KI (alapból KI). Bekapcsolva a kártyákon egy LILA nemlineáris illesztés-görbe
 // jelenik meg (ha a szónak van kimutatható struktúrája — `nemlin.van_struktura`), a meglévő piros lineáris trend
 // MELLETT (nem helyette). A szín szándékosan elüt: kék=adat, piros=lineáris trend, narancs=szint, szürke=marker.
-const NEMLIN_SZIN = "#8e44ad";
+const NEMLIN_SZIN = szin("graf-ml");
 const MLTREND_GOMB_BE = "Nemlineáris (LOESS) trend – bekapcsolva";
 const MLTREND_GOMB_KI = "Nemlineáris (LOESS) trend";
 const MLTREND_INFO = "Bekapcsolva minden kirajzolható charton egy lila görbe mutatja a Google-trend nemlineáris illesztését (LOESS-simítás, adatból hangolt simasággal); a kártya a valós R²-t is kiírja (a gyenge illesztést sem rejti el). A piros egyenes trendvonal ettől függetlenül megmarad. Részletek az Adatokról oldalon.";
@@ -117,11 +117,11 @@ const MLTREND_INFO = "Bekapcsolva minden kirajzolható charton egy lila görbe m
 // vissza). A `predikcio` blokk a KÉT regresszió-fájlból mergelt (elsődleges: 1_nap/1_het; másodlagos: 1_ho/
 // 3_ho/1_ev — lásd egyesitett_reg). A szín szándékosan elüt a többitől (kék=adat, piros=lineáris trend,
 // narancs=szint, szürke=marker, lila=nemlin, ZÖLD=predikció) — Task 7 rajzolja a görbét/sávot ezzel a színnel.
-const PREDIKCIO_SZIN = "#16a085";
-const PREDIKCIO_SAV_SZIN = "rgba(22, 160, 133, 0.15)";   // halvány kitöltés a bizonytalansági sávhoz (also/felso közt)
+const PREDIKCIO_SZIN = szin("graf-elorejelzes");
+const PREDIKCIO_SAV_SZIN = szin("graf-elorejelzes-sav");   // halvány kitöltés a bizonytalansági sávhoz (also/felso közt)
 // SZOKÁSOS TARTOMÁNY (bővítés Task 4): kapcsolóval BE/KI (alapból KI). A backend (elmozdulas.json `sav`) adja a
 // pontokat — a frontend nem számol statisztikát, csak rajzol. Halvány szürke sáv a szokatlan elmozdulás referenciája.
-const SZOKASOS_SAV_SZIN = "rgba(120, 120, 120, 0.14)";   // halvány szürke „szokásos tartomány" sáv
+const SZOKASOS_SAV_SZIN = szin("graf-sav");   // halvány szürke „szokásos tartomány" sáv
 const SZOKASOS_SAV_GOMB_BE = "Szokásos tartomány – bekapcsolva";
 const SZOKASOS_SAV_GOMB_KI = "Szokásos tartomány";
 const SZOKASOS_SAV_INFO = "Bekapcsolva a charton egy halvány szürke sáv mutatja az adott szó szokásos ingadozási tartományát; a sávon kívüli kitérés szokatlan elmozdulásnak számít.";
@@ -147,8 +147,8 @@ const URES_NINCS_ABLAK = "Az adatsor ezen az időszakon nem érhető el.";
 //    ugyanaz a szín ugyanazért: „ez a mért adat"; testvérei a #cc3333 trend- és #e69138 szint-vonal).
 //  - KATEGORIA_ALAP_SZIN: a kategória-akcentus a trend-kategória sávban (nem-tompított alap; testvérei a
 //    #aec4ef tompított és a #9e9e9e/#d4d4d4 „Other" szürke — ezek MIN-BC hatókörén kívül, inline maradnak).
-const ADAT_VONAL_SZIN = "#3366cc";
-const KATEGORIA_ALAP_SZIN = "#3366cc";
+const ADAT_VONAL_SZIN = szin("google");
+const KATEGORIA_ALAP_SZIN = szin("google");
 
 // kulcsszó-chart tooltip közös stílusa (SZEMLE 08-19 dizájn): NINCS szín-négyzet (displayColors:false —
 // egyetlen adatsornál redundáns/ronda); tiszta, tömör sötét háttér (NEM átlátszóbb — az rontaná az olvashatóságot
@@ -158,7 +158,7 @@ const TOOLTIP_STILUS = {
   enabled: true,
   filter: function (it) { return it.datasetIndex === 0; },
   displayColors: false,
-  backgroundColor: "rgba(30, 30, 30, 0.9)",
+  backgroundColor: szin("szoveg"),
   cornerRadius: 4,
   padding: 8,
 };
@@ -686,10 +686,10 @@ const TREND_SZOVEG = {
   stagnal: "a trendje stagnáló – nagyjából egy szinten mozog",
   esemeny: "esemény-jellegű szó – nincs trendje; a szintjét az elmúlt 52 hét mediánjához mérjük",
 };
-const TREND_SZIN = { novekszik: "#2e7d32", csokken: "#b23c3c", stagnal: "#777", esemeny: "#777" };
+const TREND_SZIN = { novekszik: szin("ok"), csokken: szin("hiba"), stagnal: szin("semleges"), esemeny: szin("semleges") };
 // az áttekintő eltérés-ikonok színei (megegyeznek az app.css ::before színeivel) — a magyarázat glyph-jei is EZEKKEL.
 // felette ▲ ZÖLD (a szokásos fölé), alatta ▼ PIROS (alá), illeszkedik • SZÜRKE (semleges: követi a trendet)
-const ATTEKINTO_SZIN = { felette: "#2e7d32", alatta: "#b23c3c", illeszkedik: "#777" };
+const ATTEKINTO_SZIN = { felette: szin("ok"), alatta: szin("hiba"), illeszkedik: szin("semleges") };
 // egy SZÍNES, nem-dőlt glyph a magyarázatba (a doboz dőlt-szürke; a glyph kiemelt színnel, egyenesen)
 function attekinto_glif(ch, szin) {
   const s = document.createElement("span");
@@ -1211,9 +1211,9 @@ function chart_letrehoz(kartya) {
   // nem lapul össze (a benzin 7 napja a saját tengelyén, nem egy 1 éves közösön). Nincs idő-adapter → type:"linear"
   // + tick/tooltip callback (ms → dátum). A y-tengely VÁLTOZATLAN 0–100 (§1.4: nincs kártyák-közti átskálázás).
   if (kartya._teljes_mod) {
-    const ds = [{ data: racs.xy, spanGaps: false, borderColor: ADAT_VONAL_SZIN, borderWidth: 1.5, pointRadius: 0 }];
-    if (racs.vonal_xy) ds.push({ data: racs.vonal_xy, spanGaps: true, borderColor: "#cc3333", borderWidth: 1.5, borderDash: [4, 3], pointRadius: 0 });
-    if (racs.szint_xy) ds.push({ data: racs.szint_xy, spanGaps: true, borderColor: "#e69138", borderWidth: 1.5, borderDash: [6, 4], pointRadius: 0 });
+    const ds = [{ data: racs.xy, spanGaps: false, borderColor: adat_vonal_szin(kartya), borderWidth: 1.5, pointRadius: 0 }];
+    if (racs.vonal_xy) ds.push({ data: racs.vonal_xy, spanGaps: true, borderColor: szin("graf-trend"), borderWidth: 1.5, borderDash: [4, 3], pointRadius: 0 });
+    if (racs.szint_xy) ds.push({ data: racs.szint_xy, spanGaps: true, borderColor: szin("graf-szint"), borderWidth: 1.5, borderDash: [6, 4], pointRadius: 0 });
     // ÉLŐ-MÉRÉS MARKER: függőleges szürke szaggatott vonal a meres_kezdete-nél (0→100), a kártya x-tengelyén
     if (kartya._elo_marker_ms != null) ds.push({ data: [{ x: kartya._elo_marker_ms, y: 0 }, { x: kartya._elo_marker_ms, y: 100 }], spanGaps: true, borderColor: ELO_MARKER_SZIN, borderWidth: 1, borderDash: [3, 3], pointRadius: 0 });
     // ML-TREND (Task 6): a lila LOESS-görbe — CSAK ha a kapcsoló BE (data-nemlin="true", Task 5 dönti el) ÉS
@@ -1223,8 +1223,8 @@ function chart_letrehoz(kartya) {
     // lineáris tengelyre {x:ms,y}. A tooltip változatlan (datasetIndex 0 szűrő). Fail-soft: sav nélkül nincs ds.
     if (kartya.getAttribute(ATTR.szokasos_sav) === "true" && kartya._sav) {
       const xy_p = function (p) { return { x: iso_ms(p.idopont_utc), y: p.ertek }; };
-      ds.push({ data: kartya._sav.also.map(xy_p), spanGaps: true, borderColor: "rgba(0,0,0,0)", borderWidth: 0, pointRadius: 0, fill: false });
-      ds.push({ data: kartya._sav.felso.map(xy_p), spanGaps: true, borderColor: "rgba(0,0,0,0)", borderWidth: 0, pointRadius: 0, fill: "-1", backgroundColor: SZOKASOS_SAV_SZIN });
+      ds.push({ data: kartya._sav.also.map(xy_p), spanGaps: true, borderColor: "transparent", borderWidth: 0, pointRadius: 0, fill: false });
+      ds.push({ data: kartya._sav.felso.map(xy_p), spanGaps: true, borderColor: "transparent", borderWidth: 0, pointRadius: 0, fill: "-1", backgroundColor: SZOKASOS_SAV_SZIN });
     }
     // a mért adatpontok (a predikció-anchorhoz ÉS a lenti x-tengelyhez is); a kártya felbontása a zoom-döntéshez
     const teljes_pts = racs.xy.filter(function (p) { return p.y !== null; });
@@ -1241,8 +1241,8 @@ function chart_letrehoz(kartya) {
       const horgony = function (arr) { return um ? [{ x: um.x, y: um.y }].concat(arr) : arr; };
       const also_h = horgony(pr.also), felso_h = horgony(pr.felso), pont_h = horgony(pr.pont);
       const jelolo = pont_h.length <= 12 ? 4 : 0;
-      ds.push({ data: also_h, spanGaps: true, borderColor: "rgba(0,0,0,0)", borderWidth: 0, pointRadius: 0, fill: false });
-      ds.push({ data: felso_h, spanGaps: true, borderColor: "rgba(0,0,0,0)", borderWidth: 0, pointRadius: 0, fill: "-1", backgroundColor: PREDIKCIO_SAV_SZIN });
+      ds.push({ data: also_h, spanGaps: true, borderColor: "transparent", borderWidth: 0, pointRadius: 0, fill: false });
+      ds.push({ data: felso_h, spanGaps: true, borderColor: "transparent", borderWidth: 0, pointRadius: 0, fill: "-1", backgroundColor: PREDIKCIO_SAV_SZIN });
       ds.push({ data: pont_h, spanGaps: true, borderColor: PREDIKCIO_SZIN, borderWidth: 2, borderDash: [5, 3], pointRadius: jelolo, pointBackgroundColor: PREDIKCIO_SZIN });
     }
     // per-szó tengely PONTOS széllel: min/max = az ELSŐ/UTOLSÓ tényleges adatpont (nincs Chart.js grace-padding →
@@ -1300,11 +1300,11 @@ function chart_letrehoz(kartya) {
     return;
   }
 
-  const datasetek = [{ data: racs.ertekek, spanGaps: false, borderColor: ADAT_VONAL_SZIN, borderWidth: 1.5, pointRadius: 0 }];
-  if (racs.vonal) datasetek.push({ data: racs.vonal, spanGaps: true, borderColor: "#cc3333", borderWidth: 1.5, borderDash: [4, 3], pointRadius: 0 });
+  const datasetek = [{ data: racs.ertekek, spanGaps: false, borderColor: adat_vonal_szin(kartya), borderWidth: 1.5, pointRadius: 0 }];
+  if (racs.vonal) datasetek.push({ data: racs.vonal, spanGaps: true, borderColor: szin("graf-trend"), borderWidth: 1.5, borderDash: [4, 3], pointRadius: 0 });
   // 6c: esemenyjelzo szint-vonal — konstans vízszintes referencia (narancs, a kék adattól ÉS a piros trendtől
   // is elkülönül); NEM trendvonal (data-vonal marad "false"), a bázist a merteszamok-felirat mondja ki.
-  if (racs.szint_vonal) datasetek.push({ data: racs.szint_vonal, spanGaps: true, borderColor: "#e69138", borderWidth: 1.5, borderDash: [6, 4], pointRadius: 0 });
+  if (racs.szint_vonal) datasetek.push({ data: racs.szint_vonal, spanGaps: true, borderColor: szin("graf-szint"), borderWidth: 1.5, borderDash: [6, 4], pointRadius: 0 });
   // ML-TREND (Task 6): ugyanaz a guard, mint a teljes-ág fenti; a label-indexelt `racs.nemlin` a saját slot-
   // pozíciókra rakott görbe-pontok (racs_epit), a köztes null-okat a spanGaps:true hidalja át.
   if (kartya.getAttribute(ATTR.nemlin) === "true" && racs.nemlin) datasetek.push({ data: racs.nemlin, spanGaps: true, borderColor: NEMLIN_SZIN, borderWidth: 2, pointRadius: 0, tension: 0.3 });
@@ -1316,8 +1316,8 @@ function chart_letrehoz(kartya) {
       arr.forEach(function (p) { const i = racs.slot_hely(p.idopont_utc); if (i >= 0 && i < ki.length) ki[i] = p.ertek; });
       return ki;
     };
-    datasetek.push({ data: label_sorba(kartya._sav.also), spanGaps: true, borderColor: "rgba(0,0,0,0)", borderWidth: 0, pointRadius: 0, fill: false });
-    datasetek.push({ data: label_sorba(kartya._sav.felso), spanGaps: true, borderColor: "rgba(0,0,0,0)", borderWidth: 0, pointRadius: 0, fill: "-1", backgroundColor: SZOKASOS_SAV_SZIN });
+    datasetek.push({ data: label_sorba(kartya._sav.also), spanGaps: true, borderColor: "transparent", borderWidth: 0, pointRadius: 0, fill: false });
+    datasetek.push({ data: label_sorba(kartya._sav.felso), spanGaps: true, borderColor: "transparent", borderWidth: 0, pointRadius: 0, fill: "-1", backgroundColor: SZOKASOS_SAV_SZIN });
   }
   chart_peldanyok[kartya.getAttribute(ATTR.kulcsszo)] = new Chart(canvas, {
     type: "line",
@@ -1520,6 +1520,10 @@ function kulcsszo_blokk_render() {
     const h3 = document.createElement("h3");
     h3.className = OSZT.fejlec;
     h3.textContent = d === null ? "Egyéb" : DOMEN_MAGYAR[d];
+    const potty = document.createElement("span");   // témaszín-pötty a cím előtt (a cím szövege változatlan)
+    potty.className = "ui-tema-potty";
+    potty.style.setProperty("--potty", tema_szin(d, "google"));
+    h3.insertBefore(potty, h3.firstChild);
     cs.appendChild(h3);
     szavak.forEach(function (szo) {
       const k = kartya_letrehoz(szo, reg.kulcsszavak[szo], aktiv, adatforras_be, mltrend_be, predikcio_horizont, szokasos_sav_be);
@@ -1687,8 +1691,8 @@ const OTHER_CIMKE = "Other";       // a Google gyűjtő-KATEGÓRIÁJA (van szűr
 // szín a kiválasztási sorrend szerinti palette-slot; a legend (bal doboz) névvel+színes pöttyel azonosít
 // (ez a kontraszt-relief a világosabb hue-khoz). Nincs ciklizás a vonalstílusban; 8+ felett ismétlődhet a szín
 // (interaktív kiemelés, a legend akkor is azonosít — gyakorlatban <8 van kiválasztva).
-const IDOSOR_SZURKE = "#cccccc";
-const IDOSOR_PALETTA = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7", "#e34948"];
+const IDOSOR_SZURKE = szin("semleges");
+const IDOSOR_PALETTA = [1, 2, 3, 4, 5, 6, 7, 8].map(function (i) { return szin("tema-" + i); });
 function idosor_kateg_szin(idx) { return IDOSOR_PALETTA[idx % IDOSOR_PALETTA.length]; }
 const EGYEB_CIMKE = "egyéb";       // a besorolás HIÁNYA ([]/hiányzó mező) — NINCS szűrő-gomb
 const OSSZES_CIMKE = "Összes";
@@ -1849,7 +1853,7 @@ function trend_idosor_tukor_epit(idosor) {
 function idosor_vonal_stilus(nev) {
   if (!idosor_aktivak.length) return { szin: IDOSOR_SZURKE, vastag: 1.5, pont: 0, sorrend: 1 };   // alap: MIND szürke
   if (nev in idosor_szin_slot) return { szin: idosor_kateg_szin(idosor_szin_slot[nev]), vastag: 2.5, pont: 2.5, sorrend: 0 };  // kiemelt: STABIL saját szín, felül
-  return { szin: "#e6e6e6", vastag: 1, pont: 0, sorrend: 2 };                                       // tompított
+  return { szin: szin_atlatszo("semleges", 0.35), vastag: 1, pont: 0, sorrend: 2 };                                       // tompított
 }
 
 // a kiválasztott kategóriák átszínezése (a count-ok/adatok VÁLTOZATLANOK — csak szín/vastagság/sorrend).
@@ -1921,7 +1925,7 @@ function trend_idosor_chart_epit(canvas, idosor) {
       scales: {
         x: { grid: { display: false } },   // függőleges rács KI — zaj (átlósan keresztezi a vonalakat), a dátum az x-tengelyen van
         y: { beginAtZero: true, ticks: { precision: 0 }, title: { display: true, text: "kategóriába eső trendek" },
-             grid: { color: "#f0f0f0" } },   // vízszintes rács HALVÁNY — az érték-leolvasáshoz, a kék kiemelt vonal fölé nem tolakszik
+             grid: { color: szin("keret") } },   // vízszintes rács HALVÁNY — az érték-leolvasáshoz, a kék kiemelt vonal fölé nem tolakszik
       },
       plugins: {
         legend: { display: false },   // KÉTDOBOZOS: a Chart.js belső legendje KIKAPCSOLVA → a bal #idosor-legend HTML-legend
@@ -2052,8 +2056,8 @@ function idosor_blokk_render() {
 }
 
 function trend_szin(kategoria, tompitott) {
-  if (kategoria === OTHER_CIMKE) return tompitott ? "#d4d4d4" : "#9e9e9e";   // "Other" mindig szürke
-  return tompitott ? "#aec4ef" : KATEGORIA_ALAP_SZIN;
+  if (kategoria === OTHER_CIMKE) return tompitott ? szin_atlatszo("semleges", 0.4) : szin("semleges");   // "Other" mindig szürke
+  return tompitott ? szin_atlatszo("google", 0.4) : KATEGORIA_ALAP_SZIN;
 }
 
 // egy trend-sparkline AZONNALI Chart-példányosítása (mint a kategoria_chart ma — NINCS lusta observer).

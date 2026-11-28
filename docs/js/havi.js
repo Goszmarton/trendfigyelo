@@ -124,7 +124,7 @@ function havi_barchart(kulcs, canvasId, cimkek, ertekek, onOszlop) {
     }
     havi_chartok[kulcs] = new Chart(canvas, {
       type: "bar",
-      data: { labels: cimkek, datasets: [{ data: ertekek, backgroundColor: "#3366cc" }] },
+      data: { labels: cimkek, datasets: [{ data: ertekek, backgroundColor: szin("google") }] },
       options: { indexAxis: "y", responsive: true, maintainAspectRatio: false, animation: false,
         plugins: { legend: { display: false } },
         scales: { x: { beginAtZero: true, title: { display: true, text: "volumen" } },

@@ -58,3 +58,48 @@ def test_lucide_sprite_szimbolumok():
     svg = (DOCS / "vendor/lucide/ikonok.svg").read_text(encoding="utf-8")
     for i in IKONOK:
         assert re.search(rf'<symbol\b[^>]*\bid="{i}"', svg), f"hiányzó szimbólum: {i}"
+
+
+# ── Task 2: szinek.js, JS-színek tokenre ─────────────────────────────────────
+JS = DOCS / "js"
+HAVI_LEAFLET_ENGEDELYEZETT = {"#ef6c33", "#fff", "#5a7fb0", "#c3ccd6", "#f3f0e9", "#2c4a73", "#999", "#888"}
+SZIN_MINTA = re.compile(r"#[0-9a-fA-F]{3,6}\b|rgba?\(")
+OLDAL_JS = ("js/app.js", "js/heti.js", "js/havi.js", "js/bovites.js", "js/youtube.js")
+
+
+def _js_megjegyzes_nelkul(src):
+    src = re.sub(r"/\*.*?\*/", "", src, flags=re.S)
+    return re.sub(r"(?<![:\"'\\])//[^\n]*", "", src)
+
+
+def test_szinek_js_letezik_es_exportal():
+    src = (JS / "szinek.js").read_text(encoding="utf-8")
+    for nev in ("function szin(", "function tema_szin(", "function grafikon_alap(", "TEMA_SORREND_GOOGLE", "module.exports"):
+        assert nev in src, nev
+
+
+def test_js_nincs_beegetett_hex_szin():
+    hibak = []
+    for f in sorted(JS.glob("*.js")):
+        if f.name == "szinek.js":
+            continue
+        for i, sor in enumerate(_js_megjegyzes_nelkul(f.read_text(encoding="utf-8")).splitlines(), 1):
+            for m in SZIN_MINTA.finditer(sor):
+                if f.name == "havi.js" and m.group(0).lower() in HAVI_LEAFLET_ENGEDELYEZETT:
+                    continue
+                hibak.append(f"{f.name}:{i}: {m.group(0)}")
+    assert not hibak, hibak
+
+
+def test_szinek_js_a_chart_utan_es_az_oldal_js_elott_tolt():
+    for html in sorted(DOCS.glob("*.html")):
+        srcs = re.findall(r'<script src="([^"]+)"', html.read_text(encoding="utf-8"))
+        if not any(x in srcs for x in OLDAL_JS):
+            continue
+        assert "js/szinek.js" in srcs, html.name
+        i = srcs.index("js/szinek.js")
+        for x in srcs:
+            if x == "vendor/chartjs/chart.umd.js":
+                assert srcs.index(x) < i, html.name
+            if x in OLDAL_JS:
+                assert srcs.index(x) > i, html.name

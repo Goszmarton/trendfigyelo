@@ -20,7 +20,7 @@ test("ügyek: renderel + idősáv (gördülő 30 nap) + szűrő + rendezés + id
   // idővonal
   const kartya = page.locator(".bovites-ugy").first();
   await expect(kartya.locator(".bovites-idovonal-cim")).toContainText("Napi jelenlét");
-  await expect(kartya.locator(".bovites-idovonal .bovites-nap").first()).toHaveAttribute("style", /rgba\(42, 120, 214/);
+  await expect(kartya.locator(".bovites-idovonal .bovites-nap").first()).toHaveAttribute("style", /rgba\(31, 138, 138/);
   // szűrő + rendezés
   await page.locator('#bovites-szuro-ugy .bovites-szuro-chip[data-szakpolitika="oktataspolitika"]').click();
   await expect(page.locator(".bovites-ugy")).toHaveCount(1);

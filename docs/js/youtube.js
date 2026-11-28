@@ -189,6 +189,10 @@
       const h3 = document.createElement("h3");
       h3.className = OSZT.fejlec;
       h3.textContent = d === null ? "Egyéb" : YT_DOMEN_MAGYAR[d];
+      const potty = document.createElement("span");   // témaszín-pötty a cím előtt (a cím szövege változatlan)
+      potty.className = "ui-tema-potty";
+      potty.style.setProperty("--potty", tema_szin(d, "youtube"));
+      h3.insertBefore(potty, h3.firstChild);
       cs.appendChild(h3);
       szavak.forEach(function (szo) {
         const k = kartya_letrehoz(szo, reg[szo], aktiv);

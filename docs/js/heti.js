@@ -5,8 +5,8 @@
 // és a korpuszra grounding-validáltak (lásd trendfigyelo/heti_ertekeles.py); a diagram a VALÓS
 // számokból (eltérés a szokásos szinttől) determinista. NINCS new Date() — a hét az index.json-ból.
 
-const HETI_SZIN_EROS = "#2a78d6";    // erősödő (pozitív eltérés) — az IDOSOR_PALETTA validált kékje
-const HETI_SZIN_GYENGE = "#eb6834";  // gyengülő (negatív eltérés) — az IDOSOR_PALETTA validált narancsa
+const HETI_SZIN_EROS = szin("tema-1");    // erősödő (pozitív eltérés) — az IDOSOR_PALETTA validált kékje
+const HETI_SZIN_GYENGE = szin("tema-6");  // gyengülő (negatív eltérés) — az IDOSOR_PALETTA validált narancsa
 const heti_chartok = {};
 window.heti_chartok = heti_chartok;
 
