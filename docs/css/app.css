@@ -1,8 +1,78 @@
 /* Trendfigyelő — Task 5 váz stílus (a korábbi inline <style>-ból áthozva).
    Csak saját, relatív stílus — külső @import / url() TILOS (Task 1 CSS-guard). */
 
-body { font-family: system-ui, sans-serif; max-width: 78rem; margin: 2rem auto;
-       padding: 0 1rem; line-height: 1.6; color: #222; }
+@font-face {
+  font-family: "Inter";
+  src: url("../vendor/inter/InterVariable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* felületek */
+  --oldalsav-hatter: #202326;
+  --oldalsav-szoveg: #C9CED2;
+  --oldalsav-cim: #858D94;
+  --aktiv-hatter: #8FDCD0;
+  --aktiv-szoveg: #202326;
+  --hatter: #F5F6F4;
+  --kartya: #FFFFFF;
+  --keret: #E2E5E3;
+  --szoveg: #1A1D20;
+  --szoveg-2: #66707A;
+  --akcentus: #1F8A8A;
+  /* állapotok */
+  --ok: #2E8B57;
+  --figy: #D9A21B;
+  --hiba: #C8414B;
+  --semleges: #98A0A8;
+  /* adatforrások */
+  --google: #3B6FD8;
+  --youtube: #D6453D;
+  /* témák (Okabe-Ito; a --tema-7 csak kitöltés/pötty, vonalként nem) */
+  --tema-1: #0072B2;
+  --tema-2: #E69F00;
+  --tema-3: #009E73;
+  --tema-4: #CC79A7;
+  --tema-5: #56B4E9;
+  --tema-6: #D55E00;
+  --tema-7: #F0E442;
+  --tema-8: #4D4D4D;
+  /* grafikon-jelentések (a mai JS-értékek) */
+  --graf-ml: #8e44ad;
+  --graf-elorejelzes: #16a085;
+  --graf-elorejelzes-sav: rgba(22, 160, 133, 0.15);
+  --graf-trend: #cc3333;
+  --graf-szint: #e69138;
+  --graf-sav: rgba(120, 120, 120, 0.14);
+  --graf-jelolo: #8a8a8a;
+  /* tipográfia */
+  --betu: "Inter", system-ui, "Segoe UI", sans-serif;
+  --betu-cim: 30px;
+  --betu-szakasz: 17px;
+  --betu-kartya: 14.5px;
+  --betu-torzs: 14px;
+  --betu-seged: 12.5px;
+  --betu-mikro: 11px;
+  /* lekerekítés */
+  --r-kartya: 12px;
+  --r-chip: 8px;
+  --r-pill: 999px;
+  /* térköz (4-es rács) */
+  --ter-1: 4px;
+  --ter-2: 8px;
+  --ter-3: 12px;
+  --ter-4: 16px;
+  --ter-5: 20px;
+  --ter-6: 24px;
+  --ter-7: 32px;
+  --ter-8: 40px;
+}
+
+
+body { font-family: var(--betu); background: var(--hatter); color: var(--szoveg);
+       max-width: 78rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; }
 h1 { margin-bottom: .25rem; }
 h2 { font-size: 1.1rem; margin: 1.5rem 0 .5rem; }
 /* szakasz-elválasztó cím (nagyobb, mint a szekció-h2) — a napi keresések részt vezeti be,

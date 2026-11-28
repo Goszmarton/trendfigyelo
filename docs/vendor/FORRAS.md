@@ -102,3 +102,34 @@ magyar címkék előre formázva); a date-adapter + date-fns nincs vendorolva.
 - 20 feature (19 megye + Budapest), ~70 KB.
 
 `geo/hu-megyek.geojson` — sha256: `90747320b8af6fe42f6c7c1427c3dbed6dd3f07602a473f806cd3be887b3996c`
+
+## Inter 4.1 (SIL OFL-1.1)
+
+- Betűtípus: Inter, verzió: **4.1**
+- Fájl: `inter/InterVariable.woff2` (az `Inter-4.1.zip` `web/InterVariable.woff2` tagja, változó súlytengely)
+- Méret: 352 240 bájt (~344 KB)
+- Licenc: **SIL Open Font License 1.1**
+- Forrás: https://github.com/rsms/inter/releases/download/v4.1/Inter-4.1.zip
+- Kiadási archívum sha256 (letöltéskor rögzítve):
+  `9883fdd4a49d4fb66bd8177ba6625ef9a64aa45899767dde3d36aa425756b11e`
+
+`inter/InterVariable.woff2` — sha256: `693b77d4f32ee9b8bfc995589b5fad5e99adf2832738661f5402f9978429a8e3`
+
+## lucide-static 1.72.0 (ISC)
+
+- Csomag: `lucide-static`, verzió: **1.72.0** (kiadva 2026-11-11, legalább két hetes)
+- Fájl: `lucide/ikonok.svg` — egyetlen helyi SVG-sprite a tarball `package/icons/*.svg` ikonjaiból,
+  12 `<symbol>` (viewBox 24x24, stroke=currentColor, fill=none, stroke-width 1.8):
+  `i-attekinto`=layout-grid, `i-napi`=calendar, `i-heti`=chart-column, `i-havi`=globe,
+  `i-valtozasok`=activity, `i-ugyek`=list, `i-kapcsolodo`=share-2, `i-google`=search,
+  `i-youtube`=square-play, `i-info`=info, `i-menu`=menu, `i-logo`=trending-up
+- Megjegyzés: a lucide 1.x már nem tartalmaz márkaikont (`youtube` nincs), ezért a `i-youtube`
+  a semleges `square-play` ikon.
+- Licenc: **ISC**
+- Tarball: https://registry.npmjs.org/lucide-static/-/lucide-static-1.72.0.tgz
+- Tarball sha512 (npm registry `dist.integrity`, letöltéskor bájtra egyeztetve):
+  `sha512-QhdZ60O7Zcs/e8gw40uMfEn055xZTHBZoNi0xb+/1R2dTd0v4FXS46VL6rKSwC+V92tLBiqsAbCcijy7Wy4j4w==`
+- A sprite a verifikált tarball ikonfájljaiból készült (a belső `<svg>` burkoló lecserélve
+  `<symbol>`-ra); a gépi sor a generált sprite sha256-ja.
+
+`lucide/ikonok.svg` — sha256: `80032c7b119685691fd6a9b93399b0f976f79405d136a42853a4977b14c77274`
