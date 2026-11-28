@@ -117,14 +117,14 @@ code { background: var(--felulet-2); padding: .1rem .3rem; border-radius: 3px; }
 
 /* KATEGÓRIA-IDŐSOR kétdobozos: bal #idosor-legend (kattintható HTML-legend, a Chart.js belső legend reprodukciója),
    jobb #idosor-blokk (h2 → chart → magyarázat). A pötty kerek szürke; aktív = akcentus-pötty + akcentus-szöveg. */
-#idosor-legend { display: flex; flex-direction: column; gap: .1rem; }
-#idosor-legend .idosor-legend-elem { display: flex; align-items: center; gap: .5rem; width: 100%;
-  padding: .25rem .3rem; background: none; border: none; border-radius: 4px; cursor: pointer;
-  font-size: .9rem; color: var(--szoveg-2); text-align: left; }
+#idosor-legend { display: flex; flex-direction: row; flex-wrap: wrap; gap: var(--ter-2); }   /* chip-sor a chart fölött */
+#idosor-legend .idosor-legend-elem { display: inline-flex; align-items: center; gap: .4rem; width: auto;
+  padding: 5px 12px; background: var(--kartya); border: 1px solid var(--keret); border-radius: var(--r-chip); cursor: pointer;
+  font-size: 13px; color: var(--szoveg-2); text-align: left; }
 #idosor-legend .idosor-legend-elem:hover { background: var(--felulet-2); }
 #idosor-legend .idosor-legend-pont { flex: 0 0 auto; width: 14px; height: 14px; border-radius: 50%;
   background: var(--keret); }
-#idosor-legend .idosor-legend-elem.kiemelt { color: var(--google); font-weight: 600; }
+#idosor-legend .idosor-legend-elem.kiemelt { color: var(--google); font-weight: 600; border-color: var(--google); }
 #idosor-legend .idosor-legend-elem.kiemelt .idosor-legend-pont { background: var(--google); }
 #idosor-legend .idosor-legend-elem:focus-visible { outline: 2px solid var(--google); outline-offset: 2px; }
 #idosor-blokk .idosor-adat { display: none; }   /* rejtett DOM-tükör (data-* assertálható, nem látszik) */
@@ -249,17 +249,20 @@ body.keret { max-width: none; margin: 0; padding: 0; display: grid; grid-templat
    (a „2 hét"/„1 hó" a szövegek KÖZÉ ékelődött). Fix: a konténer flex-column (intervallumok egymás alatt),
    minden .intervallum-tetel flex-row (a gomb + a saját .ok egy sorban). A gombköz margin-right → wrapper-gap. */
 #intervallum-vezerlo,
-#youtube-intervallum-vezerlo { display: grid; grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); align-items: start; gap: var(--ter-3) var(--ter-4); }
+#youtube-intervallum-vezerlo { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--ter-3) var(--ter-3); }
 /* item 2: a tétel OSZLOP (gomb-sor + magyarázat alatta); a gomb-sor a régi flex-row (gomb + .ok egy sorban) */
 #intervallum-vezerlo .intervallum-tetel,
 #youtube-intervallum-vezerlo .intervallum-tetel { display: flex; flex-direction: column; align-items: flex-start; gap: .1rem; }
+/* a chipek ne zsugorodjanak; csak az alattuk lévő magyarázat tördelődik szűk sávban → szorosabb chip-sor */
+#intervallum-vezerlo .intervallum-gomb-sor,
+#youtube-intervallum-vezerlo .intervallum-gomb-sor { white-space: nowrap; }
 #intervallum-vezerlo .intervallum-gomb-sor,
 #youtube-intervallum-vezerlo .intervallum-gomb-sor { display: flex; align-items: baseline; gap: .5rem; }
 /* kék vonal a kísérő szöveg elé (ⓘ nélkül); FIX magasságú sáv (pseudo), hogy MIND egyforma hosszú legyen,
    függetlenül attól, hogy a szöveg 1 vagy 2 sorra tördel */
 #intervallum-vezerlo .gomb-magyarazat,
 #youtube-intervallum-vezerlo .gomb-magyarazat { font-size: var(--betu-mikro); color: var(--szoveg-2); line-height: 1.2;
-  position: relative; padding-left: .5rem; max-width: 100%; box-sizing: border-box; min-height: 2.4em; }
+  position: relative; padding-left: .5rem; max-width: 7.5rem; box-sizing: border-box; min-height: 2.4em; }
 #intervallum-vezerlo .gomb-magyarazat::before,
 #youtube-intervallum-vezerlo .gomb-magyarazat::before {
   content: ""; position: absolute; left: 0; top: .05rem; width: 3px; height: .8rem;
@@ -287,6 +290,8 @@ body.keret { max-width: none; margin: 0; padding: 0; display: grid; grid-templat
    ékelődött) — a date-select KÜLÖN vezérlő. Rendering-no-op: más elem, más specificitás, nincs átfedő szabály. */
 /* naptár nap-választó (inline; a select helyett) */
 #datum-valaszto .naptar { font-size: .82rem; }
+/* a szakasz fölé került naptárak kompaktak maradnak (ne nyúljanak a teljes szélességre) */
+#datum-valaszto .naptar, #heti-valaszto .naptar { max-width: 320px; }
 .naptar-fej { display: flex; align-items: center; justify-content: space-between; margin-bottom: .3rem; }
 .naptar-cim { font-weight: 600; color: var(--szoveg); }
 .honap-lep { border: none; background: none; cursor: pointer; font-size: 1.15rem; color: var(--szoveg);
