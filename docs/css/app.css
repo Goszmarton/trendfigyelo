@@ -112,6 +112,10 @@ code { background: var(--felulet-2); padding: .1rem .3rem; border-radius: 3px; }
   background: var(--kartya); border: 1px solid var(--keret); border-radius: var(--r-kartya); padding: var(--ter-3); box-sizing: border-box; }
 /* a naptár-/hét-/kategória-választó magas → nem tapad (csak az idő-ablak chip-sor sticky) */
 .vezerlo-sav:has(#datum-valaszto), .vezerlo-sav:has(#heti-valaszto), .vezerlo-sav:has(#idosor-legend) { position: static; }
+/* a naptár- és kategória-választós szakaszok KÉTOSZLOPOSAK (asztalon): bal a választó, jobb a tartalom */
+.szekcio:has(#datum-valaszto), .szekcio:has(#heti-valaszto), .szekcio:has(#idosor-legend) { flex-direction: row; align-items: flex-start; }
+.vezerlo-sav:has(#datum-valaszto), .vezerlo-sav:has(#heti-valaszto) { flex: 0 0 auto; width: 344px; align-self: flex-start; }
+.vezerlo-sav:has(#idosor-legend) { flex: 0 0 260px; align-self: flex-start; }
 #kulcsszo-blokk, #trend-blokk, #heti-blokk, #idosor-blokk, #youtube-blokk { flex: 1; min-width: 0;
   background: var(--kartya); border: 1px solid var(--keret); border-radius: var(--r-kartya); padding: var(--ter-5); box-sizing: border-box; }
 
@@ -152,6 +156,8 @@ code { background: var(--felulet-2); padding: .1rem .3rem; border-radius: 3px; }
   /* column módban a fő tengely FÜGGŐLEGES → a flex:0 0 14rem MAGASSÁGOT fixálna (üresen 224px, az első
      kártyát a rootMargin-zóna alá tolja); auto-basis + static a természetes magasságra ejti (L10). */
   .vezerlo-sav { flex: 0 0 auto; position: static; }  /* mobilon nem tapad */
+  .szekcio:has(#datum-valaszto), .szekcio:has(#heti-valaszto), .szekcio:has(#idosor-legend) { flex-direction: column; align-items: stretch; }
+  .vezerlo-sav:has(#datum-valaszto), .vezerlo-sav:has(#heti-valaszto), .vezerlo-sav:has(#idosor-legend) { width: auto; flex: 0 0 auto; align-self: stretch; }
 }
 /* Keret: grafit oldalsáv (≥901px kétoszlopos rács) + mobil fiókmenü (≤900px) */
 body.keret { max-width: none; margin: 0; padding: 0; display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: 100vh; }
