@@ -6,41 +6,48 @@
   <title>Kapcsolódó keresések – Radar – Trendfigyelő</title>
   <link rel="stylesheet" href="css/app.css">
 </head>
-<body>
-  <nav id="fomenu" aria-label="Fő menü">
-    <a href="index.html" class="fomenu-home">Áttekintő</a>
-    <div class="fomenu-csoport" aria-label="Elemzések">
-      <span class="fomenu-cimke">Elemzések</span>
-      <a href="elemzes.html">Napi</a>
-      <a href="heti.html">Heti</a>
-      <a href="havi.html">Havi</a>
+<body class="keret">
+  <aside class="keret-oldalsav">
+    <div class="keret-logo"><svg aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-logo"/></svg>Trendfigyelő</div>
+    <nav id="fomenu" aria-label="Fő menü">
+      <a href="index.html" class="fomenu-home"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-attekinto"/></svg>Áttekintő</a>
+      <div class="fomenu-csoport" aria-label="Elemzések">
+        <span class="fomenu-cimke">Elemzések</span>
+        <a href="elemzes.html" data-keret-badge="napi"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-napi"/></svg>Napi</a>
+        <a href="heti.html" data-keret-badge="heti"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-heti"/></svg>Heti</a>
+        <a href="havi.html" data-keret-badge="havi"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-havi"/></svg>Havi</a>
+      </div>
+      <div class="fomenu-csoport" aria-label="Radar">
+        <span class="fomenu-cimke">Radar</span>
+        <a href="valtozasok.html" data-keret-badge="valtozasok"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-valtozasok"/></svg>Változások</a>
+        <a href="ugyek.html" data-keret-badge="ugyek"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-ugyek"/></svg>Ügyek</a>
+        <a href="kapcsolodo.html" class="aktiv" aria-current="page"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-kapcsolodo"/></svg>Kapcsolódó</a>
+      </div>
+      <div class="fomenu-csoport" aria-label="Statisztikák">
+        <span class="fomenu-cimke">Statisztikák</span>
+        <a href="trendek.html" data-badge="28"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-google"/></svg>Google</a>
+        <a href="youtube.html" data-badge="12"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-youtube"/></svg>YouTube</a>
+      </div>
+      <a href="adatokrol.html" class="fomenu-onallo"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-info"/></svg>Infó</a>
+    </nav>
+  </aside>
+  <div class="keret-fo">
+    <div class="keret-felso" id="keret-felso">
+      <button class="keret-menugomb" id="keret-menugomb" type="button" aria-controls="fomenu" aria-expanded="false" aria-label="Menü"><svg aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-menu"/></svg></button>
     </div>
-    <div class="fomenu-csoport" aria-label="Radar">
-      <span class="fomenu-cimke">Radar</span>
-      <a href="valtozasok.html">Változások</a>
-      <a href="ugyek.html">Ügyek</a>
-      <a href="kapcsolodo.html" class="aktiv" aria-current="page">Kapcsolódó</a>
-    </div>
-    <div class="fomenu-csoport" aria-label="Statisztikák">
-      <span class="fomenu-cimke">Statisztikák</span>
-      <a href="trendek.html">Google</a>
-      <a href="youtube.html">YouTube</a>
-    </div>
-    <a href="adatokrol.html" class="fomenu-onallo">Infó</a>
-  </nav>
+    <header class="fejlec-doboz">
+      <h1>Kapcsolódó keresések</h1>
+      <p class="radar-idosav" id="radar-idosav"></p>
+    </header>
 
-  <header class="fejlec-doboz">
-    <h1>Kapcsolódó keresések</h1>
-    <p class="radar-idosav" id="radar-idosav"></p>
-  </header>
+    <main id="bovites">
+      <p class="bovites-leiras">A napi <strong>felkapott keresések</strong> mögé nézünk: a Google Trends „kapcsolódó keresések” alapján témánként megmutatjuk, <strong>mire kíváncsiak még az emberek</strong> a téma körül. Kétféle lista: a <strong>Top</strong> a téma körül <strong>leggyakrabban</strong> együtt keresett kifejezések (a szám 0–100 relatív népszerűség, ahol a <strong>100 a leggyakoribb</strong>); a <strong>Felfutó</strong> pedig a <strong>mostanában leginkább megugró</strong> keresések (a % a növekedés, a „Breakout” kiugróan nagy felfutás). Jó tudni: a Top/Felfutó listák az <strong>elmúlt 3 hónap</strong> adatából számítanak, miközben maguk a <strong>témák</strong> a közelmúlt (utolsó pár nap) felkapottjai – naponta pár téma frissül.</p>
+      <section id="bovites-kapcsolodo" aria-live="polite"></section>
+    </main>
 
-  <main id="bovites">
-    <p class="bovites-leiras">A napi <strong>felkapott keresések</strong> mögé nézünk: a Google Trends „kapcsolódó keresések” alapján témánként megmutatjuk, <strong>mire kíváncsiak még az emberek</strong> a téma körül. Kétféle lista: a <strong>Top</strong> a téma körül <strong>leggyakrabban</strong> együtt keresett kifejezések (a szám 0–100 relatív népszerűség, ahol a <strong>100 a leggyakoribb</strong>); a <strong>Felfutó</strong> pedig a <strong>mostanában leginkább megugró</strong> keresések (a % a növekedés, a „Breakout” kiugróan nagy felfutás). Jó tudni: a Top/Felfutó listák az <strong>elmúlt 3 hónap</strong> adatából számítanak, miközben maguk a <strong>témák</strong> a közelmúlt (utolsó pár nap) felkapottjai – naponta pár téma frissül.</p>
-    <section id="bovites-kapcsolodo" aria-live="polite"></section>
-  </main>
-
-  <footer id="labresz" aria-label="Lábléc"></footer>
-
+    <footer id="labresz" aria-label="Lábléc"></footer>
+  </div>
+  <script src="js/keret.js"></script>
   <script src="js/szinek.js"></script>
   <script src="js/bovites.js"></script>
 </body>

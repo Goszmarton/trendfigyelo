@@ -6,250 +6,258 @@
   <title>Infó – Trendfigyelő</title>
   <link rel="stylesheet" href="css/app.css">
 </head>
-<body>
-  <nav id="fomenu" aria-label="Fő menü">
-    <a href="index.html" class="fomenu-home">Áttekintő</a>
-    <div class="fomenu-csoport" aria-label="Elemzések">
-      <span class="fomenu-cimke">Elemzések</span>
-      <a href="elemzes.html">Napi</a>
-      <a href="heti.html">Heti</a>
-      <a href="havi.html">Havi</a>
+<body class="keret">
+  <aside class="keret-oldalsav">
+    <div class="keret-logo"><svg aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-logo"/></svg>Trendfigyelő</div>
+    <nav id="fomenu" aria-label="Fő menü">
+      <a href="index.html" class="fomenu-home"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-attekinto"/></svg>Áttekintő</a>
+      <div class="fomenu-csoport" aria-label="Elemzések">
+        <span class="fomenu-cimke">Elemzések</span>
+        <a href="elemzes.html" data-keret-badge="napi"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-napi"/></svg>Napi</a>
+        <a href="heti.html" data-keret-badge="heti"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-heti"/></svg>Heti</a>
+        <a href="havi.html" data-keret-badge="havi"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-havi"/></svg>Havi</a>
+      </div>
+      <div class="fomenu-csoport" aria-label="Radar">
+        <span class="fomenu-cimke">Radar</span>
+        <a href="valtozasok.html" data-keret-badge="valtozasok"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-valtozasok"/></svg>Változások</a>
+        <a href="ugyek.html" data-keret-badge="ugyek"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-ugyek"/></svg>Ügyek</a>
+        <a href="kapcsolodo.html"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-kapcsolodo"/></svg>Kapcsolódó</a>
+      </div>
+      <div class="fomenu-csoport" aria-label="Statisztikák">
+        <span class="fomenu-cimke">Statisztikák</span>
+        <a href="trendek.html" data-badge="28"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-google"/></svg>Google</a>
+        <a href="youtube.html" data-badge="12"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-youtube"/></svg>YouTube</a>
+      </div>
+      <a href="adatokrol.html" class="fomenu-onallo aktiv" aria-current="page"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-info"/></svg>Infó</a>
+    </nav>
+  </aside>
+  <div class="keret-fo">
+    <div class="keret-felso" id="keret-felso">
+      <button class="keret-menugomb" id="keret-menugomb" type="button" aria-controls="fomenu" aria-expanded="false" aria-label="Menü"><svg aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-menu"/></svg></button>
     </div>
-    <div class="fomenu-csoport" aria-label="Radar">
-      <span class="fomenu-cimke">Radar</span>
-      <a href="valtozasok.html">Változások</a>
-      <a href="ugyek.html">Ügyek</a>
-      <a href="kapcsolodo.html">Kapcsolódó</a>
-    </div>
-    <div class="fomenu-csoport" aria-label="Statisztikák">
-      <span class="fomenu-cimke">Statisztikák</span>
-      <a href="trendek.html">Google</a>
-      <a href="youtube.html">YouTube</a>
-    </div>
-    <a href="adatokrol.html" class="fomenu-onallo aktiv" aria-current="page">Infó</a>
-  </nav>
+    <header class="fejlec-doboz">
+      <h1>Infó</h1>
+      <p class="halvany">Honnan jönnek az adatok, és hogyan készül a napi elemzés.</p>
+    </header>
 
-  <header class="fejlec-doboz">
-    <h1>Infó</h1>
-    <p class="halvany">Honnan jönnek az adatok, és hogyan készül a napi elemzés.</p>
-  </header>
+    <main id="adatokrol">
+      <h2 class="adat-csoport">Google Trend adatok</h2>
+      <section class="adat-doboz">
+        <p><strong>Honnan?</strong> Minden adat a Google Trends nyilvános szolgáltatásából származik, kizárólag Magyarországra (<code>geo=HU</code>). Kétféle dolgot mutatunk: a Google <strong>aznap felkapott kereséseit</strong>, és <strong>28 általunk figyelt kulcsszó</strong> keresési érdeklődését.</p>
+        <p><strong>Mikor kérjük le?</strong> Naponta kétszer, automatikusan: <strong>reggel 9:00</strong> és <strong>este 21:00</strong> (budapesti idő) körül. Egy futás néhány percig tart.</p>
+      </section>
 
-  <main id="adatokrol">
-    <h2 class="adat-csoport">Google Trend adatok</h2>
-    <section class="adat-doboz">
-      <p><strong>Honnan?</strong> Minden adat a Google Trends nyilvános szolgáltatásából származik, kizárólag Magyarországra (<code>geo=HU</code>). Kétféle dolgot mutatunk: a Google <strong>aznap felkapott kereséseit</strong>, és <strong>28 általunk figyelt kulcsszó</strong> keresési érdeklődését.</p>
-      <p><strong>Mikor kérjük le?</strong> Naponta kétszer, automatikusan: <strong>reggel 9:00</strong> és <strong>este 21:00</strong> (budapesti idő) körül. Egy futás néhány percig tart.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Mi a kulcsszó?</h2>
+        <p>A 28 figyelt keresőszó (pl. <em>állás</em>, <em>albérlet</em>, <em>benzin</em>, <em>tüntetés</em>, <em>infláció</em>, <em>rezsi</em>), kategóriákba (munkaerőpiac, lakhatás, fogyasztás, egészség, …) sorolva. Ezekre naponta lekérjük, mennyire keresnek rájuk Magyarországon.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Mi a kulcsszó?</h2>
-      <p>A 28 figyelt keresőszó (pl. <em>állás</em>, <em>albérlet</em>, <em>benzin</em>, <em>tüntetés</em>, <em>infláció</em>, <em>rezsi</em>), kategóriákba (munkaerőpiac, lakhatás, fogyasztás, egészség, …) sorolva. Ezekre naponta lekérjük, mennyire keresnek rájuk Magyarországon.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Mik a napi felkapott szavak?</h2>
+        <p>A Google által aznap <em>felkapottként</em> jelölt keresések listája - <strong>nem</strong> a mi 28 szavunk, hanem a Google saját napi trendlistája. Ezt <strong>naponta kétszer</strong> mentjük el – <strong>reggel 9:00-kor</strong> és <strong>este 21:00-kor</strong> (budapesti idő) –, és a két pillanatképet külön mutatjuk; a „Heti felkapott keresések" blokk ezekből mutat napi bontást.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Mik a napi felkapott szavak?</h2>
-      <p>A Google által aznap <em>felkapottként</em> jelölt keresések listája - <strong>nem</strong> a mi 28 szavunk, hanem a Google saját napi trendlistája. Ezt <strong>naponta kétszer</strong> mentjük el – <strong>reggel 9:00-kor</strong> és <strong>este 21:00-kor</strong> (budapesti idő) –, és a két pillanatképet külön mutatjuk; a „Heti felkapott keresések" blokk ezekből mutat napi bontást.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Órás és hosszabb sorozatok</h2>
+        <p>Minden figyelt kulcsszóra egy <strong>7 napos, órás felbontású</strong> ablakot kérünk le (<code>now 7-d</code>) - ez a friss „1 hét" nézet, minden szónál naprakész. A hosszabb nézetekhez külön <strong>napi (3 hónap)</strong> és <strong>heti (12 hónap)</strong> sorozatot is gyűjtünk. A Google hívás-korlátja miatt ezeket a hosszabb sorozatokat <strong>körbeforgó rendszerben</strong> frissítjük – mindig a legrégebben frissítetteket véve előre –, így minden szó hosszú sorozata néhány naponta megújul.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Órás és hosszabb sorozatok</h2>
-      <p>Minden figyelt kulcsszóra egy <strong>7 napos, órás felbontású</strong> ablakot kérünk le (<code>now 7-d</code>) - ez a friss „1 hét" nézet, minden szónál naprakész. A hosszabb nézetekhez külön <strong>napi (3 hónap)</strong> és <strong>heti (12 hónap)</strong> sorozatot is gyűjtünk. A Google hívás-korlátja miatt ezeket a hosszabb sorozatokat <strong>körbeforgó rendszerben</strong> frissítjük – mindig a legrégebben frissítetteket véve előre –, így minden szó hosszú sorozata néhány naponta megújul.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Láncolás</h2>
+        <p>Az egymást átfedő 7 napos órás ablakokból egy <strong>közös skálájú, hosszabb órás sorozatot</strong> fűzünk össze (2 hét és afölött). Az átfedő pontokból számoljuk ki, hogyan illeszkedik egymáshoz két szomszédos ablak - így a „2 hét" nézet is órás felbontású marad, nem csak a legfrissebb hét nyújtása.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Láncolás</h2>
-      <p>Az egymást átfedő 7 napos órás ablakokból egy <strong>közös skálájú, hosszabb órás sorozatot</strong> fűzünk össze (2 hét és afölött). Az átfedő pontokból számoljuk ki, hogyan illeszkedik egymáshoz két szomszédos ablak - így a „2 hét" nézet is órás felbontású marad, nem csak a legfrissebb hét nyújtása.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Trend</h2>
+        <p>A megjelenített időszakra egy <strong>egyenest illesztünk</strong> (legkisebb négyzetek módszere). Az irány (növekvő / stagnáló / csökkenő) az egyenes meredekségéből adódik; az R² (0–1) az illeszkedés <em>jóságát</em> írja le.</p>
+        <p><strong>A képlet.</strong> Az egyenes <code>ŷ = a + b·x</code>, ahol a meredekség <code>b = Σ(xᵢ − x̄)(yᵢ − ȳ) / Σ(xᵢ − x̄)²</code> és a metszet <code>a = ȳ − b·x̄</code> (a hibanégyzetek <code>Σ(yᵢ − (a + b·xᵢ))²</code> összegét minimalizálja). Az illeszkedés jósága <code>R² = 1 − Σ(yᵢ − ŷᵢ)² / Σ(yᵢ − ȳ)²</code>.</p>
+        <p class="adat-magyarazat">Ez az egyenes R²-e a <strong>saját pontjain</strong> mért (in-sample). A nemlineáris görbe R²-e ezzel szemben a szigorúbb <strong>out-of-sample</strong> (kihagyott pontokon mért) érték - ezért a két R² közvetlenül <strong>nem hasonlítható össze</strong> (a görbe kártyán kiírt „lineáris … helyett" száma épp ezért egy külön, out-of-sample lineáris R²).</p>
+        <p class="adat-magyarazat">Az irány és az R² <strong>leíró</strong> mérőszám - nem azt állítja, hogy a mozgás „jelentős" vagy „valódi". Minden szó a saját 0–100 relatív skáláján áll (a Google így normál), ezért <strong>a szavak egymással nem összemérhetők</strong>; csak az egy szón belüli mozgás olvasható.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Trend</h2>
-      <p>A megjelenített időszakra egy <strong>egyenest illesztünk</strong> (legkisebb négyzetek módszere). Az irány (növekvő / stagnáló / csökkenő) az egyenes meredekségéből adódik; az R² (0–1) az illeszkedés <em>jóságát</em> írja le.</p>
-      <p><strong>A képlet.</strong> Az egyenes <code>ŷ = a + b·x</code>, ahol a meredekség <code>b = Σ(xᵢ − x̄)(yᵢ − ȳ) / Σ(xᵢ − x̄)²</code> és a metszet <code>a = ȳ − b·x̄</code> (a hibanégyzetek <code>Σ(yᵢ − (a + b·xᵢ))²</code> összegét minimalizálja). Az illeszkedés jósága <code>R² = 1 − Σ(yᵢ − ŷᵢ)² / Σ(yᵢ − ȳ)²</code>.</p>
-      <p class="adat-magyarazat">Ez az egyenes R²-e a <strong>saját pontjain</strong> mért (in-sample). A nemlineáris görbe R²-e ezzel szemben a szigorúbb <strong>out-of-sample</strong> (kihagyott pontokon mért) érték - ezért a két R² közvetlenül <strong>nem hasonlítható össze</strong> (a görbe kártyán kiírt „lineáris … helyett" száma épp ezért egy külön, out-of-sample lineáris R²).</p>
-      <p class="adat-magyarazat">Az irány és az R² <strong>leíró</strong> mérőszám - nem azt állítja, hogy a mozgás „jelentős" vagy „valódi". Minden szó a saját 0–100 relatív skáláján áll (a Google így normál), ezért <strong>a szavak egymással nem összemérhetők</strong>; csak az egy szón belüli mozgás olvasható.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Nemlineáris (LOESS) trend</h2>
+        <p>A piros egyenes trend mellé bekapcsolható egy <strong>lila görbe</strong> (a chart fölötti „Nemlineáris (LOESS) trend" gombbal, alapból kikapcsolva). Amíg az egyenes egyetlen irányba tart, a görbe <strong>meghajolhat</strong>, így a keresettség hullámzását, csúcsait és völgyeit gyakran sokkal jobban követi.</p>
+        <p><strong>Hogyan számoljuk?</strong> A módszer neve <strong>LOESS</strong> (lokálisan súlyozott regresszió). A görbe minden pontjához csak a <em>közeli</em> mérési pontokra illesztünk egy kis egyenest - a közelebbi pontok nagyobb súllyal, a távoliak kisebbel -, és ezekből a helyi illesztésekből áll össze a folytonos, sima vonal. Egy <strong>robusztus lépés</strong> lefokozza a kiugró órás értékeket, hogy egy-egy zajos csúcs ne rántsa el a görbét. A görbe nem <em>egyetlen</em> globális képlet és nem jóslat, hanem sok kis helyi illesztésből összeálló, a <strong>mért adatból</strong> származó összegzés (a képleteket lásd lent).</p>
+        <p><strong>Hogyan választjuk a simaságot?</strong> Azt, hogy a görbe mennyire legyen sima (mekkora „szomszédságból" dolgozzon), nem rögzítjük előre képlettel, hanem az adatból, <strong>kereszt-validációval hangoljuk ki</strong>: a sorozatot részekre osztjuk, a görbét az egyik részen illesztjük, és a <em>kihagyott</em>, nem látott pontokon mérjük, mennyire találja el őket. Az a simaság nyer, amelyik az ismeretlen pontokat a legjobban előrejelzi. Szigorúan fogalmazva ez <strong>nem-parametrikus statisztikai simítás, adatból választott simasággal</strong>. A számítás <strong>determinista</strong> - ugyanabból az adatból mindig ugyanaz a görbe.</p>
+        <p><strong>Milyen statisztika a mérőszáma?</strong> A kiírt R² <strong>nem</strong> a szokásos „ráillik-e a görbe a saját pontjaira" érték (az egy elég hullámos görbénél mindig szépnek tűnik), hanem <strong>out-of-sample</strong> (kereszt-validált) R²: azt méri, mennyire jelzi előre a görbe a <em>nem látott</em> pontokat. Ez lényegesen szigorúbb, és pont ez véd a <strong>túltanulás</strong> (a zaj „bemagolása") ellen.</p>
+        <p><strong>Mindig látszik a görbe - az R² a fokmérő.</strong> Elég adatnál (legalább ~12 pont) a görbét <strong>mindig</strong> kirajzoljuk, a zajos szavakra is - és mindig kiírjuk a <strong>valós</strong> out-of-sample R²-t, akár negatív is. Így nem rejtünk el semmit: ha az R² alacsony vagy negatív, az azt jelenti, hogy a görbe a <em>nem látott</em> pontokon alig vagy egyáltalán nem jobb az egyenesnél - a szám maga a figyelmeztetés. (Külön, informatív jelzésként megjegyezzük, mikor fog a görbe <strong>„erős szerkezetet"</strong>: ha az R²-e egy küszöbbel felülmúlja az egyenesét ÉS pozitív.) Ahol nincs elég adat (túl rövid ablak), ott nincs mit illeszteni - ilyenkor nincs görbe.</p>
+        <p><strong>A képletek dióhéjban.</strong></p>
+        <ul>
+          <li><strong>Tricube súly (a „közelség" súlyozása):</strong> egy görbepont körül a legtávolabbi figyelembe vett szomszédhoz mért, arra normált távolság <code>u = d / d<sub>max</sub></code> (0–1) esetén a súly <code>w(u) = (1 − |u|³)³</code> - a legközelebbi pont súlya ~1, a szomszédság széle felé 0-hoz tart.</li>
+          <li><strong>Helyi illesztés (súlyozott legkisebb négyzetek):</strong> minden görbeponthoz azt az <code>a, b</code> egyenest keressük, amely minimalizálja a <code>Σᵢ wᵢ · (yᵢ − (a + b·xᵢ))²</code> súlyozott hibát; a görbe értéke ott <code>ŷ = a + b·x</code>. A sok helyi egyenesből áll össze a folytonos görbe.</li>
+          <li><strong>A simaság (span) választása:</strong> a sorozatot <code>k = 5</code> rekeszre osztjuk a <code>rekesz(i) = i mod 5</code> szabállyal; minden simaság-jelöltre (<code>span ∈ {0,3; 0,5; 0,7}</code>, a szomszédság a pontok ekkora hányada) a rekeszen <em>kívül</em> illesztünk, és a kihagyott pontokon mérünk - a legjobb out-of-sample R²-ű span nyer.</li>
+          <li><strong>Out-of-sample R²:</strong> <code>R² = 1 − Σ(yᵢ − ŷᵢ)² / Σ(yᵢ − ȳ)²</code>, ahol <code>ŷᵢ</code> a <em>kihagyott</em> pont becslése, <code>ȳ</code> a sorozat átlaga. <code>R² = 1</code> tökéletes; <code>R² = 0</code> annyit ér, mint az átlagot húzni; <code>R² &lt; 0</code> rosszabb az átlagnál.</li>
+          <li><strong>Az „erős szerkezet" jelző (informatív, NEM kapuzza a rajzolást):</strong> <code>(R²<sub>görbe</sub> ≥ R²<sub>egyenes</sub> + 0,05) ÉS (R²<sub>görbe</sub> &gt; 0)</code> - mindkét R² a fenti out-of-sample érték. A görbe ettől függetlenül mindig látszik; ez csak jelzi, mikor fog valóban jobb szerkezetet, mint az egyenes.</li>
+        </ul>
+        <p><strong>Hogyan olvasd a mérőszámokat?</strong></p>
+        <ul>
+          <li><strong>„nemlineáris illeszkedés R²=0,47 (lineáris 0,08 helyett)":</strong> a görbe a nem látott pontok ingadozásának ~47%-át magyarázza, szemben az egyenes ~8%-ával - vagyis a mozgás sokkal inkább görbe, mint egyenes. A magasabb érték erősebb kimutatható szerkezetet jelent (0–1 skála).</li>
+          <li><strong>„N fordulópont":</strong> hányszor vált irányt (emelkedésből esésbe vagy fordítva) a sima görbe - mennyire hullámzó a mögöttes mozgás.</li>
+          <li><strong>„a görbe emelkedő / csökkenő / hullámzó":</strong> a görbe nettó iránya a teljes ablakon (hullámzó, ha oda-vissza mozog és nagyjából ott végződik, ahol kezdődött).</li>
+        </ul>
+        <p class="adat-magyarazat">Mint a lineáris trend, ezek is <strong>leíró</strong> mérőszámok: a görbe a múltat összegzi, <strong>nem jósol jövőt</strong>. A 0–100 skála szavanként külön normált, ezért <strong>a szavak most sem összemérhetők</strong> - csak az egy szón belüli alak olvasható.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Nemlineáris (LOESS) trend</h2>
-      <p>A piros egyenes trend mellé bekapcsolható egy <strong>lila görbe</strong> (a chart fölötti „Nemlineáris (LOESS) trend" gombbal, alapból kikapcsolva). Amíg az egyenes egyetlen irányba tart, a görbe <strong>meghajolhat</strong>, így a keresettség hullámzását, csúcsait és völgyeit gyakran sokkal jobban követi.</p>
-      <p><strong>Hogyan számoljuk?</strong> A módszer neve <strong>LOESS</strong> (lokálisan súlyozott regresszió). A görbe minden pontjához csak a <em>közeli</em> mérési pontokra illesztünk egy kis egyenest - a közelebbi pontok nagyobb súllyal, a távoliak kisebbel -, és ezekből a helyi illesztésekből áll össze a folytonos, sima vonal. Egy <strong>robusztus lépés</strong> lefokozza a kiugró órás értékeket, hogy egy-egy zajos csúcs ne rántsa el a görbét. A görbe nem <em>egyetlen</em> globális képlet és nem jóslat, hanem sok kis helyi illesztésből összeálló, a <strong>mért adatból</strong> származó összegzés (a képleteket lásd lent).</p>
-      <p><strong>Hogyan választjuk a simaságot?</strong> Azt, hogy a görbe mennyire legyen sima (mekkora „szomszédságból" dolgozzon), nem rögzítjük előre képlettel, hanem az adatból, <strong>kereszt-validációval hangoljuk ki</strong>: a sorozatot részekre osztjuk, a görbét az egyik részen illesztjük, és a <em>kihagyott</em>, nem látott pontokon mérjük, mennyire találja el őket. Az a simaság nyer, amelyik az ismeretlen pontokat a legjobban előrejelzi. Szigorúan fogalmazva ez <strong>nem-parametrikus statisztikai simítás, adatból választott simasággal</strong>. A számítás <strong>determinista</strong> - ugyanabból az adatból mindig ugyanaz a görbe.</p>
-      <p><strong>Milyen statisztika a mérőszáma?</strong> A kiírt R² <strong>nem</strong> a szokásos „ráillik-e a görbe a saját pontjaira" érték (az egy elég hullámos görbénél mindig szépnek tűnik), hanem <strong>out-of-sample</strong> (kereszt-validált) R²: azt méri, mennyire jelzi előre a görbe a <em>nem látott</em> pontokat. Ez lényegesen szigorúbb, és pont ez véd a <strong>túltanulás</strong> (a zaj „bemagolása") ellen.</p>
-      <p><strong>Mindig látszik a görbe - az R² a fokmérő.</strong> Elég adatnál (legalább ~12 pont) a görbét <strong>mindig</strong> kirajzoljuk, a zajos szavakra is - és mindig kiírjuk a <strong>valós</strong> out-of-sample R²-t, akár negatív is. Így nem rejtünk el semmit: ha az R² alacsony vagy negatív, az azt jelenti, hogy a görbe a <em>nem látott</em> pontokon alig vagy egyáltalán nem jobb az egyenesnél - a szám maga a figyelmeztetés. (Külön, informatív jelzésként megjegyezzük, mikor fog a görbe <strong>„erős szerkezetet"</strong>: ha az R²-e egy küszöbbel felülmúlja az egyenesét ÉS pozitív.) Ahol nincs elég adat (túl rövid ablak), ott nincs mit illeszteni - ilyenkor nincs görbe.</p>
-      <p><strong>A képletek dióhéjban.</strong></p>
-      <ul>
-        <li><strong>Tricube súly (a „közelség" súlyozása):</strong> egy görbepont körül a legtávolabbi figyelembe vett szomszédhoz mért, arra normált távolság <code>u = d / d<sub>max</sub></code> (0–1) esetén a súly <code>w(u) = (1 − |u|³)³</code> - a legközelebbi pont súlya ~1, a szomszédság széle felé 0-hoz tart.</li>
-        <li><strong>Helyi illesztés (súlyozott legkisebb négyzetek):</strong> minden görbeponthoz azt az <code>a, b</code> egyenest keressük, amely minimalizálja a <code>Σᵢ wᵢ · (yᵢ − (a + b·xᵢ))²</code> súlyozott hibát; a görbe értéke ott <code>ŷ = a + b·x</code>. A sok helyi egyenesből áll össze a folytonos görbe.</li>
-        <li><strong>A simaság (span) választása:</strong> a sorozatot <code>k = 5</code> rekeszre osztjuk a <code>rekesz(i) = i mod 5</code> szabállyal; minden simaság-jelöltre (<code>span ∈ {0,3; 0,5; 0,7}</code>, a szomszédság a pontok ekkora hányada) a rekeszen <em>kívül</em> illesztünk, és a kihagyott pontokon mérünk - a legjobb out-of-sample R²-ű span nyer.</li>
-        <li><strong>Out-of-sample R²:</strong> <code>R² = 1 − Σ(yᵢ − ŷᵢ)² / Σ(yᵢ − ȳ)²</code>, ahol <code>ŷᵢ</code> a <em>kihagyott</em> pont becslése, <code>ȳ</code> a sorozat átlaga. <code>R² = 1</code> tökéletes; <code>R² = 0</code> annyit ér, mint az átlagot húzni; <code>R² &lt; 0</code> rosszabb az átlagnál.</li>
-        <li><strong>Az „erős szerkezet" jelző (informatív, NEM kapuzza a rajzolást):</strong> <code>(R²<sub>görbe</sub> ≥ R²<sub>egyenes</sub> + 0,05) ÉS (R²<sub>görbe</sub> &gt; 0)</code> - mindkét R² a fenti out-of-sample érték. A görbe ettől függetlenül mindig látszik; ez csak jelzi, mikor fog valóban jobb szerkezetet, mint az egyenes.</li>
-      </ul>
-      <p><strong>Hogyan olvasd a mérőszámokat?</strong></p>
-      <ul>
-        <li><strong>„nemlineáris illeszkedés R²=0,47 (lineáris 0,08 helyett)":</strong> a görbe a nem látott pontok ingadozásának ~47%-át magyarázza, szemben az egyenes ~8%-ával - vagyis a mozgás sokkal inkább görbe, mint egyenes. A magasabb érték erősebb kimutatható szerkezetet jelent (0–1 skála).</li>
-        <li><strong>„N fordulópont":</strong> hányszor vált irányt (emelkedésből esésbe vagy fordítva) a sima görbe - mennyire hullámzó a mögöttes mozgás.</li>
-        <li><strong>„a görbe emelkedő / csökkenő / hullámzó":</strong> a görbe nettó iránya a teljes ablakon (hullámzó, ha oda-vissza mozog és nagyjából ott végződik, ahol kezdődött).</li>
-      </ul>
-      <p class="adat-magyarazat">Mint a lineáris trend, ezek is <strong>leíró</strong> mérőszámok: a görbe a múltat összegzi, <strong>nem jósol jövőt</strong>. A 0–100 skála szavanként külön normált, ezért <strong>a szavak most sem összemérhetők</strong> - csak az egy szón belüli alak olvasható.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Előrejelzés – hogyan és meddig?</h2>
+        <p><strong>A módszer.</strong> Az előrejelzés a LOESS-görbe szintjéből indul, és onnan <strong>csillapított trenddel</strong> lép tovább. A szint (<code>L</code>) a sima (LOESS) görbe utolsó értéke – ez tehát nem egy nyers mérés, hanem a közelmúlt pontjainak simított összegzése, vagyis <strong>nem egyetlen pontból jósolunk</strong>. Az irányt (a <code>b</code> meredekséget) sem ez az egy pont szabja meg, hanem a görbe <strong>egy nagyobb szakaszára</strong> – nagyjából az utolsó felére, legalább 8 pontra – illesztett egyenes: azért ilyen hosszú szakaszból, hogy a becsült irány <strong>stabil</strong> legyen, és ne az utolsó néhány, zajos pont rántsa el. A csillapítás miatt ez az irány folytatódik ugyan, de fokozatosan ellaposodik – a közeli jövőt mutatja megbízhatóbban, a távolabbit óvatosabban.</p>
+        <p><strong>Miért sima a görbe?</strong> Az előrejelzés szándékosan <strong>sima</strong> vonal: nem próbáljuk a napszaki vagy heti-napi ingadozást (szezont) előrevetíteni. Egy ilyen ciklikus zörej a charton inkább zajnak látszana, mint iránynak, és a valós bizonytalanságot úgyis a <strong>sáv</strong> hordozza. Ezért az előrejelzés a mögöttes szint és irány csillapított folytatása, a rövid ciklusok nélkül.</p>
+        <p><strong>A bizonytalansági sáv.</strong> A megjelenített szürke sáv egy <strong>~80%-os sáv</strong>: <code>ŷ(h) ± 1,28·RMSE(h)</code>, ahol <code>RMSE(h)</code> a <strong>visszatesztelt</strong> hiba az adott horizonton. A hibát <strong>gördülő-origós visszateszteléssel</strong> mérjük: a sorozat végéhez közeli néhány pontból (gördülő origókból) előrejelzünk, és a tényleges hibát horizontonként összegyűjtjük. A közeli horizontokon ez a ténylegesen mért visszatesztelt hiba; a mélyebb (távolabbi) horizontokon, ahol már nincs elég visszatesztelt megfigyelés, a sáv egy reziduál-alapú becslésre vált (<code>σ·√h</code>) – ez is oka annak, hogy a sáv szélesebb horizonton tágul, ami maga a figyelmeztetés: mennyire bizonytalan az előrejelzés.</p>
+        <p><strong>Miért óvatos a hosszú táv?</strong> A Google Trendek adatai egyedi pillanatképek: egy nap trend-értékéből nem lehet biztosan tudni, mi lesz egy év múlva. Az előrejelzés <strong>a trend matematikai folytatása</strong>, de nem vesz fel új eseményeket, trendfordulókat vagy külső sokkokat. A hosszú horizont alatt szó-szint eltolódás, közérdeklődés-váltás vagy váratlan hírek bármikor történhetnek. Ezért az előrejelzés hosszabb horizonton sokkal bizonytalanabb – ott a sáv szélessége maga a figyelmeztetés.</p>
+        <p><strong>Rövid és hosszú horizont, felbontás.</strong> A horizont naptári hossza a megjelenített sorozat felbontásán lépésekre vált (a heti sorozaton az egy nap és az egy hét is a legközelebbi heti lépés). Rövid horizontot választva a chart a <strong>közelmúltra ráközelít</strong>, hogy a közeli előrejelzés – ami egy hosszú idősor jobb szélén amúgy elveszne – jól látszódjon.</p>
+        <p><strong>Miért nincs 3 hó / 1 év minden szóra?</strong> Néhány szót <strong>csak órás</strong> felbontásban mérünk (nincs napi/heti sora). Egy pár hónapnyi órás pillanatkép-láncból egy évet előrejelezni <strong>nem megbízható</strong>, ezért ezeknél a hosszú horizontokon nem rajzolunk előrejelzést, hanem őszintén jelezzük: ez a horizont ezen a szón <strong>nem becsülhető</strong> megbízhatóan.</p>
+        <p><strong>A képletek dióhéjban.</strong></p>
+        <ul>
+          <li><strong>Csillapított trend:</strong> a szint <code>L</code> a LOESS utolsó értéke, a <code>b</code> meredekség a sima (LOESS) görbe utolsó feléből (egy nagyobb szakaszából, legalább 8 pontból) illesztett egyenesé, a <code>φ</code> (0–1 közötti) csillapítási faktor. Az <code>h</code> lépésre előre az előrejelzés <code>ŷ(h) = L + b·(Σᵢ₌₁ʰ φⁱ) = L + b·φ·(1 − φʰ) / (1 − φ)</code> – az összeg a meredekség exponenciálisan csökkenő, telítődő hozzájárulása.</li>
+          <li><strong>Empirikus bizonytalanság:</strong> a modellt a sorozat végéhez közeli, gördülő origókból visszateszteljük, horizontonként megmérjük a tényleges hibát (RMSE), és a sáv <code>ŷ(h) ± 1,28·RMSE(h)</code>. A z=1,28 szorzó egy normál-közelítésű ~80%-os sávnak felel meg.</li>
+        </ul>
+        <p class="adat-magyarazat">Az előrejelzés <strong>feltételes</strong>: a mai szint és irány megtartásának legjobb becslése. A valósággal való eltérés természetes – azt méri, mennyire változékonyan követik a felhasználók az adott szót.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Előrejelzés – hogyan és meddig?</h2>
-      <p><strong>A módszer.</strong> Az előrejelzés a LOESS-görbe szintjéből indul, és onnan <strong>csillapított trenddel</strong> lép tovább. A szint (<code>L</code>) a sima (LOESS) görbe utolsó értéke – ez tehát nem egy nyers mérés, hanem a közelmúlt pontjainak simított összegzése, vagyis <strong>nem egyetlen pontból jósolunk</strong>. Az irányt (a <code>b</code> meredekséget) sem ez az egy pont szabja meg, hanem a görbe <strong>egy nagyobb szakaszára</strong> – nagyjából az utolsó felére, legalább 8 pontra – illesztett egyenes: azért ilyen hosszú szakaszból, hogy a becsült irány <strong>stabil</strong> legyen, és ne az utolsó néhány, zajos pont rántsa el. A csillapítás miatt ez az irány folytatódik ugyan, de fokozatosan ellaposodik – a közeli jövőt mutatja megbízhatóbban, a távolabbit óvatosabban.</p>
-      <p><strong>Miért sima a görbe?</strong> Az előrejelzés szándékosan <strong>sima</strong> vonal: nem próbáljuk a napszaki vagy heti-napi ingadozást (szezont) előrevetíteni. Egy ilyen ciklikus zörej a charton inkább zajnak látszana, mint iránynak, és a valós bizonytalanságot úgyis a <strong>sáv</strong> hordozza. Ezért az előrejelzés a mögöttes szint és irány csillapított folytatása, a rövid ciklusok nélkül.</p>
-      <p><strong>A bizonytalansági sáv.</strong> A megjelenített szürke sáv egy <strong>~80%-os sáv</strong>: <code>ŷ(h) ± 1,28·RMSE(h)</code>, ahol <code>RMSE(h)</code> a <strong>visszatesztelt</strong> hiba az adott horizonton. A hibát <strong>gördülő-origós visszateszteléssel</strong> mérjük: a sorozat végéhez közeli néhány pontból (gördülő origókból) előrejelzünk, és a tényleges hibát horizontonként összegyűjtjük. A közeli horizontokon ez a ténylegesen mért visszatesztelt hiba; a mélyebb (távolabbi) horizontokon, ahol már nincs elég visszatesztelt megfigyelés, a sáv egy reziduál-alapú becslésre vált (<code>σ·√h</code>) – ez is oka annak, hogy a sáv szélesebb horizonton tágul, ami maga a figyelmeztetés: mennyire bizonytalan az előrejelzés.</p>
-      <p><strong>Miért óvatos a hosszú táv?</strong> A Google Trendek adatai egyedi pillanatképek: egy nap trend-értékéből nem lehet biztosan tudni, mi lesz egy év múlva. Az előrejelzés <strong>a trend matematikai folytatása</strong>, de nem vesz fel új eseményeket, trendfordulókat vagy külső sokkokat. A hosszú horizont alatt szó-szint eltolódás, közérdeklődés-váltás vagy váratlan hírek bármikor történhetnek. Ezért az előrejelzés hosszabb horizonton sokkal bizonytalanabb – ott a sáv szélessége maga a figyelmeztetés.</p>
-      <p><strong>Rövid és hosszú horizont, felbontás.</strong> A horizont naptári hossza a megjelenített sorozat felbontásán lépésekre vált (a heti sorozaton az egy nap és az egy hét is a legközelebbi heti lépés). Rövid horizontot választva a chart a <strong>közelmúltra ráközelít</strong>, hogy a közeli előrejelzés – ami egy hosszú idősor jobb szélén amúgy elveszne – jól látszódjon.</p>
-      <p><strong>Miért nincs 3 hó / 1 év minden szóra?</strong> Néhány szót <strong>csak órás</strong> felbontásban mérünk (nincs napi/heti sora). Egy pár hónapnyi órás pillanatkép-láncból egy évet előrejelezni <strong>nem megbízható</strong>, ezért ezeknél a hosszú horizontokon nem rajzolunk előrejelzést, hanem őszintén jelezzük: ez a horizont ezen a szón <strong>nem becsülhető</strong> megbízhatóan.</p>
-      <p><strong>A képletek dióhéjban.</strong></p>
-      <ul>
-        <li><strong>Csillapított trend:</strong> a szint <code>L</code> a LOESS utolsó értéke, a <code>b</code> meredekség a sima (LOESS) görbe utolsó feléből (egy nagyobb szakaszából, legalább 8 pontból) illesztett egyenesé, a <code>φ</code> (0–1 közötti) csillapítási faktor. Az <code>h</code> lépésre előre az előrejelzés <code>ŷ(h) = L + b·(Σᵢ₌₁ʰ φⁱ) = L + b·φ·(1 − φʰ) / (1 − φ)</code> – az összeg a meredekség exponenciálisan csökkenő, telítődő hozzájárulása.</li>
-        <li><strong>Empirikus bizonytalanság:</strong> a modellt a sorozat végéhez közeli, gördülő origókból visszateszteljük, horizontonként megmérjük a tényleges hibát (RMSE), és a sáv <code>ŷ(h) ± 1,28·RMSE(h)</code>. A z=1,28 szorzó egy normál-közelítésű ~80%-os sávnak felel meg.</li>
-      </ul>
-      <p class="adat-magyarazat">Az előrejelzés <strong>feltételes</strong>: a mai szint és irány megtartásának legjobb becslése. A valósággal való eltérés természetes – azt méri, mennyire változékonyan követik a felhasználók az adott szót.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Mitől - és mikortól - vannak saját adataink?</h2>
+        <p>A chart fölötti „Mikortól gyűjtjük az adatokat?" gombbal bekapcsolható minden charton egy <strong>szürke függőleges vonal</strong> (alapból kikapcsolva). Ez azt a napot jelöli, <strong>mikortól gyűjtjük mi magunk</strong> az adott szó adatát (az első saját mérésünk).</p>
+        <p>A vonaltól <strong>jobbra</strong> a mi általunk, óránként/naponta <strong>ténylegesen mért</strong> adatunk áll. A vonaltól <strong>balra</strong> a Google <strong>saját, visszamenőleges becslése</strong> látható arról az időszakról, amikor még nem figyeltük a szót - ez <em>nem</em> a mi mérésünk, hanem háttér-kontextus. Ezért érdemes a bal oldali szakaszt óvatosabban olvasni.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Mitől - és mikortól - vannak saját adataink?</h2>
-      <p>A chart fölötti „Mikortól gyűjtjük az adatokat?" gombbal bekapcsolható minden charton egy <strong>szürke függőleges vonal</strong> (alapból kikapcsolva). Ez azt a napot jelöli, <strong>mikortól gyűjtjük mi magunk</strong> az adott szó adatát (az első saját mérésünk).</p>
-      <p>A vonaltól <strong>jobbra</strong> a mi általunk, óránként/naponta <strong>ténylegesen mért</strong> adatunk áll. A vonaltól <strong>balra</strong> a Google <strong>saját, visszamenőleges becslése</strong> látható arról az időszakról, amikor még nem figyeltük a szót - ez <em>nem</em> a mi mérésünk, hanem háttér-kontextus. Ezért érdemes a bal oldali szakaszt óvatosabban olvasni.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Tüntetés - miért medián?</h2>
+        <p>A <em>tüntetés</em> esemény-jellegű szó: nincs folyamatos trendje, szórványosan ugrik meg. Ezért nem trendvonalat rajzolunk rá, hanem a <strong>szintjét</strong> az elmúlt <strong>52 hét heti mediánjához</strong> mérjük - ez stabil viszonyítási szint, amit a ritka kiugrások nem torzítanak.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Tüntetés - miért medián?</h2>
-      <p>A <em>tüntetés</em> esemény-jellegű szó: nincs folyamatos trendje, szórványosan ugrik meg. Ezért nem trendvonalat rajzolunk rá, hanem a <strong>szintjét</strong> az elmúlt <strong>52 hét heti mediánjához</strong> mérjük - ez stabil viszonyítási szint, amit a ritka kiugrások nem torzítanak.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Miért eltérő a végpont a Teljes nézeten?</h2>
+        <p>A Teljes nézet szavanként a <strong>leghosszabb</strong> érvényes időszakot mutatja - ez sokszor a heti (12 hónapos) sorozat. Két <strong>szándékos</strong> ok miatt ennek a vége nem a mai nap:</p>
+        <ol>
+          <li><strong>Heti sorozat → az utolsó teljes hét.</strong> Egy heti sorozat nem mutathat részleges, még folyamatban lévő hetet, ezért a legfrissebb heti végpont is ~4 nappal a mai nap előtt van (az aktuális, le nem zárt hét kimarad).</li>
+          <li><strong>Rotációs frissítés.</strong> A hívás-korlát miatt a hosszú sorozatok körbeforgó rendszerben frissülnek; egy szó hosszú adata néhány naponta megújul. Amelyik szót régebben gyűjtöttük, annak a vége régebbi - de <strong>frissülni fog</strong> (a legrégebbieket priorizáljuk).</li>
+        </ol>
+        <p class="adat-magyarazat">A <strong>friss napi adat megvan</strong>: minden szónak van naprakész „1 hét" (órás) nézete. A Teljes nézet csak azért mutathat régebbi véget, mert a leghosszabb (heti/napi) időszakot választja.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Miért eltérő a végpont a Teljes nézeten?</h2>
-      <p>A Teljes nézet szavanként a <strong>leghosszabb</strong> érvényes időszakot mutatja - ez sokszor a heti (12 hónapos) sorozat. Két <strong>szándékos</strong> ok miatt ennek a vége nem a mai nap:</p>
-      <ol>
-        <li><strong>Heti sorozat → az utolsó teljes hét.</strong> Egy heti sorozat nem mutathat részleges, még folyamatban lévő hetet, ezért a legfrissebb heti végpont is ~4 nappal a mai nap előtt van (az aktuális, le nem zárt hét kimarad).</li>
-        <li><strong>Rotációs frissítés.</strong> A hívás-korlát miatt a hosszú sorozatok körbeforgó rendszerben frissülnek; egy szó hosszú adata néhány naponta megújul. Amelyik szót régebben gyűjtöttük, annak a vége régebbi - de <strong>frissülni fog</strong> (a legrégebbieket priorizáljuk).</li>
-      </ol>
-      <p class="adat-magyarazat">A <strong>friss napi adat megvan</strong>: minden szónak van naprakész „1 hét" (órás) nézete. A Teljes nézet csak azért mutathat régebbi véget, mert a leghosszabb (heti/napi) időszakot választja.</p>
-    </section>
+      <h2 class="adat-csoport">YouTube Trend adatok</h2>
+      <section class="adat-doboz" id="adatokrol-youtube">
+        <h2>Mit mér a YouTube fül?</h2>
+        <p>A <strong>YouTube Trendek</strong> fül nem információs keresést mér, mint a Google Trendek fül, hanem <strong>videó-igényt</strong>: „meg akarom nézni / meg akarom tanulni / ki akarok kapcsolni". Ugyanaz a magyarországi (<code>geo=HU</code>) Google Trends adatforrás, de a YouTube-ra szűrve (<code>gprop=youtube</code>) - így a webes keresés helyett azt látjuk, mire van <strong>nézési / tanulási</strong> igény.</p>
+      </section>
 
-    <h2 class="adat-csoport">YouTube Trend adatok</h2>
-    <section class="adat-doboz" id="adatokrol-youtube">
-      <h2>Mit mér a YouTube fül?</h2>
-      <p>A <strong>YouTube Trendek</strong> fül nem információs keresést mér, mint a Google Trendek fül, hanem <strong>videó-igényt</strong>: „meg akarom nézni / meg akarom tanulni / ki akarok kapcsolni". Ugyanaz a magyarországi (<code>geo=HU</code>) Google Trends adatforrás, de a YouTube-ra szűrve (<code>gprop=youtube</code>) - így a webes keresés helyett azt látjuk, mire van <strong>nézési / tanulási</strong> igény.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Mik a követett szavak?</h2>
+        <p><strong>12 örökzöld szót</strong> figyelünk, <strong>8 tartalmi kosárba</strong> sorolva: egészség / jóllét (<em>szorongás, edzés, meditáció</em>), pénzügy (<em>befektetés, bitcoin</em>), közélet / hír (<em>hírek, magyar péter</em>), háztartás (<em>recept</em>), család (<em>mese</em>), szabadidő (<em>nyaralás</em>), tanulás (<em>tanulás</em>), otthon / energia (<em>klíma</em>). A YouTube-on más a szóhasználat, mint a webes keresésben, ezért ez külön, dedikált lista.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Mik a követett szavak?</h2>
-      <p><strong>12 örökzöld szót</strong> figyelünk, <strong>8 tartalmi kosárba</strong> sorolva: egészség / jóllét (<em>szorongás, edzés, meditáció</em>), pénzügy (<em>befektetés, bitcoin</em>), közélet / hír (<em>hírek, magyar péter</em>), háztartás (<em>recept</em>), család (<em>mese</em>), szabadidő (<em>nyaralás</em>), tanulás (<em>tanulás</em>), otthon / energia (<em>klíma</em>). A YouTube-on más a szóhasználat, mint a webes keresésben, ezért ez külön, dedikált lista.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Honnan és mikor?</h2>
+        <p>A YouTube-adatokat <strong>külön, napi</strong> gyűjtésben kérjük le, kb. <strong>17:00-kor</strong> (15:00 UTC) - a Google-fül esti (21:00 budapesti) futása előtt, külön adat-mentéssel. Így a kétféle gyűjtés nem torlódik, és a YouTube-görbék már délután frissülnek.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Honnan és mikor?</h2>
-      <p>A YouTube-adatokat <strong>külön, napi</strong> gyűjtésben kérjük le, kb. <strong>17:00-kor</strong> (15:00 UTC) - a Google-fül esti (21:00 budapesti) futása előtt, külön adat-mentéssel. Így a kétféle gyűjtés nem torlódik, és a YouTube-görbék már délután frissülnek.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Napi és heti sorozatok</h2>
+        <p>Ezen a fülön <strong>nincs órás nézet és nincs láncolás</strong> (a magyar YouTube-keresés túl ritka az órás bontáshoz) - minden szóra a <strong>napi (3 hónapos)</strong> és a <strong>heti (12 hónapos)</strong> sorozatot gyűjtjük. Szavanként van egy <strong>megjelenítési alapértelmezés</strong> (napi vagy heti rács), de mindkét idősor elérhető a gombokkal.</p>
+        <p class="adat-magyarazat">Ha egy heti rácsú szónál a rövidebb ablakok (pl. „1 hét") üresnek tűnnek, az <strong>szerkezeti</strong>: egy heti bontású sorozatból egy pár napos ablak nem tud pontot adni - ez nem hiba és nem adatkiesés.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Napi és heti sorozatok</h2>
-      <p>Ezen a fülön <strong>nincs órás nézet és nincs láncolás</strong> (a magyar YouTube-keresés túl ritka az órás bontáshoz) - minden szóra a <strong>napi (3 hónapos)</strong> és a <strong>heti (12 hónapos)</strong> sorozatot gyűjtjük. Szavanként van egy <strong>megjelenítési alapértelmezés</strong> (napi vagy heti rács), de mindkét idősor elérhető a gombokkal.</p>
-      <p class="adat-magyarazat">Ha egy heti rácsú szónál a rövidebb ablakok (pl. „1 hét") üresnek tűnnek, az <strong>szerkezeti</strong>: egy heti bontású sorozatból egy pár napos ablak nem tud pontot adni - ez nem hiba és nem adatkiesés.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Trend és skála</h2>
+        <p>A trend itt is <strong>determinisztikusan, Pythonból</strong> számolt (VALÓS), nem AI által becsült - ugyanúgy egyenest illesztünk, mint a Google Trendek fülön (irány + R²).</p>
+        <p class="adat-magyarazat">Minden szó a <strong>saját 0–100 relatív skáláján</strong> áll - ahogy a Google Trendek fülnél is, a szavak <strong>egymással itt sem összemérhetők</strong>; csak az egy szón belüli mozgás olvasható.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Trend és skála</h2>
-      <p>A trend itt is <strong>determinisztikusan, Pythonból</strong> számolt (VALÓS), nem AI által becsült - ugyanúgy egyenest illesztünk, mint a Google Trendek fülön (irány + R²).</p>
-      <p class="adat-magyarazat">Minden szó a <strong>saját 0–100 relatív skáláján</strong> áll - ahogy a Google Trendek fülnél is, a szavak <strong>egymással itt sem összemérhetők</strong>; csak az egy szón belüli mozgás olvasható.</p>
-    </section>
+      <h2 class="adat-csoport">Az elemzés (napi AI-összefoglaló)</h2>
+      <section class="adat-doboz">
+        <h2>Hogyan készül a napi elemzés?</h2>
+        <p>Az „Elemzés" fülön látható szöveget minden nap egy <strong>AI, a Claude</strong> írja - a friss, aznapi adatból. A használt modell a Claude legújabb, legerősebb modellje, az <strong>Opus 4.8</strong> (azonosítója: <code>claude-opus-4-8</code>).</p>
+      </section>
 
-    <h2 class="adat-csoport">Az elemzés (napi AI-összefoglaló)</h2>
-    <section class="adat-doboz">
-      <h2>Hogyan készül a napi elemzés?</h2>
-      <p>Az „Elemzés" fülön látható szöveget minden nap egy <strong>AI, a Claude</strong> írja - a friss, aznapi adatból. A használt modell a Claude legújabb, legerősebb modellje, az <strong>Opus 4.8</strong> (azonosítója: <code>claude-opus-4-8</code>).</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Mit számol a gép, és mit ír az AI?</h2>
+        <p><strong>Minden számot</strong> (az irányt, a csúcsot, az átlagot, a heti pályát, a „mi változott ma" összevetést) <strong>a saját kódunk (Python) számolja ki</strong>, determinisztikusan, a lementett adatból. A Claude ezekből a számokból <strong>kizárólag a szöveges összefoglalót</strong> írja meg - <strong>számot nem talál ki</strong>, és hírt vagy eseményt sem: a felkapott témákról is csak a hozzájuk mentett adatból dolgozik.</p>
+        <p class="adat-magyarazat">Az AI <strong>nem állít ok-okozatot tényként</strong>. Ahol magyarázatot feltételez, azt a mondatban óvatosan jelzi (pl. „feltehetően", „ezt az adat önmagában nem igazolja"), így a leolvasott tények és a puha magyarázatok elkülönülnek.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Mit számol a gép, és mit ír az AI?</h2>
-      <p><strong>Minden számot</strong> (az irányt, a csúcsot, az átlagot, a heti pályát, a „mi változott ma" összevetést) <strong>a saját kódunk (Python) számolja ki</strong>, determinisztikusan, a lementett adatból. A Claude ezekből a számokból <strong>kizárólag a szöveges összefoglalót</strong> írja meg - <strong>számot nem talál ki</strong>, és hírt vagy eseményt sem: a felkapott témákról is csak a hozzájuk mentett adatból dolgozik.</p>
-      <p class="adat-magyarazat">Az AI <strong>nem állít ok-okozatot tényként</strong>. Ahol magyarázatot feltételez, azt a mondatban óvatosan jelzi (pl. „feltehetően", „ezt az adat önmagában nem igazolja"), így a leolvasott tények és a puha magyarázatok elkülönülnek.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Mit elemez, és mikor fut?</h2>
+        <p>Külön veszi a <strong>28 figyelt kulcsszót</strong> (a mai kép, a teljes kép és az „1 hét" bontásban) és külön a <strong>Google napi felkapott kereséseit</strong> (napi elemzés + heti összesítés); végül összeveti az előző nappal („mi változott ma?").</p>
+        <p>Ha aznap van friss <strong>YouTube-adat</strong>, az elemzés egy második, nevesített szegmenssel bővül: a <strong>YouTube keresések napi elemzése</strong> a <strong>12 figyelt YouTube-szó</strong> mai értéke és átlaga alapján a videó-igény napi képéről, teljes pályájáról és heti mozgásáról ír. Amikor nincs aznapi YouTube-adat, ez a szegmens egyszerűen elmarad, a Google-elemzés pedig változatlan.</p>
+        <p>Minden nap <strong>automatikusan</strong> fut, közvetlenül a napi adatgyűjtés után. Ha az AI-hívás bármiért nem sikerül, <strong>az előző napi elemzés változatlanul megmarad</strong> - sosem jelenik meg félkész szöveg.</p>
+        <p class="adat-magyarazat">Minden nap elemzése elmentődik; az „Elemzés" fül naptárából bármelyik korábbi nap <strong>visszalapozható</strong>.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Mit elemez, és mikor fut?</h2>
-      <p>Külön veszi a <strong>28 figyelt kulcsszót</strong> (a mai kép, a teljes kép és az „1 hét" bontásban) és külön a <strong>Google napi felkapott kereséseit</strong> (napi elemzés + heti összesítés); végül összeveti az előző nappal („mi változott ma?").</p>
-      <p>Ha aznap van friss <strong>YouTube-adat</strong>, az elemzés egy második, nevesített szegmenssel bővül: a <strong>YouTube keresések napi elemzése</strong> a <strong>12 figyelt YouTube-szó</strong> mai értéke és átlaga alapján a videó-igény napi képéről, teljes pályájáról és heti mozgásáról ír. Amikor nincs aznapi YouTube-adat, ez a szegmens egyszerűen elmarad, a Google-elemzés pedig változatlan.</p>
-      <p>Minden nap <strong>automatikusan</strong> fut, közvetlenül a napi adatgyűjtés után. Ha az AI-hívás bármiért nem sikerül, <strong>az előző napi elemzés változatlanul megmarad</strong> - sosem jelenik meg félkész szöveg.</p>
-      <p class="adat-magyarazat">Minden nap elemzése elmentődik; az „Elemzés" fül naptárából bármelyik korábbi nap <strong>visszalapozható</strong>.</p>
-    </section>
+      <h2 class="adat-csoport">A heti elemzés (heti AI-összefoglaló)</h2>
+      <section class="adat-doboz">
+        <h2>Mikor készül</h2>
+        <p>Minden <strong>hétfő reggel</strong>, a reggeli felkapott-gyűjtés után, automatikusan lefut az előző <strong>hétfő-vasárnap</strong> hétre. Az új heti értékelés magától megjelenik a „Heti értékelés" fülön; a korábbi hetek a hét-választóval visszanézhetők.</p>
+      </section>
 
-    <h2 class="adat-csoport">A heti elemzés (heti AI-összefoglaló)</h2>
-    <section class="adat-doboz">
-      <h2>Mikor készül</h2>
-      <p>Minden <strong>hétfő reggel</strong>, a reggeli felkapott-gyűjtés után, automatikusan lefut az előző <strong>hétfő-vasárnap</strong> hétre. Az új heti értékelés magától megjelenik a „Heti értékelés" fülön; a korábbi hetek a hét-választóval visszanézhetők.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Mit tartalmaz</h2>
+        <p>Hat részt: vezetői összefoglaló; a figyelem átrendeződése (mely témák erősödtek/gyengültek a szokásos szintjükhöz képest); az <strong>ügyek tartóssága</strong> és életútja (rövid kiugrás, hosszabb kiugrás, visszatérő); 2-3 mélyebb témaelemzés; a Google- és YouTube-adatok összefüggése; és mit érdemes figyelni a jövő héten.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Mit tartalmaz</h2>
-      <p>Hat részt: vezetői összefoglaló; a figyelem átrendeződése (mely témák erősödtek/gyengültek a szokásos szintjükhöz képest); az <strong>ügyek tartóssága</strong> és életútja (rövid kiugrás, hosszabb kiugrás, visszatérő); 2-3 mélyebb témaelemzés; a Google- és YouTube-adatok összefüggése; és mit érdemes figyelni a jövő héten.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Honnan jönnek a számok</h2>
+        <p>A számokat Python számolja a már meglévő mérésekből (a követett szavak heti iránya és a szokásos szinttől való eltérése, a héten felkapott szavak, a YouTube-trendek); a <code>claude-opus-4-8</code> modell ebből írja a szöveget. A modell semmit nem talál ki: okot vagy eseményt csak akkor ír, ha a héten tényleg volt hozzá hír (grounding).</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Honnan jönnek a számok</h2>
-      <p>A számokat Python számolja a már meglévő mérésekből (a követett szavak heti iránya és a szokásos szinttől való eltérése, a héten felkapott szavak, a YouTube-trendek); a <code>claude-opus-4-8</code> modell ebből írja a szöveget. A modell semmit nem talál ki: okot vagy eseményt csak akkor ír, ha a héten tényleg volt hozzá hír (grounding).</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>A figyelem-diagram</h2>
+        <p>A „figyelem átrendeződése" résznél egy sávdiagram a követett szavakat a szokásos szintjüktől való eltérésük szerint rendezi: a <strong>kék</strong> sávok a szokásos fölötti (erősödő), a <strong>narancs</strong> sávok a szokásos alatti (gyengülő) heteket jelölik. Ez a diagram a VALÓS mért számokból készül.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>A figyelem-diagram</h2>
-      <p>A „figyelem átrendeződése" résznél egy sávdiagram a követett szavakat a szokásos szintjüktől való eltérésük szerint rendezi: a <strong>kék</strong> sávok a szokásos fölötti (erősödő), a <strong>narancs</strong> sávok a szokásos alatti (gyengülő) heteket jelölik. Ez a diagram a VALÓS mért számokból készül.</p>
-    </section>
+      <h2 class="adat-csoport">A havi elemzés (havi AI-összefoglaló)</h2>
+      <section class="adat-doboz">
+        <h2>Mi a havi elemzés?</h2>
+        <p>A „Havi elemzés" fül egy <strong>egész hónap</strong> felkapott kereséseiről ad gépi összefoglalót, magyarul: milyen <strong>témák</strong> (klaszterek) uralták a hónapot, mely <strong>országok, települések és személyek</strong> jelentek meg a keresésekben, és egy összefüggő <strong>szöveges összegzés</strong> a hónap ívéről. Mindezt interaktív <strong>térképek</strong> és <strong>diagramok</strong> egészítik ki.</p>
+      </section>
 
-    <h2 class="adat-csoport">A havi elemzés (havi AI-összefoglaló)</h2>
-    <section class="adat-doboz">
-      <h2>Mi a havi elemzés?</h2>
-      <p>A „Havi elemzés" fül egy <strong>egész hónap</strong> felkapott kereséseiről ad gépi összefoglalót, magyarul: milyen <strong>témák</strong> (klaszterek) uralták a hónapot, mely <strong>országok, települések és személyek</strong> jelentek meg a keresésekben, és egy összefüggő <strong>szöveges összegzés</strong> a hónap ívéről. Mindezt interaktív <strong>térképek</strong> és <strong>diagramok</strong> egészítik ki.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Milyen adat alapján, és ki készíti?</h2>
+        <p>Az alap a hónap során <strong>naponta összegyűjtött felkapott keresőszavak</strong> (a reggeli és esti pillanatképek), egy hónapra összesítve: a kódunk kiszűri az ismétléseket, és minden kifejezéshez kiszámolja a <strong>gyakoriságot</strong> (hány külön napon bukkant fel), a <strong>legmagasabb keresési volument</strong>, valamint a hozzá mentett híreket és témákat.</p>
+        <p>Erre a hónapra összegyűjtött adatra a <strong>Claude Opus 4.8</strong> (<code>claude-opus-4-8</code>) egyetlen hívásban végzi el a magyar nyelvi feldolgozást - <strong>szótövezés, névfelismerés</strong> (országok, települések, személyek) és <strong>témákba sorolás</strong> -, és megírja az összefoglaló szöveget.</p>
+        <p class="adat-magyarazat">A <strong>számokat itt is a saját kódunk adja</strong>: az összesítés és a „volumen" (a térképek színe/mérete és a diagramok oszlopmagassága) determinisztikusan, a lementett adatból számolódik - egy országhoz, személyhez vagy témához tartozó volumen a hozzá kötött keresőszavak legmagasabb keresési szintjeinek összege.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Milyen adat alapján, és ki készíti?</h2>
-      <p>Az alap a hónap során <strong>naponta összegyűjtött felkapott keresőszavak</strong> (a reggeli és esti pillanatképek), egy hónapra összesítve: a kódunk kiszűri az ismétléseket, és minden kifejezéshez kiszámolja a <strong>gyakoriságot</strong> (hány külön napon bukkant fel), a <strong>legmagasabb keresési volument</strong>, valamint a hozzá mentett híreket és témákat.</p>
-      <p>Erre a hónapra összegyűjtött adatra a <strong>Claude Opus 4.8</strong> (<code>claude-opus-4-8</code>) egyetlen hívásban végzi el a magyar nyelvi feldolgozást - <strong>szótövezés, névfelismerés</strong> (országok, települések, személyek) és <strong>témákba sorolás</strong> -, és megírja az összefoglaló szöveget.</p>
-      <p class="adat-magyarazat">A <strong>számokat itt is a saját kódunk adja</strong>: az összesítés és a „volumen" (a térképek színe/mérete és a diagramok oszlopmagassága) determinisztikusan, a lementett adatból számolódik - egy országhoz, személyhez vagy témához tartozó volumen a hozzá kötött keresőszavak legmagasabb keresési szintjeinek összege.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Mit mutatnak a térképek és a diagramok?</h2>
+        <p>Két térkép szerepel: egy <strong>világtérkép</strong> (a keresésekben megjelent országok a volumen szerint színezve, a külföldi városok pontként) és egy <strong>Magyarország-térkép</strong> (a megjelent magyar települések pontként, a megyék rajzolatán). A <strong>diagramok</strong> a legtöbbet keresett <strong>személyneveket</strong> és a <strong>témák eloszlását</strong> mutatják. Mindenhol a <strong>volumen</strong> adja a méretet vagy a hosszt; egy térkép-jelölőre vagy egy oszlopra kattintva előjönnek a <strong>hozzá kötött keresőszavak</strong>.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Mit mutatnak a térképek és a diagramok?</h2>
-      <p>Két térkép szerepel: egy <strong>világtérkép</strong> (a keresésekben megjelent országok a volumen szerint színezve, a külföldi városok pontként) és egy <strong>Magyarország-térkép</strong> (a megjelent magyar települések pontként, a megyék rajzolatán). A <strong>diagramok</strong> a legtöbbet keresett <strong>személyneveket</strong> és a <strong>témák eloszlását</strong> mutatják. Mindenhol a <strong>volumen</strong> adja a méretet vagy a hosszt; egy térkép-jelölőre vagy egy oszlopra kattintva előjönnek a <strong>hozzá kötött keresőszavak</strong>.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Mennyire megbízható? (grounding)</h2>
+        <p>A havi elemzés <strong>csak a hónap valós adatából</strong> dolgozik. Egy külön ellenőrző lépés <strong>kiszűri</strong> azt a nevet vagy témát, ami nem szerepel a hónap kereséseiben - így az AI <strong>nem talál ki</strong> országot, személyt, témát vagy számot. Az AI feladata kizárólag a magyar szöveg és a besorolás; hír vagy esemény említése is csak a mentett adatból származhat.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Mennyire megbízható? (grounding)</h2>
-      <p>A havi elemzés <strong>csak a hónap valós adatából</strong> dolgozik. Egy külön ellenőrző lépés <strong>kiszűri</strong> azt a nevet vagy témát, ami nem szerepel a hónap kereséseiben - így az AI <strong>nem talál ki</strong> országot, személyt, témát vagy számot. Az AI feladata kizárólag a magyar szöveg és a besorolás; hír vagy esemény említése is csak a mentett adatból származhat.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Mikor készül el?</h2>
+        <p>A havi elemzés egy <strong>teljes naptári hónapot</strong> fed le, és <strong>automatikusan, a hó utolsó napján</strong> készül el - közvetlenül az esti napi adatgyűjtés után, amikor a teljes havi adat összegyűlt. Ha az AI-hívás bármiért nem sikerül, a következő futás <strong>újrapróbálja</strong>; sosem jelenik meg félkész havi elemzés. A „Napi elemzés" fül naptárában a <strong>hó utolsó napján</strong> a „Havi" jelölő visz rá; a Havi fülön pedig a bal oldali <strong>hónap-naptárból</strong> bármelyik korábbi, már elkészült hónap előhívható.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Mikor készül el?</h2>
-      <p>A havi elemzés egy <strong>teljes naptári hónapot</strong> fed le, és <strong>automatikusan, a hó utolsó napján</strong> készül el - közvetlenül az esti napi adatgyűjtés után, amikor a teljes havi adat összegyűlt. Ha az AI-hívás bármiért nem sikerül, a következő futás <strong>újrapróbálja</strong>; sosem jelenik meg félkész havi elemzés. A „Napi elemzés" fül naptárában a <strong>hó utolsó napján</strong> a „Havi" jelölő visz rá; a Havi fülön pedig a bal oldali <strong>hónap-naptárból</strong> bármelyik korábbi, már elkészült hónap előhívható.</p>
-    </section>
+      <h2 class="adat-csoport">A Radar (Változások · Ügyek · Kapcsolódó)</h2>
+      <section class="adat-doboz">
+        <h2>Változások – szokatlan elmozdulások</h2>
+        <p>A <strong>Változások</strong> oldal azt mutatja, mely <strong>követett keresőszavak</strong> mozdultak el szokatlanul a megszokottól: a szó <strong>emelkedik</strong> vagy <strong>csökken</strong>-e, <strong>mekkora az eltérés</strong> (hányszorosa a szokásos ingadozásnak), <strong>mióta tart</strong> (hány egymást követő legutóbbi mérés lóg ki a szokásos sávból), és mennyire <strong>megbízható</strong> a jelzés. Minden szót a <strong>saját szokásos szintjéhez</strong> mérünk: az óránként gyűjtött szavakat az elmúlt <strong>hét</strong>, a napi/heti szavakat az elmúlt <strong>hónap</strong> trendjéhez. A megszokott tartomány a Google Trendek fül chartjain <strong>halvány sávként</strong> is bekapcsolható. Az oldal tetején jelzés mutatja, mikorra számítottuk az aktuális kiugrásokat.</p>
+        <p class="adat-magyarazat">A számokat <strong>Python számolja</strong> a meglévő mérésekből - az eltérést, a tartamot és a megbízhatóságot nem az AI találja ki.</p>
+      </section>
 
-    <h2 class="adat-csoport">A Radar (Változások · Ügyek · Kapcsolódó)</h2>
-    <section class="adat-doboz">
-      <h2>Változások – szokatlan elmozdulások</h2>
-      <p>A <strong>Változások</strong> oldal azt mutatja, mely <strong>követett keresőszavak</strong> mozdultak el szokatlanul a megszokottól: a szó <strong>emelkedik</strong> vagy <strong>csökken</strong>-e, <strong>mekkora az eltérés</strong> (hányszorosa a szokásos ingadozásnak), <strong>mióta tart</strong> (hány egymást követő legutóbbi mérés lóg ki a szokásos sávból), és mennyire <strong>megbízható</strong> a jelzés. Minden szót a <strong>saját szokásos szintjéhez</strong> mérünk: az óránként gyűjtött szavakat az elmúlt <strong>hét</strong>, a napi/heti szavakat az elmúlt <strong>hónap</strong> trendjéhez. A megszokott tartomány a Google Trendek fül chartjain <strong>halvány sávként</strong> is bekapcsolható. Az oldal tetején jelzés mutatja, mikorra számítottuk az aktuális kiugrásokat.</p>
-      <p class="adat-magyarazat">A számokat <strong>Python számolja</strong> a meglévő mérésekből - az eltérést, a tartamot és a megbízhatóságot nem az AI találja ki.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Ügyek – az ügyek életútja</h2>
+        <p>Az <strong>Ügyek</strong> oldalon a napi felkapott keresések <strong>ügyekbe</strong> vannak csoportosítva: a <code>claude-opus-4-8</code> modell kapcsolja össze az összetartozó kifejezéseket (a mérőszámokat a kódunk számolja, nem az AI). A nézet <strong>gördülő 30 napot</strong> fed le, és <strong>naponta frissül</strong>. Minden ügy kap egy besorolást - <strong>újonnan megfigyelt</strong>, <strong>folyamatosan jelen</strong> vagy <strong>visszatérő</strong> -, és egy mozgást: <strong>erősödő</strong>, <strong>stabil</strong> vagy <strong>lecsengő</strong>. Egy <strong>napi jelenlét-idővonal</strong> naptár-igazítva mutatja, mely napokon pörgött a téma (sötétebb kék = több keresés, halvány = aznap nem volt jelen). Az ügyek <strong>időtartam / frissesség / mozgás</strong> szerint rendezhetők.</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Ügyek – az ügyek életútja</h2>
-      <p>Az <strong>Ügyek</strong> oldalon a napi felkapott keresések <strong>ügyekbe</strong> vannak csoportosítva: a <code>claude-opus-4-8</code> modell kapcsolja össze az összetartozó kifejezéseket (a mérőszámokat a kódunk számolja, nem az AI). A nézet <strong>gördülő 30 napot</strong> fed le, és <strong>naponta frissül</strong>. Minden ügy kap egy besorolást - <strong>újonnan megfigyelt</strong>, <strong>folyamatosan jelen</strong> vagy <strong>visszatérő</strong> -, és egy mozgást: <strong>erősödő</strong>, <strong>stabil</strong> vagy <strong>lecsengő</strong>. Egy <strong>napi jelenlét-idővonal</strong> naptár-igazítva mutatja, mely napokon pörgött a téma (sötétebb kék = több keresés, halvány = aznap nem volt jelen). Az ügyek <strong>időtartam / frissesség / mozgás</strong> szerint rendezhetők.</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Kapcsolódó keresések</h2>
+        <p>A <strong>Kapcsolódó</strong> oldal a napi felkapott témák mögé néz a Google Trends <strong>„kapcsolódó keresések"</strong> (related queries) alapján, témánként kétféle listával: a <strong>Top</strong> a téma körül leggyakrabban együtt keresett kifejezések (0–100 relatív népszerűség, 100 = a leggyakoribb), a <strong>Felfutó</strong> pedig a mostanában leginkább megugró keresések (a % a növekedés, a „Breakout" kiugró felfutás). A Top/Felfutó listák az <strong>elmúlt 3 hónap</strong> adatából számítanak, miközben maguk a <strong>témák</strong> a közelmúlt (utolsó pár nap) felkapottjai - naponta pár téma frissül (külön, szűk kvótájú adatgyűjtés).</p>
+      </section>
 
-    <section class="adat-doboz">
-      <h2>Kapcsolódó keresések</h2>
-      <p>A <strong>Kapcsolódó</strong> oldal a napi felkapott témák mögé néz a Google Trends <strong>„kapcsolódó keresések"</strong> (related queries) alapján, témánként kétféle listával: a <strong>Top</strong> a téma körül leggyakrabban együtt keresett kifejezések (0–100 relatív népszerűség, 100 = a leggyakoribb), a <strong>Felfutó</strong> pedig a mostanában leginkább megugró keresések (a % a növekedés, a „Breakout" kiugró felfutás). A Top/Felfutó listák az <strong>elmúlt 3 hónap</strong> adatából számítanak, miközben maguk a <strong>témák</strong> a közelmúlt (utolsó pár nap) felkapottjai - naponta pár téma frissül (külön, szűk kvótájú adatgyűjtés).</p>
-    </section>
+      <section class="adat-doboz">
+        <h2>Közpolitikai szűrő (Változások és Ügyek)</h2>
+        <p>Minden ügy és kulcsszó egy <strong>szakpolitikai területbe</strong> van sorolva, összesen <strong>8 kategóriában</strong>: szociál-, egészség-, oktatás-, gazdaság- és foglalkoztatás-, lakhatás-, energia/rezsi, közélet/közigazgatás, illetve egyéb. A <strong>Változások</strong> és az <strong>Ügyek</strong> oldalon a lista <strong>szakpolitika szerint szűrhető</strong>.</p>
+      </section>
+    </main>
 
-    <section class="adat-doboz">
-      <h2>Közpolitikai szűrő (Változások és Ügyek)</h2>
-      <p>Minden ügy és kulcsszó egy <strong>szakpolitikai területbe</strong> van sorolva, összesen <strong>8 kategóriában</strong>: szociál-, egészség-, oktatás-, gazdaság- és foglalkoztatás-, lakhatás-, energia/rezsi, közélet/közigazgatás, illetve egyéb. A <strong>Változások</strong> és az <strong>Ügyek</strong> oldalon a lista <strong>szakpolitika szerint szűrhető</strong>.</p>
-    </section>
-  </main>
-
-  <footer id="labresz" aria-label="Lábléc"></footer>
+    <footer id="labresz" aria-label="Lábléc"></footer>
+  </div>
+  <script src="js/keret.js"></script>
 </body>
 </html>

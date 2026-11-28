@@ -116,3 +116,53 @@ def test_vonalpaletta_nem_hasznalja_a_tema_7_et():
 def test_attekinto_ikonok_css_a_tokeneket_hasznalja():
     for hex_ in ("#2e7d32", "#b23c3c", "#777"):
         assert hex_ not in CSS.lower(), hex_
+
+
+# ---- Task 3: oldalsáv + fiókmenü ----
+import yaml
+
+GYOKER = DOCS.parent
+OLDALAK = ["index", "elemzes", "heti", "havi", "valtozasok", "ugyek", "kapcsolodo",
+           "trendek", "youtube", "adatokrol"]
+
+
+def _oldal(nev):
+    return (DOCS / f"{nev}.html").read_text(encoding="utf-8")
+
+
+def _nav_normalizalt(html):
+    m = re.search(r'<nav id="fomenu".*?</nav>', html, re.DOTALL)
+    assert m, "nincs #fomenu"
+    nav = m.group(0)
+    nav = nav.replace(' aria-current="page"', "")
+    nav = re.sub(r'\s+aktiv(?=")', "", nav)
+    nav = nav.replace(' class="aktiv"', "")
+    return re.sub(r"\s+", " ", nav)
+
+
+def test_menu_mind_a_10_oldalon_azonos():
+    navok = {o: _nav_normalizalt(_oldal(o)) for o in OLDALAK}
+    elso = navok["index"]
+    for o, n in navok.items():
+        assert n == elso, o
+
+
+def test_minden_oldalon_keret_vaz():
+    for o in OLDALAK:
+        h = _oldal(o)
+        assert '<body class="keret">' in h, o
+        assert 'class="keret-oldalsav"' in h, o
+        assert 'class="keret-fo"' in h, o
+        assert 'id="keret-felso"' in h, o
+        assert 'id="keret-menugomb"' in h, o
+        assert 'src="js/keret.js"' in h, o
+        assert h.index('class="keret-oldalsav"') < h.index('id="fomenu"') < h.index('class="keret-fo"'), o
+
+
+def test_statikus_badge_egyezik_a_configgal():
+    c = yaml.safe_load((GYOKER / "config.yaml").read_text(encoding="utf-8"))
+    g, y = len(c["kulcsszavak"]), len(c["youtube"])
+    for o in OLDALAK:
+        h = _oldal(o)
+        assert re.search(rf'<a href="trendek\.html"[^>]*data-badge="{g}"', h), o
+        assert re.search(rf'<a href="youtube\.html"[^>]*data-badge="{y}"', h), o

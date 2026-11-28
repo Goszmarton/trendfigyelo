@@ -66,3 +66,55 @@ test("vonal-paletta: nincs benne a --tema-7 (#F0E442)", async ({ page }) => {
   expect(p).toHaveLength(7);
   expect(p).not.toContain("#f0e442");
 });
+
+// ---- Task 3: oldalsáv + fiókmenü ----
+const OLDALAK = ["index", "elemzes", "heti", "havi", "valtozasok", "ugyek", "kapcsolodo", "trendek", "youtube", "adatokrol"];
+
+test("oldalsáv 1280px: #fomenu látható, bal oldalt, 240px, aktív link háttere", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/trendek.html");
+  await expect(page.locator("#fomenu")).toBeVisible();
+  const b = await page.locator(".keret-oldalsav").boundingBox();
+  expect(b.x).toBeLessThan(2);
+  expect(Math.abs(b.width - 240)).toBeLessThanOrEqual(2);
+  const bg = await page.locator('#fomenu a[aria-current="page"]').evaluate(function (e) { return getComputedStyle(e).backgroundColor; });
+  expect(bg).toBe("rgb(143, 220, 208)");
+});
+
+test("360px: #fomenu rejtett, menügomb katt -> látható, aria-expanded=true", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 700 });
+  await page.goto("/trendek.html");
+  await expect(page.locator("#fomenu")).toBeHidden();
+  const g = page.locator("#keret-menugomb");
+  await expect(g).toHaveAttribute("aria-expanded", "false");
+  await g.click();
+  await expect(page.locator("#fomenu")).toBeVisible();
+  await expect(g).toHaveAttribute("aria-expanded", "true");
+});
+
+test("360px: document.scrollWidth <= 360 mind a 10 oldalon", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 700 });
+  for (const o of OLDALAK) {
+    await page.goto("/" + o + ".html");
+    const w = await page.evaluate(function () { return document.documentElement.scrollWidth; });
+    expect(w, o).toBeLessThanOrEqual(360);
+  }
+});
+
+test("JS kikapcsolva 1280px: a 10 menülink látható", async ({ browser }) => {
+  const ctx = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 1280, height: 800 }, baseURL: "http://localhost:8000" });
+  const p = await ctx.newPage();
+  await p.goto("/trendek.html");
+  await expect(p.locator("#fomenu a")).toHaveCount(10);
+  for (const a of await p.locator("#fomenu a").all()) await expect(a).toBeVisible();
+  await ctx.close();
+});
+
+test("Tab-bal a második menülinkre: outline színe rgb(31, 138, 138)", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/trendek.html");
+  await page.locator("#fomenu a").first().focus();
+  await page.keyboard.press("Tab");
+  const c = await page.locator("#fomenu a").nth(1).evaluate(function (e) { return getComputedStyle(e).outlineColor; });
+  expect(c).toBe("rgb(31, 138, 138)");
+});

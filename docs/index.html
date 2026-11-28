@@ -6,71 +6,78 @@
   <title>Trendfigyelő – Áttekintő</title>
   <link rel="stylesheet" href="css/app.css">
 </head>
-<body>
-  <nav id="fomenu" aria-label="Fő menü">
-    <a href="index.html" class="fomenu-home aktiv" aria-current="page">Áttekintő</a>
-    <div class="fomenu-csoport" aria-label="Elemzések">
-      <span class="fomenu-cimke">Elemzések</span>
-      <a href="elemzes.html">Napi</a>
-      <a href="heti.html">Heti</a>
-      <a href="havi.html">Havi</a>
+<body class="keret">
+  <aside class="keret-oldalsav">
+    <div class="keret-logo"><svg aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-logo"/></svg>Trendfigyelő</div>
+    <nav id="fomenu" aria-label="Fő menü">
+      <a href="index.html" class="fomenu-home aktiv" aria-current="page"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-attekinto"/></svg>Áttekintő</a>
+      <div class="fomenu-csoport" aria-label="Elemzések">
+        <span class="fomenu-cimke">Elemzések</span>
+        <a href="elemzes.html" data-keret-badge="napi"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-napi"/></svg>Napi</a>
+        <a href="heti.html" data-keret-badge="heti"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-heti"/></svg>Heti</a>
+        <a href="havi.html" data-keret-badge="havi"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-havi"/></svg>Havi</a>
+      </div>
+      <div class="fomenu-csoport" aria-label="Radar">
+        <span class="fomenu-cimke">Radar</span>
+        <a href="valtozasok.html" data-keret-badge="valtozasok"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-valtozasok"/></svg>Változások</a>
+        <a href="ugyek.html" data-keret-badge="ugyek"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-ugyek"/></svg>Ügyek</a>
+        <a href="kapcsolodo.html"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-kapcsolodo"/></svg>Kapcsolódó</a>
+      </div>
+      <div class="fomenu-csoport" aria-label="Statisztikák">
+        <span class="fomenu-cimke">Statisztikák</span>
+        <a href="trendek.html" data-badge="28"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-google"/></svg>Google</a>
+        <a href="youtube.html" data-badge="12"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-youtube"/></svg>YouTube</a>
+      </div>
+      <a href="adatokrol.html" class="fomenu-onallo"><svg class="keret-ikon" aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-info"/></svg>Infó</a>
+    </nav>
+  </aside>
+  <div class="keret-fo">
+    <div class="keret-felso" id="keret-felso">
+      <button class="keret-menugomb" id="keret-menugomb" type="button" aria-controls="fomenu" aria-expanded="false" aria-label="Menü"><svg aria-hidden="true"><use href="vendor/lucide/ikonok.svg#i-menu"/></svg></button>
     </div>
-    <div class="fomenu-csoport" aria-label="Radar">
-      <span class="fomenu-cimke">Radar</span>
-      <a href="valtozasok.html">Változások</a>
-      <a href="ugyek.html">Ügyek</a>
-      <a href="kapcsolodo.html">Kapcsolódó</a>
-    </div>
-    <div class="fomenu-csoport" aria-label="Statisztikák">
-      <span class="fomenu-cimke">Statisztikák</span>
-      <a href="trendek.html">Google</a>
-      <a href="youtube.html">YouTube</a>
-    </div>
-    <a href="adatokrol.html" class="fomenu-onallo">Infó</a>
-  </nav>
+    <header class="fejlec-doboz nyitooldal-hero">
+      <h1>Trendfigyelő</h1>
+      <p>Mire figyel ma Magyarország? Napi, heti és havi AI-elemzések, radar-jelzések és nyers keresési statisztikák egy helyen.</p>
+    </header>
 
-  <header class="fejlec-doboz nyitooldal-hero">
-    <h1>Trendfigyelő</h1>
-    <p>Mire figyel ma Magyarország? Napi, heti és havi AI-elemzések, radar-jelzések és nyers keresési statisztikák egy helyen.</p>
-  </header>
+    <main id="nyitooldal">
+      <section id="nyitooldal-kiemelt" aria-label="Mai kiemelt" aria-live="polite"></section>
 
-  <main id="nyitooldal">
-    <section id="nyitooldal-kiemelt" aria-label="Mai kiemelt" aria-live="polite"></section>
+      <div class="nyitooldal-kartyak">
+        <section class="nyitooldal-kartya">
+          <h2>Elemzések</h2>
+          <p>Napi, heti és havi AI-összefoglalók arról, mi mozgatja a közbeszédet.</p>
+          <div class="nyitooldal-kartya-linkek">
+            <a href="elemzes.html">Napi</a>
+            <a href="heti.html">Heti</a>
+            <a href="havi.html">Havi</a>
+          </div>
+        </section>
+        <section class="nyitooldal-kartya">
+          <h2>Radar</h2>
+          <p>Szokatlan elmozdulások, ügyek életútja és kapcsolódó keresések.</p>
+          <div class="nyitooldal-kartya-linkek">
+            <a href="valtozasok.html">Változások</a>
+            <a href="ugyek.html">Ügyek</a>
+            <a href="kapcsolodo.html">Kapcsolódó</a>
+          </div>
+        </section>
+        <section class="nyitooldal-kartya">
+          <h2>Statisztikák</h2>
+          <p>Nyers keresési és YouTube-nézettségi grafikonok.</p>
+          <div class="nyitooldal-kartya-linkek">
+            <a href="trendek.html">Google</a>
+            <a href="youtube.html">YouTube</a>
+          </div>
+        </section>
+      </div>
 
-    <div class="nyitooldal-kartyak">
-      <section class="nyitooldal-kartya">
-        <h2>Elemzések</h2>
-        <p>Napi, heti és havi AI-összefoglalók arról, mi mozgatja a közbeszédet.</p>
-        <div class="nyitooldal-kartya-linkek">
-          <a href="elemzes.html">Napi</a>
-          <a href="heti.html">Heti</a>
-          <a href="havi.html">Havi</a>
-        </div>
-      </section>
-      <section class="nyitooldal-kartya">
-        <h2>Radar</h2>
-        <p>Szokatlan elmozdulások, ügyek életútja és kapcsolódó keresések.</p>
-        <div class="nyitooldal-kartya-linkek">
-          <a href="valtozasok.html">Változások</a>
-          <a href="ugyek.html">Ügyek</a>
-          <a href="kapcsolodo.html">Kapcsolódó</a>
-        </div>
-      </section>
-      <section class="nyitooldal-kartya">
-        <h2>Statisztikák</h2>
-        <p>Nyers keresési és YouTube-nézettségi grafikonok.</p>
-        <div class="nyitooldal-kartya-linkek">
-          <a href="trendek.html">Google</a>
-          <a href="youtube.html">YouTube</a>
-        </div>
-      </section>
-    </div>
+      <a class="nyitooldal-info-sav" href="adatokrol.html">Hogyan készül? Mit jelentenek az adatok? → Infó</a>
+    </main>
 
-    <a class="nyitooldal-info-sav" href="adatokrol.html">Hogyan készül? Mit jelentenek az adatok? → Infó</a>
-  </main>
-
-  <footer id="labresz" aria-label="Lábléc"></footer>
-
+    <footer id="labresz" aria-label="Lábléc"></footer>
+  </div>
+  <script src="js/keret.js"></script>
   <script src="js/nyitooldal.js"></script>
   <script src="js/ai_szunet.js" data-tipus="attekinto"></script>
 </body>
