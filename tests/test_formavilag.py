@@ -150,7 +150,7 @@ def test_menu_mind_a_10_oldalon_azonos():
 def test_minden_oldalon_keret_vaz():
     for o in OLDALAK:
         h = _oldal(o)
-        assert '<body class="keret">' in h, o
+        assert '<body class="keret"' in h, o
         assert 'class="keret-oldalsav"' in h, o
         assert 'class="keret-fo"' in h, o
         assert 'id="keret-felso"' in h, o
@@ -166,3 +166,10 @@ def test_statikus_badge_egyezik_a_configgal():
         h = _oldal(o)
         assert re.search(rf'<a href="trendek\.html"[^>]*data-badge="{g}"', h), o
         assert re.search(rf'<a href="youtube\.html"[^>]*data-badge="{y}"', h), o
+
+
+def test_body_data_keret_oldal():
+    for o, v in {"index": "attekinto", "elemzes": "napi", "heti": "heti", "havi": "havi", "valtozasok": "valtozasok",
+                 "ugyek": "ugyek", "kapcsolodo": "kapcsolodo", "trendek": "google", "youtube": "youtube",
+                 "adatokrol": "info"}.items():
+        assert f'<body class="keret" data-keret-oldal="{v}">' in _oldal(o), o

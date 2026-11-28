@@ -687,3 +687,25 @@ body.keret { max-width: none; margin: 0; padding: 0; display: grid; grid-templat
 .ai-szunet-sav { background: #fff8e1; border: 1px solid #f0c36d; border-left: 4px solid #e0a100;
   border-radius: 6px; padding: .75rem 1.1rem; margin: 0 0 1.5rem; color: #4a3b00; box-sizing: border-box; }
 .ai-szunet-sav strong { color: #7a5600; margin-right: .25rem; }
+
+/* Felső sáv: breadcrumb + gyűjtési idők; állapot-pill a fejlécben */
+.keret-felso { gap: var(--ter-3, 12px); flex-wrap: wrap; }
+.keret-morzsa { font-size: 13px; color: var(--szoveg-2); font-weight: 600; }
+.keret-idok { margin-left: auto; display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12.5px; color: var(--szoveg-2); }
+.keret-ido { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.keret-potty { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; }
+.keret-potty--google { background: var(--google); }
+.keret-potty--youtube { background: var(--youtube); }
+body.keret .fejlec-doboz { display: flex; flex-direction: column; align-items: flex-start; }
+.keret-pill { order: -1; display: inline-flex; align-items: center; gap: 8px; margin: 0 0 .5rem; padding: .25rem .75rem;
+  border-radius: var(--r-pill); background: #eef2f1; color: var(--szoveg-2); font-size: 12px; }
+.keret-pill-potty { width: 8px; height: 8px; border-radius: 50%; background: var(--semleges); flex: none; }
+.keret-pill--ok .keret-pill-potty { background: var(--ok); }
+.keret-pill--figy .keret-pill-potty { background: var(--figy); }
+.keret-pill--hiba .keret-pill-potty { background: var(--hiba); }
+.keret-pill-szoveg { text-transform: uppercase; letter-spacing: .08em; font-weight: 700; color: var(--szoveg); }
+.keret-pill-datum { color: var(--szoveg-2); }
+.keret-pill > .radar-idosav { margin: 0; padding: 0; background: none; border-radius: 0; font-size: inherit; }
+.radar-idosav.keret-pill { margin-top: 0; }
+.radar-idosav.keret-pill:empty { display: none; }
+@media (max-width: 760px) { .keret-idok { margin-left: 0; width: 100%; } }

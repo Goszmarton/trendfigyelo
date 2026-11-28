@@ -139,3 +139,83 @@ test("Tab-bal a második menülinkre: outline színe rgb(31, 138, 138)", async (
   const c = await page.locator("#fomenu a").nth(1).evaluate(function (e) { return getComputedStyle(e).outlineColor; });
   expect(c).toBe("rgb(31, 138, 138)");
 });
+
+// ---- Task 4: felső sáv, állapot-pill, badge-ek ----
+test("keret_ido_szoveg és keret_pill: tiszta függvények", async ({ page }) => {
+  await page.goto("/trendek.html");
+  const r = await page.evaluate(function () {
+    const most = new Date("2026-11-28T21:30:00Z");
+    const t = function (h) { return new Date(Date.parse("2026-11-28T20:00:00Z") - h * 3600000).toISOString(); };
+    return [keret_ido_szoveg("2026-11-28T20:00:00Z", most), keret_ido_szoveg("2026-11-27T20:00:00Z", most),
+      keret_ido_szoveg("2026-11-25T20:00:00Z", most), keret_ido_szoveg(null, most), keret_ido_szoveg("hibás", most),
+      keret_pill(["2026-11-28T08:00:00Z"], new Date("2026-11-28T20:00:00Z")),
+      keret_pill([t(30)], new Date("2026-11-28T20:00:00Z")), keret_pill([t(50)], new Date("2026-11-28T20:00:00Z")),
+      keret_pill(["2026-11-28T08:00:00Z", null], new Date("2026-11-28T20:00:00Z"))];
+  });
+  expect(r.slice(0, 5)).toEqual(["ma 21:00", "tegnap 21:00", "nov. 25. 21:00", "–", "–"]);
+  expect(r[5]).toEqual({ allapot: "ok", szoveg: "Gyűjtés rendben" });
+  expect(r[6].allapot).toBe("figy");
+  expect(r[7]).toEqual({ allapot: "hiba", szoveg: "Gyűjtés hiba" });
+  expect(r[8]).toBeNull();
+});
+
+function friss(h) { return new Date(Date.now() - h * 3600000).toISOString(); }
+
+test("trendek: pill = Gyűjtés rendben, a header első gyereke, gyűjtési idők a felső sávban", async ({ page }) => {
+  await page.route("**/data/legfrissebb.json*", (r) => r.fulfill({ json: { frissitve: friss(2), top_trendek: [], trend_idosorok: [], kulcsszavak: {}, kulcsszo_osszesites: [] } }));
+  await page.route("**/data/youtube_regresszio.json*", (r) => r.fulfill({ json: { szamitva_utc: friss(3), kulcsszavak: {} } }));
+  await page.goto("/trendek.html");
+  const pill = page.locator("header.fejlec-doboz > .keret-pill").first();
+  await expect(pill).toContainText("Gyűjtés rendben");
+  await expect(pill).toHaveClass(/keret-pill--ok/);
+  expect(await page.evaluate(function () { return document.querySelector("header.fejlec-doboz").firstElementChild.classList.contains("keret-pill"); })).toBe(true);
+  await expect(page.locator("#keret-felso")).toContainText(/Google: (ma|tegnap) \d\d:\d\d/);
+  await expect(page.locator("#keret-felso")).toContainText("Statisztikák / Google");
+});
+
+test("trendek: legfrissebb.json 404 -> nincs pill, Google: –, a #kulcsszo-blokk renderel", async ({ page }) => {
+  await page.route("**/data/legfrissebb.json*", (r) => r.fulfill({ status: 404, body: "nincs" }));
+  await page.goto("/trendek.html");
+  await expect(page.locator("#keret-felso")).toContainText("Google: –");
+  await expect(page.locator(".keret-pill")).toHaveCount(0);
+  await expect(page.locator("#kulcsszo-blokk")).toBeAttached();
+});
+
+test("ugyek: egyetlen .keret-pill, tartalmazza a #radar-idosav szövegét", async ({ page }) => {
+  await page.route("**/data/ai_szunet.json*", (r) => r.fulfill({ json: { szunetel: { ugyek: true }, ota: "2026-11-18" } }));
+  await page.route("**/data/ugyek.json*", (r) => r.fulfill({ json: { szamitva_utc: "2026-10-07T21:00:00+00:00",
+    ablak: { kezdet: "2026-09-08", veg: "2026-10-07", nap: 30 }, modell: "m", ugyek: [] } }));
+  await page.goto("/ugyek.html");
+  await expect(page.locator(".keret-pill")).toHaveCount(1);
+  await expect(page.locator(".keret-pill")).toContainText("Szünetel");
+  await expect(page.locator(".keret-pill")).toContainText("Gördülő 30 napos ablak: 2026-09-08 – 2026-10-07");
+  await expect(page.locator("#radar-idosav")).toContainText("Gördülő 30 napos ablak");
+});
+
+test("kapcsolodo: a #radar-idosav osztálya keret-pill, szövege változatlan", async ({ page }) => {
+  await page.goto("/kapcsolodo.html");
+  await expect(page.locator("#radar-idosav")).toHaveClass(/keret-pill/);
+  await expect(page.locator("#radar-idosav")).not.toBeEmpty();
+});
+
+test("badge: az Ügyek link textContent akkor is 'Ügyek', ha data-badge=44", async ({ page }) => {
+  const ugyek = []; for (let i = 0; i < 44; i++) ugyek.push({ nev: "u" + i, kifejezesek: [], idovonal: [] });
+  await page.route("**/data/ugyek.json*", (r) => r.fulfill({ json: { ablak: { kezdet: "2026-09-08", veg: "2026-10-07", nap: 30 }, ugyek } }));
+  await page.goto("/valtozasok.html");
+  const l = page.locator('#fomenu a[href="ugyek.html"]');
+  await expect(l).toHaveAttribute("data-badge", "44");
+  expect(await l.evaluate(function (e) { return e.textContent.trim(); })).toBe("Ügyek");
+});
+
+test("badge: napi/heti/havi szünetben ⏸, a Google/YouTube statikus badge érintetlen", async ({ page }) => {
+  await page.route("**/data/ai_szunet.json*", (r) => r.fulfill({ json: { szunetel: { napi: true, heti: true, havi: false }, ota: "2026-11-18" } }));
+  await page.goto("/trendek.html");
+  await expect(page.locator('#fomenu a[href="elemzes.html"]')).toHaveAttribute("data-badge", "⏸");
+  await expect(page.locator('#fomenu a[href="havi.html"]')).not.toHaveAttribute("data-badge", /.*/);
+  await expect(page.locator('#fomenu a[href="trendek.html"]')).toHaveAttribute("data-badge", /^\d+$/);
+});
+
+test("breadcrumb a heti.html-en: Elemzések / Heti", async ({ page }) => {
+  await page.goto("/heti.html");
+  await expect(page.locator(".keret-morzsa")).toHaveText("Elemzések / Heti");
+});

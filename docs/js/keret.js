@@ -17,4 +17,150 @@ function keret_menu_init() {
     if (e.key === "Escape" && gomb.getAttribute("aria-expanded") === "true") { allit(false); gomb.focus(); }
   });
 }
-keret_menu_init();
+
+/* ---- Felső sáv: breadcrumb, gyűjtési idők, állapot-pill, menü-badge-ek ---- */
+const KERET_HONAP_ROV = ["jan.", "feb.", "márc.", "ápr.", "máj.", "jún.", "júl.", "aug.", "szept.", "okt.", "nov.", "dec."];
+const KERET_HONAP_HOSSZU = ["január", "február", "március", "április", "május", "június", "július",
+  "augusztus", "szeptember", "október", "november", "december"];
+
+// Budapest-idő részei egy Date-ből.
+function keret_bp_reszek(d) {
+  const f = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Budapest", year: "numeric", month: "2-digit",
+    day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+  const o = {};
+  f.formatToParts(d).forEach(function (p) { o[p.type] = p.value; });
+  return { ev: Number(o.year), ho: Number(o.month), nap: Number(o.day), ora: o.hour, perc: o.minute };
+}
+
+function keret_ido_szoveg(iso, most) {
+  if (!iso) return "–";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "–";
+  const a = keret_bp_reszek(d), b = keret_bp_reszek(most);
+  const napszam = function (r) { return Date.UTC(r.ev, r.ho - 1, r.nap) / 86400000; };
+  const kulonbseg = napszam(b) - napszam(a);
+  const ido = a.ora + ":" + a.perc;
+  if (kulonbseg === 0) return "ma " + ido;
+  if (kulonbseg === 1) return "tegnap " + ido;
+  return KERET_HONAP_ROV[a.ho - 1] + " " + a.nap + ". " + ido;
+}
+
+function keret_pill(iso_lista, most) {
+  let regi = null;
+  for (let i = 0; i < iso_lista.length; i++) {
+    const t = iso_lista[i] ? new Date(iso_lista[i]).getTime() : NaN;
+    if (isNaN(t)) return null;
+    if (regi === null || t < regi) regi = t;
+  }
+  if (regi === null) return null;
+  const ora = (most.getTime() - regi) / 3600000;
+  if (ora <= 26) return { allapot: "ok", szoveg: "Gyűjtés rendben" };
+  if (ora <= 48) return { allapot: "figy", szoveg: "Gyűjtés késik" };
+  return { allapot: "hiba", szoveg: "Gyűjtés hiba" };
+}
+
+async function keret_json(url) {
+  try {
+    const r = await fetch(url + "?v=" + Date.now(), { cache: "no-cache" });
+    return r.ok ? await r.json() : null;
+  } catch (e) { return null; }
+}
+
+function keret_elem(tag, osztaly, szoveg) {
+  const e = document.createElement(tag);
+  if (osztaly) e.className = osztaly;
+  if (szoveg !== undefined) e.textContent = szoveg;
+  return e;
+}
+
+function keret_breadcrumb(felso) {
+  const link = document.querySelector("#fomenu a.aktiv, #fomenu a[aria-current='page']");
+  if (!link) return;
+  const csoport = link.closest(".fomenu-csoport");
+  const cimke = csoport && csoport.querySelector(".fomenu-cimke");
+  const szoveg = (cimke ? cimke.textContent.trim() + " / " : "") + link.textContent.trim();
+  felso.appendChild(keret_elem("div", "keret-morzsa", szoveg));
+}
+
+function keret_idok(felso, google_iso, youtube_iso, most) {
+  const dob = keret_elem("div", "keret-idok");
+  [["Google", google_iso, "google"], ["YouTube", youtube_iso, "youtube"]].forEach(function (x) {
+    const s = keret_elem("span", "keret-ido");
+    s.appendChild(keret_elem("i", "keret-potty keret-potty--" + x[2]));
+    s.appendChild(document.createTextNode(x[0] + ": " + keret_ido_szoveg(x[1], most)));
+    dob.appendChild(s);
+  });
+  felso.appendChild(dob);
+}
+
+function keret_ma_szoveg(most) {
+  const r = keret_bp_reszek(most);
+  return r.ev + ". " + KERET_HONAP_HOSSZU[r.ho - 1] + " " + r.nap + ".";
+}
+
+function keret_ota_szoveg(ota) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(ota || "");
+  return m ? m[1] + ". " + KERET_HONAP_HOSSZU[Number(m[2]) - 1] + " " + Number(m[3]) + ". óta" : "";
+}
+
+// Állapot-pill: pötty + felirat + dátum (szöveg vagy meglévő elem), a fejléc ELSŐ gyereke.
+function keret_pill_beszur(pill, datum) {
+  const fejlec = document.querySelector("header.fejlec-doboz");
+  if (!fejlec) return;
+  const div = keret_elem("div", "keret-pill keret-pill--" + pill.allapot);
+  div.appendChild(keret_elem("i", "keret-pill-potty"));
+  div.appendChild(keret_elem("span", "keret-pill-szoveg", pill.szoveg));
+  if (datum && datum.nodeType) div.appendChild(datum);
+  else if (datum) div.appendChild(keret_elem("span", "keret-pill-datum", datum));
+  fejlec.insertBefore(div, fejlec.firstChild);
+}
+
+async function keret_init() {
+  const oldal = document.body.getAttribute("data-keret-oldal");
+  if (!oldal) return;
+  const most = new Date();
+  const felso = document.getElementById("keret-felso");
+  const radar = document.getElementById("radar-idosav");
+  // a Radar-idősáv (szövegét később a bovites.js írja) osztállyal válik pill-lé
+  if (radar && (oldal === "valtozasok" || oldal === "kapcsolodo" || oldal === "ugyek")) {
+    radar.classList.add("keret-pill", "keret-pill--semleges");
+  }
+  const [leg, yt, szunet, elm, ugy] = await Promise.all([
+    keret_json("data/legfrissebb.json"), keret_json("data/youtube_regresszio.json"),
+    keret_json("data/ai_szunet.json"), keret_json("data/elmozdulas.json"), keret_json("data/ugyek.json")]);
+  const g_iso = (leg && leg.frissitve) || null, y_iso = (yt && yt.szamitva_utc) || null;
+  if (felso) { keret_breadcrumb(felso); keret_idok(felso, g_iso, y_iso, most); }
+
+  const szunetel = function (t) { return !!(szunet && szunet.szunetel && szunet.szunetel[t] === true); };
+  const ota = szunet && keret_ota_szoveg(szunet.ota);
+  const ma = keret_ma_szoveg(most);
+  let p = null;
+  if (oldal === "google") p = keret_pill([g_iso], most);
+  else if (oldal === "youtube") p = keret_pill([y_iso], most);
+  else if (oldal === "attekinto") p = keret_pill([g_iso, y_iso], most);
+  if (p) keret_pill_beszur(p, ma);
+  if ((oldal === "napi" || oldal === "heti" || oldal === "havi") && szunetel(oldal)) {
+    keret_pill_beszur({ allapot: "figy", szoveg: "Szünetel" }, ota || ma);
+  }
+  if (oldal === "ugyek" && szunetel("ugyek")) {
+    // a Radar-idősáv elem maga költözik a pillbe (a szövegét később ugyanebbe a node-ba írja a bovites.js)
+    keret_pill_beszur({ allapot: "figy", szoveg: "Szünetel" }, radar || ota || ma);
+    if (radar) { radar.classList.remove("keret-pill", "keret-pill--semleges"); radar.classList.add("keret-pill-datum"); }
+  }
+
+  const badge = function (kulcs, ertek) {
+    const l = document.querySelector('#fomenu a[data-keret-badge="' + kulcs + '"]');
+    if (!l) return;
+    if (ertek) l.setAttribute("data-badge", String(ertek)); else l.removeAttribute("data-badge");
+  };
+  badge("valtozasok", elm && Array.isArray(elm.szokatlan_lista) ? elm.szokatlan_lista.length : 0);
+  badge("ugyek", ugy && Array.isArray(ugy.ugyek) ? ugy.ugyek.length : 0);
+  ["napi", "heti", "havi"].forEach(function (t) { badge(t, szunetel(t) ? "⏸" : 0); });
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { keret_ido_szoveg, keret_pill };
+} else {
+  keret_menu_init();
+  keret_init();
+}
