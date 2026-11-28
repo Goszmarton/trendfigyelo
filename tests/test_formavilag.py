@@ -22,6 +22,8 @@ TOKENEK = {
     "--ter-1": "4px", "--ter-2": "8px", "--ter-3": "12px", "--ter-4": "16px",
     "--ter-5": "20px", "--ter-6": "24px", "--ter-7": "32px", "--ter-8": "40px",
     "--betu-cim": "30px", "--betu-szakasz": "17px", "--betu-kartya": "14.5px",
+    "--akcentus-halvany": "#E3F4F1", "--akcentus-sotet": "#145f5f",
+    "--arnyek": "0 4px 16px rgba(26, 29, 32, 0.07)",
     "--betu-torzs": "14px", "--betu-seged": "12.5px", "--betu-mikro": "11px",
 }
 

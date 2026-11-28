@@ -289,3 +289,66 @@ test("hosszú felkapott kifejezés nem lóg ki a trendkártyából", async ({ pa
   const m = await k.evaluate(function (e) { return [e.scrollWidth, e.clientWidth]; });
   expect(m[0]).toBeLessThanOrEqual(m[1]);
 });
+
+// ── Task 6: Elemzések, Áttekintő, Infó ──
+test("index.html: a 3 .nyitooldal-kartya egy rácsban (azonos y), 12px sarok", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/index.html");
+  const k = page.locator(".nyitooldal-kartya");
+  await expect(k).toHaveCount(3);
+  const ys = [];
+  for (let i = 0; i < 3; i++) ys.push((await k.nth(i).boundingBox()).y);
+  expect(ys[1]).toBe(ys[0]);
+  expect(ys[2]).toBe(ys[0]);
+  const s = await k.first().evaluate(function (e) { const c = getComputedStyle(e); return [c.borderTopLeftRadius, c.borderTopColor]; });
+  expect(s).toEqual(["12px", "rgb(226, 229, 227)"]);
+});
+
+for (const u of ["/elemzes.html", "/heti.html", "/havi.html"]) {
+  test("a .ai-szunet-sav a --figy tónusú és a header után áll: " + u, async ({ page }) => {
+    await page.route("**/data/ai_szunet.json*", (r) => r.fulfill({ json: { szunetel: { napi: true, heti: true, havi: true }, ota: "2026-11-18" } }));
+    await page.goto(u);
+    const sav = page.locator("header.fejlec-doboz + #ai-szunet-sav");
+    await expect(sav).toHaveCount(1);
+    const s = await sav.evaluate(function (e) { const c = getComputedStyle(e); return [c.backgroundColor, c.borderLeftColor]; });
+    expect(s[0]).toBe("rgba(217, 162, 27, 0.12)");
+    expect(s[1]).toBe("rgb(217, 162, 27)");
+  });
+}
+
+test("havi: a térkép-konténer kártya-kerettel, a #ef6c33 jelölő megvan", async ({ page }) => {
+  await page.route("**/data/havi_nlp/index.json", r => r.fulfill({ json: { honapok: ["2026-09"], legutolso: "2026-09" } }));
+  await page.route("**/data/havi_nlp/2026-09.json", r => r.fulfill({ json: {
+    honap: "2026-09", modell: "m", korpusz: { egyedi_szo: 3, napok: 2 }, lemmak: [],
+    ner: { orszagok: [{ nev: "Németország", szavak: ["a"], volumen: 100 }],
+           telepulesek: [{ nev: "Berlin", szavak: ["b"], volumen: 50 }], szemelyek: [] },
+    klaszterek: [], osszegzes: "x" } }));
+  await page.goto("/havi.html");
+  const t = page.locator("#havi-vilag-terkep.leaflet-container");
+  await expect(t).toHaveCount(1);
+  const s = await t.evaluate(function (e) { const c = getComputedStyle(e); return [c.borderTopLeftRadius, c.borderTopColor]; });
+  expect(s).toEqual(["12px", "rgb(226, 229, 227)"]);
+  await expect(page.locator('#havi-vilag-terkep path.leaflet-interactive[fill="#ef6c33"]').first()).toBeVisible();
+});
+
+test("a naptár nap-cella érintési célmérete >= 24px (elemzés, heti)", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 800 });
+  for (const u of ["/elemzes.html", "/heti.html"]) {
+    await page.goto(u);
+    const c = page.locator(".nap-cella:not([disabled])").first();
+    await expect(c).toBeVisible();
+    const bb = await c.boundingBox();
+    expect(bb.height).toBeGreaterThanOrEqual(24);
+    expect(bb.width).toBeGreaterThanOrEqual(24);
+  }
+});
+
+test("Infó: .adat-doboz 12px sarok, --keret keret; a kiválasztott nap --akcentus", async ({ page }) => {
+  await page.goto("/adatokrol.html");
+  const s = await page.locator(".adat-doboz").first().evaluate(function (e) { const c = getComputedStyle(e); return [c.borderTopLeftRadius, c.borderTopColor]; });
+  expect(s).toEqual(["12px", "rgb(226, 229, 227)"]);
+  await page.goto("/elemzes.html");
+  const v = page.locator(".nap-cella.valasztott").first();
+  await expect(v).toBeVisible();
+  expect(await v.evaluate(function (e) { return getComputedStyle(e).backgroundColor; })).toBe("rgb(31, 138, 138)");
+});
