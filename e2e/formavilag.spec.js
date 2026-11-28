@@ -219,3 +219,73 @@ test("breadcrumb a heti.html-en: Elemzések / Heti", async ({ page }) => {
   await page.goto("/heti.html");
   await expect(page.locator(".keret-morzsa")).toHaveText("Elemzések / Heti");
 });
+
+// ── Task 5: komponensek (kártya, chip-sor, oldalfejléc) a Google és YouTube oldalon ──
+const STAT_OLDALAK = [
+  { nev: "Google", url: "/trendek.html", vez: "#intervallum-vezerlo", tartalom: "#kulcsszo-blokk" },
+  { nev: "YouTube", url: "/youtube.html", vez: "#youtube-intervallum-vezerlo", tartalom: "#youtube-blokk" },
+];
+for (const o of STAT_OLDALAK) {
+  test.describe(o.nev + " oldal komponensek", () => {
+    test.use({ viewport: { width: 1280, height: 900 } });
+
+    test("a chip-sor a saját szakasza fölött van, a gombjai egy sorban", async ({ page }) => {
+      await page.goto(o.url);
+      const sav = page.locator(".szekcio:has(" + o.tartalom + ") .vezerlo-sav").first();
+      await expect(sav.locator("button").first()).toBeVisible();
+      const sb = await sav.boundingBox();
+      const tb = await page.locator(o.tartalom).boundingBox();
+      expect(sb.y + sb.height).toBeLessThanOrEqual(tb.y + 1);
+      const ys = await sav.locator("button").evaluateAll(function (bs) { return bs.map(function (b) { return Math.round(b.getBoundingClientRect().y); }); });
+      expect(ys.length).toBeGreaterThan(1);
+      expect(new Set(ys).size).toBe(1);
+    });
+
+    test("aktív intervallum-gomb kerete --akcentus", async ({ page }) => {
+      await page.goto(o.url);
+      const g = page.locator(o.vez + ' button[aria-pressed="true"]').first();
+      await expect(g).toBeVisible();
+      expect(await g.evaluate(function (e) { return getComputedStyle(e).borderTopColor; })).toBe("rgb(31, 138, 138)");
+    });
+
+    test("Tab-fókusz egy chipen: kontúr --akcentus", async ({ page }) => {
+      await page.goto(o.url);
+      const g = page.locator(o.vez + " button:not([disabled])").first();
+      await expect(g).toBeVisible();
+      await g.focus();
+      await page.keyboard.press("Shift+Tab");
+      await page.keyboard.press("Tab");
+      const c = await g.evaluate(function (e) { const s = getComputedStyle(e); return [s.outlineColor, s.outlineStyle]; });
+      expect(c[0]).toBe("rgb(31, 138, 138)");
+      expect(c[1]).not.toBe("none");
+    });
+
+    test("h1 30px / 800", async ({ page }) => {
+      await page.goto(o.url);
+      const s = await page.locator("h1").first().evaluate(function (e) { const c = getComputedStyle(e); return [c.fontSize, c.fontWeight]; });
+      expect(s).toEqual(["30px", "800"]);
+    });
+  });
+}
+
+test("a kulcsszó-kártya 12px sarok, fehér, --keret keret", async ({ page }) => {
+  await mockKulcsszo(page);
+  await page.goto("/trendek.html");
+  const k = page.locator("#kulcsszo-blokk .kulcsszo-chart").first();
+  await expect(k).toBeVisible();
+  const s = await k.evaluate(function (e) { const c = getComputedStyle(e); return [c.borderTopLeftRadius, c.backgroundColor, c.borderTopColor]; });
+  expect(s).toEqual(["12px", "rgb(255, 255, 255)", "rgb(226, 229, 227)"]);
+});
+
+test("hosszú felkapott kifejezés nem lóg ki a trendkártyából", async ({ page }) => {
+  const hosszu = "hosszúkifejezés".repeat(6).slice(0, 80);
+  await page.route(/kategoriak\.json/, (r) => r.fulfill({ contentType: "application/json", body: JSON.stringify({ napok: [] }) }));
+  await page.route(/napok\/index\.json/, (r) => r.fulfill({ contentType: "application/json", body: JSON.stringify({ napok: [] }) }));
+  await page.route(/legfrissebb\.json/, (r) => r.fulfill({ contentType: "application/json", body: JSON.stringify({
+    top_trendek: [{ kifejezes: hosszu, volumen: "5000", novekedes_pct: "100", idosor: [], hirek: [], temak: ["Other"], topics: [1] }] }) }));
+  await page.goto("/trendek.html");
+  const k = page.locator("#trend-blokk .trend-kartya").first();
+  await expect(k).toBeVisible({ timeout: 8000 });
+  const m = await k.evaluate(function (e) { return [e.scrollWidth, e.clientWidth]; });
+  expect(m[0]).toBeLessThanOrEqual(m[1]);
+});

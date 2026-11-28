@@ -79,7 +79,12 @@ test("(b2) a letiltott intervallum-gomb OLVASHATÓ marad (a11y: jelentést hordo
   const gomb = page.locator("#intervallum-vezerlo button[disabled]").first();
   await expect(gomb).toBeVisible();
   const szin = await gomb.evaluate(function (el) { return getComputedStyle(el).color; });
-  expect(szin).toBe("rgb(107, 107, 107)");
+  expect(szin).toBe("rgb(102, 112, 122)");   // --szoveg-2 (Task 5: tokenre kerül a korábbi #6b6b6b)
+  // a kontraszt-szándék marad: >= 4,5:1 fehéren (WCAG AA)
+  const lum = function (c) { return c.map(function (v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); };
+  const rgb = lum(szin.match(/\d+/g).slice(0, 3).map(Number));
+  const L = 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
+  expect(1.05 / (L + 0.05)).toBeGreaterThanOrEqual(4.5);
 });
 
 test("(a) hiányzó kulcsszo_regresszio.json → .ures üzenet ÉS NULLA gomb (ez különbözteti meg a (b)-től)", async ({ page }) => {

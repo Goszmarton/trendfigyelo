@@ -73,7 +73,7 @@
 
 body { font-family: var(--betu); background: var(--hatter); color: var(--szoveg);
        max-width: 78rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; }
-h1 { margin-bottom: .25rem; }
+h1 { margin-bottom: .25rem; font-size: var(--betu-cim); font-weight: 800; letter-spacing: -.01em; line-height: 1.2; }
 h2 { font-size: 1.1rem; margin: 1.5rem 0 .5rem; }
 /* szakasz-elválasztó cím (nagyobb, mint a szekció-h2) — a napi keresések részt vezeti be,
    elválasztva a fölötte lévő „követett kulcsszavak" blokkoktól */
@@ -85,24 +85,28 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 /* §7.1 per-szekció elrendezés: minden szekció bal oldalán a saját (sticky) vezérlősávja.
    A #kulcsszo-blokk/#trend-blokk MARAD a tartalom-konténer (ID-szerződés), a vezérlő a .vezerlo-sav-ban. */
 /* a lap fejléce (H1 + alcím) a szokásos keretes dobozban, mint a szekciók */
-.fejlec-doboz { background: #fff; border: 1px solid #e3e3e3; border-radius: 6px;
-  padding: .9rem 1.25rem; margin: 0 0 1.5rem; box-sizing: border-box; }
+.fejlec-doboz { background: none; border: none; border-radius: 0;
+  padding: 0; margin: 0 0 var(--ter-6); box-sizing: border-box; }
 .fejlec-doboz h1 { margin: 0 0 .25rem; }
-.fejlec-doboz .halvany { margin: 0; }
+.fejlec-doboz .halvany { margin: 0; color: var(--szoveg-2); }
 /* a vezérlősávok (időszak-gombok, kategória-legend) fölötti kis cím */
-.vezerlo-cim { font-weight: 600; font-size: .9rem; color: #333; margin: 0 0 .6rem; }
+.vezerlo-cim { font-weight: 600; font-size: var(--betu-mikro); letter-spacing: .1em; text-transform: uppercase;
+  color: var(--szoveg-2); margin: 0 0 var(--ter-2); }
 /* vízszintes elválasztó a fő blokkok között (ugyanaz a vonal, mint a .szekcio+.szekcio-nál) */
 .blokk-vonal { border: none; border-top: 1px solid #e3e3e3; margin: 1.5rem 0; }
 
-.szekcio { display: flex; gap: 1.5rem; align-items: flex-start; margin: 1.5rem 0; }
+/* Task 5: a szakasz OSZLOP — a chip-sor (.vezerlo-sav) a tartalom FÖLÖTT, nem mellette */
+.szekcio { display: flex; flex-direction: column; gap: var(--ter-3); align-items: stretch; margin: var(--ter-6) 0; }
 /* A1: a két nagy blokk vizuális elválasztása (a margó önmagában nem látszott) */
-.szekcio + .szekcio { border-top: 1px solid #e3e3e3; padding-top: 1.5rem; }
+.szekcio + .szekcio { border-top: none; padding-top: 0; }
 /* blokk-elkülönítés (2026-08-18): FEHÉR háttér + finom keret + lekerekített sarok (a #fafafa szürkézés
    [d86af56] felülírva — a szürke rosszabb volt). A négy nagy blokk (2 vezerlo-sav + 2 tartalom) így KÜLÖNÜL. */
-.vezerlo-sav { flex: 0 0 14rem; position: sticky; top: 1rem; align-self: flex-start;
-  background: #fff; border: 1px solid #e3e3e3; border-radius: 6px; padding: .75rem; box-sizing: border-box; }
+.vezerlo-sav { flex: 0 0 auto; position: sticky; top: var(--ter-2); z-index: 5; align-self: stretch;
+  background: var(--kartya); border: 1px solid var(--keret); border-radius: var(--r-kartya); padding: var(--ter-3); box-sizing: border-box; }
+/* a naptár-/hét-/kategória-választó magas → nem tapad (csak az idő-ablak chip-sor sticky) */
+.vezerlo-sav:has(#datum-valaszto), .vezerlo-sav:has(#heti-valaszto), .vezerlo-sav:has(#idosor-legend) { position: static; }
 #kulcsszo-blokk, #trend-blokk, #heti-blokk, #idosor-blokk, #youtube-blokk { flex: 1; min-width: 0;
-  background: #fff; border: 1px solid #e3e3e3; border-radius: 6px; padding: 1rem; box-sizing: border-box; }
+  background: var(--kartya); border: 1px solid var(--keret); border-radius: var(--r-kartya); padding: var(--ter-5); box-sizing: border-box; }
 
 /* KATEGÓRIA-IDŐSOR kétdobozos: bal #idosor-legend (kattintható HTML-legend, a Chart.js belső legend reprodukciója),
    jobb #idosor-blokk (h2 → chart → magyarázat). A pötty kerek szürke; aktív = kék pötty + kék szöveg. */
@@ -138,7 +142,7 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
   .szekcio { flex-direction: column; }
   /* column módban a fő tengely FÜGGŐLEGES → a flex:0 0 14rem MAGASSÁGOT fixálna (üresen 224px, az első
      kártyát a rootMargin-zóna alá tolja); auto-basis + static a természetes magasságra ejti (L10). */
-  .vezerlo-sav { flex: 0 0 auto; position: static; }
+  .vezerlo-sav { flex: 0 0 auto; position: static; }  /* mobilon nem tapad */
 }
 /* Keret: grafit oldalsáv (≥901px kétoszlopos rács) + mobil fiókmenü (≤900px) */
 body.keret { max-width: none; margin: 0; padding: 0; display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: 100vh; }
@@ -224,7 +228,7 @@ body.keret { max-width: none; margin: 0; padding: 0; display: grid; grid-templat
    (a „2 hét"/„1 hó" a szövegek KÖZÉ ékelődött). Fix: a konténer flex-column (intervallumok egymás alatt),
    minden .intervallum-tetel flex-row (a gomb + a saját .ok egy sorban). A gombköz margin-right → wrapper-gap. */
 #intervallum-vezerlo,
-#youtube-intervallum-vezerlo { display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; }
+#youtube-intervallum-vezerlo { display: flex; flex-direction: row; flex-wrap: wrap; align-items: flex-start; gap: var(--ter-2) var(--ter-3); }
 /* item 2: a tétel OSZLOP (gomb-sor + magyarázat alatta); a gomb-sor a régi flex-row (gomb + .ok egy sorban) */
 #intervallum-vezerlo .intervallum-tetel,
 #youtube-intervallum-vezerlo .intervallum-tetel { display: flex; flex-direction: column; align-items: flex-start; gap: .1rem; }
@@ -233,23 +237,29 @@ body.keret { max-width: none; margin: 0; padding: 0; display: grid; grid-templat
 /* kék vonal a kísérő szöveg elé (ⓘ nélkül); FIX magasságú sáv (pseudo), hogy MIND egyforma hosszú legyen,
    függetlenül attól, hogy a szöveg 1 vagy 2 sorra tördel */
 #intervallum-vezerlo .gomb-magyarazat,
-#youtube-intervallum-vezerlo .gomb-magyarazat { font-size: .7rem; color: #888; line-height: 1.1;
-  position: relative; padding-left: .5rem; }
+#youtube-intervallum-vezerlo .gomb-magyarazat { font-size: var(--betu-mikro); color: var(--szoveg-2); line-height: 1.2;
+  position: relative; padding-left: .5rem; max-width: 9.5rem; }
 #intervallum-vezerlo .gomb-magyarazat::before,
 #youtube-intervallum-vezerlo .gomb-magyarazat::before {
   content: ""; position: absolute; left: 0; top: .05rem; width: 3px; height: .8rem;
-  background: #3366cc; border-radius: 1px; }
+  background: var(--akcentus); border-radius: 1px; }
+/* CHIP (Task 5): közös komponens — .ui-chip + a meglévő vezérlő-gombok */
+.ui-chip,
 #intervallum-vezerlo button,
-#youtube-intervallum-vezerlo button { padding: .3rem .7rem; cursor: pointer;
-  background: #fff; border: 1px solid #ccc; border-radius: 4px; color: #222;
+#youtube-intervallum-vezerlo button { padding: 7px 14px; cursor: pointer; font: inherit; font-size: 13px;
+  background: var(--kartya); border: 1px solid var(--keret); border-radius: var(--r-chip); color: var(--szoveg);
   min-width: 3.5rem; box-sizing: border-box; white-space: nowrap; }
-
+.ui-chip:hover:not([disabled]),
+#intervallum-vezerlo button:hover:not([disabled]),
+#youtube-intervallum-vezerlo button:hover:not([disabled]) { border-color: var(--akcentus); }
+.ui-chip[aria-pressed="true"],
 #intervallum-vezerlo button[aria-pressed="true"],
-#youtube-intervallum-vezerlo button[aria-pressed="true"] { font-weight: bold; background: #e8e8e8; }
+#youtube-intervallum-vezerlo button[aria-pressed="true"] { font-weight: 600; background: #E3F4F1; border-color: var(--akcentus); color: #145f5f; }
+.ui-chip[disabled],
 #intervallum-vezerlo button[disabled],
-#youtube-intervallum-vezerlo button[disabled] { cursor: not-allowed; color: #6b6b6b; background: #f0f0f0; }
+#youtube-intervallum-vezerlo button[disabled] { cursor: not-allowed; color: var(--szoveg-2); background: var(--hatter); border-style: dashed; }
 #intervallum-vezerlo .ok,
-#youtube-intervallum-vezerlo .ok { color: #666; font-size: .85rem; }
+#youtube-intervallum-vezerlo .ok { color: var(--szoveg-2); font-size: var(--betu-seged); }
 
 /* Task 10 §2: a dátum-<select> érintési célmérete AA-ra (19px → >=24px, kényelmes 32px); egérrel is bukó volt.
    MIN-CSS (08-18): a #intervallum-vezerlo szabályblokk KÖZÜL kiemelve (a gomb- és a date-select-szabály közé
@@ -362,15 +372,17 @@ body.keret { max-width: none; margin: 0; padding: 0; display: grid; grid-templat
 #youtube-blokk .domen-csoport { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0; }
 @media (max-width: 900px) { #kulcsszo-blokk .domen-csoport, #youtube-blokk .domen-csoport { grid-template-columns: 1fr; } }
 #kulcsszo-blokk .domen-fejlec,
-#youtube-blokk .domen-fejlec { grid-column: 1 / -1; font-size: 1rem; margin: .5rem 0 0; }
+#youtube-blokk .domen-fejlec { grid-column: 1 / -1; font-size: var(--betu-szakasz); margin: .5rem 0 0; }
 /* Task 2: témaszín-pötty a domén-csoportcím előtt (a szín inline --potty változóból) */
 .ui-tema-potty { display: inline-block; width: .6em; height: .6em; border-radius: 50%; background: var(--potty, var(--semleges)); margin-right: .45em; vertical-align: baseline; }
 #kulcsszo-blokk .kulcsszo-chart,
-#youtube-blokk .kulcsszo-chart { border: 1px solid #d0d0d0; border-radius: 4px; padding: .5rem;
-  box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+#youtube-blokk .kulcsszo-chart { background: var(--kartya); border: 1px solid var(--keret); border-radius: var(--r-kartya);
+  padding: var(--ter-4) var(--ter-4) var(--ter-3); min-width: 0; transition: box-shadow .15s; }
+#kulcsszo-blokk .kulcsszo-chart:hover,
+#youtube-blokk .kulcsszo-chart:hover { box-shadow: 0 4px 16px rgba(26, 29, 32, .07); }
 /* H1: látható kulcsszó-címke a canvas fölött (visszafogott: félkövér, kis alsó margó) */
 #kulcsszo-blokk .kulcsszo-cimke,
-#youtube-blokk .kulcsszo-cimke { font-size: .9rem; font-weight: 600; margin: 0 0 .3rem; }
+#youtube-blokk .kulcsszo-cimke { font-size: var(--betu-kartya); font-weight: 600; margin: 0 0 .3rem; }
 /* item 3: felbontás-felirat (óránkénti/napi/heti) — visszafogott, a címke alatt, minden kártyán */
 #kulcsszo-blokk .felbontas,
 #youtube-blokk .felbontas { font-size: .72rem; color: #888; margin: 0 0 .4rem; }
@@ -399,8 +411,8 @@ body.keret { max-width: none; margin: 0; padding: 0; display: grid; grid-templat
 #trend-blokk .kategoria-magyarazat { font-size: .8rem; color: #666; margin: .4rem 0 .6rem; max-width: 40rem; }
 #trend-blokk .kategoria-szuro { display: flex; flex-wrap: wrap; gap: .4rem; margin: .2rem 0 0; }
 #trend-blokk .kategoria-gomb { padding: .25rem .6rem; font-size: .85rem; cursor: pointer;
-  border: 1px solid #ccc; border-radius: 999px; background: #fff; color: #222; }
-#trend-blokk .kategoria-gomb[aria-pressed="true"] { font-weight: bold; background: #3366cc; color: #fff; border-color: #3366cc; }
+  border: 1px solid var(--keret); border-radius: var(--r-chip); background: var(--kartya); color: var(--szoveg); }
+#trend-blokk .kategoria-gomb[aria-pressed="true"] { font-weight: 600; background: #E3F4F1; color: #145f5f; border-color: var(--akcentus); }
 /* „Other" — a besorolás Google-gyűjtővödre: vizuálisan elválik (szürke), az OSZTÁLYON keresztül (nem számított szín) */
 #trend-blokk .kategoria-gomb--other { border-color: #bbb; color: #666; }
 #trend-blokk .kategoria-gomb--other[aria-pressed="true"] { background: #9e9e9e; color: #fff; border-color: #9e9e9e; }
@@ -410,9 +422,10 @@ body.keret { max-width: none; margin: 0; padding: 0; display: grid; grid-templat
 #trend-blokk .trend-kartya[hidden] { display: none; }
 #trend-blokk .trend-lista { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1rem 0; }
 @media (max-width: 900px) { #trend-blokk .trend-lista { grid-template-columns: 1fr; } }
-#trend-blokk .trend-kartya { border: 1px solid #d0d0d0; border-radius: 4px; padding: .6rem;
-  box-shadow: 0 1px 2px rgba(0,0,0,.06); }
-#trend-blokk .trend-kifejezes { font-size: .95rem; font-weight: 600; margin: 0 0 .25rem; }
+#trend-blokk .trend-kartya { background: var(--kartya); border: 1px solid var(--keret); border-radius: var(--r-kartya);
+  padding: var(--ter-4); min-width: 0; overflow: hidden; transition: box-shadow .15s; }
+#trend-blokk .trend-kartya:hover { box-shadow: 0 4px 16px rgba(26, 29, 32, .07); }
+#trend-blokk .trend-kifejezes { font-size: var(--betu-kartya); font-weight: 600; margin: 0 0 .25rem; overflow-wrap: anywhere; }
 #trend-blokk .trend-volumen { font-size: .85rem; color: #333; margin: 0 0 .2rem; }
 #trend-blokk .trend-kategoria { font-size: .75rem; color: #666; margin: 0; }
 /* 8b: MÉRT magasság — 96px. Mérve 2026-08-09 adaton (e2e/_diag, eldobva), a legrosszabb tüskés
@@ -499,11 +512,12 @@ body.keret { max-width: none; margin: 0; padding: 0; display: grid; grid-templat
 
 /* Task 10 §3: látható billentyűzet-fókusz (eddig nem volt focus-CSS; az A2 explicit gomb-háttere mellett
    a natív ring inkonzisztens). :focus-visible → csak billentyűzetnél, egérkattintásnál nem villan. */
+.ui-chip:focus-visible,
 #intervallum-vezerlo button:focus-visible,
 #youtube-intervallum-vezerlo button:focus-visible,
 #trend-blokk .kategoria-gomb:focus-visible,
 #datum-valaszto .nap-cella:focus-visible,
-#datum-valaszto .honap-lep:focus-visible { outline: 2px solid #3366cc; outline-offset: 2px; }
+#datum-valaszto .honap-lep:focus-visible { outline: 2px solid var(--akcentus); outline-offset: 2px; }
 
 /* Task 10 §2: érintő-eszközön minden vezérlő tap-magassága >= 44px (AAA 2.5.5 komfort). A DESKTOP VÁLTOZATLAN.
    A pill/szögletes forma megmarad — csak a magasság nő. */
@@ -516,13 +530,13 @@ body.keret { max-width: none; margin: 0; padding: 0; display: grid; grid-templat
 
 /* A panel EGY keretes box, ugyanaz a minta, mint a többi szekció (#kulcsszo-blokk stb., 21-22. sor). */
 .attekinto-panel,
-#youtube-attekinto { background: #fff; border: 1px solid #e3e3e3; border-radius: 6px; padding: 1rem; box-sizing: border-box; }
+#youtube-attekinto { background: var(--kartya); border: 1px solid var(--keret); border-radius: var(--r-kartya); padding: var(--ter-4); box-sizing: border-box; }
 
 /* KIEMELT összefoglaló-konténer (a lap tetején): a trend + mai-eltérés panel EGY kiemelt kártyában.
    A belső panelek keret/árnyék nélkül (a konténer adja a kiemelést), finom elválasztó a kettő közt. */
 .attekinto-kiemelt {
-  background: #f5f8fe; border: 1px solid #d7e0f2; border-left: 4px solid #3366cc;
-  border-radius: 10px; box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+  background: var(--kartya); border: 1px solid var(--keret); border-left: 4px solid var(--akcentus);
+  border-radius: var(--r-kartya); box-shadow: 0 2px 10px rgba(26, 29, 32, .06);
   padding: .3rem 1.1rem .8rem; margin-bottom: 1.5rem; box-sizing: border-box;
 }
 .attekinto-kiemelt .attekinto-panel,
@@ -709,3 +723,42 @@ body.keret .fejlec-doboz { display: flex; flex-direction: column; align-items: f
 .radar-idosav.keret-pill { margin-top: 0; }
 .radar-idosav.keret-pill:empty { display: none; }
 @media (max-width: 760px) { .keret-idok { margin-left: 0; width: 100%; } }
+
+/* ── Task 5: közös komponensek (a Task 6–7 oldalai újrahasznosítják) ───────────────────────── */
+/* kártya */
+.ui-kartya { background: var(--kartya); border: 1px solid var(--keret); border-radius: var(--r-kartya);
+  padding: var(--ter-5) 22px; min-width: 0; transition: box-shadow .15s; }
+.ui-kartya:hover { box-shadow: 0 4px 16px rgba(26, 29, 32, .07); }
+/* chip-sor (a .vezerlo-sav is ez) */
+.ui-chipsor { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ter-2); margin: 0 0 14px; }
+/* a kulcsszó-blokk kapcsoló-gombjai (adatforrás / ML / szokásos sáv / predikció) is chipek */
+#kulcsszo-blokk .adatforras-gomb, #kulcsszo-blokk .mltrend-gomb,
+#kulcsszo-blokk .szokasos-sav-gomb, #kulcsszo-blokk .predikcio-gomb {
+  font: inherit; font-size: 13px; padding: 7px 14px; border: 1px solid var(--keret); border-radius: var(--r-chip);
+  background: var(--kartya); color: var(--szoveg); }
+#kulcsszo-blokk .adatforras-gomb:hover, #kulcsszo-blokk .mltrend-gomb:hover,
+#kulcsszo-blokk .szokasos-sav-gomb:hover, #kulcsszo-blokk .predikcio-gomb:hover { background: var(--kartya); border-color: var(--akcentus); }
+#kulcsszo-blokk .adatforras-gomb[aria-pressed="true"], #kulcsszo-blokk .mltrend-gomb[aria-pressed="true"],
+#kulcsszo-blokk .szokasos-sav-gomb[aria-pressed="true"], #kulcsszo-blokk .predikcio-gomb[aria-pressed="true"] {
+  background: #E3F4F1; color: #145f5f; border-color: var(--akcentus); font-weight: 600; }
+#kulcsszo-blokk .adatforras-gomb:focus-visible, #kulcsszo-blokk .mltrend-gomb:focus-visible,
+#kulcsszo-blokk .szokasos-sav-gomb:focus-visible, #kulcsszo-blokk .predikcio-gomb:focus-visible { outline: 2px solid var(--akcentus); outline-offset: 2px; }
+/* szakaszcím */
+.ui-szakaszcim { font-size: var(--betu-szakasz); font-weight: 700; margin: var(--ter-7) 0 var(--ter-3); color: var(--szoveg); }
+.szakasz-cim { font-size: var(--betu-szakasz); font-weight: 700; margin: var(--ter-7) 0 var(--ter-3); color: var(--szoveg); }
+#kulcsszo-blokk h2, #youtube-blokk h2, #trend-blokk h2, #heti-blokk h2, #idosor-blokk h2 { font-size: var(--betu-szakasz); margin: 0 0 var(--ter-3); }
+/* stat-sor */
+.ui-statsor { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 0; }
+.ui-stat { padding: 4px 18px; border-left: 1px solid var(--keret); min-width: 0; }
+.ui-stat:first-child { border-left: 0; padding-left: 0; }
+.ui-stat-cimke { font-size: 12px; color: var(--szoveg-2); }
+.ui-stat-szam { font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 2px; }
+/* info-doboz */
+.ui-info { border-left: 3px solid var(--akcentus); background: var(--kartya); border-radius: 0 var(--r-chip) var(--r-chip) 0;
+  padding: var(--ter-2) var(--ter-3); font-size: var(--betu-seged); color: var(--szoveg-2); }
+/* táblázat */
+.ui-tabla { width: 100%; border-collapse: collapse; font-size: var(--betu-torzs); font-variant-numeric: tabular-nums; }
+.ui-tabla th { text-align: left; font-size: var(--betu-mikro); letter-spacing: .08em; text-transform: uppercase;
+  color: var(--szoveg-2); font-weight: 600; padding: var(--ter-2) var(--ter-3); border-bottom: 1px solid var(--keret); }
+.ui-tabla td { padding: var(--ter-2) var(--ter-3); border-bottom: 1px solid var(--keret); }
+.ui-tabla tr:last-child td { border-bottom: 0; }
