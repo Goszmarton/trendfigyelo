@@ -1692,7 +1692,8 @@ const OTHER_CIMKE = "Other";       // a Google gyűjtő-KATEGÓRIÁJA (van szűr
 // (ez a kontraszt-relief a világosabb hue-khoz). Nincs ciklizás a vonalstílusban; 8+ felett ismétlődhet a szín
 // (interaktív kiemelés, a legend akkor is azonosít — gyakorlatban <8 van kiválasztva).
 const IDOSOR_SZURKE = szin("semleges");
-const IDOSOR_PALETTA = [1, 2, 3, 4, 5, 6, 7, 8].map(function (i) { return szin("tema-" + i); });
+// vonal-paletta: tema-1..6 + tema-8 (a --tema-7 halvány sárga csak kitöltés/pötty, vonalként nem)
+const IDOSOR_PALETTA = [1, 2, 3, 4, 5, 6, 8].map(function (i) { return szin("tema-" + i); });
 function idosor_kateg_szin(idx) { return IDOSOR_PALETTA[idx % IDOSOR_PALETTA.length]; }
 const EGYEB_CIMKE = "egyéb";       // a besorolás HIÁNYA ([]/hiányzó mező) — NINCS szűrő-gomb
 const OSSZES_CIMKE = "Összes";

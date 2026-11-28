@@ -59,3 +59,10 @@ test("Chart.js alapok a tokenekből", async ({ page }) => {
   expect(r[0]).toContain("Inter");
   expect(r[1].toLowerCase()).toBe("#66707a");
 });
+
+test("vonal-paletta: nincs benne a --tema-7 (#F0E442)", async ({ page }) => {
+  await page.goto("/trendek.html");
+  const p = await page.evaluate(function () { return IDOSOR_PALETTA.map(function (s) { return s.toLowerCase(); }); });
+  expect(p).toHaveLength(7);
+  expect(p).not.toContain("#f0e442");
+});

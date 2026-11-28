@@ -103,3 +103,16 @@ def test_szinek_js_a_chart_utan_es_az_oldal_js_elott_tolt():
                 assert srcs.index(x) < i, html.name
             if x in OLDAL_JS:
                 assert srcs.index(x) > i, html.name
+
+
+def test_vonalpaletta_nem_hasznalja_a_tema_7_et():
+    src = (JS / "app.js").read_text(encoding="utf-8")
+    m = re.search(r"const IDOSOR_PALETTA = \[([^\]]*)\]", src)
+    assert m, "nincs IDOSOR_PALETTA"
+    assert "7" not in [x.strip() for x in m.group(1).split(",")]
+    assert not re.search(r'szin\("tema-7"\)', src)
+
+
+def test_attekinto_ikonok_css_a_tokeneket_hasznalja():
+    for hex_ in ("#2e7d32", "#b23c3c", "#777"):
+        assert hex_ not in CSS.lower(), hex_

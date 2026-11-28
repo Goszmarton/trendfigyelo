@@ -540,20 +540,20 @@ code { background: #f2f2f2; padding: .1rem .3rem; border-radius: 3px; }
 #youtube-attekinto .attekinto-kartya:focus-visible { outline: 2px solid #3366cc; outline-offset: 1px; }
 /* a MAI ELTÉRÉS ikonja a szó ELŐTT: ▲ felette ZÖLD · ▼ alatta PIROS · • illeszkedik SZÜRKE (trendkövető, semleges) */
 .attekinto-panel .attekinto-ikon[data-illeszkedes="felette"]::before,
-#youtube-attekinto .attekinto-ikon[data-illeszkedes="felette"]::before     { content: "▲"; color: #2e7d32; }
+#youtube-attekinto .attekinto-ikon[data-illeszkedes="felette"]::before     { content: "▲"; color: var(--ok); }
 .attekinto-panel .attekinto-ikon[data-illeszkedes="alatta"]::before,
-#youtube-attekinto .attekinto-ikon[data-illeszkedes="alatta"]::before      { content: "▼"; color: #b23c3c; }
+#youtube-attekinto .attekinto-ikon[data-illeszkedes="alatta"]::before      { content: "▼"; color: var(--hiba); }
 .attekinto-panel .attekinto-ikon[data-illeszkedes="illeszkedik"]::before,
-#youtube-attekinto .attekinto-ikon[data-illeszkedes="illeszkedik"]::before { content: "•"; color: #777; }
+#youtube-attekinto .attekinto-ikon[data-illeszkedes="illeszkedik"]::before { content: "•"; color: var(--semleges); }
 /* TREND-panel ikonjai: ▲ növekvő ZÖLD · ▼ csökkenő PIROS · ■ stagnáló/esemény SZÜRKE NÉGYZET */
 .attekinto-panel .attekinto-ikon[data-trend="novekszik"]::before,
-#youtube-attekinto .attekinto-ikon[data-trend="novekszik"]::before { content: "▲"; color: #2e7d32; }
+#youtube-attekinto .attekinto-ikon[data-trend="novekszik"]::before { content: "▲"; color: var(--ok); }
 .attekinto-panel .attekinto-ikon[data-trend="csokken"]::before,
-#youtube-attekinto .attekinto-ikon[data-trend="csokken"]::before   { content: "▼"; color: #b23c3c; }
+#youtube-attekinto .attekinto-ikon[data-trend="csokken"]::before   { content: "▼"; color: var(--hiba); }
 .attekinto-panel .attekinto-ikon[data-trend="stagnal"]::before,
-#youtube-attekinto .attekinto-ikon[data-trend="stagnal"]::before   { content: "■"; color: #777; font-size: .8em; }
+#youtube-attekinto .attekinto-ikon[data-trend="stagnal"]::before   { content: "■"; color: var(--semleges); font-size: .8em; }
 .attekinto-panel .attekinto-ikon[data-trend="esemeny"]::before,
-#youtube-attekinto .attekinto-ikon[data-trend="esemeny"]::before   { content: "■"; color: #777; font-size: .8em; }
+#youtube-attekinto .attekinto-ikon[data-trend="esemeny"]::before   { content: "■"; color: var(--semleges); font-size: .8em; }
 
 /* reszponzív oszlopszám: 3 → 2 → 1, a csík mindig a nem-első oszlopon (a keskeny nézet 1 oszlop, csík nélkül) */
 @media (max-width: 1100px) {
