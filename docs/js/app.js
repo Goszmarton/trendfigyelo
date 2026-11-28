@@ -141,12 +141,12 @@ const TENGELY_FELIRAT = "relatív keresési szint (0–100)";   // EN DASH
 const CSUPA_NULLA_SZOVEG = "Ezen az időszakon nincs érdemi keresési aktivitás (a mért értékek végig nulla körül).";
 const URES_NINCS_ABLAK = "Az adatsor ezen az időszakon nem érhető el.";
 
-// Szín-konstansok. A #3366cc kék KÉT KÜLÖNBÖZŐ SZEREPBEN fordul elő azonos értékkel — SZÁNDÉKOSAN külön
-// konstans, hogy az egyik szerep átszínezése NE mozdítsa el némán a másikat (MIN-BC):
-//  - ADAT_VONAL_SZIN: a mért ADATSOR kék vonala a vonaldiagramokban (kulcsszó-chart ÉS trend-sparkline —
-//    ugyanaz a szín ugyanazért: „ez a mért adat"; testvérei a #cc3333 trend- és #e69138 szint-vonal).
+// Szín-konstansok. Mindkettő a --google tokenre mutat, de SZÁNDÉKOSAN külön konstans, hogy az egyik szerep
+// átszínezése NE mozdítsa el némán a másikat (MIN-BC):
+//  - ADAT_VONAL_SZIN: a mért ADATSOR vonala a vonaldiagramokban (kulcsszó-chart ÉS trend-sparkline —
+//    ugyanaz a szín ugyanazért: „ez a mért adat"; testvérei a --graf-trend és --graf-szint vonal).
 //  - KATEGORIA_ALAP_SZIN: a kategória-akcentus a trend-kategória sávban (nem-tompított alap; testvérei a
-//    #aec4ef tompított és a #9e9e9e/#d4d4d4 „Other" szürke — ezek MIN-BC hatókörén kívül, inline maradnak).
+//    tompított változat és az „Other" szürke — ezek MIN-BC hatókörén kívül, inline maradnak).
 const ADAT_VONAL_SZIN = szin("google");
 const KATEGORIA_ALAP_SZIN = szin("google");
 

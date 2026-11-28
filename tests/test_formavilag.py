@@ -175,3 +175,12 @@ def test_body_data_keret_oldal():
                  "ugyek": "ugyek", "kapcsolodo": "kapcsolodo", "trendek": "google", "youtube": "youtube",
                  "adatokrol": "info"}.items():
         assert f'<body class="keret" data-keret-oldal="{v}">' in _oldal(o), o
+
+
+def test_css_szinek_csak_tokenbol():
+    """A :root blokkon kívül a deklaráció-ÉRTÉKEKBEN nincs #hex / rgb(a)( literál."""
+    kod = re.sub(r"/\*.*?\*/", "", CSS, flags=re.S)
+    kod = re.sub(r":root\s*\{[^}]*\}", "", kod, count=1)
+    ertekek = re.findall(r"(?<![\w-])[a-z-]+\s*:\s*([^;{}]+)(?=[;}])", kod)
+    hibas = [e.strip() for e in ertekek if re.search(r"#[0-9a-fA-F]{3,8}\b|\brgba?\(|\bhsla?\(", e)]
+    assert not hibas, hibas
