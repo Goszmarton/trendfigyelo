@@ -353,7 +353,7 @@ test("Infó: .adat-doboz 12px sarok, --keret keret; a kiválasztott nap --akcent
   expect(await v.evaluate(function (e) { return getComputedStyle(e).backgroundColor; })).toBe("rgb(31, 138, 138)");
 });
 
-test("valtozasok: az elmozdulás-tételek kártyák (12px), az irány-jel ▲ zöld, ▼ piros", async ({ page }) => {
+test("valtozasok: az elmozdulás-tételek kártyák (12px), az irány-szöveg (emelkedik) zöld, (csökken) piros", async ({ page }) => {
   await page.route("**/data/elmozdulas.json", (r) => r.fulfill({ json: { szamitva_utc: "2026-10-07T18:00:00+00:00",
     kulcsszavak: {
       benzin: { szokatlan: true, irany: "emelkedik", elteres: 3.0, idotartam_pont: 5, megbizhatosag: "magas", sav: {} },
@@ -365,9 +365,9 @@ test("valtozasok: az elmozdulás-tételek kártyák (12px), az irány-jel ▲ z�
   const s = await k.first().evaluate(function (e) { const c = getComputedStyle(e); return [c.borderTopLeftRadius, c.borderTopColor]; });
   expect(s).toEqual(["12px", "rgb(226, 229, 227)"]);
   const jel = function (sel) { return page.locator(sel + " .bovites-elm-irany").evaluate(function (e) {
-    const c = getComputedStyle(e, "::before"); return [c.content, c.color]; }); };
-  expect(await jel(".bovites-irany-emelkedik")).toEqual(['"▲"', "rgb(46, 139, 87)"]);
-  expect(await jel(".bovites-irany-csokken")).toEqual(['"▼"', "rgb(200, 65, 75)"]);
+    return getComputedStyle(e).color; }); };
+  expect(await jel(".bovites-irany-emelkedik")).toBe("rgb(46, 139, 87)");
+  expect(await jel(".bovites-irany-csokken")).toBe("rgb(200, 65, 75)");
 });
 
 test("ugyek: a 120 karakteres ügycím tördelődik, nem lóg ki a kártyából", async ({ page }) => {

@@ -652,8 +652,8 @@ body.keret { max-width: none; margin: 0; padding: 0; display: grid; grid-templat
 .bovites-irany-csokken { border-left-color: var(--hiba); }
 .bovites-elm-szo { font-weight: 700; font-size: var(--betu-kartya); }
 .bovites-elm-irany { font-size: var(--betu-torzs); color: var(--szoveg-2); }
-.bovites-irany-emelkedik .bovites-elm-irany::before { content: "▲"; color: var(--ok); margin-right: .3em; }
-.bovites-irany-csokken .bovites-elm-irany::before { content: "▼"; color: var(--hiba); margin-right: .3em; }
+.bovites-irany-emelkedik .bovites-elm-irany { color: var(--ok); font-weight: 600; }
+.bovites-irany-csokken .bovites-elm-irany { color: var(--hiba); font-weight: 600; }
 .bovites-elm-adat { font-size: var(--betu-seged); color: var(--szoveg-2); margin-top: var(--ter-1); }
 .bovites-ugy-lista { display: flex; flex-direction: column; gap: var(--ter-3); }
 .bovites-ugy { background: var(--kartya); border: 1px solid var(--keret); border-radius: var(--r-kartya);
