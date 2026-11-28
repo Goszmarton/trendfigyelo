@@ -352,3 +352,58 @@ test("Infó: .adat-doboz 12px sarok, --keret keret; a kiválasztott nap --akcent
   await expect(v).toBeVisible();
   expect(await v.evaluate(function (e) { return getComputedStyle(e).backgroundColor; })).toBe("rgb(31, 138, 138)");
 });
+
+test("valtozasok: az elmozdulás-tételek kártyák (12px), az irány-jel ▲ zöld, ▼ piros", async ({ page }) => {
+  await page.route("**/data/elmozdulas.json", (r) => r.fulfill({ json: { szamitva_utc: "2026-10-07T18:00:00+00:00",
+    kulcsszavak: {
+      benzin: { szokatlan: true, irany: "emelkedik", elteres: 3.0, idotartam_pont: 5, megbizhatosag: "magas", sav: {} },
+      iskola: { szokatlan: true, irany: "csokken", elteres: 2.0, idotartam_pont: 3, megbizhatosag: "kozepes", sav: {} } },
+    szokatlan_lista: ["benzin", "iskola"] } }));
+  await page.goto("/valtozasok.html");
+  const k = page.locator(".bovites-elm-kartya");
+  await expect(k).toHaveCount(2);
+  const s = await k.first().evaluate(function (e) { const c = getComputedStyle(e); return [c.borderTopLeftRadius, c.borderTopColor]; });
+  expect(s).toEqual(["12px", "rgb(226, 229, 227)"]);
+  const jel = function (sel) { return page.locator(sel + " .bovites-elm-irany").evaluate(function (e) {
+    const c = getComputedStyle(e, "::before"); return [c.content, c.color]; }); };
+  expect(await jel(".bovites-irany-emelkedik")).toEqual(['"▲"', "rgb(46, 139, 87)"]);
+  expect(await jel(".bovites-irany-csokken")).toEqual(['"▼"', "rgb(200, 65, 75)"]);
+});
+
+test("ugyek: a 120 karakteres ügycím tördelődik, nem lóg ki a kártyából", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 800 });
+  const hosszu = "Hosszúhosszú".repeat(10);
+  await page.route("**/data/ugyek.json", (r) => r.fulfill({ json: { szamitva_utc: "2026-10-07T21:00:00+00:00",
+    ablak: { kezdet: "2026-09-08", veg: "2026-10-07", nap: 30 }, modell: "m",
+    ugyek: [{ nev: hosszu, szakpolitika: "energia_rezsi", eletut: "folyamatosan_jelenlevo", mozgas: "stabil",
+      kifejezesek: [hosszu], elso_nap: "2026-09-10", utolso_nap: "2026-10-07", napok_szama: 1,
+      idovonal: [{ nap: "2026-09-10", jelen: true, ossz_volumen: 40 }], osszefoglalo: "x" }] } }));
+  await page.goto("/ugyek.html");
+  await expect(page.locator(".bovites-ugy")).toHaveCount(1);
+  const r = await page.evaluate(function () {
+    const k = document.querySelector(".bovites-ugy"), n = document.querySelector(".bovites-ugy-nev");
+    return { radius: getComputedStyle(k).borderTopLeftRadius, kSw: k.scrollWidth, kCw: k.clientWidth,
+      nR: n.getBoundingClientRect().right, kR: k.getBoundingClientRect().right, doc: document.documentElement.scrollWidth };
+  });
+  expect(r.radius).toBe("12px");
+  expect(r.nR).toBeLessThanOrEqual(r.kR);
+  expect(r.kSw).toBeLessThanOrEqual(r.kCw);
+  expect(r.doc).toBeLessThanOrEqual(390);
+});
+
+test("kapcsolodo: a szűrő-gombok chip-stílusúak, a kapcsolódó chipek/kártya is", async ({ page }) => {
+  await page.goto("/ugyek.html");
+  const g = page.locator(".bovites-szuro-chip");
+  await expect(g.first()).toBeVisible();
+  const s = await g.nth(1).evaluate(function (e) { const c = getComputedStyle(e); return [c.borderTopLeftRadius, c.borderTopColor]; });
+  expect(s).toEqual(["999px", "rgb(226, 229, 227)"]);
+  const a = await g.first().evaluate(function (e) { const c = getComputedStyle(e); return [c.backgroundColor, c.borderTopColor]; });
+  expect(a).toEqual(["rgb(227, 244, 241)", "rgb(31, 138, 138)"]);
+  await page.route("**/data/kapcsolodo.json", (r) => r.fulfill({ json: { frissitve: "2026-10-07T21:00:00+00:00", kifejezesek: [
+    { kifejezes: "benzin", lekerdezve: "2026-10-07T21:00:00+00:00", volumen: 90,
+      top: [{ query: "benzin ár", value: 100 }], rising: [{ query: "benzin ársapka", value: 8350 }] }] } }));
+  await page.goto("/kapcsolodo.html");
+  const c = await page.locator(".bovites-chip").first().evaluate(function (e) { const c = getComputedStyle(e); return [c.borderTopLeftRadius, c.borderTopColor]; });
+  expect(c).toEqual(["999px", "rgb(226, 229, 227)"]);
+  expect(await page.locator(".bovites-kapcs-kartya").first().evaluate(function (e) { return getComputedStyle(e).borderTopLeftRadius; })).toBe("12px");
+});

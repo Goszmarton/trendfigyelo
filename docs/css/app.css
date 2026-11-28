@@ -643,68 +643,72 @@ body.keret { max-width: none; margin: 0; padding: 0; display: grid; grid-templat
 .heti-chart-adatlista { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 @media (max-width: 640px) { #heti-het-panel { flex-basis: 100%; flex-direction: row; flex-wrap: wrap; } }
 
-/* Bővítés fül */
-.bovites-elm-racs { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.6rem; }
-.bovites-elm-kartya { border: 1px solid #c9d3df; border-left: 4px solid #8a97a6; border-radius: 8px; padding: 0.6rem 0.8rem; background: #fff; }
-.bovites-irany-emelkedik { border-left-color: #2a78d6; }
-.bovites-irany-csokken { border-left-color: #eb6834; }
-.bovites-elm-szo { font-weight: 600; }
-.bovites-elm-irany { font-size: 0.9rem; color: #555; }
-.bovites-elm-adat { font-size: 0.85rem; color: #444; margin-top: 0.15rem; }
-.bovites-ugy-lista { display: flex; flex-direction: column; gap: 0.8rem; }
-.bovites-ugy { border: 1px solid #c9d3df; border-radius: 10px; padding: 0.8rem 1rem; background: #fff; }
-.bovites-ugy-nev { margin: 0 0 0.4rem; font-size: 1.05rem; }
-.bovites-cimkek, .bovites-chipek { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.3rem 0; }
-.bovites-cimke { display: inline-block; padding: 0.1rem 0.55rem; border-radius: 999px; background: #e9eefb; color: #26408c; font-size: 0.8rem; margin-top: 0.3rem; }
+/* Radar-oldalak (Változások / Ügyek / Kapcsolódó) — az egységes formavilágban; a markup a bovites.js-ből jön */
+.bovites-elm-racs { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--ter-3); }
+.bovites-elm-kartya { background: var(--kartya); border: 1px solid var(--keret); border-left: 4px solid var(--semleges);
+  border-radius: var(--r-kartya); padding: var(--ter-3) var(--ter-4); min-width: 0; overflow-wrap: anywhere; transition: box-shadow .15s; }
+.bovites-elm-kartya:hover { box-shadow: var(--arnyek); }
+.bovites-irany-emelkedik { border-left-color: var(--ok); }
+.bovites-irany-csokken { border-left-color: var(--hiba); }
+.bovites-elm-szo { font-weight: 700; font-size: var(--betu-kartya); }
+.bovites-elm-irany { font-size: var(--betu-torzs); color: var(--szoveg-2); }
+.bovites-irany-emelkedik .bovites-elm-irany::before { content: "▲"; color: var(--ok); margin-right: .3em; }
+.bovites-irany-csokken .bovites-elm-irany::before { content: "▼"; color: var(--hiba); margin-right: .3em; }
+.bovites-elm-adat { font-size: var(--betu-seged); color: var(--szoveg-2); margin-top: var(--ter-1); }
+.bovites-ugy-lista { display: flex; flex-direction: column; gap: var(--ter-3); }
+.bovites-ugy { background: var(--kartya); border: 1px solid var(--keret); border-radius: var(--r-kartya);
+  padding: var(--ter-4) var(--ter-5); min-width: 0; overflow-wrap: anywhere; transition: box-shadow .15s; }
+.bovites-ugy:hover { box-shadow: var(--arnyek); }
+.bovites-ugy-nev { margin: 0 0 var(--ter-2); font-size: var(--betu-szakasz); font-weight: 700; overflow-wrap: anywhere; }
+.bovites-cimkek, .bovites-chipek { display: flex; flex-wrap: wrap; gap: var(--ter-1) var(--ter-2); margin: var(--ter-2) 0; }
+.bovites-cimke { display: inline-block; padding: 2px 10px; border-radius: var(--r-pill); background: var(--akcentus-halvany);
+  color: var(--akcentus-sotet); font-size: var(--betu-seged); font-weight: 600; margin-top: var(--ter-2); }
 .bovites-cimkek .bovites-cimke { margin-top: 0; }
-/* címketípusok eltérő színe, hogy a kártyán ne csússzon egybe a szakpolitika / életút / mozgás pill */
-.bovites-eletut { background: #efe9fb; color: #5b36a3; }                      /* életút-besorolás – lila */
-.bovites-mozgas-erosodo { background: #e4f4ec; color: #136a4f; }             /* erősödő – zöld */
-.bovites-mozgas-lecsengo { background: #fbeadf; color: #a85117; }            /* lecsengő – narancs */
-.bovites-mozgas-stabil, .bovites-mozgas-nem_megallapithato { background: #eceff3; color: #475562; }  /* stabil/ismeretlen – semleges */
-.bovites-chip { padding: 0.1rem 0.5rem; border: 1px solid #d5dce5; border-radius: 6px; font-size: 0.85rem; color: #444; }
-.bovites-osszefoglalo { margin: 0.4rem 0; line-height: 1.45; }
-.bovites-meta { font-size: 0.85rem; }
-.bovites-idovonal-doboz { margin-top: 0.5rem; }
-.bovites-idovonal-cim { font-size: 0.8rem; margin-bottom: 0.2rem; }
+/* címketípusok: életút semleges, mozgás állapotszínnel (erősödő --ok, lecsengő --figy, stabil --semleges) */
+.bovites-eletut { background: var(--hatter); color: var(--szoveg-2); border: 1px solid var(--keret); }
+.bovites-mozgas-erosodo { background: color-mix(in srgb, var(--ok) 14%, var(--kartya)); color: var(--ok); }
+.bovites-mozgas-lecsengo { background: color-mix(in srgb, var(--figy) 16%, var(--kartya)); color: var(--szoveg); }
+.bovites-mozgas-stabil, .bovites-mozgas-nem_megallapithato { background: var(--hatter); color: var(--szoveg-2); border: 1px solid var(--keret); }
+.bovites-chip { padding: 3px 11px; border: 1px solid var(--keret); border-radius: var(--r-pill); background: var(--kartya);
+  font-size: var(--betu-seged); color: var(--szoveg); overflow-wrap: anywhere; }
+.bovites-osszefoglalo { margin: var(--ter-2) 0; line-height: 1.5; font-size: var(--betu-torzs); }
+.bovites-meta { font-size: var(--betu-seged); }
+.bovites-idovonal-doboz { margin-top: var(--ter-3); }
+.bovites-idovonal-cim { font-size: var(--betu-seged); margin-bottom: var(--ter-1); }
 .bovites-idovonal { display: flex; gap: 1px; height: 16px; }
-.bovites-nap { flex: 1 1 0; min-width: 2px; background: #e6eaef; border-radius: 1px; }
-.bovites-nap.jelen { background: #2a78d6; }
+.bovites-nap { flex: 1 1 0; min-width: 2px; background: var(--keret); border-radius: 2px; }
+.bovites-nap.jelen { background: var(--akcentus); }
 .bovites-idovonal-jelmagy { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;
-  justify-content: space-between; font-size: 0.78rem; margin-top: 0.25rem; }
+  justify-content: space-between; font-size: var(--betu-seged); margin-top: var(--ter-1); }
 .bovites-idovonal-kulcs { display: inline-flex; align-items: center; gap: 0.2rem; }
 .bovites-nap-minta { flex: 0 0 auto; display: inline-block; width: 11px; height: 11px; vertical-align: middle; }
 .bovites-idovonal-datum { white-space: nowrap; }
-.bovites-kapcs-lista { display: flex; flex-direction: column; gap: 0.8rem; }
-.bovites-kapcs-kartya { border: 1px solid #c9d3df; border-radius: 10px; padding: 0.8rem 1rem; background: #fff; }
-.bovites-kapcs-cim { margin: 0 0 0.4rem; font-size: 1.05rem; }
-.bovites-kapcs-ketto { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.8rem; }
-.bovites-kapcs-oszlopcim { margin: 0; font-size: 0.9rem; color: #555; }
-.bovites-kapcs-sugo { font-size: 0.76rem; margin: 0.1rem 0 0.35rem; line-height: 1.35; }
-.bovites-kapcs-ertek { font-size: 0.75rem; }
-.bovites-kapcs-breakout { border-color: #eb6834; background: #fdf0ea; font-weight: 600; }
+.bovites-kapcs-lista { display: flex; flex-direction: column; gap: var(--ter-3); }
+.bovites-kapcs-kartya { background: var(--kartya); border: 1px solid var(--keret); border-radius: var(--r-kartya);
+  padding: var(--ter-4) var(--ter-5); min-width: 0; overflow-wrap: anywhere; transition: box-shadow .15s; }
+.bovites-kapcs-kartya:hover { box-shadow: var(--arnyek); }
+.bovites-kapcs-cim { margin: 0 0 var(--ter-2); font-size: var(--betu-szakasz); font-weight: 700; }
+.bovites-kapcs-ketto { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--ter-4); }
+.bovites-kapcs-oszlopcim { margin: 0; font-size: var(--betu-torzs); color: var(--szoveg-2); }
+.bovites-kapcs-sugo { font-size: var(--betu-mikro); margin: 2px 0 var(--ter-2); line-height: 1.35; }
+.bovites-kapcs-ertek { font-size: var(--betu-mikro); }
+.bovites-kapcs-breakout { border-color: var(--figy); background: color-mix(in srgb, var(--figy) 14%, var(--kartya)); font-weight: 600; }
 
-.bovites-szuro-sor { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-bottom: 0.5rem; }
-.bovites-szuro-chip, .bovites-rendezes-gomb { font-size: .8rem; padding: .3rem .7rem; border: 1px solid #cfcfcf;
-  border-radius: 999px; background: #f6f6f6; cursor: pointer; }
-.bovites-szuro-chip:hover, .bovites-rendezes-gomb:hover { background: #ececec; }
-.bovites-szuro-chip[aria-pressed="true"], .bovites-rendezes-gomb[aria-pressed="true"] { background: #3366cc; color: #fff; border-color: #3366cc; }
-/* Ügyek rendezés-gombok: gombonként saját szín, hogy a sor ne legyen egyforma (aktív = kitöltött) */
-.bovites-rendezes-gomb[data-rendezes="napok"] { background: #fff; color: #2167c0; border-color: #a8c6ee; }
-.bovites-rendezes-gomb[data-rendezes="frissesseg"] { background: #fff; color: #0b6e62; border-color: #8fd0c8; }
-.bovites-rendezes-gomb[data-rendezes="mozgas"] { background: #fff; color: #9c5d0a; border-color: #e0bd80; }
-.bovites-rendezes-gomb[data-rendezes="napok"]:hover { background: #eaf2fc; }
-.bovites-rendezes-gomb[data-rendezes="frissesseg"]:hover { background: #e4f4f1; }
-.bovites-rendezes-gomb[data-rendezes="mozgas"]:hover { background: #fbf1e0; }
-.bovites-rendezes-gomb[data-rendezes="napok"][aria-pressed="true"] { background: #2167c0; border-color: #2167c0; color: #fff; }
-.bovites-rendezes-gomb[data-rendezes="frissesseg"][aria-pressed="true"] { background: #0b6e62; border-color: #0b6e62; color: #fff; }
-.bovites-rendezes-gomb[data-rendezes="mozgas"][aria-pressed="true"] { background: #9c5d0a; border-color: #9c5d0a; color: #fff; }
+/* szakpolitika-szűrő és rendezés: chipek (aktív = --akcentus-halvany) */
+.bovites-szuro-sor { display: flex; flex-wrap: wrap; gap: var(--ter-2); align-items: center; margin-bottom: var(--ter-2); }
+.bovites-szuro-chip, .bovites-rendezes-gomb { font: inherit; font-size: 13px; padding: 7px 14px; border: 1px solid var(--keret);
+  border-radius: var(--r-pill); background: var(--kartya); color: var(--szoveg); cursor: pointer; }
+.bovites-szuro-chip:hover, .bovites-rendezes-gomb:hover { border-color: var(--akcentus); }
+.bovites-szuro-chip[aria-pressed="true"], .bovites-rendezes-gomb[aria-pressed="true"] {
+  background: var(--akcentus-halvany); color: var(--akcentus-sotet); border-color: var(--akcentus); font-weight: 600; }
+.bovites-szuro-chip:focus-visible, .bovites-rendezes-gomb:focus-visible { outline: 2px solid var(--akcentus); outline-offset: 2px; }
 
 /* Radar panelek + leírások */
-.bovites-leiras { background: #f3f6fb; border-left: 3px solid #2a78d6; padding: 0.6rem 0.85rem;
-  border-radius: 6px; margin: 0 0 0.9rem; color: #334; line-height: 1.5; }
-.bovites-leiras a { color: #2a78d6; }
-.bovites-szuro { margin-bottom: 0.8rem; }
+.bovites-leiras { background: var(--kartya); border: 1px solid var(--keret); border-left: 3px solid var(--akcentus);
+  padding: var(--ter-3) var(--ter-4); border-radius: 0 var(--r-chip) var(--r-chip) 0; margin: 0 0 var(--ter-4);
+  color: var(--szoveg-2); font-size: var(--betu-torzs); line-height: 1.55; }
+.bovites-leiras a { color: var(--akcentus-sotet); }
+.bovites-szuro { margin-bottom: var(--ter-3); }
 
 /* Radar aloldalak idősáv-jelzése */
 .radar-idosav { display: inline-block; margin-top: .4rem; padding: .25rem .7rem; border-radius: 999px;
